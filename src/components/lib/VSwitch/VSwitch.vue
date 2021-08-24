@@ -67,6 +67,10 @@
   );
 }
 
+.toggle-indicator.secondary {
+  background: linear-gradient(220.53deg, #ff9330 0%, #ff6b57 76.95%);
+}
+
 .toggle-indicator.large {
   height: 2.6em;
   width: 2.6em;
@@ -89,6 +93,7 @@ export default {
   name: "VSwitch",
   props: {
     modelValue: Boolean,
+    size: String,
     variant: String,
   },
   setup(props, { emit, attrs }) {
@@ -96,7 +101,8 @@ export default {
 
     let classes = computed(() => {
       return {
-        large: props.variant?.trim().toLowerCase() === "large",
+        large: props.size?.trim().toLowerCase() === "large",
+        secondary: props.variant?.trim().toLowerCase() === "secondary",
         checked: props.modelValue,
       };
     });

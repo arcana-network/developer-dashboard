@@ -85,7 +85,7 @@ export default {
   },
   setup(props) {
     const value = computed(() => {
-      return !props.percentage || props.percentage < 4 ? 4 : props.percentage;
+      return !props.percentage || props.percentage < 2 ? 2 : props.percentage;
     });
 
     return {

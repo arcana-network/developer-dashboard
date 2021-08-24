@@ -1,9 +1,9 @@
 <template>
-  <div class="form-group" aria-label="Form group">
+  <div class="form-group" aria-label="Form group" :style="style">
     <label v-if="label" :style="[labelStyle]" :for="componentId">
       {{ label }}
     </label>
-    <div class="text-field">
+    <div class="text-field" :class="{ icon: !!icon }">
       <input
         :type="inputType"
         :id="componentId"
@@ -11,11 +11,20 @@
         @input="onInput"
         v-bind="attrs"
         :placeholder="placeholder"
-        :class="strong ? 'strong' : ''"
+        :class="{ strong }"
+        :style="inputStyle"
+      />
+      <img
+        v-if="icon"
+        :src="icon"
+        :class="{
+          'icon-clickable': clickableIcon,
+        }"
+        @click.stop="onIconClicked"
       />
     </div>
-    <span v-if="message" class="message" :class="messageType">
-      {{ message }}
+    <span class="message" :class="messageType" v-if="!noMessage">
+      {{ message || "Some message" }}
     </span>
   </div>
 </template>
@@ -38,7 +47,7 @@ div.text-field {
   box-shadow: inset -2px -2px 4px rgba(57, 57, 57, 0.44),
     inset 5px 5px 10px rgba(11, 11, 11, 0.5);
   border-radius: 10px;
-  display: inline-block;
+  display: flex;
 }
 .message {
   font-family: var(--font-body);
@@ -56,8 +65,10 @@ div.text-field {
   visibility: visible;
   color: #ee193f;
 }
-input[type="text"],
-input[type="password"] {
+.loading-state {
+  color: transparent;
+}
+input {
   border: none;
   box-shadow: none;
   background: transparent;
@@ -67,27 +78,25 @@ input[type="password"] {
   font-family: var(--font-body);
   font-size: 1.1em;
   line-height: 1.5em;
-  margin: 10px 20px;
+  margin: 15px 20px;
   padding: 0;
+  width: 100%;
 }
-input[type="text"]::placeholder,
-input[type="password"]::placeholder,
-input[type="text"]::-webkit-input-placeholder,
-input[type="password"]::-webkit-input-placeholder,
-input[type="text"]::-moz-placeholder,
-input[type="password"]::-moz-placeholder,
-input[type="text"]:-ms-input-placeholder,
-input[type="password"]:-ms-input-placeholder,
-input[type="text"]:-moz-placeholder,
-input[type="password"]:-moz-placeholder {
+div.text-field.icon input {
+  width: calc(100% - 80px);
+}
+input::placeholder,
+input::-webkit-input-placeholder,
+input::-moz-placeholder,
+input:-ms-input-placeholder,
+input:-moz-placeholder {
   color: var(--text-grey);
   font-family: var(--font-body);
   font-size: 1.1em;
   line-height: 1.5em;
   margin: 10px 20px;
 }
-input[type="text"].strong,
-input[type="password"].strong {
+input.strong {
   font-size: 1.4em;
   line-height: 1.65em;
   font-weight: 600;
@@ -99,16 +108,28 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #181818 inset;
   -webkit-text-fill-color: var(--text-white);
 }
+img.icon-clickable {
+  cursor: pointer;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}
 </style>
 
 <script>
-import { reactive } from "@vue/reactivity";
+import { reactive, ref } from "@vue/reactivity";
 import { getRandomId } from "../utils";
+import { computed } from "@vue/runtime-core";
 export default {
   name: "VTextField",
+  inheritAttrs: false,
   props: {
     labelStyle: [String, Object],
-    inputStyle: [String, Object],
     messageStyle: [String, Object],
     placeholderStyle: [String, Object],
     label: String,
@@ -120,15 +141,20 @@ export default {
     messageType: String,
     placeholder: String,
     strong: Boolean,
+    icon: [String, Object],
+    clickableIcon: Boolean,
+    inputStyle: [String, Object],
+    noMessage: Boolean,
+    style: [String, Object, Array],
   },
   setup(props, { emit, attrs }) {
     props = reactive(props);
     let componentId = props.id?.trim() ?? getRandomId();
+    let iconClicked = ref(false);
 
-    let inputType = "text";
-    if (props.type?.trim().toLowerCase() === "password") {
-      inputType = "password";
-    }
+    let inputType = computed(() => {
+      return props.type?.trim().toLowerCase();
+    });
 
     function validate(ev) {
       if ("validation" in props && "call" in props.validation) {
@@ -140,12 +166,20 @@ export default {
       emit("update:modelValue", ev.target?.value);
     }
 
+    function onIconClicked(ev) {
+      if (props.clickableIcon) {
+        emit("icon-clicked", ev);
+      }
+    }
+
     return {
       componentId,
       validate,
       onInput,
       attrs,
       inputType,
+      onIconClicked,
+      iconClicked,
     };
   },
 };

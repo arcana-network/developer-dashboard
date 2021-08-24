@@ -6,7 +6,7 @@
     aria-haspopup="listbox"
     :aria-expanded="isOpen"
   >
-    <div class="custom-select__trigger">
+    <div class="custom-select__trigger" :style="triggerStyle">
       <span v-if="value">{{ value }}</span>
       <span v-else class="placeholder">{{ placeholder }}</span>
       <div class="arrow"></div>
@@ -62,14 +62,16 @@
   top: 100%;
   left: 0;
   right: 0;
+  max-height: 200px;
   border-top: 0;
   background: linear-gradient(143.36deg, #0f0f0f -4.7%, #000000 115.05%);
-  transition: all 1s;
+  transition: all 0.5s;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
   z-index: 9999;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   border-radius: 0px 0px 10px 10px;
 }
 .custom-select.open .custom-options {
@@ -87,7 +89,7 @@
   color: var(--text-grey);
   line-height: 1.2em;
   cursor: pointer;
-  transition: all 0.5s;
+  transition: all 0.2s;
   background: linear-gradient(143.36deg, #0f0f0f -4.7%, #000000 115.05%);
 }
 .custom-option:hover {
@@ -132,12 +134,14 @@
 
 <script>
 import { reactive, ref } from "@vue/reactivity";
+import { watch } from "@vue/runtime-core";
 export default {
   name: "VDropdown",
   props: {
     options: Array,
     modelValue: String,
     placeholder: String,
+    triggerStyle: [String, Object, Array],
   },
   setup(props, { emit }) {
     props = reactive(props);
@@ -150,9 +154,16 @@ export default {
     function onChange(option, ev) {
       value.value = option;
       emit("update:modelValue", option);
-      emit("change", ev);
+      emit("change", ev, option);
       toggle();
     }
+
+    watch(
+      () => props.modelValue,
+      () => {
+        value.value = props.modelValue;
+      }
+    );
 
     return {
       toggle,

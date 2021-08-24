@@ -12,7 +12,7 @@
 <style scoped>
 .card {
   display: flex;
-  border-radius: 20px;
+  border-radius: 10px;
   background: radial-gradient(
     134.5% 939.99% at -23.59% -12.9%,
     #262626 0%,
@@ -31,8 +31,8 @@
   background: radial-gradient(
     134.5% 939.99% at -23.59% -12.9%,
     #151515 0%,
-    rgba(27, 27, 27, 0.86293) 31.41%,
-    rgba(32, 32, 32, 0.49) 100%
+    rgba(27, 27, 27, 1) 31.41%,
+    rgba(32, 32, 32, 1) 100%
   );
   box-shadow: 4px 5px 4px rgba(0, 0, 0, 0.25);
 }

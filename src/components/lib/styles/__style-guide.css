@@ -13,9 +13,37 @@
   --breakpoint-mobile: 767px;
   --breakpoint-tablet: 1023px;
   --breakpoint-laptop-and-above: 1024px;
-  --max-container-width: 82em;
+  --max-container-width: 108em;
   --container-width: 90%;
 }
+*::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5em;
+}
+
+*::-webkit-scrollbar-track {
+  background: linear-gradient(143.36deg, #000000 -4.7%, #000000 115.05%);
+  box-shadow: inset -2px -2px 4px rgba(80, 80, 80, 0.1),
+    inset 5px 5px 5px rgba(0, 0, 0, 0.21),
+    inset -10px -26px 33px -28px rgba(255, 255, 255, 0.1),
+    inset -50px 49px 29px 22px rgba(28, 28, 28, 0.84);
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  width: 0.375em;
+  height: 0.375em;
+  background: #ffffff;
+  border-radius: 10px;
+  outline: none;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: #8d8d8d;
+}
+*::-webkit-scrollbar-thumb:active {
+  background: #404040;
+}
+
 body {
   background-color: var(--dark-theme-bg);
 }
@@ -99,7 +127,7 @@ h5 {
   display: flex;
 }
 .container {
-  /* max-width: var(--max-container-width); */
+  max-width: var(--max-container-width);
   width: var(--container-width);
   margin: 0 auto;
 }
@@ -117,4 +145,67 @@ h5 {
 .flex-wrap,
 .wrap {
   flex-wrap: wrap;
+}
+@media only screen and (max-width: 767px) {
+  .mobile-hide {
+    visibility: hidden !important;
+  }
+  .mobile-remove {
+    display: none !important;
+  }
+  .container {
+    width: 94% !important;
+    margin-bottom: 4vh;
+  }
+  .sm-column {
+    flex-direction: column;
+  }
+  .sm-column-gap {
+    margin-top: 1.2em;
+  }
+  h1 {
+    font-size: 2.125em;
+  }
+  h2 {
+    font-size: 1.125em;
+  }
+  .sub-heading-1 {
+    font-size: 2.125em !important;
+  }
+  .sub-heading-2 {
+    font-size: 1.688em !important;
+  }
+}
+@media only screen and (max-width: 1023px) {
+  .tablet-hide {
+    visibility: hidden !important;
+  }
+  .tablet-remove {
+    display: none !important;
+  }
+  h1 {
+    font-size: 2.225em;
+    letter-spacing: 2px;
+  }
+  h2 {
+    font-size: 1.25em;
+  }
+  .sub-heading-1 {
+    font-size: 2.225em;
+  }
+  .sub-heading-2 {
+    font-size: 1.888em;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  .laptop-hide {
+    visibility: hidden;
+  }
+  .laptop-remove {
+    display: none;
+  }
+  .laptop-show {
+    display: initial;
+    visibility: visible;
+  }
 }
