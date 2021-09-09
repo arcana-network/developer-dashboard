@@ -1,5 +1,5 @@
 <template>
-  <div v-if="title" class="tooltip-wrapper" @mouseenter="onTooltipLoaded">
+  <div v-if="title" class="tooltip-wrapper">
     <slot></slot>
     <span
       class="tooltip body-3"
@@ -51,7 +51,7 @@ span.tooltip {
 </style>
 
 <script>
-import { computed } from "@vue/runtime-core";
+import { computed, reactive } from "@vue/runtime-core";
 export default {
   name: "VTooltip",
   props: {
@@ -59,6 +59,7 @@ export default {
     delay: String,
   },
   setup(props) {
+    props = reactive(props);
     const positionClass = {
       bottom: false,
       right: false,
@@ -66,12 +67,8 @@ export default {
     const transitionDelay = computed(() =>
       props.delay ? "transition-delay: " + props.delay : ""
     );
-    function onTooltipLoaded(ev) {
-      console.log(ev);
-    }
 
     return {
-      onTooltipLoaded,
       positionClass,
       transitionDelay,
     };

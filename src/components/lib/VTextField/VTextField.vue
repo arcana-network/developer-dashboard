@@ -19,6 +19,7 @@
         :src="icon"
         :class="{
           'icon-clickable': clickableIcon,
+          height: '1.1em',
         }"
         @click.stop="onIconClicked"
       />

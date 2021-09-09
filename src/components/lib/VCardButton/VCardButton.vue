@@ -1,6 +1,7 @@
 <template>
   <button class="card-button" :class="{ active }">
-    {{ label }}
+    <span v-if="label">{{ label }}</span>
+    <slot v-else></slot>
   </button>
 </template>
 

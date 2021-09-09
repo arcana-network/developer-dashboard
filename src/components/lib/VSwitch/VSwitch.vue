@@ -25,6 +25,10 @@
   border-radius: 9999px;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .toggle-wrapper.large {
@@ -47,7 +51,6 @@
     inset 5px 5px 5px rgba(0, 0, 0, 0.21),
     inset -10px -26px 33px -28px rgba(255, 255, 255, 0.1),
     inset -50px 49px 29px 22px rgba(28, 28, 28, 0.84);
-  transition: background-color 0.4s ease;
 }
 
 .toggle-indicator {
