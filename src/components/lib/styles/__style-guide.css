@@ -15,7 +15,9 @@
   --breakpoint-laptop-and-above: 1024px;
   --max-container-width: 108em;
   --container-width: 90%;
+  --flex-gap: 0;
 }
+
 *::-webkit-scrollbar {
   width: 0.5em;
   height: 0.5em;
@@ -134,6 +136,30 @@ h5 {
 .flex-start {
   align-items: flex-start;
 }
+.flex-end {
+  align-items: flex-end;
+}
+.flex-center {
+  align-items: center;
+}
+.flex-stretch {
+  align-items: stretch;
+}
+.flex-baseline {
+  align-items: baseline;
+}
+.justify-space-between {
+  justify-content: space-between;
+}
+.justify-space-evenly {
+  justify-content: space-evenly;
+}
+.justify-space-around {
+  justify-content: space-around;
+}
+.justify-center {
+  justify-content: center;
+}
 .flex-row,
 .row {
   flex-direction: row;
@@ -145,6 +171,61 @@ h5 {
 .flex-wrap,
 .wrap {
   flex-wrap: wrap;
+}
+.flex-row-gap > * + *,
+.row-gap > * + * {
+  margin-left: var(--flex-gap);
+}
+.flex-column-gap > * + *,
+.column-gap > * + * {
+  margin-top: var(--flex-gap);
+}
+.overflow-x-auto {
+  overflow-x: auto;
+}
+.overflow-y-auto {
+  overflow-y: auto;
+}
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+.overflow-y-hidden {
+  overflow-y: hidden;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.text-ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.flex-grow {
+  flex-grow: 1;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.font-300 {
+  font-weight: 300;
+}
+.font-400 {
+  font-weight: 400;
+}
+.font-500 {
+  font-weight: 500;
+}
+.font-600 {
+  font-weight: 600;
+}
+.font-700 {
+  font-weight: 700;
+}
+.font-800 {
+  font-weight: 800;
+}
+.font-900 {
+  font-weight: 900;
 }
 @media only screen and (max-width: 767px) {
   .mobile-hide {
