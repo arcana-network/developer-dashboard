@@ -180,7 +180,6 @@ import GoogleLogo from "../assets/iconography/google.svg";
 import TwitterLogo from "../assets/iconography/twitter.svg";
 import GithubLogo from "../assets/iconography/github.svg";
 import ShowIcon from "../assets/iconography/show.svg";
-import { launchGoogleSSO, launchTwitterSSO } from "../utils/sso";
 import { ref } from "@vue/reactivity";
 import { watch } from "@vue/runtime-core";
 import AppLogo from "../assets/logo.svg";
@@ -268,8 +267,6 @@ export default {
       passwordValidCases,
       AppLogo,
       navigateToSignin,
-      launchGoogleSSO,
-      launchTwitterSSO,
       togglePasswordType,
       onSignUp,
     };
