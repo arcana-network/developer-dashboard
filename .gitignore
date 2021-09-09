@@ -6,3 +6,5 @@ dist-ssr
 .firebaserc
 firebase.json
 .firebase
+.env
+.env.production
