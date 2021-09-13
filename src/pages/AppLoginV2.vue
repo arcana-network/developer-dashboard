@@ -175,7 +175,7 @@ import TwitchSSOIcon from "../assets/twitch-sso.svg";
 import RedditSSOIcon from "../assets/reddit-sso.svg";
 import GithubSSOIcon from "../assets/github-sso.svg";
 import DiscordSSOIcon from "../assets/discord-sso.svg";
-import clientIds from "../utils/client-ids";
+import { sso } from "../utils/constants";
 export default {
   name: "AppLoginV2",
   components: { LandingDescriptor, VCardButton },
@@ -210,12 +210,12 @@ export default {
     }
 
     function getLoginConfig(type) {
-      if (clientIds[type]) {
+      if (sso[type]) {
         return {
           loginType: type,
           appAddress: "dummyappaddress",
           redirectUri: "https://arcana-devdash-v2.web.app/oauth/redirect",
-          clientId: clientIds[type],
+          clientId: sso[type],
         };
       }
       return null;
