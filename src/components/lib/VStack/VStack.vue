@@ -6,6 +6,7 @@
 
 <script>
 import { computed } from "@vue/runtime-core";
+import { checkFlexGap } from "../utils";
 export default {
   name: "VStack",
   props: {
@@ -65,28 +66,10 @@ export default {
     mdWrap: Boolean,
   },
   setup(props) {
-    function checkFlexGap() {
-      // create flex container with row-gap set
-      var flex = document.createElement("div");
-      flex.style.display = "flex";
-      flex.style.flexDirection = "column";
-      flex.style.rowGap = "1px";
-
-      // create two, elements inside it
-      flex.appendChild(document.createElement("div"));
-      flex.appendChild(document.createElement("div"));
-
-      // append to the DOM (needed to obtain scrollHeight)
-      document.body.appendChild(flex);
-      var isSupported = flex.scrollHeight === 1; // flex container should be 1px high from the row-gap
-      flex.parentNode.removeChild(flex);
-
-      return isSupported;
-    }
-    const isSupported = checkFlexGap();
+    const isFlexGapSupported = checkFlexGap();
     const classes = computed(() => {
-      const gapWorkAround = {};
-      if (!isSupported) {
+      let gapWorkAround = {};
+      if (!isFlexGapSupported) {
         gapWorkAround = {
           "row-gap": props.direction === "row" && props.gap ? props.gap : false,
           "column-gap":
@@ -152,15 +135,17 @@ export default {
 
     const styles = computed(() => {
       const __styles = {};
-      if (props.direction === "row") {
-        __styles["--flex-row-gap"] = props.gap;
-        __styles["--flex-column-gap"] = 0;
+      if (isFlexGapSupported) {
+        __styles.gap = props.gap;
+      } else {
+        if (props.direction === "row") {
+          __styles["--flex-row-gap"] = props.gap;
+          __styles["--flex-column-gap"] = "1em";
+        } else if (props.direction === "column") {
+          __styles["--flex-column-gap"] = props.gap;
+          __styles["--flex-row-gap"] = "1em";
+        }
       }
-      if (props.direction === "column") {
-        __styles["--flex-column-gap"] = props.gap;
-        __styles["--flex-row-gap"] = 0;
-      }
-      __styles.gap = props.gap;
 
       return __styles;
     });
