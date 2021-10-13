@@ -128,7 +128,7 @@
           </div>
         </v-card>
       </section>
-      <section style="margin-top: 3em">
+      <section style="margin-top: 3em" v-if="false">
         <div class="flex" style="justify-content: space-between">
           <h2>PAYMENT DETAILS</h2>
         </div>

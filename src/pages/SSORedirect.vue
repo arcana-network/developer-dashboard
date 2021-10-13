@@ -9,9 +9,9 @@ export default {
     onMounted(() => {
       const { AuthProvider } = window.arcana_login;
 
-      window.onload = () => {
-        AuthProvider.handleRedirectPage();
-      };
+      // window.onload = () => {
+      AuthProvider.handleRedirectPage();
+      // };
     });
   },
 };

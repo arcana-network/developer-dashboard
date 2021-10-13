@@ -2,29 +2,19 @@
   <div>
     <app-header v-if="isConfigured" />
     <header v-else class="first-time-configure-header">
-      <div class="container flex" style="justify-content: space-between">
+      <div class="container flex justify-space-between">
         <h1>CONFIGURE YOUR APP</h1>
-        <div style="position: relative">
+        <div class="position-relative">
           <circle-progress
             :percent="(step / 5) * 100"
-            :size="80"
+            :size="60"
             :border-width="4"
             :border-bg-width="4"
             fill-color="#13A3FD"
             empty-color="transparent"
           >
           </circle-progress>
-          <h3
-            style="
-              position: absolute;
-              color: #13a3fd;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-            "
-          >
-            {{ step }}/5
-          </h3>
+          <h4 class="position-absolute step-counter">{{ step }}/5</h4>
         </div>
       </div>
     </header>
@@ -32,21 +22,25 @@
       <section class="flex flex-wrap" v-if="isConfigured">
         <img
           :src="BackIcon"
-          style="cursor: pointer; margin-right: 2em"
+          style="margin-right: 2em"
+          class="cursor-pointer"
           alt="go back"
           @click.stop="backToDashboard"
         />
         <h1>CONFIGURE</h1>
-        <div
-          style="gap: 1.2em; align-items: center"
-          class="flex sm-column configure-options"
+        <v-stack
+          direction="row"
+          gap="1.2em"
+          align="center"
+          class="configure-options"
         >
-          <div class="flex" style="gap: 1em">
+          <v-stack direction="row" gap="1em">
             <span
               class="body-1"
               :style="liveEnvironment ? 'color: var(--text-grey)' : ''"
-              >TestNet</span
             >
+              TestNet
+            </span>
             <v-switch
               variant="secondary"
               v-model="liveEnvironment"
@@ -55,235 +49,37 @@
             <span
               class="body-1"
               :style="!liveEnvironment ? 'color: var(--text-grey)' : ''"
-              >MainNet</span
             >
-          </div>
-          <div>
+              MainNet
+            </span>
+          </v-stack>
+          <div style="margin-left: auto">
             <v-tooltip title="Pause App">
-              <v-icon-button
-                :icon="PauseIcon"
-                style="margin-left: 1vw; padding: 0.8em"
-              />
+              <v-icon-button :icon="PauseIcon" class="app-action" />
             </v-tooltip>
             <v-tooltip title="Delete App">
               <v-icon-button
                 :icon="DeleteIcon"
-                style="margin-left: 1vw; padding: 0.8em"
+                class="app-action"
                 @click="deleteApp = true"
               />
             </v-tooltip>
           </div>
-        </div>
+        </v-stack>
       </section>
-      <section
-        class="flex column"
-        style="margin-top: 3em; gap: 1em; align-items: flex-start"
-        v-if="isConfigured"
-      >
-        <h2>APP NAME</h2>
-        <v-text-field
-          v-model="appName"
-          strong
-          style="width: 20vw; min-width: 200px; max-width: 400px"
-        />
-      </section>
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
-        v-else
-        :id="'configure-step-' + 1"
-      >
-        <h4 style="width: 100%; display: block">ENTER APP NAME</h4>
-        <div
-          class="flex flex-wrap"
-          style="gap: 4vw; justify-content: space-between"
-        >
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <v-text-field
-            v-model="appName"
-            strong
-            style="width: 10vw; min-width: 200px"
-          />
-        </div>
-      </v-card>
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
+      <configure-app-name :isConfigured="isConfigured" :store="store" />
+      <configure-app-region
         v-if="isConfigured || step >= 2"
         :style="step === 2 ? 'margin-bottom: 2em' : ''"
-        :id="'configure-step-' + 2"
-      >
-        <h4 style="width: 100%; display: block">CHOOSE REGION</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              All assets stored by your application will be distributed across
-              several storage nodes located at various physical locations across
-              the world. Turn on specific regions only if your application needs
-              these assets to be stored in storage nodes within a region.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div class="flex column" style="gap: 2em; flex-grow: 1">
-            <v-card
-              variant="depressed"
-              class="flex"
-              style="
-                padding: 1.2em;
-                width: calc(50% - 5em);
-                min-width: 200px;
-                justify-content: space-between;
-              "
-            >
-              <span class="body-1">Anywhere</span>
-              <v-switch v-model="location.any" />
-            </v-card>
-            <v-card
-              variant="depressed"
-              class="flex sm-column"
-              style="padding: 1.2em; justify-content: space-between"
-            >
-              <div class="flex column flex-wrap" style="flex-grow: 1; gap: 1em">
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Asia</span>
-                  <v-switch v-model="location.asia" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Africa</span>
-                  <v-switch v-model="location.africa" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Australia</span>
-                  <v-switch v-model="location.australia" />
-                </div>
-              </div>
-              <v-seperator
-                :vertical="true"
-                style="margin: 0 2em"
-                class="mobile-remove"
-              />
-              <div
-                class="flex column sm-column-gap"
-                style="flex-grow: 1; gap: 1em"
-              >
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Europe</span>
-                  <v-switch v-model="location.europe" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">North America</span>
-                  <v-switch v-model="location.northAmerica" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">South America</span>
-                  <v-switch v-model="location.southAmerica" />
-                </div>
-              </div>
-            </v-card>
-          </div>
-        </div>
-      </v-card>
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
+        :isConfigured="isConfigured"
+        :store="store"
+      />
+      <configure-app-chain-type
         v-if="isConfigured || step >= 3"
-        :style="step === 3 ? 'margin-bottom: 2em' : ''"
-        :id="'configure-step-' + 3"
-      >
-        <h4 style="width: 100%; display: block">CHOOSE CHAIN TYPE</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              If your application is being built for one or more of these
-              blockchains, please specify the same by turning on the relevant
-              chains.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div class="flex column" style="gap: 2em; flex-grow: 1">
-            <v-card
-              variant="depressed"
-              class="flex column"
-              style="
-                padding: 1.2em;
-                justify-content: space-between;
-                gap: 1.2em;
-                width: calc(50% - 6em);
-                min-width: 200px;
-              "
-            >
-              <div
-                class="flex"
-                style="justify-content: space-between; width: calc(100%)"
-              >
-                <span class="body-1">Ethereum</span>
-                <v-switch v-model="chainTypes.ethereum" />
-              </div>
-              <div
-                class="flex"
-                style="justify-content: space-between; width: calc(100%)"
-              >
-                <span class="body-1">Polygon</span>
-                <v-switch v-model="chainTypes.polygon" />
-              </div>
-              <div
-                class="flex"
-                style="justify-content: space-between; width: calc(100%)"
-              >
-                <span class="body-1">Binance</span>
-                <v-switch v-model="chainTypes.binance" />
-              </div>
-            </v-card>
-          </div>
-        </div>
-      </v-card>
+        :style="step === 2 ? 'margin-bottom: 2em' : ''"
+        :isConfigured="isConfigured"
+        :store="store"
+      />
       <v-card
         style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
         class="column"
@@ -572,9 +368,9 @@
             :size="200"
           />
           <div class="flex inner-clock">
-            <span class="sub-heading-2"
-              >00:{{ timer.toString().padStart(2, "0") }}</span
-            >
+            <span class="sub-heading-2">
+              00:{{ timer.toString().padStart(2, "0") }}
+            </span>
           </div>
         </div>
         <footer
@@ -611,6 +407,18 @@
   margin-bottom: 6vh;
 }
 
+.step-counter {
+  color: #13a3fd;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.app-action {
+  margin-left: 1vw;
+  padding: 0.8em;
+}
+
 .outer-clock {
   position: relative;
   width: 200px;
@@ -625,33 +433,8 @@
   margin: 3em 0;
 }
 
-.outer-clock-progress {
-  width: 12em;
-  height: 12em;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  box-sizing: border-box;
-  border: none;
-  background-color: transparent;
-  overflow: hidden;
-}
-
 .configure-options {
   margin-left: auto;
-}
-
-progress::-webkit-progress-bar {
-  background-color: transparent;
-}
-progress::-webkit-progress-value {
-  background: #8fff00;
-  border-radius: 999px;
-  transition: width 0.4s;
 }
 
 .first-time-configure-header {
@@ -737,6 +520,16 @@ input[type="number"] {
 }
 </style>
 
+<style>
+.app-section-description {
+  width: 22vw;
+  min-width: 280px;
+}
+.app-section-description .body-1 {
+  color: var(--text-grey);
+}
+</style>
+
 <script>
 import BackIcon from "../assets/iconography/back.svg";
 import DeleteIcon from "../assets/iconography/delete.svg";
@@ -759,6 +552,11 @@ import AppHeader from "../components/AppHeader.vue";
 import VIconButton from "../components/lib/VIconButton/VIconButton.vue";
 import CircleProgress from "vue3-circle-progress";
 import VCircularProgress from "../components/lib/VCircularProgress/VCircularProgress.vue";
+import ConfigureAppName from "../components/app-configure/AppName.vue";
+import ConfigureAppRegion from "../components/app-configure/AppRegion.vue";
+import ConfigureAppChainType from "../components/app-configure/AppChain.vue";
+import VStack from "../components/lib/VStack/VStack.vue";
+import { useStore } from "vuex";
 export default {
   components: {
     VSwitch,
@@ -775,35 +573,24 @@ export default {
     VIconButton,
     CircleProgress,
     VCircularProgress,
+    ConfigureAppName,
+    ConfigureAppRegion,
+    ConfigureAppChainType,
+    VStack,
   },
   setup() {
     const router = useRouter();
-    const appName = ref("Aspire");
+    const store = useStore();
     let liveEnvironment = ref(false);
     let isConfigured = ref(false);
     let step = ref(1);
     let isEdited = ref(false);
     let deleteApp = ref(false);
     let proceedDelete = ref(false);
-    let __locationCopy = {
-      any: false,
-      asia: false,
-      africa: false,
-      austrialia: false,
-      europe: false,
-      northAmerica: false,
-      southAmerica: false,
-    };
-    let location = ref({ ...__locationCopy });
     let timer = ref(59);
     let progressTimer = ref(59000);
 
-    let __chainTypesCopy = {
-      ethereum: false,
-      polygon: false,
-      binance: false,
-    };
-    let chainTypes = ref({ ...__chainTypesCopy });
+    liveEnvironment.value = store.getters.env === "test" ? false : true;
 
     let storageUnlimited = ref(false);
     let bandwidthUnlimited = ref(false);
@@ -822,31 +609,9 @@ export default {
     let selectedAuthClientIdError = ref(false);
 
     watch(
-      () => location.value,
+      () => liveEnvironment.value,
       () => {
-        Object.keys(location.value).forEach((key) => {
-          if (key !== "any") {
-            if (location.value.any && !__locationCopy.any) {
-              location.value[key] = false;
-            } else if (
-              location.value[key] &&
-              !__locationCopy[key] &&
-              location.value.any
-            ) {
-              location.value.any = false;
-            }
-          }
-        });
-        __locationCopy = { ...location.value };
-        isEdited.value = true;
-      },
-      { deep: true }
-    );
-
-    watch(
-      () => chainTypes.value,
-      () => {
-        isEdited.value = true;
+        store.dispatch("toggleEnv");
       }
     );
 
@@ -955,6 +720,9 @@ export default {
 
     onMounted(() => {
       isConfigured.value = !!localStorage.getItem("isConfigured");
+
+      store.dispatch("test/updateAppName", { appName: "test app" });
+      console.log(store.getters);
     });
 
     return {
@@ -964,9 +732,6 @@ export default {
       PlusIcon,
       backToDashboard,
       liveEnvironment,
-      appName,
-      location,
-      chainTypes,
       storageUnlimited,
       bandwidthUnlimited,
       authenticationTypes,
@@ -981,6 +746,7 @@ export default {
       proceedDelete,
       timer,
       progressTimer,
+      store,
       onFooterSave,
       onFooterCancel,
       addAuthentication,

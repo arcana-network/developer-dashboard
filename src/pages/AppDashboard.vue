@@ -2,21 +2,15 @@
   <div>
     <app-header />
     <main class="container" v-if="isConfigured">
-      <section class="flex dashboard-heading" style="flex-wrap: wrap">
-        <h1
-          style="
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            min-width: 150px;
-            flex-grow: 1;
-          "
-        >
-          ASPIRE
-        </h1>
+      <section class="flex dashboard-heading flex-wrap">
+        <h1 class="text-ellipsis flex-grow" style="min-width: 150px">ASPIRE</h1>
         <div
-          class="flex mobile-remove"
-          style="justify-content: center; align-items: center; flex-wrap: wrap"
+          class="
+            flex
+            mobile-remove
+            justify-content-center
+            flex-center flex-wrap
+          "
         >
           <span
             class="body-1 mobile-remove"
@@ -25,9 +19,9 @@
           >
             MainNet
           </span>
-          <span class="body-1 mobile-remove" style="margin-right: 8px" v-else
-            >TestNet</span
-          >
+          <span class="body-1 mobile-remove" style="margin-right: 8px" v-else>
+            TestNet
+          </span>
           <v-switch
             variant="secondary"
             style="margin-right: 1em; margin-top: 2px"
@@ -42,40 +36,28 @@
           </span>
           <v-tooltip :title="smartContractAddress" class="mobile-remove">
             <div
-              style="
-                color: var(--text-white);
-                font-weight: 500;
-                width: 6em;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
-                cursor: pointer;
-              "
-              class="body-1"
+              class="text-ellipsis body-1 cursor-pointer font-500"
+              style="color: var(--text-white); width: 6em"
             >
               {{ smartContractAddress }}
             </div>
           </v-tooltip>
           <v-tooltip
-            title="Click to copy"
+            :title="smartContractTooltip"
             @click.stop="copySmartContractAddress"
             class="mobile-remove"
           >
             <img
               :src="SmartContractIcon"
-              alt="Click to copy"
-              style="cursor: pointer; margin-left: 1em; margin-top: 4px"
+              class="cursor-pointer"
+              alt="Click to copy smart contract address"
+              style="margin-left: 1em; margin-top: 4px"
             />
           </v-tooltip>
         </div>
         <div
-          class="configure-btn"
-          style="
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-          "
+          class="configure-btn cursor-pointer justify-center flex-center"
+          style="display: inline-flex"
           @click.stop="goToConfigure"
         >
           <img
@@ -92,57 +74,55 @@
         </div>
       </section>
       <div
-        class="flex laptop-remove smart-contract-copy"
-        style="justify-content: center; align-items: center; flex-wrap: wrap"
+        class="
+          flex
+          laptop-remove
+          smart-contract-copy
+          justify-center
+          flex-center flex-wrap
+        "
       >
         <span style="color: var(--text-grey); margin-right: 5px" class="body-1">
           Smart Contract Address:
         </span>
         <v-tooltip :title="smartContractAddress" class="">
           <div
-            style="
-              color: var(--text-white);
-              font-weight: 500;
-              width: 6em;
-              text-overflow: ellipsis;
-              white-space: nowrap;
-              overflow: hidden;
-              cursor: pointer;
-            "
-            class="body-1"
+            style="color: var(--text-white); font-weight: 500; width: 6em"
+            class="body-1 text-ellipsis cursor-pointer"
           >
             {{ smartContractAddress }}
           </div>
         </v-tooltip>
         <v-tooltip
-          title="Click to copy"
+          :title="smartContractTooltip"
           @click.stop="copySmartContractAddress"
           class=""
         >
           <img
             :src="SmartContractIcon"
-            alt="Click to copy"
-            style="cursor: pointer; margin-left: 1em; margin-top: 4px"
+            alt="Click to copy smart contract address"
+            style="margin-left: 1em; margin-top: 4px"
+            class="cursor-pointer"
           />
         </v-tooltip>
       </div>
       <section style="margin-top: 8vh; color: var(--text-white)">
         <h2 style="margin-bottom: 2vh">OVERVIEW</h2>
         <div
-          class="flex flex-wrap"
-          style="margin-top: 20px; justify-content: space-between; gap: 1em"
+          class="flex flex-wrap justify-space-between"
+          style="margin-top: 20px; gap: 1em"
         >
           <v-card
-            class="flex sm-column overview-card"
-            style="gap: 1.5em; flex-grow: 1"
+            class="flex sm-column overview-card flex-grow"
+            style="gap: 1.5em"
             variant="elevated"
           >
             <div class="card-icon">
               <img :src="TotalUsersIcon" alt="Total users" />
             </div>
-            <div class="flex" style="flex-grow: 1">
+            <div class="flex flex-grow">
               <div>
-                <h4 style="font-weight: 400">Total Users</h4>
+                <h4 class="font-400">Total Users</h4>
                 <h2 style="margin-top: 0.5em; font-size: 2em">0</h2>
               </div>
               <v-icon-button
@@ -153,8 +133,8 @@
             </div>
           </v-card>
           <v-card
-            class="flex sm-column overview-card"
-            style="gap: 1.5em; flex-grow: 1"
+            class="flex sm-column overview-card flex-grow"
+            style="gap: 1.5em"
             variant="elevated"
           >
             <div class="card-icon">
@@ -372,7 +352,8 @@
           </div>
           <v-button variant="link" label="VIEW ALL" />
         </div>
-        <div class="flex tutorials-pane" style="gap: 2vw; overflow-x: auto">
+        <v-stack gap="4vw" direction="row" class="overflow-x-auto">
+          <!-- <div class="flex tutorials-pane flex-row-gap" style="--flex-gap: 4vw"> -->
           <v-card
             v-for="i in 3"
             :key="'tutorial' + i"
@@ -413,7 +394,8 @@
               style="align-self: flex-start"
             />
           </v-card>
-        </div>
+          <!-- </div> -->
+        </v-stack>
       </section>
     </main>
     <main v-else>
@@ -440,7 +422,6 @@
             :action="goToConfigure"
           />
         </div>
-        pointermin-width: 9em; width: 12vw; text-align: left;
       </v-overlay>
     </main>
   </div>
@@ -499,6 +480,9 @@
 .tutorial-heading {
   font-size: 1.5em;
   align-self: flex-start;
+}
+.tutorials-pane {
+  overflow-x: auto;
 }
 @media only screen and (min-width: 1024px) {
   .configure-btn {
@@ -603,6 +587,7 @@ import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import VIconButton from "../components/lib/VIconButton/VIconButton.vue";
 import VSwitch from "../components/lib/VSwitch/VSwitch.vue";
 import VCardButton from "../components/lib/VCardButton/VCardButton.vue";
+import VStack from "../components/lib/VStack/VStack.vue";
 export default {
   components: {
     VTooltip,
@@ -615,6 +600,7 @@ export default {
     VIconButton,
     VSwitch,
     VCardButton,
+    VStack,
   },
   setup() {
     const router = useRouter();
@@ -628,12 +614,15 @@ export default {
       router.push("/configure");
     }
 
-    let SmartContractIcon = ref(CopyIcon);
+    const SmartContractIcon = ref(CopyIcon);
+    const smartContractTooltip = ref("Click to copy");
 
     function copySmartContractAddress() {
       SmartContractIcon.value = CheckIcon;
+      smartContractTooltip.value = "Copied";
       setTimeout(() => {
         SmartContractIcon.value = CopyIcon;
+        smartContractTooltip.value = "Click to copy";
       }, 3000);
     }
 
@@ -830,44 +819,28 @@ export default {
           default:
             break;
         }
-        config2.data = {
-          labels,
-          datasets: [
-            {
-              label: "Bandwidth used in GB",
-              data: data2,
-              borderColor: "white",
-              borderWidth: 4,
-              lineTension: 0.2,
-            },
-          ],
-        };
-        config.data = {
-          labels,
-          datasets: [
-            {
-              label: "Storage used in GB",
-              data,
-              borderColor: "white",
-              borderWidth: 4,
-              lineTension: 0.2,
-            },
-          ],
-        };
-        StorageChart.destroy();
-        BandwidthChart.destroy();
-        var storageCtx = document
-          .getElementById("storageChart")
-          ?.getContext("2d");
-        if (storageCtx) {
-          StorageChart = new Chart(storageCtx, { ...config });
-        }
-        var bandwidthCtx = document
-          .getElementById("bandwidthChart")
-          ?.getContext("2d");
-        if (bandwidthCtx) {
-          BandwidthChart = new Chart(bandwidthCtx, { ...config2 });
-        }
+        StorageChart.data.datasets = [
+          {
+            label: "Storage used in GB",
+            data,
+            borderColor: "white",
+            borderWidth: 4,
+            lineTension: 0.2,
+          },
+        ];
+        StorageChart.data.labels = labels;
+        StorageChart.update();
+        BandwidthChart.data.datasets = [
+          {
+            label: "Bandwidth used in GB",
+            data: data2,
+            borderColor: "white",
+            borderWidth: 4,
+            lineTension: 0.2,
+          },
+        ];
+        BandwidthChart.data.labels = labels;
+        BandwidthChart.update();
       }
     );
 
@@ -887,6 +860,7 @@ export default {
       goToConfigure,
       goToUsers,
       durationSelected,
+      smartContractTooltip,
     };
   },
 };

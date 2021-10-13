@@ -1,61 +1,42 @@
 import { createStore, createLogger } from "vuex";
-// import authState from "./auth.store";
-// import loaderState from "./loader.store";
-// import fileState from "./file.store";
+import configureStore from "./configure.store";
 
 const debug = process.env.NODE_ENV !== "production";
 
 const state = {
-  redirectTo: {},
-  totalStorage: 0,
-  storageUsed: 0,
+  env: "test",
 };
 
 const getters = {
-  redirectTo: (state) => {
-    return state.redirectTo;
-  },
-  storage: (state) => {
-    return {
-      totalStorage: state.totalStorage,
-      storageUsed: state.storageUsed,
-    };
-  },
+  env: (state) => state.env,
 };
 
 const mutations = {
-  updateRedirect(state, toRoute) {
-    state.redirectTo = toRoute;
-  },
-  removeRedirect(state) {
-    state.redirectTo = {};
-  },
-  updateTotalStorage(state, totalStorage) {
-    state.totalStorage = totalStorage;
-  },
-  updateStorageUsed(state, storageUsed) {
-    state.storageUsed = storageUsed;
+  toggleEnv(state, isLive) {
+    state.env = isLive === true ? "live" : "test";
   },
 };
 
 const actions = {
-  updateRedirect({ commit }, payload) {
-    commit("updateRedirect", payload);
-  },
-  removeRedirect({ commit }) {
-    commit("removeRedirect");
-  },
-  updateStorage({ commit }, payload) {
-    commit("updateTotalStorage", payload.totalStorage);
-    commit("updateStorageUsed", payload.storageUsed);
+  toggleEnv({ commit }, { isLive }) {
+    commit("toggleEnv", isLive);
   },
 };
 
 const store = createStore({
   modules: {
-    // authState,
-    // loaderState,
-    // fileState,
+    test: {
+      namespaced: true,
+      modules: {
+        configureStore,
+      },
+    },
+    live: {
+      namespaced: true,
+      modules: {
+        configureStore,
+      },
+    },
   },
   state,
   mutations,
