@@ -296,10 +296,47 @@ import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import { ref } from "@vue/reactivity";
 import { onMounted } from "@vue/runtime-core";
 import { Chart, registerables } from "chart.js";
+
+import axios from "axios";
+import constants from "../utils/constants"
+
+/**
+ *@returns {response<promise>} response object
+ */
+function getUsers(){
+  let config = {
+
+     method: 'get',
+     url: constants.url +'api/user-details/',
+     params: {
+       //TODO: App Id 
+       id : "<APP-ID>"
+     },
+  headers: { 
+    //TODO: Autorizations
+    'Authorization': 'Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw'
+  }
+
+
+  };
+
+  return axios(config);
+
+}
+
+
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
   setup() {
     let data = [];
+    
+    //TODO: UI mapping 
+    getUsers().then((response)=> {
+      /*response.data[0].address
+        response.data[0].storage
+        ....
+      */
+    })
     for (let i = 0; i < 40; i++) {
       let logs = [];
       for (let j = 0; j < 5; j++) {
