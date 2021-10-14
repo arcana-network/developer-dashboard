@@ -301,7 +301,7 @@ import axios from "axios";
 import constants from "../utils/constants"
 
 /**
- *@returns {response<promise>} response object
+ *@returns {promise<response>} response object
  */
 function getUsers(){
   let config = {
@@ -324,6 +324,56 @@ function getUsers(){
 
 }
 
+/**
+ *@returns {promise<response>} response object
+ */
+//TODO: attach event to on-click of row
+function getUserTxns(userid){
+    let config = {
+
+     method: 'get',
+     url: constants.url +'api/user-transactions/',
+     params: {
+       //TODO: App Id, User id
+       id : "<APP-ID>",
+       user_id: userid
+     },
+  headers: { 
+    //TODO: Autorizations
+    'Authorization': 'Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw'
+  }
+
+
+  };
+
+  return axios(config);
+}
+
+/**
+ *@returns {promise<response>} response object
+ */
+function getMonthWiseUsers(){
+ let config = {
+
+     method: 'get',
+     url: constants.url +'api/no-of-users/',
+     params: {
+       //TODO: App Id 
+       id : "<APP-ID>"
+     },
+  headers: { 
+    //TODO: Autorizations
+    'Authorization': 'Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw'
+  }
+
+
+  };
+
+  return axios(config);
+
+
+}
+
 
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
@@ -331,13 +381,21 @@ export default {
     let data = [];
     
     //TODO: UI mapping 
-    getUsers().then((response)=> {
-      /*response.data[0].address
-        response.data[0].storage
-        ....
-      */
-    })
-    for (let i = 0; i < 40; i++) {
+ 
+  getUsers().then((response)=> {
+     // response.data[0].address
+     //   response.data[0].storage
+    }).catch(error => { throw new Error(error) });
+   
+  getMonthWiseUsers().then((response)=> {
+     // response.data[0].month
+     //   response.data[0].year
+     //   response.data[0].count
+     
+    }).catch(error => { throw new Error(error) });
+
+
+   for (let i = 0; i < 40; i++) { 
       let logs = [];
       for (let j = 0; j < 5; j++) {
         logs = [
