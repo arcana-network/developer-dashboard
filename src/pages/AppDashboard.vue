@@ -588,6 +588,10 @@ import VIconButton from "../components/lib/VIconButton/VIconButton.vue";
 import VSwitch from "../components/lib/VSwitch/VSwitch.vue";
 import VCardButton from "../components/lib/VCardButton/VCardButton.vue";
 import VStack from "../components/lib/VStack/VStack.vue";
+
+import constants from "../utils/constants";
+import axios from "axios";
+
 export default {
   components: {
     VTooltip,
@@ -607,8 +611,82 @@ export default {
     const smartContractAddress = "xxyyyxxyyyxxyyyxxyyyxxyyy";
     const durationSelected = ref("weekly");
 
+    //API calls
+    getGlobalStats();
+    getAppDetails();
+
+
     const isConfigured = ref(false);
     const liveEnv = ref(false);
+
+    function getGlobalStats() {
+      var config = {
+        method: "get",
+        url: constants.url + "/api/overview/",
+        params: {
+          //TODO: get app Id
+          id: "<APP-ID>",
+        },
+        //TODO: Authorizations
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw",
+        },
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+          //TODO: put data into model
+          /*
+              total_users = response.data.no_of_users;
+              uploads = response.data.actions.upload;
+              download = response.data.actions.download
+              share = response.data.actions.share;
+              transfers = response.data.actions.transfers;
+              revoke = response.data.actions.revoke;
+              delete = response.data.actions.delete;
+              bandwidth = response.data.actions.bandwidth;
+              storage = response.data.actions.storage;
+          */
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
+    function getAppDetails(){
+        var config = {
+        method: "get",
+        url: constants.url + "/api/get-app/",
+        params: {
+          //TODO: app Id
+          id: "<APP-ID>",
+        },
+        //TODO: Authorizations
+        headers: {
+          Authorization:
+            "Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw",
+        },
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+          //TODO: put data into model
+          /*
+             smartContractAddress = response.data.testnet_address;
+             region = response.data.region //will be number e.g. 0
+             response.data.bandwidth_limit
+             response.data.storage_limit
+        
+          */
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
+
 
     function goToConfigure() {
       router.push("/configure");

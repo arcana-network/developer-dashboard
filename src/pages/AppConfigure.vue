@@ -557,6 +557,10 @@ import ConfigureAppRegion from "../components/app-configure/AppRegion.vue";
 import ConfigureAppChainType from "../components/app-configure/AppChain.vue";
 import VStack from "../components/lib/VStack/VStack.vue";
 import { useStore } from "vuex";
+
+import constants from "../utils/constants";
+import axios from "axios";
+
 export default {
   components: {
     VSwitch,
@@ -654,7 +658,7 @@ export default {
       console.log(authenticationDetails.value);
     }
 
-    function onFooterSave() {
+    async function onFooterSave() {
       if (step.value < 6) step.value++;
       if (step.value <= 5) {
         setTimeout(() => {
@@ -663,10 +667,41 @@ export default {
             .scrollIntoView({ behavior: "smooth" });
         }, 10);
       } else if (step.value === 6) {
+        //Create API
+        let response = await callCreateApi().catch(function (error) {
+          throw new Error(error);
+        });
+        //end create API
         step.value = 5;
         localStorage.setItem("isConfigured", "true");
         router.replace("/");
       }
+    }
+
+    async function callCreateApi() {
+
+      //TODO: get fields from store
+      var data = JSON.stringify({
+        name: "My App name",
+        region: 0,
+        chain: 1,
+        bandwidth_limit: 10000,
+        storage_limit: 50,
+      });
+
+      var config = {
+        method: "post",
+        url: constants.url + "api/create-app/",
+        headers: {
+          //TODO: Authorization
+          Authorization:
+            "Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw",
+          "Content-Type": "application/json",
+        },
+        data: data,
+      };
+
+      return axios(config);
     }
 
     function onFooterCancel() {

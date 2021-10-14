@@ -15,7 +15,10 @@ export const sentry = {
   ],
 };
 
+export const url = "https://gateway.arcana.network/";
+
 export default {
   sso,
   sentry,
+  url
 };
