@@ -61,7 +61,10 @@ import VButton from "./lib/VButton/VButton.vue";
 export default {
   components: { VButton },
   props: {
-    show: Boolean,
+    show: {
+      type: Boolean,
+      default: true,
+    },
     saveLabel: String,
     cancelLabel: String,
     saveDisabled: Boolean,

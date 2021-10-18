@@ -1,10 +1,9 @@
 const state = {
-  appName: "",
   region: {
     any: false,
     asia: false,
     africa: false,
-    austrialia: false,
+    australia: false,
     europe: false,
     northAmerica: false,
     southAmerica: false,
@@ -27,25 +26,13 @@ const state = {
       },
     },
   },
-  onChange: false,
 };
 
 const getters = {
-  appName: (state) => state.appName,
   region: (state) => state.region,
-  onChange: (state) => state.onChange,
 };
 
 const mutations = {
-  updateAppName(state, appName) {
-    state.appName = appName;
-  },
-  changeDetected(state) {
-    state.onChange = true;
-  },
-  changeReset(state) {
-    state.onChange = false;
-  },
   updateRegion(
     state,
     { any, asia, africa, austrialia, europe, northAmerica, southAmerica }
@@ -63,16 +50,7 @@ const mutations = {
 };
 
 const actions = {
-  updateAppName({ commit }, { appName }) {
-    commit("updateAppName", appName);
-  },
-  changeDetected({ commit }) {
-    commit("changeDetected");
-  },
-  changeReset({ commit }) {
-    commit("changeReset");
-  },
-  updateRegion({ commit }, { region }) {
+  updateRegion({ commit }, region) {
     commit("updateRegion", region);
   },
 };

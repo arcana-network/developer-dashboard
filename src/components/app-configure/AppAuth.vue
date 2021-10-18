@@ -1,0 +1,202 @@
+<template>
+  <v-card
+    style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
+    class="column"
+    :id="'configure-step-' + 4"
+  >
+    <h4 style="width: 100%; display: block">CHOOSE LOGIN TYPE</h4>
+    <div class="flex sm-column" style="gap: 4vw">
+      <div
+        class="flex column"
+        style="
+          gap: 1.2em;
+          align-items: flex-start;
+          width: 22vw;
+          min-width: 280px;
+        "
+      >
+        <span class="body-1" style="color: var(--text-grey)">
+          Your users can bring their own public and private keys or be assigned
+          a pair of them upon registration through our trustless Distributed Key
+          Generation system. These are ECDSA keys on the secp256k1 curve which
+          work with any EVM compatible chains.
+        </span>
+        <v-button variant="link" label="LEARN MORE" />
+      </div>
+      <div class="flex column">
+        <div
+          class="flex sm-column flex-wrap"
+          style="gap: 2em; align-items: flex-start"
+        >
+          <v-dropdown
+            :options="authenticationTypes"
+            displayField="name"
+            placeholder="Authentication Type"
+            style="width: calc(36% - 4em); min-width: 260px"
+            v-model="selectedAuthenticationType"
+          />
+          <v-text-field
+            v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
+            placeholder="Enter Client ID"
+            :icon="selectedAuthenticationType.secretRequired ? '' : PlusIcon"
+            v-model="selectedAuthClientId"
+            @icon-clicked="addAuthentication"
+            :clickableIcon="true"
+            @keyup.enter="addAuthentication"
+            :messageType="selectedAuthClientIdError ? 'error' : ''"
+            message="Login type already added"
+          />
+          <v-text-field
+            v-if="
+              selectedAuthenticationType !== 'Bring Your Own Keys' &&
+              selectedAuthenticationType.secretRequired
+            "
+            placeholder="Enter Client Secret"
+            :icon="PlusIcon"
+            v-model="selectedAuthClientSecret"
+            @icon-clicked="addAuthentication"
+            :clickableIcon="true"
+            @keyup.enter="addAuthentication"
+          />
+        </div>
+        <div class="flex flex-wrap" style="gap: 2em">
+          <v-tooltip
+            v-for="(authDetail, index) in authenticationDetails"
+            :key="authDetail"
+            :title="`${authDetail.authType} | ${authDetail.clientId} | ${authDetail.clientSecret}`"
+          >
+            <v-chip
+              :cancellable="true"
+              @cancel="removeAuthentication(index)"
+              style="
+                max-width: 240px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+              "
+            >
+              <span class="body-1">
+                {{ authDetail.authType }} | {{ authDetail.clientId }} |
+                {{ authDetail.clientSecret }}
+              </span>
+            </v-chip>
+          </v-tooltip>
+        </div>
+      </div>
+    </div>
+  </v-card>
+</template>
+
+<script>
+import { ref } from "@vue/reactivity";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
+import VChip from "@/components/lib/VChip/VChip.vue";
+import { computed, onMounted, watch } from "@vue/runtime-core";
+import { useStore } from "vuex";
+import PlusIcon from "@/assets/iconography/plus.svg";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+
+export default {
+  name: "ConfigureAppAuth",
+  props: {
+    isConfigured: Boolean,
+  },
+  components: {
+    VCard,
+    VChip,
+    VButton,
+    VDropdown,
+    VTextField,
+    VTooltip,
+  },
+  setup() {
+    const authenticationTypes = [
+      // "Bring Your Own Keys",
+      {
+        name: "Google",
+        secretRequired: false,
+      },
+      {
+        name: "Github",
+        secretRequired: true,
+      },
+      {
+        name: "Reddit",
+        secretRequired: false,
+      },
+      {
+        name: "Discord",
+        secretRequired: false,
+      },
+      {
+        name: "Twitter",
+        secretRequired: true,
+      },
+      {
+        name: "Twitch",
+        secretRequired: false,
+      },
+    ];
+    let authenticationDetails = ref([]);
+    let selectedAuthClientIdError = ref(false);
+    let selectedAuthenticationType = ref("");
+    let selectedAuthClientId = ref("");
+    let selectedAuthClientSecret = ref("");
+
+    function addAuthentication() {
+      if (
+        selectedAuthClientId.value.trim() &&
+        selectedAuthenticationType.value.name
+      ) {
+        const type =
+          selectedAuthenticationType.value.name === "Bring Your Own Keys"
+            ? "user-keys"
+            : selectedAuthenticationType.value.name.toLowerCase();
+        if (
+          !authenticationDetails.value.find(
+            (authDetail) => authDetail.type === type
+          )
+        ) {
+          authenticationDetails.value.push({
+            type,
+            authType: selectedAuthenticationType.value.name,
+            clientId: selectedAuthClientId.value.trim(),
+            clientSecret: selectedAuthenticationType.value.secretRequired
+              ? selectedAuthClientSecret.value.trim()
+              : undefined,
+          });
+          selectedAuthClientId.value = "";
+          selectedAuthClientSecret.value = "";
+          selectedAuthenticationType.value = "";
+        } else {
+          selectedAuthClientIdError.value = true;
+        }
+      }
+    }
+
+    function removeAuthentication(index) {
+      console.log("Remove", index);
+      authenticationDetails.value.splice(index, 1);
+      console.log(authenticationDetails.value);
+    }
+
+    return {
+      authenticationTypes,
+      PlusIcon,
+      authenticationDetails,
+      selectedAuthClientIdError,
+      selectedAuthClientId,
+      selectedAuthClientSecret,
+      selectedAuthenticationType,
+      addAuthentication,
+      removeAuthentication,
+    };
+  },
+};
+</script>
+
+<style scoped>
+</style>

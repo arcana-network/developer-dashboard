@@ -3,9 +3,9 @@
     <span
       class="toggle-wrapper"
       role="switch"
-      :aria-checked="modelValue"
+      :aria-checked="!!modelValue || !!switchValue"
       tabindex="0"
-      @click="toggle"
+      @click.stop="toggle"
       v-bind="attrs"
       :class="classes"
     >
@@ -91,33 +91,51 @@
 </style>
 
 <script>
-import { computed, reactive } from "@vue/runtime-core";
+import { computed, reactive, ref, watch } from "@vue/runtime-core";
 export default {
   name: "VSwitch",
   props: {
-    modelValue: Boolean,
+    modelValue: {
+      type: Boolean,
+      default: null,
+    },
+    value: Boolean,
     size: String,
     variant: String,
   },
   setup(props, { emit, attrs }) {
     props = reactive(props);
+    let switchValue = ref(!!props.value);
+
+    watch(
+      () => props.value,
+      () => {
+        switchValue.value = props.value;
+      }
+    );
 
     let classes = computed(() => {
       return {
         large: props.size?.trim().toLowerCase() === "large",
         secondary: props.variant?.trim().toLowerCase() === "secondary",
-        checked: props.modelValue,
+        checked: props.modelValue || switchValue.value,
       };
     });
 
     function toggle() {
-      emit("update:modelValue", !props.modelValue);
+      if (props.modelValue === true || props.modelValue === false) {
+        emit("update:modelValue", !props.modelValue);
+      } else {
+        switchValue.value = !switchValue.value;
+        emit("checked", { value: switchValue.value });
+      }
     }
 
     return {
       classes,
       toggle,
       attrs,
+      switchValue,
     };
   },
 };
