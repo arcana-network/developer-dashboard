@@ -52,23 +52,23 @@ import VTextField from "../lib/VTextField/VTextField.vue";
 import VCard from "../lib/VCard/VCard.vue";
 import VButton from "../lib/VButton/VButton.vue";
 import VStack from "../lib/VStack/VStack.vue";
+import { useStore } from "vuex";
+
 export default {
   name: "ConfigureAppName",
   components: { VTextField, VCard, VButton, VStack },
   props: {
     isConfigured: Boolean,
-    store: Object,
   },
   setup(props) {
-    const store = props.store;
-    const appName = ref("");
-    appName.value = store.getters.appName;
+    const store = useStore();
+    const appName = ref(store.getters.appName);
     watch(
       () => appName.value,
       () => {
-        store.dispatch("updateAppName", { appName: appName.value });
-        if (props.isConfigured && !store.getters.onChange) {
-          store.dispatch("changeDetected");
+        store.dispatch("updateAppName", appName.value);
+        if (props.isConfigured && !store.getters.onConfigChange) {
+          store.dispatch("configChangeDetected");
         }
       }
     );

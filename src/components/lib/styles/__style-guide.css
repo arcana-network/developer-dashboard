@@ -255,7 +255,7 @@ h5 {
     flex-direction: column;
   }
   .sm-column-gap {
-    margin-top: 1.2em;
+    margin-top: 1.2em !important;
   }
   h1 {
     font-size: 2.125em;

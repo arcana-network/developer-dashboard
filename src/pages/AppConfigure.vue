@@ -2,8 +2,11 @@
   <div>
     <app-header v-if="isConfigured" />
     <header v-else class="first-time-configure-header">
-      <div class="container flex justify-space-between">
-        <h1>CONFIGURE YOUR APP</h1>
+      <div
+        class="container flex justify-space-between"
+        style="align-items: center"
+      >
+        <h1>CONFIGURE</h1>
         <div class="position-relative">
           <circle-progress
             :percent="(step / 5) * 100"
@@ -44,6 +47,7 @@
             <v-switch
               variant="secondary"
               v-model="liveEnvironment"
+              disabled
               style="margin-top: 1px"
             />
             <span
@@ -67,203 +71,30 @@
           </div>
         </v-stack>
       </section>
-      <configure-app-name :isConfigured="isConfigured" :store="store" />
+      <configure-app-name :isConfigured="isConfigured" />
       <configure-app-region
         v-if="isConfigured || step >= 2"
         :style="step === 2 ? 'margin-bottom: 2em' : ''"
         :isConfigured="isConfigured"
-        :store="store"
       />
       <configure-app-chain-type
         v-if="isConfigured || step >= 3"
-        :style="step === 2 ? 'margin-bottom: 2em' : ''"
+        :style="step === 3 ? 'margin-bottom: 2em' : ''"
         :isConfigured="isConfigured"
-        :store="store"
       />
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
+      <configure-app-auth
         v-if="isConfigured || step >= 4"
         :style="step === 4 ? 'margin-bottom: 2em' : ''"
-        :id="'configure-step-' + 4"
-      >
-        <h4 style="width: 100%; display: block">CHOOSE LOGIN TYPE</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              Your users can bring their own public and private keys or be
-              assigned a pair of them upon registration through our trustless
-              Distributed Key Generation system. These are ECDSA keys on the
-              secp256k1 curve which work with any EVM compatible chains.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div class="flex column">
-            <div
-              class="flex sm-column"
-              style="gap: 2em; align-items: flex-start"
-            >
-              <v-dropdown
-                :options="authenticationTypes"
-                placeholder="Authentication Type"
-                style="width: calc(36% - 4em); min-width: 270px"
-                v-model="selectedAuthenticationType"
-              />
-              <v-text-field
-                v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
-                placeholder="Enter Client ID"
-                :icon="PlusIcon"
-                v-model="selectedAuthClientId"
-                @icon-clicked="addAuthentication"
-                :clickableIcon="true"
-                @keyup.enter="addAuthentication"
-                :messageType="selectedAuthClientIdError ? 'error' : ''"
-                message="Login type already added"
-              />
-            </div>
-            <div class="flex flex-wrap" style="gap: 2em">
-              <v-chip
-                v-for="(authDetail, index) in authenticationDetails"
-                :key="authDetail"
-                :cancellable="true"
-                @cancel="removeAuthentication(index)"
-                style="
-                  max-width: 240px;
-                  overflow: hidden;
-                  white-space: nowrap;
-                  text-overflow: ellipsis;
-                "
-              >
-                <span class="body-1">
-                  {{ authDetail.authType }} | {{ authDetail.clientId }}
-                </span>
-              </v-chip>
-            </div>
-          </div>
-        </div>
-      </v-card>
-      <v-card
-        style="
-          margin-top: 2em;
-          padding: 1.5em 2em;
-          gap: 1.2em;
-          margin-bottom: 2em;
-        "
-        class="column"
+        :isConfigured="isConfigured"
+      />
+      <configure-user-limits
         v-if="isConfigured || step >= 5"
-        :id="'configure-step-' + 5"
-      >
-        <h4 style="width: 100%; display: block">SET PER USER LIMIT</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              Your application’s limits will act as the default storage and
-              bandwidth limits for each user of your application unless you
-              choose to specify it for each user here.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div
-            class="flex sm-column"
-            style="gap: 3em; flex-grow: 1; align-items: flex-start"
-          >
-            <div class="flex column" style="flex-grow: 1; gap: 20px">
-              <div
-                class="flex sm-column"
-                style="justify-content: space-between; width: calc(90%)"
-              >
-                <h3>STORAGE</h3>
-                <div
-                  class="flex sm-column-gap"
-                  style="align-items: center; gap: 1em"
-                >
-                  <span class="body-2">Unlimited</span>
-                  <v-switch
-                    v-model="storageUnlimited"
-                    style="margin-top: 2px"
-                  />
-                </div>
-              </div>
-              <div
-                class="text-field flex"
-                style="width: 90%; justify-content: space-between"
-              >
-                <input
-                  type="number"
-                  maxlength="1"
-                  id="storage"
-                  min="0"
-                  pattern="[0-9]"
-                />
-                <v-dropdown
-                  :options="['MB', 'GB']"
-                  placeholder="unit"
-                  class="usage"
-                  style="min-width: 8em"
-                  triggerStyle="padding: 18px 20px"
-                />
-              </div>
-            </div>
-            <div class="flex column" style="flex-grow: 1; gap: 20px">
-              <div
-                class="flex sm-column sm-column-gap"
-                style="justify-content: space-between; width: calc(90%)"
-              >
-                <h3>BANDWIDTH</h3>
-                <div
-                  class="flex sm-column-gap"
-                  style="align-items: center; gap: 1em"
-                >
-                  <span class="body-2">Unlimited</span>
-                  <v-switch
-                    v-model="bandwidthUnlimited"
-                    style="margin-top: 2px"
-                  />
-                </div>
-              </div>
-              <div
-                class="text-field flex"
-                style="width: 90%; justify-content: space-between"
-              >
-                <input
-                  type="number"
-                  maxlength="1"
-                  id="storage"
-                  min="0"
-                  pattern="[0-9]"
-                />
-                <v-dropdown
-                  :options="['MB', 'GB']"
-                  placeholder="unit"
-                  class="usage"
-                  style="min-width: 8em"
-                  triggerStyle="padding: 18px 20px"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </v-card>
+        :style="step === 5 ? 'margin-bottom: 2em' : ''"
+        :isConfigured="isConfigured"
+      />
     </main>
     <configure-footer
       v-if="!isConfigured"
-      :show="!isConfigured"
       :saveLabel="step === 5 ? 'SAVE' : 'NEXT'"
       @save="onFooterSave"
       @cancel="onFooterCancel"
@@ -351,6 +182,7 @@
           flex-direction: column;
           gap: 1vh;
         "
+        -
       >
         <header
           class="sub-heading-1"
@@ -531,86 +363,75 @@ input[type="number"] {
 </style>
 
 <script>
-import BackIcon from "../assets/iconography/back.svg";
-import DeleteIcon from "../assets/iconography/delete.svg";
-import PauseIcon from "../assets/iconography/pause.svg";
-import PlusIcon from "../assets/iconography/plus.svg";
-import { useRouter } from "vue-router";
-import VSwitch from "../components/lib/VSwitch/VSwitch.vue";
+import { computed, onMounted, watch } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
-import VTextField from "../components/lib/VTextField/VTextField.vue";
-import VCard from "../components/lib/VCard/VCard.vue";
-import VButton from "../components/lib/VButton/VButton.vue";
-import VSeperator from "../components/lib/VSeperator/VSeperator.vue";
-import VDropdown from "../components/lib/VDropdown/VDropdown.vue";
-import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
-import VTooltip from "../components/lib/VTooltip/VTooltip.vue";
-import VChip from "../components/lib/VChip/VChip.vue";
-import { onMounted, watch } from "@vue/runtime-core";
-import ConfigureFooter from "../components/ConfigureFooter.vue";
-import AppHeader from "../components/AppHeader.vue";
-import VIconButton from "../components/lib/VIconButton/VIconButton.vue";
-import CircleProgress from "vue3-circle-progress";
-import VCircularProgress from "../components/lib/VCircularProgress/VCircularProgress.vue";
-import ConfigureAppName from "../components/app-configure/AppName.vue";
-import ConfigureAppRegion from "../components/app-configure/AppRegion.vue";
-import ConfigureAppChainType from "../components/app-configure/AppChain.vue";
-import VStack from "../components/lib/VStack/VStack.vue";
+import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-
-import constants from "../utils/constants";
+import constants from "@/utils/constants";
 import axios from "axios";
+
+import AppHeader from "@/components/AppHeader.vue";
+import BackIcon from "@/assets/iconography/back.svg";
+import CircleProgress from "vue3-circle-progress";
+import ConfigureAppAuth from "@/components/app-configure/AppAuth.vue";
+import ConfigureAppChainType from "@/components/app-configure/AppChain.vue";
+import ConfigureAppName from "@/components/app-configure/AppName.vue";
+import ConfigureAppRegion from "@/components/app-configure/AppRegion.vue";
+import ConfigureFooter from "@/components/ConfigureFooter.vue";
+import ConfigureUserLimits from "@/components/app-configure/AppUserLimits.vue";
+import DeleteIcon from "@/assets/iconography/delete.svg";
+import PauseIcon from "@/assets/iconography/pause.svg";
+import PlusIcon from "@/assets/iconography/plus.svg";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VChip from "@/components/lib/VChip/VChip.vue";
+import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
+import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 export default {
   components: {
-    VSwitch,
-    VTextField,
-    VCard,
-    VButton,
-    VSeperator,
-    VDropdown,
-    VTooltip,
-    ConfigureFooter,
     AppHeader,
-    VOverlay,
-    VChip,
-    VIconButton,
     CircleProgress,
-    VCircularProgress,
+    ConfigureAppAuth,
+    ConfigureAppChainType,
     ConfigureAppName,
     ConfigureAppRegion,
-    ConfigureAppChainType,
+    ConfigureFooter,
+    ConfigureUserLimits,
+    VButton,
+    VCard,
+    VChip,
+    VCircularProgress,
+    VDropdown,
+    VIconButton,
+    VOverlay,
+    VSeperator,
     VStack,
+    VSwitch,
+    VTextField,
+    VTooltip,
   },
   setup() {
     const router = useRouter();
     const store = useStore();
-    let liveEnvironment = ref(false);
+    let liveEnvironment = ref(store.getters.env === "test" ? false : true);
     let isConfigured = ref(false);
     let step = ref(1);
-    let isEdited = ref(false);
     let deleteApp = ref(false);
     let proceedDelete = ref(false);
     let timer = ref(59);
     let progressTimer = ref(59000);
 
-    liveEnvironment.value = store.getters.env === "test" ? false : true;
-
-    let storageUnlimited = ref(false);
-    let bandwidthUnlimited = ref(false);
-    let selectedAuthenticationType = ref("");
-    let selectedAuthClientId = ref("");
-    const authenticationTypes = [
-      "Bring Your Own Keys",
-      "Google",
-      "Github",
-      "Reddit",
-      "Discord",
-      "Twitter",
-      "Twitch",
-    ];
-    let authenticationDetails = ref([]);
-    let selectedAuthClientIdError = ref(false);
+    const isEdited = computed(() => {
+      return store.getters.onConfigChange;
+    });
 
     watch(
       () => liveEnvironment.value,
@@ -679,7 +500,6 @@ export default {
     }
 
     async function callCreateApi() {
-
       //TODO: get fields from store
       var data = JSON.stringify({
         name: "My App name",
@@ -693,12 +513,11 @@ export default {
         method: "post",
         url: constants.url + "api/create-app/",
         headers: {
-          //TODO: Authorization
           Authorization:
             "Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw",
           "Content-Type": "application/json",
         },
-        data: data,
+        data,
       };
 
       return axios(config);
@@ -755,9 +574,6 @@ export default {
 
     onMounted(() => {
       isConfigured.value = !!localStorage.getItem("isConfigured");
-
-      store.dispatch("test/updateAppName", { appName: "test app" });
-      console.log(store.getters);
     });
 
     return {
@@ -767,13 +583,6 @@ export default {
       PlusIcon,
       backToDashboard,
       liveEnvironment,
-      storageUnlimited,
-      bandwidthUnlimited,
-      authenticationTypes,
-      selectedAuthenticationType,
-      authenticationDetails,
-      selectedAuthClientId,
-      selectedAuthClientIdError,
       step,
       isConfigured,
       isEdited,
@@ -784,8 +593,6 @@ export default {
       store,
       onFooterSave,
       onFooterCancel,
-      addAuthentication,
-      removeAuthentication,
       handleDelete,
       startDeleteTimer,
       handleCancelDelete,

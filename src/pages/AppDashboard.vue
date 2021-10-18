@@ -178,7 +178,7 @@
       <v-card
         class="column usage-container"
         variant="elevated"
-        style="align-items: stretch; margin-top: 6vh"
+        style="align-items: stretch; margin: 6vh auto"
       >
         <div class="flex flex-wrap duration" style="margin-bottom: 1em">
           <v-card-button
@@ -334,7 +334,7 @@
           </div>
         </div>
       </v-card>
-      <section
+      <!-- <section
         class="flex column"
         style="margin-top: 8vh; margin-bottom: 8vh; color: var(--text-white)"
       >
@@ -353,7 +353,6 @@
           <v-button variant="link" label="VIEW ALL" />
         </div>
         <v-stack gap="4vw" direction="row" class="overflow-x-auto">
-          <!-- <div class="flex tutorials-pane flex-row-gap" style="--flex-gap: 4vw"> -->
           <v-card
             v-for="i in 3"
             :key="'tutorial' + i"
@@ -394,9 +393,8 @@
               style="align-self: flex-start"
             />
           </v-card>
-          <!-- </div> -->
         </v-stack>
-      </section>
+      </section> -->
     </main>
     <main v-else>
       <v-overlay>

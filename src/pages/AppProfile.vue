@@ -29,7 +29,7 @@
             <span class="body-2">Email</span>
             <span class="sub-heading-3">johndoe@gmail.com</span>
           </div>
-          <div class="flex column details">
+          <div class="flex column details" style="visibility: hidden">
             <span class="body-2" style="margin-bottom: 5px">Password</span>
             <span class="sub-heading-3" v-if="!editPersonalDetails"> </span>
             <v-text-field
