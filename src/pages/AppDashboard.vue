@@ -37,7 +37,11 @@
           >
             Smart Contract Address:
           </span>
-          <v-tooltip :title="smartContractAddress" class="mobile-remove">
+          <v-tooltip
+            :title="smartContractAddress"
+            tooltip-style="max-width: max-content; left: -250%"
+            class="mobile-remove"
+          >
             <div
               class="text-ellipsis body-1 cursor-pointer font-500"
               style="color: var(--text-white); width: 6em"

@@ -7,6 +7,7 @@
       role="tooltip"
       aria-hidden="true"
       style="transition-delay: 500ms"
+      :style="tooltipStyle"
       >{{ title }}</span
     >
   </div>
@@ -22,9 +23,9 @@ span.tooltip {
   position: absolute;
   top: calc(100% + 5px);
   padding: 1em;
-  left: -100%;
+  left: -150%;
   min-height: 1.25em;
-  min-width: 5em;
+  min-width: 6em;
   width: max-content;
   max-width: 26em;
   text-align: center;
@@ -58,6 +59,7 @@ export default {
   props: {
     title: String,
     delay: String,
+    tooltipStyle: [String, Object],
   },
   setup(props, { attrs }) {
     props = reactive(props);
