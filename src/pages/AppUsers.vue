@@ -423,7 +423,7 @@ export default {
           datasets: [
             {
               label: "No of users",
-              data: [50, 120, 270, 150, 100, 130, 120, 270, 150, 100, 130, 120],
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               borderColor: "white",
               borderWidth: 4,
               lineTension: 0.2,

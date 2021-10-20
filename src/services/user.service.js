@@ -12,3 +12,29 @@ export function fetchAllUsers() {
     }
   );
 }
+
+export function fetchAllUserTransactions(userAddress) {
+  return axios.get(
+    getEnvApi() +
+      "/api/user-transactions/?id=" +
+      store.getters.appId +
+      "&address=" +
+      userAddress,
+    {
+      headers: {
+        Authorization: "Bearer " + store.getters.accessToken,
+      },
+    }
+  );
+}
+
+export function fetchMonthlyUsers() {
+  return axios.get(
+    getEnvApi() + "/api/no-of-users/?id=" + store.getters.appId,
+    {
+      headers: {
+        Authorization: "Bearer " + store.getters.accessToken,
+      },
+    }
+  );
+}

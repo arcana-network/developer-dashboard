@@ -243,15 +243,18 @@
               "
             >
               <h2 style="font-family: var(--font-body); font-size: 2.25em">
-                30 GB used
+                {{ storageUsed }} used
               </h2>
               <span
                 class="body-1"
                 style="color: var(--text-grey); font-weight: 600"
-                >270 GB Remaining</span
+                >{{ storageRemaining }} Remaining</span
               >
             </div>
-            <v-progress-bar style="width: 95%" :percentage="10" />
+            <v-progress-bar
+              style="width: 95%"
+              :percentage="storageUsedPercentage || 1"
+            />
             <div
               id="storageChartContainer"
               style="margin-top: 0.65em; min-width: 300px"
@@ -283,15 +286,19 @@
               "
             >
               <h2 style="font-family: var(--font-body); font-size: 2.25em">
-                0 GB used
+                {{ bandwidthUsed }} used
               </h2>
               <span
                 class="body-1"
                 style="color: var(--text-grey); font-weight: 600"
-                >300 GB Remaining</span
+                >{{ bandwidthRemaining }} Remaining</span
               >
             </div>
-            <v-progress-bar style="width: 95%" :percentage="1" state="error" />
+            <v-progress-bar
+              style="width: 95%"
+              :percentage="bandwidthUsedPercentage || 1"
+              state="error"
+            />
             <div
               id="bandwidthChartContainer"
               style="margin-top: 0.65em; min-width: 300px"
@@ -664,6 +671,12 @@ export default {
     const appName = computed(() => {
       return store.getters.appName;
     });
+    const storageUsed = ref("0 B");
+    const bandwidthUsed = ref("0 B");
+    const storageUsedPercentage = ref(0);
+    const bandwidthUsedPercentage = ref(0);
+    const storageRemaining = ref("300 GB");
+    const bandwidthRemaining = ref("300 GB");
 
     onBeforeMount(() => {
       updateAppDetails();
@@ -725,6 +738,29 @@ export default {
           share: stats.data.actions?.share,
           revoke: stats.data.actions?.revoke,
         };
+        const bytes300Gb = bytes("300 GB");
+        storageUsed.value = bytes(stats.data.actions?.storage, {
+          unitSeparator: " ",
+        });
+        bandwidthUsed.value = bytes(stats.data.actions?.bandwidth, {
+          unitSeparator: " ",
+        });
+        storageUsedPercentage.value =
+          (stats.data.actions?.storage / bytes300Gb) * 100;
+        bandwidthUsedPercentage.value =
+          (stats.data.actions?.bandwidth / bytes300Gb) * 100;
+        storageRemaining.value = bytes(
+          bytes300Gb - stats.data.actions?.storage,
+          {
+            unitSeparator: " ",
+          }
+        );
+        bandwidthRemaining.value = bytes(
+          bytes300Gb - stats.data.actions?.bandwidth,
+          {
+            unitSeparator: " ",
+          }
+        );
         const appDetails = await fetchApp(appId);
         if (appDetails.data.cred) {
           store.dispatch(
@@ -1001,6 +1037,12 @@ export default {
       actions,
       appName,
       totalUsers,
+      storageUsed,
+      bandwidthUsed,
+      storageUsedPercentage,
+      bandwidthUsedPercentage,
+      storageRemaining,
+      bandwidthRemaining,
     };
   },
 };
