@@ -6,7 +6,7 @@
       :class="positionClass"
       role="tooltip"
       aria-hidden="true"
-      style="transition-delay: 1s"
+      style="transition-delay: 500ms"
       >{{ title }}</span
     >
   </div>

@@ -81,7 +81,7 @@ h4 {
 </style>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { computed } from "@vue/runtime-core";
 import { useStore } from "vuex";
 
 import VButton from "../lib/VButton/VButton.vue";
@@ -96,15 +96,23 @@ export default {
     store: Object,
   },
   components: { VCard, VButton, VSwitch, VStack },
-  setup() {
+  setup(props) {
     const store = useStore();
 
-    let chainType = ref("");
+    const env = computed(() => {
+      return store.getters.env;
+    });
+
+    let chainType = computed(() => {
+      return store.getters[env.value + "/chainType"];
+    });
 
     function changeChainType(ev, selectedChainType) {
-      console.log(ev, selectedChainType);
       if (ev.value) {
-        chainType.value = selectedChainType;
+        store.dispatch(env.value + "/updateChainType", selectedChainType);
+        if (props.isConfigured && !store.getters.onConfigChange) {
+          store.dispatch("configChangeDetected");
+        }
       }
     }
 

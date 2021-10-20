@@ -10,7 +10,7 @@ export default {
       const { AuthProvider } = window.arcana_login;
 
       // window.onload = () => {
-      AuthProvider.handleRedirectPage();
+      AuthProvider.handleRedirectPage("http://localhost:3000");
       // };
     });
   },

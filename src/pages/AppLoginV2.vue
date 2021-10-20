@@ -4,7 +4,7 @@
       <landing-descriptor />
       <section class="signin-container">
         <img
-          :src="AppLogo"
+          src="@/assets/logo.svg"
           alt="Arcana Logo"
           style="margin: auto; margin-bottom: 2em"
           class="laptop-remove"
@@ -34,7 +34,10 @@
                 @click.stop="launchLogin('google')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img style="margin-right: 1em" :src="GoogleSSOIcon" />
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/google-sso.svg"
+                  />
                   <span class="body-1">Google</span>
                 </div>
               </v-card-button>
@@ -43,7 +46,10 @@
                 @click.stop="launchLogin('twitter')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img style="margin-right: 1em" :src="TwitterSSOIcon" />
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/twitter-sso.svg"
+                  />
                   <span class="body-1">Twitter</span>
                 </div>
               </v-card-button>
@@ -57,7 +63,10 @@
                 @click.stop="launchLogin('discord')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img style="margin-right: 1em" :src="DiscordSSOIcon" />
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/discord-sso.svg"
+                  />
                   <span class="body-1">Discord</span>
                 </div>
               </v-card-button>
@@ -66,7 +75,10 @@
                 @click.stop="launchLogin('github')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img style="margin-right: 1em" :src="GithubSSOIcon" />
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/github-sso.svg"
+                  />
                   <span class="body-1">Github</span>
                 </div>
               </v-card-button>
@@ -80,7 +92,10 @@
                 @click.stop="launchLogin('twitch')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img style="margin-right: 1em" :src="TwitchSSOIcon" />
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/twitch-sso.svg"
+                  />
                   <span class="body-1">Twitch</span>
                 </div>
               </v-card-button>
@@ -89,7 +104,10 @@
                 @click.stop="launchLogin('reddit')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img style="margin-right: 1em" :src="RedditSSOIcon" />
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/reddit-sso.svg"
+                  />
                   <span class="body-1">Reddit</span>
                 </div>
               </v-card-button>
@@ -98,6 +116,21 @@
         </section>
       </section>
     </main>
+    <v-overlay v-if="loading">
+      <div
+        style="
+          width: 100%;
+          height: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+        "
+      >
+        <v-circular-progress color="var(--primary)" size="6em" />
+        <h4 style="margin-top: 1em">{{ loadingMessage }}</h4>
+      </div>
+    </v-overlay>
   </div>
 </template>
 
@@ -116,7 +149,7 @@ h1 {
   ) !important;
   border-radius: 10px;
   min-width: 160px;
-  width: 16vw;
+  width: 36vw;
   max-width: 240px;
 }
 .body-3 {
@@ -166,22 +199,25 @@ h1 {
 
 <script>
 import { useRouter } from "vue-router";
-import LandingDescriptor from "../components/LandingDescriptor.vue";
-import AppLogo from "../assets/logo.svg";
-import VCardButton from "../components/lib/VCardButton/VCardButton.vue";
-import GoogleSSOIcon from "../assets/google-sso.svg";
-import TwitterSSOIcon from "../assets/twitter-sso.svg";
-import TwitchSSOIcon from "../assets/twitch-sso.svg";
-import RedditSSOIcon from "../assets/reddit-sso.svg";
-import GithubSSOIcon from "../assets/github-sso.svg";
-import DiscordSSOIcon from "../assets/discord-sso.svg";
-import { sso } from "../utils/constants";
+import LandingDescriptor from "@/components/LandingDescriptor.vue";
+import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
+import { getNonce, login, getArcanaAuth } from "@/services/auth.service";
+import sign from "@/services/sign";
+import { Wallet } from "ethers";
+import { useStore } from "vuex";
+import { onMounted, ref } from "@vue/runtime-core";
+
 export default {
   name: "AppLoginV2",
-  components: { LandingDescriptor, VCardButton },
+  components: { LandingDescriptor, VCardButton, VOverlay, VCircularProgress },
   setup() {
     const router = useRouter();
-    const { AuthProvider } = window.arcana_login;
+    const arcanaAuth = getArcanaAuth();
+    const store = useStore();
+    let loadingMessage = ref("");
+    let loading = ref(false);
 
     function navigateToSignup() {
       router.push("/signup");
@@ -192,47 +228,74 @@ export default {
     }
 
     function onSignin() {
-      router.push("/");
+      router.push({ name: "Dashboard" });
     }
 
     async function launchLogin(type) {
-      let loginConfig = getLoginConfig(type);
-      if (loginConfig) {
-        const arcanaLogin = new AuthProvider(loginConfig);
-        try {
-          const pk = await arcanaLogin.signIn();
-          console.log(pk);
-          router.push("/");
-        } catch (e) {
-          console.error(e);
+      try {
+        loading.value = true;
+        loadingMessage.value = "Signing In...";
+        const pk = await arcanaAuth.signIn(type);
+        loadingMessage.value = "Fetching user info...";
+        const userInfo = await arcanaAuth.getUserInfo(type);
+        loadingMessage.value = "Generating Public key...";
+        const publicKey = await arcanaAuth.getPublicKey({
+          verifier: type,
+          id: userInfo.id,
+        });
+        const actualPublicKey =
+          publicKey.X.padStart(64, "0") + publicKey.Y.padStart(64, "0");
+        const wallet = new Wallet(pk.privateKey);
+        const nonce = await getNonce(wallet.address);
+        loadingMessage.value = "Signing In...";
+        const signature = await sign(pk.privateKey, nonce.data);
+        const access_token = await login({
+          signature,
+          email: userInfo.id,
+          address: wallet.address,
+        });
+        store.dispatch("updateAccessToken", access_token.data.token);
+        store.dispatch("updateKeys", {
+          privateKey: pk.privateKey,
+          publicKey: actualPublicKey,
+        });
+        store.dispatch("updateWalletAddress", wallet.address);
+        store.dispatch("updateUserInfo", {
+          email: userInfo.id,
+          name: userInfo.name,
+        });
+        loading.value = false;
+        router.replace({ name: "Dashboard" });
+      } catch (e) {
+        loading.value = false;
+        console.error(e);
+      }
+    }
+
+    onMounted(() => {
+      const loginTypes = [
+        "google",
+        "twitch",
+        "reddit",
+        "discord",
+        "twitter",
+        "reddit",
+      ];
+      for (let i = 0; i < loginTypes.length; i++) {
+        if (arcanaAuth.isLoggedIn(loginTypes[i])) {
+          launchLogin(loginTypes[i]);
+          break;
         }
       }
-    }
-
-    function getLoginConfig(type) {
-      if (sso[type]) {
-        return {
-          loginType: type,
-          appAddress: "dummyappaddress",
-          redirectUri: "https://arcana-devdash-v2.web.app/oauth/redirect",
-          clientId: sso[type],
-        };
-      }
-      return null;
-    }
+    });
 
     return {
-      AppLogo,
-      GoogleSSOIcon,
-      RedditSSOIcon,
-      TwitterSSOIcon,
-      TwitchSSOIcon,
-      DiscordSSOIcon,
-      GithubSSOIcon,
       navigateToSignup,
       goToForgotPassword,
       onSignin,
       launchLogin,
+      loading,
+      loadingMessage,
     };
   },
 };

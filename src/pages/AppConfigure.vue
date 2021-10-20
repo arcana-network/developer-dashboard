@@ -24,7 +24,7 @@
     <main class="container" :style="!isConfigured ? 'margin-bottom: 10em' : ''">
       <section class="flex flex-wrap" v-if="isConfigured">
         <img
-          :src="BackIcon"
+          src="@/assets/iconography/back.svg"
           style="margin-right: 2em"
           class="cursor-pointer"
           alt="go back"
@@ -58,9 +58,9 @@
             </span>
           </v-stack>
           <div style="margin-left: auto">
-            <v-tooltip title="Pause App">
-              <v-icon-button :icon="PauseIcon" class="app-action" />
-            </v-tooltip>
+            <!-- <v-tooltip title="Pause App">
+              <v-icon-button :icon="PauseIcon" class="app-action" disabled />
+            </v-tooltip> -->
             <v-tooltip title="Delete App">
               <v-icon-button
                 :icon="DeleteIcon"
@@ -103,8 +103,8 @@
     <configure-footer
       v-else
       :show="isEdited"
-      @save="isEdited = false"
-      @cancel="isEdited = false"
+      @save="onFooterSave"
+      @cancel="onFooterCancel"
     />
     <v-overlay
       v-if="deleteApp"
@@ -363,7 +363,7 @@ input[type="number"] {
 </style>
 
 <script>
-import { computed, onMounted, watch } from "@vue/runtime-core";
+import { computed, onBeforeMount, onMounted, watch } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -371,7 +371,6 @@ import constants from "@/utils/constants";
 import axios from "axios";
 
 import AppHeader from "@/components/AppHeader.vue";
-import BackIcon from "@/assets/iconography/back.svg";
 import CircleProgress from "vue3-circle-progress";
 import ConfigureAppAuth from "@/components/app-configure/AppAuth.vue";
 import ConfigureAppChainType from "@/components/app-configure/AppChain.vue";
@@ -379,9 +378,6 @@ import ConfigureAppName from "@/components/app-configure/AppName.vue";
 import ConfigureAppRegion from "@/components/app-configure/AppRegion.vue";
 import ConfigureFooter from "@/components/ConfigureFooter.vue";
 import ConfigureUserLimits from "@/components/app-configure/AppUserLimits.vue";
-import DeleteIcon from "@/assets/iconography/delete.svg";
-import PauseIcon from "@/assets/iconography/pause.svg";
-import PlusIcon from "@/assets/iconography/plus.svg";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VChip from "@/components/lib/VChip/VChip.vue";
@@ -394,6 +390,10 @@ import VStack from "@/components/lib/VStack/VStack.vue";
 import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+
+import PauseIcon from "@/assets/iconography/pause-disabled.svg";
+import DeleteIcon from "@/assets/iconography/delete-disabled.svg";
+import { createApp } from "@/services/app-config.service";
 
 export default {
   components: {
@@ -422,12 +422,28 @@ export default {
     const router = useRouter();
     const store = useStore();
     let liveEnvironment = ref(store.getters.env === "test" ? false : true);
-    let isConfigured = ref(false);
+    let isConfigured = computed(() => {
+      return store.getters.isAppConfigured;
+    });
     let step = ref(1);
     let deleteApp = ref(false);
     let proceedDelete = ref(false);
     let timer = ref(59);
     let progressTimer = ref(59000);
+
+    const env = computed(() => {
+      return store.getters.env;
+    });
+
+    let appName = store.getters.appName;
+    let testConfig = {
+      region: store.getters["test/region"],
+      chainType: store.getters["test/chainType"],
+    };
+    let liveConfig = {
+      region: store.getters["live/region"],
+      chainType: store.getters["live/chainType"],
+    };
 
     const isEdited = computed(() => {
       return store.getters.onConfigChange;
@@ -444,97 +460,63 @@ export default {
       router.back();
     }
 
-    function addAuthentication() {
-      console.log(selectedAuthenticationType.value, selectedAuthClientId.value);
-      if (
-        selectedAuthClientId.value.trim() &&
-        selectedAuthenticationType.value
-      ) {
-        console.log("Here");
-        const type =
-          selectedAuthenticationType.value === "Bring Your Own Keys"
-            ? "user-keys"
-            : selectedAuthenticationType.value.toLowerCase();
-        if (
-          !authenticationDetails.value.find(
-            (authDetail) => authDetail.type === type
-          )
-        ) {
-          authenticationDetails.value.push({
-            type,
-            authType: selectedAuthenticationType.value,
-            clientId: selectedAuthClientId.value.trim(),
-          });
-          selectedAuthClientId.value = "";
-          selectedAuthenticationType.value = "";
-        } else {
-          selectedAuthClientIdError.value = true;
-        }
-      }
-    }
-
-    function removeAuthentication(index) {
-      console.log("Remove", index);
-      authenticationDetails.value.splice(index, 1);
-      console.log(authenticationDetails.value);
-    }
-
     async function onFooterSave() {
-      if (step.value < 6) step.value++;
-      if (step.value <= 5) {
-        setTimeout(() => {
-          document
-            .getElementById("configure-step-" + step.value)
-            .scrollIntoView({ behavior: "smooth" });
-        }, 10);
-      } else if (step.value === 6) {
-        //Create API
-        let response = await callCreateApi().catch(function (error) {
-          throw new Error(error);
-        });
-        //end create API
-        step.value = 5;
-        localStorage.setItem("isConfigured", "true");
-        router.replace("/");
+      if (!isConfigured.value) {
+        if (step.value < 6) step.value++;
+        if (step.value <= 5) {
+          setTimeout(() => {
+            document
+              .getElementById("configure-step-" + step.value)
+              .scrollIntoView({ behavior: "smooth" });
+          }, 10);
+        } else if (step.value === 6) {
+          step.value = 5;
+          createApp({
+            name: store.getters.appName,
+            ...store.getters.config,
+          }).then((response) => {
+            console.log(response.data);
+          });
+          router.replace("/");
+        }
+      } else {
+        testConfig = {
+          region: store.getters["test/region"],
+          chainType: store.getters["test/chainType"],
+        };
+        liveConfig = {
+          region: store.getters["live/region"],
+          chainType: store.getters["live/chainType"],
+        };
+        store.dispatch("configChangeReset");
       }
-    }
-
-    async function callCreateApi() {
-      //TODO: get fields from store
-      var data = JSON.stringify({
-        name: "My App name",
-        region: 0,
-        chain: 1,
-        bandwidth_limit: 10000,
-        storage_limit: 50,
-      });
-
-      var config = {
-        method: "post",
-        url: constants.url + "api/create-app/",
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw",
-          "Content-Type": "application/json",
-        },
-        data,
-      };
-
-      return axios(config);
     }
 
     function onFooterCancel() {
-      if (step.value > 0) step.value--;
-      if (step.value >= 1) {
-        setTimeout(() => {
-          document
-            .getElementById("configure-step-" + step.value)
-            .scrollIntoView({ behavior: "smooth" });
-        }, 10);
-      } else if (step.value === 0) {
-        router.replace("/");
+      if (!isConfigured.value) {
+        if (step.value > 0) step.value--;
+        if (step.value >= 1) {
+          setTimeout(() => {
+            document
+              .getElementById("configure-step-" + step.value)
+              .scrollIntoView({ behavior: "smooth" });
+          }, 10);
+        } else if (step.value === 0) {
+          router.replace("/");
+        }
+      } else {
+        if (env.value === "test") {
+          store.dispatch("test/updateRegion", testConfig.region);
+          store.dispatch("test/updateChainType", testConfig.chainType);
+        } else {
+          store.dispatch("live/updateRegion", liveConfig.region);
+          store.dispatch("live/updateChaintype", testConfig.chainType);
+        }
+        store.dispatch("configChangeReset");
       }
     }
+
+    function updateApp() {}
 
     function handleDelete() {
       localStorage.clear();
@@ -572,15 +554,7 @@ export default {
       proceedDelete.value = false;
     }
 
-    onMounted(() => {
-      isConfigured.value = !!localStorage.getItem("isConfigured");
-    });
-
     return {
-      BackIcon,
-      DeleteIcon,
-      PauseIcon,
-      PlusIcon,
       backToDashboard,
       liveEnvironment,
       step,
@@ -596,6 +570,8 @@ export default {
       handleDelete,
       startDeleteTimer,
       handleCancelDelete,
+      PauseIcon,
+      DeleteIcon,
     };
   },
 };

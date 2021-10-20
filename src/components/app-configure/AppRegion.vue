@@ -29,7 +29,7 @@
             class="flex justify-space-between region-anywhere-container"
           >
             <span class="body-1">Anywhere</span>
-            <v-switch v-model="region.any" />
+            <v-switch v-model="region.any" disabled />
           </v-card>
           <v-card
             variant="depressed"
@@ -44,15 +44,15 @@
             >
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Asia</span>
-                <v-switch v-model="region.asia" />
+                <v-switch v-model="region.asia" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Africa</span>
-                <v-switch v-model="region.africa" />
+                <v-switch v-model="region.africa" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Australia</span>
-                <v-switch v-model="region.australia" />
+                <v-switch v-model="region.australia" disabled />
               </div>
             </v-stack>
             <v-seperator
@@ -67,15 +67,15 @@
             >
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Europe</span>
-                <v-switch v-model="region.europe" />
+                <v-switch v-model="region.europe" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">North America</span>
-                <v-switch v-model="region.northAmerica" />
+                <v-switch v-model="region.northAmerica" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">South America</span>
-                <v-switch v-model="region.southAmerica" />
+                <v-switch v-model="region.southAmerica" disabled />
               </div>
             </v-stack>
           </v-card>

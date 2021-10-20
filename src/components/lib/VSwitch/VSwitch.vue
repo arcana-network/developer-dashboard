@@ -8,6 +8,8 @@
       @click.stop="toggle"
       v-bind="attrs"
       :class="classes"
+      :aria-disabled="disabled"
+      :disabled="disabled"
     >
       <span class="toggle-background" :class="classes" />
       <span class="toggle-indicator" :class="classes" />
@@ -29,6 +31,10 @@
   background: transparent;
   -webkit-appearance: none;
   -moz-appearance: none;
+}
+
+.toggle-wrapper[disabled="true"] {
+  cursor: not-allowed;
 }
 
 .toggle-wrapper.large {
@@ -102,6 +108,7 @@ export default {
     value: Boolean,
     size: String,
     variant: String,
+    disabled: Boolean,
   },
   setup(props, { emit, attrs }) {
     props = reactive(props);
@@ -123,11 +130,13 @@ export default {
     });
 
     function toggle() {
-      if (props.modelValue === true || props.modelValue === false) {
-        emit("update:modelValue", !props.modelValue);
-      } else {
-        switchValue.value = !switchValue.value;
-        emit("checked", { value: switchValue.value });
+      if (!props.disabled) {
+        if (props.modelValue === true || props.modelValue === false) {
+          emit("update:modelValue", !props.modelValue);
+        } else {
+          switchValue.value = !switchValue.value;
+          emit("checked", { value: switchValue.value });
+        }
       }
     }
 

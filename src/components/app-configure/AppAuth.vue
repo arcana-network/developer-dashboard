@@ -38,13 +38,7 @@
           <v-text-field
             v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
             placeholder="Enter Client ID"
-            :icon="selectedAuthenticationType.secretRequired ? '' : PlusIcon"
             v-model="selectedAuthClientId"
-            @icon-clicked="addAuthentication"
-            :clickableIcon="true"
-            @keyup.enter="addAuthentication"
-            :messageType="selectedAuthClientIdError ? 'error' : ''"
-            message="Login type already added"
           />
           <v-text-field
             v-if="
@@ -52,18 +46,26 @@
               selectedAuthenticationType.secretRequired
             "
             placeholder="Enter Client Secret"
-            :icon="PlusIcon"
             v-model="selectedAuthClientSecret"
+            @keyup.enter="addAuthentication"
+          />
+          <v-text-field
+            v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
+            placeholder="Enter Redirect Url"
+            :icon="PlusIcon"
+            v-model="selectedAuthRedirectUrl"
             @icon-clicked="addAuthentication"
             :clickableIcon="true"
             @keyup.enter="addAuthentication"
+            :messageType="selectedAuthClientIdError ? 'error' : ''"
+            :message="errorMessage"
           />
         </div>
         <div class="flex flex-wrap" style="gap: 2em">
           <v-tooltip
             v-for="(authDetail, index) in authenticationDetails"
             :key="authDetail"
-            :title="`${authDetail.authType} | ${authDetail.clientId} | ${authDetail.clientSecret}`"
+            :title="`${authDetail.authType} | ${authDetail.clientId} | ${authDetail.redirectUrl}`"
           >
             <v-chip
               :cancellable="true"
@@ -77,7 +79,7 @@
             >
               <span class="body-1">
                 {{ authDetail.authType }} | {{ authDetail.clientId }} |
-                {{ authDetail.clientSecret }}
+                {{ authDetail.redirectUrl }}
               </span>
             </v-chip>
           </v-tooltip>
@@ -94,7 +96,7 @@ import VCard from "@/components/lib/VCard/VCard.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VChip from "@/components/lib/VChip/VChip.vue";
-import { computed, onMounted, watch } from "@vue/runtime-core";
+import { computed, watch } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import PlusIcon from "@/assets/iconography/plus.svg";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
@@ -113,6 +115,7 @@ export default {
     VTooltip,
   },
   setup() {
+    const store = useStore();
     const authenticationTypes = [
       // "Bring Your Own Keys",
       {
@@ -141,14 +144,23 @@ export default {
       },
     ];
     let authenticationDetails = ref([]);
+    const env = computed(() => {
+      return store.getters.env;
+    });
+    authenticationDetails.value = [
+      ...store.getters[env.value + "/authDetails"],
+    ];
     let selectedAuthClientIdError = ref(false);
     let selectedAuthenticationType = ref("");
     let selectedAuthClientId = ref("");
     let selectedAuthClientSecret = ref("");
+    let selectedAuthRedirectUrl = ref("");
+    let errorMessage = ref("");
 
     function addAuthentication() {
       if (
         selectedAuthClientId.value.trim() &&
+        selectedAuthRedirectUrl.value.trim() &&
         selectedAuthenticationType.value.name
       ) {
         const type =
@@ -160,28 +172,55 @@ export default {
             (authDetail) => authDetail.type === type
           )
         ) {
+          if (
+            selectedAuthenticationType.value.secretRequired &&
+            !selectedAuthClientSecret.value.trim()
+          ) {
+            selectedAuthClientIdError.value = true;
+            errorMessage.value = "Enter all details to continue";
+            return;
+          }
           authenticationDetails.value.push({
             type,
             authType: selectedAuthenticationType.value.name,
             clientId: selectedAuthClientId.value.trim(),
+            redirectUrl: selectedAuthRedirectUrl.value.trim(),
             clientSecret: selectedAuthenticationType.value.secretRequired
               ? selectedAuthClientSecret.value.trim()
               : undefined,
           });
+          store.dispatch(
+            env.value + "/updateAuthDetails",
+            authenticationDetails.value
+          );
           selectedAuthClientId.value = "";
           selectedAuthClientSecret.value = "";
           selectedAuthenticationType.value = "";
+          selectedAuthRedirectUrl.value = "";
         } else {
           selectedAuthClientIdError.value = true;
+          errorMessage.value = "Login type already added";
         }
+      } else {
+        selectedAuthClientIdError.value = true;
+        errorMessage.value = "Enter all details to continue";
       }
     }
 
     function removeAuthentication(index) {
-      console.log("Remove", index);
       authenticationDetails.value.splice(index, 1);
-      console.log(authenticationDetails.value);
+      store.dispatch(
+        env.value + "/updateAuthDetails",
+        authenticationDetails.value
+      );
     }
+
+    watch(
+      () => env.value,
+      () => {
+        authenticationDetails.value = store.getters[env.value + "/authDetails"];
+      }
+    );
 
     return {
       authenticationTypes,
@@ -190,7 +229,9 @@ export default {
       selectedAuthClientIdError,
       selectedAuthClientId,
       selectedAuthClientSecret,
+      selectedAuthRedirectUrl,
       selectedAuthenticationType,
+      errorMessage,
       addAuthentication,
       removeAuthentication,
     };

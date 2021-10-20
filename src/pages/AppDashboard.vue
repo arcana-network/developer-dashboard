@@ -27,6 +27,7 @@
             style="margin-right: 1em; margin-top: 2px"
             v-model="liveEnv"
             class="mobile-remove"
+            disabled
           />
           <span
             style="color: var(--text-grey); margin-right: 5px"
@@ -61,14 +62,20 @@
           @click.stop="goToConfigure"
         >
           <img
-            :src="SettingsIcon"
+            src="@/assets/iconography/settings.svg"
             alt="configure app settings"
             @click.stop="goToConfigure"
           />
           <v-button
+            disabled
             variant="link"
             label="Configure"
-            style="margin-top: 3px; margin-left: 0.5em"
+            style="
+              margin-top: 3px;
+              margin-left: 0.5em;
+              color: var(--primary);
+              cursor: pointer;
+            "
             @click.stop="goToConfigure"
           />
         </div>
@@ -118,7 +125,10 @@
             variant="elevated"
           >
             <div class="card-icon">
-              <img :src="TotalUsersIcon" alt="Total users" />
+              <img
+                src="@/assets/iconography/total-users.svg"
+                alt="Total users"
+              />
             </div>
             <div class="flex flex-grow">
               <div>
@@ -139,7 +149,7 @@
           >
             <div class="card-icon">
               <img
-                :src="NoOfFilesIcon"
+                src="@/assets/iconography/no-of-files.svg"
                 alt="Number of files"
                 style="margin-left: -2px; margin-top: 1px"
               />
@@ -163,7 +173,7 @@
           >
             <div class="card-icon">
               <img
-                :src="NoOfFilesIcon"
+                src="@/assets/iconography/no-of-files.svg"
                 alt="Number of files"
                 style="margin-left: -2px; margin-top: 1px"
               />
@@ -212,7 +222,10 @@
               <v-tooltip
                 title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
               >
-                <img :src="InfoIcon" style="cursor: pointer" />
+                <img
+                  src="@/assets/iconography/info-circle-outline.svg"
+                  style="cursor: pointer"
+                />
               </v-tooltip>
             </div>
             <div
@@ -249,7 +262,10 @@
               <v-tooltip
                 title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
               >
-                <img :src="InfoIcon" style="cursor: pointer" />
+                <img
+                  src="@/assets/iconography/info-circle-outline.svg"
+                  style="cursor: pointer"
+                />
               </v-tooltip>
             </div>
             <div
@@ -284,7 +300,10 @@
           <v-tooltip
             title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
           >
-            <img :src="InfoIcon" style="cursor: pointer" />
+            <img
+              src="@/assets/iconography/info-circle-outline.svg"
+              style="cursor: pointer"
+            />
           </v-tooltip>
         </div>
         <div
@@ -293,42 +312,42 @@
         >
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.upload }}</h2>
               <span class="body-1">Upload</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.download }}</h2>
               <span class="body-1">Download</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.share }}</h2>
               <span class="body-1">Share</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.transfers }}</h2>
               <span class="body-1">Transfers</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.revoke }}</h2>
               <span class="body-1">Revoke</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.delete }}</h2>
               <span class="body-1">Delete</span>
             </div>
           </div>
@@ -347,7 +366,7 @@
             <v-tooltip
               title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
             >
-              <img :src="InfoIcon" style="cursor: pointer" />
+              <img src="@/assets/iconography/info-circle-outline.svg" style="cursor: pointer" />
             </v-tooltip>
           </div>
           <v-button variant="link" label="VIEW ALL" />
@@ -377,7 +396,7 @@
                   transform: translate(-50%, -50%);
                 "
               >
-                <img class="play-pause" :src="PlayIcon" />
+                <img class="play-pause" src="@/assets/iconography/play.svg" />
               </div>
             </div>
             <span class="sub-heading-3 tutorial-heading">
@@ -454,6 +473,15 @@
   border-right: unset;
   border-top: unset;
   border-bottom: unset;
+}
+.configure-btn {
+  transition: tranform 0.4s;
+}
+.configure-btn:hover {
+  opacity: 0.7;
+}
+.configure-btn:active {
+  transform: scale(0.98);
 }
 .action {
   margin: 2em;
@@ -563,32 +591,30 @@
 </style>
 
 <script>
-import VTooltip from "../components/lib/VTooltip/VTooltip.vue";
-import CopyIcon from "../assets/iconography/copy.svg";
-import CheckIcon from "../assets/iconography/check.svg";
-import ArrowRightIcon from "../assets/iconography/arrow-right.svg";
-import RectanglePlaceholderIcon from "../assets/iconography/Rectangle-placeholder.svg";
-import SettingsIcon from "../assets/iconography/settings.svg";
-import NoOfFilesIcon from "../assets/iconography/no-of-files.svg";
-import TotalUsersIcon from "../assets/iconography/total-users.svg";
-import InfoIcon from "../assets/iconography/info-circle-outline.svg";
-import PlayIcon from "../assets/iconography/play.svg";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+import CopyIcon from "@/assets/iconography/copy.svg";
+import CheckIcon from "@/assets/iconography/check.svg";
+import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
+import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
 import VButton from "../components/lib/VButton/VButton.vue";
-import VCard from "../components/lib/VCard/VCard.vue";
-import VSeperator from "../components/lib/VSeperator/VSeperator.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import { useRouter } from "vue-router";
-import VProgressBar from "../components/lib/VProgressBar/VProgressBar.vue";
+import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
 import { Chart, registerables } from "chart.js";
-import { onMounted, ref, watch } from "@vue/runtime-core";
-import AppHeader from "../components/AppHeader.vue";
-import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
-import VIconButton from "../components/lib/VIconButton/VIconButton.vue";
-import VSwitch from "../components/lib/VSwitch/VSwitch.vue";
-import VCardButton from "../components/lib/VCardButton/VCardButton.vue";
-import VStack from "../components/lib/VStack/VStack.vue";
-
-import constants from "../utils/constants";
-import axios from "axios";
+import { onBeforeMount, onMounted, ref, watch } from "@vue/runtime-core";
+import AppHeader from "@/components/AppHeader.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import {
+  fetchAllApps,
+  fetchStats,
+  fetchPeriodicUsage,
+} from "@/services/dashboard.service";
+import { useStore } from "vuex";
 
 export default {
   components: {
@@ -606,87 +632,52 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const smartContractAddress = "xxyyyxxyyyxxyyyxxyyyxxyyy";
-    const durationSelected = ref("weekly");
-
-    //API calls
-    getGlobalStats();
-    getAppDetails();
-
-
+    const store = useStore();
+    const smartContractAddress = ref("");
+    const durationSelected = ref("monthly");
+    const actions = ref({
+      upload: 0,
+      download: 0,
+      share: 0,
+      transfers: 0,
+      revoke: 0,
+      delete: 0,
+    });
     const isConfigured = ref(false);
     const liveEnv = ref(false);
 
-    function getGlobalStats() {
-      var config = {
-        method: "get",
-        url: constants.url + "/api/overview/",
-        params: {
-          //TODO: get app Id
-          id: "<APP-ID>",
-        },
-        //TODO: Authorizations
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw",
-        },
-      };
+    onBeforeMount(() => {
+      updateAppDetails();
+      // updateStats();
+    });
 
-      axios(config)
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-          //TODO: put data into model
-          /*
-              total_users = response.data.no_of_users;
-              uploads = response.data.actions.upload;
-              download = response.data.actions.download
-              share = response.data.actions.share;
-              transfers = response.data.actions.transfers;
-              revoke = response.data.actions.revoke;
-              delete = response.data.actions.delete;
-              bandwidth = response.data.actions.bandwidth;
-              storage = response.data.actions.storage;
-          */
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    async function updateAppDetails() {
+      try {
+        let apps = await fetchAllApps();
+        if (apps.data.length) {
+          store.dispatch("updateAppConfigurationStatus", true);
+        } else {
+          isConfigured.value = false;
+          store.dispatch("updateAppConfigurationStatus", false);
+        }
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
     }
 
-    function getAppDetails(){
-        var config = {
-        method: "get",
-        url: constants.url + "/api/get-app/",
-        params: {
-          //TODO: app Id
-          id: "<APP-ID>",
-        },
-        //TODO: Authorizations
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJFUzI1NiJ9.eyJlbWFpbCI6InNhdXJhdm5rMzBAZ21haWwuY29tIiwiaWF0IjoxNjMwMzA0NjUxLCJpZCI6MSwic3ViIjoiU2F1cmF2In0.T1DXUq0bCWD41Us_8UZ2AhVeack-kyASsBhSufPzsvRHNLsZW2KF8SprTn9fgJC_WNZLiYK7uOQJlwvV4UI2Nw",
-        },
-      };
-
-      axios(config)
-        .then(function (response) {
-          console.log(JSON.stringify(response.data));
-          //TODO: put data into model
-          /*
-             smartContractAddress = response.data.testnet_address;
-             region = response.data.region //will be number e.g. 0
-             response.data.bandwidth_limit
-             response.data.storage_limit
-        
-          */
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
+    async function updateStats() {
+      try {
+        let apps = await fetchAllApps();
+        console.log(apps.data);
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
     }
-
 
     function goToConfigure() {
+      console.log("Button clicked");
       router.push("/configure");
     }
 
@@ -829,7 +820,6 @@ export default {
     let StorageChart, BandwidthChart;
 
     onMounted(() => {
-      isConfigured.value = !!localStorage.getItem("isConfigured");
       Chart.register(...registerables);
 
       setTimeout(() => {
@@ -922,14 +912,9 @@ export default {
 
     return {
       SmartContractIcon,
-      SettingsIcon,
       RectanglePlaceholderIcon,
       smartContractAddress,
-      NoOfFilesIcon,
-      TotalUsersIcon,
       isConfigured,
-      PlayIcon,
-      InfoIcon,
       ArrowRightIcon,
       liveEnv,
       copySmartContractAddress,
@@ -937,6 +922,7 @@ export default {
       goToUsers,
       durationSelected,
       smartContractTooltip,
+      actions,
     };
   },
 };

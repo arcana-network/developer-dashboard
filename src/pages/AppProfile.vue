@@ -9,7 +9,12 @@
           style="justify-content: space-between; margin-right: 1.5em"
         >
           <h2>PERSONAL DETAILS</h2>
-          <v-button variant="link" label="Edit" :disabled="true" />
+          <v-button
+            variant="link"
+            label="Edit"
+            :disabled="true"
+            style="visibility: hidden"
+          />
         </div>
         <v-card
           variant="elevated"

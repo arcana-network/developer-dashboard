@@ -133,12 +133,15 @@ export default {
   name: "VCircularProgress",
   props: {
     color: String,
+    size: String,
   },
   setup(props) {
     props = reactive(props);
     const styles = computed(() => {
       return {
-        color: props.color,
+        color: props.color || "var(--primary)",
+        width: props.size || "3em",
+        height: props.size || "3em",
       };
     });
 

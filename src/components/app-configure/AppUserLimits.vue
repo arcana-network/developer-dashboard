@@ -26,7 +26,7 @@
         class="flex sm-column"
         style="gap: 3em; flex-grow: 1; align-items: flex-start"
       >
-        <div class="flex column" style="flex-grow: 1; gap: 20px">
+        <div class="flex column" style="gap: 20px">
           <div
             class="flex sm-column"
             style="justify-content: space-between; width: calc(90%)"
@@ -34,6 +34,7 @@
             <h3>STORAGE</h3>
             <div
               class="flex sm-column-gap"
+              v-show="false"
               style="align-items: center; gap: 1em"
             >
               <span class="body-2">Unlimited</span>
@@ -47,20 +48,22 @@
             <input
               type="number"
               maxlength="1"
-              id="storage"
+              id="storage-user-limit"
               min="0"
               pattern="[0-9]"
+              v-model="storage.value"
             />
             <v-dropdown
               :options="['MB', 'GB']"
               placeholder="unit"
               class="usage"
-              style="min-width: 8em"
+              style="min-width: 7em"
               triggerStyle="padding: 18px 20px"
+              v-model="storage.unit"
             />
           </div>
         </div>
-        <div class="flex column" style="flex-grow: 1; gap: 20px">
+        <div class="flex column" style="gap: 20px">
           <div
             class="flex sm-column sm-column-gap"
             style="justify-content: space-between; width: calc(90%)"
@@ -68,6 +71,7 @@
             <h3>BANDWIDTH</h3>
             <div
               class="flex sm-column-gap"
+              v-show="false"
               style="align-items: center; gap: 1em"
             >
               <span class="body-2">Unlimited</span>
@@ -81,16 +85,18 @@
             <input
               type="number"
               maxlength="1"
-              id="storage"
+              id="bandwidth-user-limit"
               min="0"
               pattern="[0-9]"
+              v-model="bandwidth.value"
             />
             <v-dropdown
               :options="['MB', 'GB']"
               placeholder="unit"
               class="usage"
-              style="min-width: 8em"
+              style="min-width: 7em"
               triggerStyle="padding: 18px 20px"
+              v-model="bandwidth.unit"
             />
           </div>
         </div>
@@ -120,23 +126,66 @@ export default {
     VButton,
   },
   setup() {
+    const store = useStore();
     let storageUnlimited = ref(false);
     let bandwidthUnlimited = ref(false);
+    let storage = ref({
+      value: "",
+      unit: "",
+    });
+    let bandwidth = ref({
+      value: "",
+      unit: "",
+    });
+
+    const env = computed(() => {
+      return store.getters.env;
+    });
+
+    storage.value = { ...store.getters[env.value + "/storage"] };
+    bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
+
+    watch(
+      () => env.value,
+      () => {
+        storage.value = { ...store.getters[env.value + "/storage"] };
+        bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
+      }
+    );
+
+    watch(
+      () => storage.value,
+      () => {
+        if (!storage.value.value) {
+          storage.value.value = 0;
+        }
+        store.dispatch(env.value + "/updateStorage", { ...storage.value });
+      },
+      { deep: true }
+    );
+
+    watch(
+      () => bandwidth.value,
+      () => {
+        if (!bandwidth.value.value) {
+          bandwidth.value.value = 0;
+        }
+        store.dispatch(env.value + "/updateBandwidth", { ...bandwidth.value });
+      },
+      { deep: true }
+    );
 
     return {
       storageUnlimited,
       bandwidthUnlimited,
+      storage,
+      bandwidth,
     };
   },
 };
 </script>
 
 <style scoped>
-.form-group {
-  width: 50%;
-  min-width: 280px;
-}
-
 div.text-field {
   background: linear-gradient(141.48deg, #1a1a1a -4.56%, #151515 135.63%);
   box-shadow: inset -2px -2px 4px rgba(57, 57, 57, 0.44),
@@ -156,8 +205,6 @@ input {
   line-height: 1.5em;
   margin: 0;
   padding: 15px 20px;
-  width: 2em;
-  flex-grow: 1;
 }
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
