@@ -3,7 +3,9 @@
     <app-header />
     <main class="container" v-if="isConfigured">
       <section class="flex dashboard-heading flex-wrap">
-        <h1 class="text-ellipsis flex-grow" style="min-width: 150px">ASPIRE</h1>
+        <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
+          {{ appName }}
+        </h1>
         <div
           class="
             flex
@@ -133,7 +135,9 @@
             <div class="flex flex-grow">
               <div>
                 <h4 class="font-400">Total Users</h4>
-                <h2 style="margin-top: 0.5em; font-size: 2em">0</h2>
+                <h2 style="margin-top: 0.5em; font-size: 2em">
+                  {{ totalUsers }}
+                </h2>
               </div>
               <v-icon-button
                 :icon="ArrowRightIcon"
@@ -157,7 +161,9 @@
             <div class="flex" style="flex-grow: 1">
               <div>
                 <h4 style="font-weight: 400">No of Files</h4>
-                <h2 style="margin-top: 0.5em; font-size: 2em">0</h2>
+                <h2 style="margin-top: 0.5em; font-size: 2em">
+                  {{ actions.upload }}
+                </h2>
               </div>
               <v-icon-button
                 :icon="ArrowRightIcon"
@@ -602,7 +608,13 @@ import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import { useRouter } from "vue-router";
 import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
 import { Chart, registerables } from "chart.js";
-import { onBeforeMount, onMounted, ref, watch } from "@vue/runtime-core";
+import {
+  computed,
+  onBeforeMount,
+  onMounted,
+  ref,
+  watch,
+} from "@vue/runtime-core";
 import AppHeader from "@/components/AppHeader.vue";
 import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
 import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
@@ -613,8 +625,10 @@ import {
   fetchAllApps,
   fetchStats,
   fetchPeriodicUsage,
+  fetchApp,
 } from "@/services/dashboard.service";
 import { useStore } from "vuex";
+import bytes from "bytes";
 
 export default {
   components: {
@@ -643,19 +657,50 @@ export default {
       revoke: 0,
       delete: 0,
     });
-    const isConfigured = ref(false);
+    const totalUsers = ref(0);
+    const isConfigured = ref(true);
     const liveEnv = ref(false);
+    const appName = computed(() => {
+      return store.getters.appName;
+    });
 
     onBeforeMount(() => {
       updateAppDetails();
-      // updateStats();
     });
 
     async function updateAppDetails() {
       try {
-        let apps = await fetchAllApps();
+        const apps = await fetchAllApps();
         if (apps.data.length) {
+          isConfigured.value = true;
           store.dispatch("updateAppConfigurationStatus", true);
+          const currentApp = apps.data[0];
+          store.dispatch("updateAppName", currentApp.name);
+          store.dispatch("updateAppId", currentApp.ID);
+          smartContractAddress.value = currentApp.address;
+          const env = store.getters.env;
+          const chainType = ["ethereum", "polygon", "binance"][
+            currentApp.chain
+          ];
+          store.dispatch(env + "/updateChainType", chainType);
+          const storage = bytes(currentApp.storage_limit, {
+            unitSeparator: " ",
+          });
+          const storageValues = storage.split(" ");
+          store.dispatch(env + "/updateStorage", {
+            value: storageValues[0],
+            unit: storageValues[1],
+          });
+          const bandwidth = bytes(currentApp.bandwidth_limit, {
+            unitSeparator: " ",
+          });
+          const bandwidthValues = bandwidth.split(" ");
+          store.dispatch(env + "/updateBandwidth", {
+            value: bandwidthValues[0],
+            unit: bandwidthValues[1],
+          });
+          fetchOtherDetails(currentApp.ID);
+          return;
         } else {
           isConfigured.value = false;
           store.dispatch("updateAppConfigurationStatus", false);
@@ -666,10 +711,39 @@ export default {
       }
     }
 
-    async function updateStats() {
+    async function fetchOtherDetails(appId) {
       try {
-        let apps = await fetchAllApps();
-        console.log(apps.data);
+        const stats = await fetchStats(appId);
+        const env = store.getters.env;
+        totalUsers.value = stats.data.no_of_users;
+        actions.value = {
+          download: stats.data.actions?.download,
+          upload: stats.data.actions?.upload,
+          delete: stats.data.actions?.delete,
+          transfers: stats.data.actions?.transfers,
+          share: stats.data.actions?.share,
+          revoke: stats.data.actions?.revoke,
+        };
+        const appDetails = await fetchApp(appId);
+        if (appDetails.data.cred) {
+          store.dispatch(
+            env + "/updateAuthDetails",
+            appDetails.data.cred.map((el) => {
+              return {
+                type: el.verifier,
+                authType: el.verifier,
+                verifier: el.verifier,
+                clientId: el.clientId,
+                clientSecret: el.clientSecret,
+                redirectUrl: el.redirectUrl,
+              };
+            })
+          );
+        } else {
+          store.dispatch(env + "/updateAuthDetails", []);
+        }
+        const periodicUsage = await fetchPeriodicUsage(appId);
+        console.log(periodicUsage);
       } catch (e) {
         console.error(e);
         return [];
@@ -923,6 +997,8 @@ export default {
       durationSelected,
       smartContractTooltip,
       actions,
+      appName,
+      totalUsers,
     };
   },
 };

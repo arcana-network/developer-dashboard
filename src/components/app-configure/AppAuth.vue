@@ -114,7 +114,7 @@ export default {
     VTextField,
     VTooltip,
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     const authenticationTypes = [
       // "Bring Your Own Keys",
@@ -169,7 +169,7 @@ export default {
             : selectedAuthenticationType.value.name.toLowerCase();
         if (
           !authenticationDetails.value.find(
-            (authDetail) => authDetail.type === type
+            (authDetail) => authDetail.type === type.toLowerCase()
           )
         ) {
           if (
@@ -182,7 +182,8 @@ export default {
           }
           authenticationDetails.value.push({
             type,
-            authType: selectedAuthenticationType.value.name,
+            verifier: type,
+            authType: type,
             clientId: selectedAuthClientId.value.trim(),
             redirectUrl: selectedAuthRedirectUrl.value.trim(),
             clientSecret: selectedAuthenticationType.value.secretRequired
@@ -193,6 +194,9 @@ export default {
             env.value + "/updateAuthDetails",
             authenticationDetails.value
           );
+          if (props.isConfigured && !store.getters.onConfigChange) {
+            store.dispatch("configChangeDetected");
+          }
           selectedAuthClientId.value = "";
           selectedAuthClientSecret.value = "";
           selectedAuthenticationType.value = "";

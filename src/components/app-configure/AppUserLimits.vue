@@ -125,7 +125,7 @@ export default {
     VSwitch,
     VButton,
   },
-  setup() {
+  setup(props) {
     const store = useStore();
     let storageUnlimited = ref(false);
     let bandwidthUnlimited = ref(false);
@@ -160,6 +160,9 @@ export default {
           storage.value.value = 0;
         }
         store.dispatch(env.value + "/updateStorage", { ...storage.value });
+        if (props.isConfigured && !store.getters.onConfigChange) {
+          store.dispatch("configChangeDetected");
+        }
       },
       { deep: true }
     );
@@ -171,6 +174,9 @@ export default {
           bandwidth.value.value = 0;
         }
         store.dispatch(env.value + "/updateBandwidth", { ...bandwidth.value });
+        if (props.isConfigured && !store.getters.onConfigChange) {
+          store.dispatch("configChangeDetected");
+        }
       },
       { deep: true }
     );

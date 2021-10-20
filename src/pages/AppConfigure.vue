@@ -367,8 +367,6 @@ import { computed, onBeforeMount, onMounted, watch } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import constants from "@/utils/constants";
-import axios from "axios";
 
 import AppHeader from "@/components/AppHeader.vue";
 import CircleProgress from "vue3-circle-progress";
@@ -392,8 +390,8 @@ import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 import PauseIcon from "@/assets/iconography/pause-disabled.svg";
-import DeleteIcon from "@/assets/iconography/delete-disabled.svg";
-import { createApp } from "@/services/app-config.service";
+import DeleteIcon from "@/assets/iconography/delete.svg";
+import { createApp, updateApp } from "@/services/app-config.service";
 
 export default {
   components: {
@@ -435,7 +433,6 @@ export default {
       return store.getters.env;
     });
 
-    let appName = store.getters.appName;
     let testConfig = {
       region: store.getters["test/region"],
       chainType: store.getters["test/chainType"],
@@ -473,11 +470,10 @@ export default {
           step.value = 5;
           createApp({
             name: store.getters.appName,
-            ...store.getters.config,
-          }).then((response) => {
-            console.log(response.data);
+            ...store.getters[env + "/config"],
+          }).then(() => {
+            router.replace("/");
           });
-          router.replace("/");
         }
       } else {
         testConfig = {
@@ -488,7 +484,13 @@ export default {
           region: store.getters["live/region"],
           chainType: store.getters["live/chainType"],
         };
-        store.dispatch("configChangeReset");
+        updateApp(store.getters.appId, {
+          name: store.getters.appName,
+          ...store.getters[env.value + "/config"],
+        }).then(() => {
+          store.dispatch("configChangeReset");
+          router.replace("/");
+        });
       }
     }
 
@@ -515,8 +517,6 @@ export default {
         store.dispatch("configChangeReset");
       }
     }
-
-    function updateApp() {}
 
     function handleDelete() {
       localStorage.clear();

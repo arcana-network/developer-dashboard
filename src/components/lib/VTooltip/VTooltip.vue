@@ -1,5 +1,5 @@
 <template>
-  <div v-if="title" class="tooltip-wrapper">
+  <div v-if="title" class="tooltip-wrapper" v-bind="attrs">
     <slot></slot>
     <span
       class="tooltip body-3"
@@ -22,11 +22,11 @@ span.tooltip {
   position: absolute;
   top: calc(100% + 5px);
   padding: 1em;
-  left: 0;
+  left: -100%;
   min-height: 1.25em;
   min-width: 5em;
   width: max-content;
-  max-width: 15em;
+  max-width: 26em;
   text-align: center;
   background: radial-gradient(
     252.43% 1769.19% at -86.03% 38.38%,
@@ -54,11 +54,12 @@ span.tooltip {
 import { computed, reactive } from "@vue/runtime-core";
 export default {
   name: "VTooltip",
+  inheritAttrs: false,
   props: {
     title: String,
     delay: String,
   },
-  setup(props) {
+  setup(props, { attrs }) {
     props = reactive(props);
     const positionClass = {
       bottom: false,
@@ -71,6 +72,7 @@ export default {
     return {
       positionClass,
       transitionDelay,
+      attrs,
     };
   },
 };

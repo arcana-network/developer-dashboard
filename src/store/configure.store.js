@@ -62,7 +62,14 @@ const getters = {
     return {
       region: 0,
       chain,
-      cred: [...authDetails],
+      cred: state.authDetails.map((authDetail) => {
+        return {
+          verifier: authDetail.verifier,
+          clientId: authDetail.clientId,
+          clientSecret: authDetail.clientSecret,
+          redirectUrl: authDetail.redirectUrl,
+        };
+      }),
       storage_limit,
       bandwidth_limit,
     };

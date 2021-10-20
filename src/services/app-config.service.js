@@ -32,8 +32,36 @@ export function fetchAppDetails(appId) {
   return axios.get();
 }
 
-export function updateApp() {
-  return axios.post();
+export function updateApp(
+  appId,
+  { name, region, chain, bandwidth_limit, storage_limit, cred }
+) {
+  console.log({
+    ID: appId,
+    name,
+    region,
+    chain,
+    bandwidth_limit,
+    storage_limit,
+    cred,
+  });
+  return axios.post(
+    getEnvApi() + "/api/update-app/?id=" + appId,
+    {
+      ID: appId,
+      name,
+      region,
+      chain,
+      bandwidth_limit,
+      storage_limit,
+      cred,
+    },
+    {
+      headers: {
+        Authorization: "Bearer " + store.getters.accessToken,
+      },
+    }
+  );
 }
 
 export function deleteApp() {

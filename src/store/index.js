@@ -7,6 +7,7 @@ const debug = process.env.NODE_ENV !== "production";
 const state = {
   env: "test",
   appName: "",
+  appId: null,
   onConfigChange: false,
   isAppConfigured: false,
 };
@@ -14,6 +15,7 @@ const state = {
 const getters = {
   env: (state) => state.env,
   appName: (state) => state.appName,
+  appId: (state) => state.appId,
   onConfigChange: (state) => state.onConfigChange,
   isAppConfigured: (state) => state.isAppConfigured,
 };
@@ -24,6 +26,9 @@ const mutations = {
   },
   updateAppName(state, appName) {
     state.appName = appName;
+  },
+  updateAppId(state, appId) {
+    state.appId = appId;
   },
   configChangeDetected(state) {
     state.onConfigChange = true;
@@ -42,6 +47,9 @@ const actions = {
   },
   updateAppName({ commit }, appName) {
     commit("updateAppName", appName);
+  },
+  updateAppId({ commit }, appId) {
+    commit("updateAppId", appId);
   },
   configChangeDetected({ commit }) {
     commit("configChangeDetected");

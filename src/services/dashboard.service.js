@@ -11,6 +11,14 @@ export function fetchAllApps() {
   });
 }
 
+export function fetchApp(appId) {
+  return axios.get(getEnvApi() + "/api/get-app/?id=" + appId, {
+    headers: {
+      Authorization: "Bearer " + store.getters.accessToken,
+    },
+  });
+}
+
 export function fetchStats(appId) {
   return axios.get(getEnvApi() + "/api/overview/?id=" + appId, {
     headers: {
