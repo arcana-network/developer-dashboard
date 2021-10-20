@@ -629,6 +629,7 @@ import {
 } from "@/services/dashboard.service";
 import { useStore } from "vuex";
 import bytes from "bytes";
+import copyToClipboard from "../utils/copyToClipboard";
 
 export default {
   components: {
@@ -761,6 +762,7 @@ export default {
     function copySmartContractAddress() {
       SmartContractIcon.value = CheckIcon;
       smartContractTooltip.value = "Copied";
+      copyToClipboard(smartContractAddress.value);
       setTimeout(() => {
         SmartContractIcon.value = CopyIcon;
         smartContractTooltip.value = "Click to copy";
