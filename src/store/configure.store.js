@@ -38,6 +38,13 @@ const getters = {
   bandwidth: (state) => state.userLimits.bandwidth.limit,
   config: (state) => {
     let chain;
+    console.log(
+      state.userLimits.storage.limit.value + state.userLimits.storage.limit.unit
+    );
+    console.log(
+      state.userLimits.bandwidth.limit.value +
+        state.userLimits.bandwidth.limit.unit
+    );
     const storage_limit = bytes(
       state.userLimits.storage.limit.value + state.userLimits.storage.limit.unit
     );
@@ -100,9 +107,42 @@ const mutations = {
   },
   updateStorage(state, { unit, value }) {
     state.userLimits.storage.limit = { value, unit };
+    console.log(state.userLimits);
   },
   updateBandwidth(state, { unit, value }) {
     state.userLimits.bandwidth.limit = { value, unit };
+    console.log(state.userLimits);
+  },
+  resetConfigStore(state) {
+    state = {
+      region: {
+        any: true,
+        asia: false,
+        africa: false,
+        australia: false,
+        europe: false,
+        northAmerica: false,
+        southAmerica: false,
+      },
+      chainType: "",
+      userLimits: {
+        storage: {
+          isUnlimited: false,
+          limit: {
+            value: 2,
+            unit: "MB",
+          },
+        },
+        bandwidth: {
+          isUnlimited: false,
+          limit: {
+            value: 2,
+            unit: "MB",
+          },
+        },
+      },
+      authDetails: [],
+    };
   },
 };
 
@@ -123,6 +163,9 @@ const actions = {
   },
   updateBandwidth({ commit }, { unit, value }) {
     commit("updateBandwidth", { value, unit });
+  },
+  resetConfigStore({ commit }) {
+    commit("resetConfigStore");
   },
 };
 

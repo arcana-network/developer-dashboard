@@ -38,6 +38,8 @@ export const api = {
 
 export const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID;
 
+export const origin = import.meta.env.VITE_ORIGIN;
+
 export default {
   sso,
   ssoRedirectUrl,
@@ -45,4 +47,5 @@ export default {
   api,
   ssoRedirectUrl,
   arcanaAppId,
+  origin,
 };

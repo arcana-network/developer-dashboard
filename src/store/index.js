@@ -39,6 +39,10 @@ const mutations = {
   updateAppConfigurationStatus(state, isAppConfigured) {
     state.isAppConfigured = isAppConfigured;
   },
+  resetStore(state) {
+    state.appName = "";
+    state.appId = "";
+  },
 };
 
 const actions = {
@@ -59,6 +63,9 @@ const actions = {
   },
   updateAppConfigurationStatus({ commit }, isAppConfigured) {
     commit("updateAppConfigurationStatus", isAppConfigured);
+  },
+  resetStore({ commit }) {
+    commit("resetStore");
   },
 };
 

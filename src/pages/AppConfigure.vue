@@ -106,6 +106,7 @@
       @save="onFooterSave"
       @cancel="onFooterCancel"
     />
+
     <v-overlay
       v-if="deleteApp"
       style="align-items: center; justify-content: center; display: flex"
@@ -157,17 +158,18 @@
             label="CANCEL"
             v-wave
             style="border: 3px solid #28c6fa"
-            @click="deleteApp = false"
+            @click.stop="deleteApp = false"
           />
           <v-button
             variant="primary"
             label="DELETE"
             v-wave
-            @click="startDeleteTimer"
+            :action="startDeleteTimer"
           />
         </footer>
       </v-card>
     </v-overlay>
+
     <v-overlay
       v-if="proceedDelete"
       style="align-items: center; justify-content: center; display: flex"
@@ -182,7 +184,6 @@
           flex-direction: column;
           gap: 1vh;
         "
-        -
       >
         <header
           class="sub-heading-1"
@@ -219,13 +220,13 @@
             label="CANCEL"
             v-wave
             style="border: 3px solid #28c6fa"
-            @click="handleCancelDelete"
+            @click.stop="handleCancelDelete"
           />
           <v-button
             variant="primary"
             label="DELETE"
             v-wave
-            @click="handleDelete"
+            @click.stop="handleDelete"
           />
         </footer>
       </v-card>
@@ -391,7 +392,11 @@ import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 import PauseIcon from "@/assets/iconography/pause-disabled.svg";
 import DeleteIcon from "@/assets/iconography/delete.svg";
-import { createApp, updateApp } from "@/services/app-config.service";
+import {
+  createApp,
+  updateApp,
+  deleteApp as deleteAppApi,
+} from "@/services/app-config.service";
 
 export default {
   components: {
@@ -470,20 +475,12 @@ export default {
           step.value = 5;
           createApp({
             name: store.getters.appName,
-            ...store.getters[env + "/config"],
+            ...store.getters[env.value + "/config"],
           }).then(() => {
             router.replace("/");
           });
         }
       } else {
-        testConfig = {
-          region: store.getters["test/region"],
-          chainType: store.getters["test/chainType"],
-        };
-        liveConfig = {
-          region: store.getters["live/region"],
-          chainType: store.getters["live/chainType"],
-        };
         updateApp(store.getters.appId, {
           name: store.getters.appName,
           ...store.getters[env.value + "/config"],
@@ -520,7 +517,13 @@ export default {
 
     function handleDelete() {
       localStorage.clear();
-      router.push("/");
+      deleteAppApi().then((response) => {
+        console.log(response);
+        store.dispatch("test/resetConfigStore");
+        store.dispatch("live/resetConfigStore");
+        store.dispatch("resetStore");
+        router.push("/");
+      });
     }
 
     let intervalForDelete;

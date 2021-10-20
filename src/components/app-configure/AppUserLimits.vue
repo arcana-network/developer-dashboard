@@ -130,12 +130,12 @@ export default {
     let storageUnlimited = ref(false);
     let bandwidthUnlimited = ref(false);
     let storage = ref({
-      value: "",
-      unit: "",
+      value: 2,
+      unit: "MB",
     });
     let bandwidth = ref({
-      value: "",
-      unit: "",
+      value: 2,
+      unit: "MB",
     });
 
     const env = computed(() => {
@@ -156,9 +156,6 @@ export default {
     watch(
       () => storage.value,
       () => {
-        if (!storage.value.value) {
-          storage.value.value = 0;
-        }
         store.dispatch(env.value + "/updateStorage", { ...storage.value });
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");
@@ -170,9 +167,7 @@ export default {
     watch(
       () => bandwidth.value,
       () => {
-        if (!bandwidth.value.value) {
-          bandwidth.value.value = 0;
-        }
+        console.log(bandwidth.value);
         store.dispatch(env.value + "/updateBandwidth", { ...bandwidth.value });
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");

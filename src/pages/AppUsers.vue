@@ -31,7 +31,7 @@
               </tr>
             </thead>
           </table>
-          <table style="width: 100%">
+          <table v-if="data.length" style="width: 100%">
             <tbody>
               <tr
                 v-for="el in data"
@@ -48,6 +48,7 @@
               </tr>
             </tbody>
           </table>
+          <h4 v-else>No records found</h4>
         </div>
       </v-card>
       <div class="flex column" style="gap: 2em; margin-top: 4em">
@@ -175,7 +176,7 @@
 
 <style scoped>
 .table-container {
-  height: 30vh;
+  max-height: 30vh;
   overflow-x: auto;
 }
 .log-container {
@@ -294,12 +295,14 @@ import SearchIcon from "../assets/iconography/search.svg";
 import VCard from "../components/lib/VCard/VCard.vue";
 import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import { ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onBeforeMount, onMounted } from "@vue/runtime-core";
 import { Chart, registerables } from "chart.js";
+import { fetchAllUsers } from "../services/user.service";
+
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
   setup() {
-    let data = [];
+    let data = ref([]);
     for (let i = 0; i < 40; i++) {
       let logs = [];
       for (let j = 0; j < 5; j++) {
@@ -382,15 +385,17 @@ export default {
           },
         ];
       }
-      data.push({
-        walletAddress: "0x8B......1234",
-        storage: "2GB",
-        bandwidth: "5GB",
-        actionCount: "10",
-        email: "john@cena.com",
-        logs,
-      });
+      // data.value.push({
+      //   walletAddress: "0x8B......1234",
+      //   storage: "2GB",
+      //   bandwidth: "5GB",
+      //   actionCount: "10",
+      //   email: "john@cena.com",
+      //   logs,
+      // });
     }
+
+    console.log(data.value);
 
     let showDetails = ref(false);
     let userLog = ref({});
@@ -480,6 +485,13 @@ export default {
           new Chart(numberOfUsersCtx, { ...config });
         }
       }, 100);
+    });
+
+    onBeforeMount(() => {
+      fetchAllUsers().then((response) => {
+        console.log(response);
+        // data.value = response.data || [];/
+      });
     });
 
     return {

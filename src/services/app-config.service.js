@@ -28,10 +28,6 @@ export function createApp({
   );
 }
 
-export function fetchAppDetails(appId) {
-  return axios.get();
-}
-
 export function updateApp(
   appId,
   { name, region, chain, bandwidth_limit, storage_limit, cred }
@@ -65,5 +61,12 @@ export function updateApp(
 }
 
 export function deleteApp() {
-  return axios.delete();
+  return axios.delete(
+    getEnvApi() + "/api/delete-app/?id=" + store.getters.appId,
+    {
+      headers: {
+        Authorization: "Bearer " + store.getters.accessToken,
+      },
+    }
+  );
 }
