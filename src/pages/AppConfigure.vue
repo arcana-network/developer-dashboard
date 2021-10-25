@@ -397,6 +397,7 @@ import {
   updateApp,
   deleteApp as deleteAppApi,
 } from "@/services/app-config.service";
+import { makeTx } from "../utils/main";
 
 export default {
   components: {
@@ -481,13 +482,39 @@ export default {
           });
         }
       } else {
+        console.log(store.getters["test/config"]);
+        const config = { ...store.getters[env.value + "/config"] };
+        // const makeTxUserLimits = makeTx(
+        //   store.getters.smartContractAddress,
+        //   "setDefaultLimit",
+        //   [config.storage, config.bandwidth]
+        // );
+
+        // await Promise.all([makeTxUserLimits]);
+
         updateApp(store.getters.appId, {
           name: store.getters.appName,
-          ...store.getters[env.value + "/config"],
+          ...config,
         }).then(() => {
           store.dispatch("configChangeReset");
           router.replace("/");
         });
+
+        console.log(store.getters.smartContractAddress, "setGoogleClientId", [
+          "random-client-id",
+        ]);
+
+        makeTx(store.getters.smartContractAddress, "setGoogleClientId", [
+          "random-client-id",
+        ]);
+
+        console.log(store.getters.smartContractAddress, "setAppName", [
+          store.getters.appName,
+        ]);
+
+        makeTx(store.getters.smartContractAddress, "setAppName", [
+          store.getters.appName,
+        ]);
       }
     }
 

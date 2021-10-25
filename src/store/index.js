@@ -10,6 +10,7 @@ const state = {
   appId: null,
   onConfigChange: false,
   isAppConfigured: false,
+  smartContractAddress: "",
 };
 
 const getters = {
@@ -18,6 +19,7 @@ const getters = {
   appId: (state) => state.appId,
   onConfigChange: (state) => state.onConfigChange,
   isAppConfigured: (state) => state.isAppConfigured,
+  smartContractAddress: (state) => state.smartContractAddress,
 };
 
 const mutations = {
@@ -43,6 +45,9 @@ const mutations = {
     state.appName = "";
     state.appId = "";
   },
+  updateSmartContractAddress(state, smartContractAddress) {
+    state.smartContractAddress = smartContractAddress;
+  },
 };
 
 const actions = {
@@ -66,6 +71,9 @@ const actions = {
   },
   resetStore({ commit }) {
     commit("resetStore");
+  },
+  updateSmartContractAddress({ commit }, smartContractAddress) {
+    commit("updateSmartContractAddress", smartContractAddress);
   },
 };
 

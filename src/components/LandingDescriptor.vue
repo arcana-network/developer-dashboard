@@ -5,27 +5,19 @@
       width: 40%;
       max-width: 488px;
       min-width: 400px;
-      margin-top: 12vh;
+      margin-top: 8vh;
       margin-left: 4vw;
     "
   >
     <img :src="AppLogo" style="height: 72px" alt="Arcana Logo" />
-    <h1 style="margin-top: 10vh; margin-right: 4vw">
+    <h1 style="margin-top: 4vh; margin-right: 4vw">
       Make your dApps secure from the ground up!
     </h1>
-    <div class="body-3" style="margin-top: 3vh">
+    <div class="body-3" style="margin-top: 4vh">
       Lorem ipsum dolor sit amet,<br />
       consectetuer adipiscing elit,
     </div>
-    <div
-      style="
-        margin-top: 10vh;
-        margin-bottom: 4vh;
-        height: 24vh;
-        margin-right: 4vw;
-        background-color: #2b2828;
-      "
-    ></div>
+    <img src="@/assets/sidebar-illustration.png" style="margin: 6vh auto 0" />
   </div>
   <v-seperator
     :vertical="true"

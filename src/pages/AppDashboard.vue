@@ -203,23 +203,23 @@
         <div class="flex flex-wrap duration" style="margin-bottom: 1em">
           <v-card-button
             label="Weekly"
-            :active="durationSelected === 'weekly'"
-            @click.stop="durationSelected = 'weekly'"
+            :active="durationSelected === 'day'"
+            @click.stop="durationSelected = 'day'"
           />
           <v-card-button
             label="Monthly"
-            :active="durationSelected === 'monthly'"
-            @click.stop="durationSelected = 'monthly'"
+            :active="durationSelected === 'month'"
+            @click.stop="durationSelected = 'month'"
           />
           <v-card-button
             label="Quarterly"
-            :active="durationSelected === 'quarterly'"
-            @click.stop="durationSelected = 'quarterly'"
+            :active="durationSelected === 'quarter'"
+            @click.stop="durationSelected = 'quarter'"
           />
           <v-card-button
             label="Yearly"
-            :active="durationSelected === 'yearly'"
-            @click.stop="durationSelected = 'yearly'"
+            :active="durationSelected === 'year'"
+            @click.stop="durationSelected = 'year'"
           />
         </div>
         <section class="flex sm-column">
@@ -660,7 +660,8 @@ export default {
     const router = useRouter();
     const store = useStore();
     const smartContractAddress = ref("");
-    const durationSelected = ref("monthly");
+    const durationSelected = ref("day");
+    durationSelected.value = "month";
     const actions = ref({
       upload: 0,
       download: 0,
@@ -696,6 +697,10 @@ export default {
           store.dispatch("updateAppName", currentApp.name);
           store.dispatch("updateAppId", currentApp.ID);
           smartContractAddress.value = currentApp.address;
+          store.dispatch(
+            "updateSmartContractAddress",
+            smartContractAddress.value
+          );
           const env = store.getters.env;
           const chainType = ["ethereum", "polygon", "binance"][
             currentApp.chain
@@ -731,6 +736,7 @@ export default {
 
     async function fetchOtherDetails(appId) {
       try {
+        updateChart();
         const stats = await fetchStats(appId);
         const env = store.getters.env;
         totalUsers.value = stats.data.no_of_users;
@@ -783,7 +789,7 @@ export default {
         } else {
           store.dispatch(env + "/updateAuthDetails", []);
         }
-        const periodicUsage = await fetchPeriodicUsage(appId);
+        const periodicUsage = await fetchPeriodicUsage(durationSelected.value);
         console.log(periodicUsage);
       } catch (e) {
         console.error(e);
@@ -812,11 +818,24 @@ export default {
     const config = {
       type: "line",
       data: {
-        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
         datasets: [
           {
             label: "Storage used in GB",
-            data: [50, 120, 270, 150, 100, 130, 120],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             borderColor: "white",
             borderWidth: 4,
             lineTension: 0.2,
@@ -873,11 +892,24 @@ export default {
     const config2 = {
       type: "line",
       data: {
-        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
         datasets: [
           {
             label: "Bandwidth used in GB",
-            data: [150, 20, 270, 50, 100, 13, 120],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             borderColor: "white",
             borderWidth: 4,
             lineTension: 0.2,
@@ -958,71 +990,96 @@ export default {
       router.push("/users");
     }
 
+    function updateChart() {
+      try {
+        let labels;
+        let storageData;
+        let bandwidthData;
+        fetchPeriodicUsage(durationSelected.value).then((periodicUsage) => {
+          console.log(periodicUsage.data);
+          const data = periodicUsage.data;
+          switch (durationSelected.value) {
+            case "day":
+              if (data.length) {
+              } else {
+                labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+                storageData = [0, 0, 0, 0, 0, 0, 0];
+                bandwidthData = [0, 0, 0, 0, 0, 0, 0];
+              }
+              break;
+            case "month":
+              if (data.length) {
+              } else {
+                labels = [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dec",
+                ];
+                storageData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                bandwidthData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+              }
+              break;
+            case "quarter":
+              if (data.length) {
+              } else {
+                labels = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
+                storageData = [0, 0, 0, 0];
+                bandwidthData = [0, 0, 0, 0];
+              }
+              break;
+            case "year":
+              if (data.length) {
+              } else {
+                labels = ["2019", "2020", "2021"];
+                storageData = [0, 0, 0];
+                bandwidthData = [0, 0, 0];
+              }
+              break;
+            default:
+              break;
+          }
+          console.log(labels);
+          // StorageChart.data.datasets = [
+          //   {
+          //     label: "Storage used in GB",
+          //     data: storageData,
+          //     borderColor: "white",
+          //     borderWidth: 4,
+          //     lineTension: 0.2,
+          //   },
+          // ];
+          // StorageChart.data.labels = labels;
+          // StorageChart.update();
+          // BandwidthChart.data.datasets = [
+          //   {
+          //     label: "Bandwidth used in GB",
+          //     data: bandwidthData,
+          //     borderColor: "white",
+          //     borderWidth: 4,
+          //     lineTension: 0.2,
+          //   },
+          // ];
+          // BandwidthChart.data.labels = labels;
+          // BandwidthChart.update();
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
     watch(
       () => durationSelected.value,
       () => {
-        let labels;
-        let data;
-        let data2;
-        switch (durationSelected.value) {
-          case "weekly":
-            labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-            data2 = [50, 120, 270, 150, 100, 130, 120];
-            data = [20, 22, 30, 50, 120, 180, 220];
-            break;
-          case "monthly":
-            labels = [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ];
-            data2 = [50, 120, 270, 150, 100, 130, 120, 50, 120, 240, 290, 290];
-            data = [20, 22, 30, 50, 120, 180, 220, 250, 280, 290, 298, 300];
-            break;
-          case "quarterly":
-            labels = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
-            data2 = [50, 120, 270, 150];
-            data = [60, 100, 170, 250];
-            break;
-          case "yearly":
-            labels = ["2019", "2020", "2021"];
-            data2 = [200, 300, 300];
-            data = [100, 200, 300];
-            break;
-          default:
-            break;
-        }
-        StorageChart.data.datasets = [
-          {
-            label: "Storage used in GB",
-            data,
-            borderColor: "white",
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ];
-        StorageChart.data.labels = labels;
-        StorageChart.update();
-        BandwidthChart.data.datasets = [
-          {
-            label: "Bandwidth used in GB",
-            data: data2,
-            borderColor: "white",
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ];
-        BandwidthChart.data.labels = labels;
-        BandwidthChart.update();
+        updateChart();
       }
     );
 

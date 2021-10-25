@@ -27,9 +27,13 @@ export function fetchStats(appId) {
   });
 }
 
-export function fetchPeriodicUsage(appId, period = "month") {
+export function fetchPeriodicUsage(period = "month") {
   return axios.get(
-    getEnvApi() + "/api/app-usage/?id=" + appId + "&period=" + period,
+    getEnvApi() +
+      "/api/app-usage/?id=" +
+      store.getters.appId +
+      "&period=" +
+      period,
     {
       headers: {
         Authorization: "Bearer " + store.getters.accessToken,

@@ -43,35 +43,6 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin('twitter')"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/twitter-sso.svg"
-                  />
-                  <span class="body-1">Twitter</span>
-                </div>
-              </v-card-button>
-            </div>
-            <div
-              class="flex wrap"
-              style="gap: 1em; margin-top: 2em; justify-content: space-between"
-            >
-              <v-card-button
-                class="sso-button"
-                @click.stop="launchLogin('discord')"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/discord-sso.svg"
-                  />
-                  <span class="body-1">Discord</span>
-                </div>
-              </v-card-button>
-              <v-card-button
-                class="sso-button"
                 @click.stop="launchLogin('github')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
@@ -109,6 +80,36 @@
                     src="@/assets/reddit-sso.svg"
                   />
                   <span class="body-1">Reddit</span>
+                </div>
+              </v-card-button>
+            </div>
+            <div
+              class="flex wrap"
+              style="gap: 1em; margin-top: 2em; justify-content: space-between"
+            >
+              <v-card-button
+                class="sso-button"
+                @click.stop="launchLogin('discord')"
+              >
+                <div class="flex" style="align-items: center; padding: 0.2em 0">
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/discord-sso.svg"
+                  />
+                  <span class="body-1">Discord</span>
+                </div>
+              </v-card-button>
+              <v-card-button
+                class="sso-button"
+                @click.stop="launchLogin('twitter')"
+                style="visibility: hidden"
+              >
+                <div class="flex" style="align-items: center; padding: 0.2em 0">
+                  <img
+                    style="margin-right: 1em"
+                    src="@/assets/twitter-sso.svg"
+                  />
+                  <span class="body-1">Twitter</span>
                 </div>
               </v-card-button>
             </div>
@@ -262,7 +263,7 @@ export default {
         store.dispatch("updateWalletAddress", wallet.address);
         store.dispatch("updateUserInfo", {
           email: userInfo.id,
-          name: userInfo.name,
+          name: userInfo.name || userInfo.id,
         });
         loading.value = false;
         router.replace({ name: "Dashboard" });

@@ -213,6 +213,7 @@ import { useRouter } from "vue-router";
 import { onBeforeMount } from "@vue/runtime-core";
 import { fetchProfile, updateOrganization } from "../services/profile.service";
 import { useStore } from "vuex";
+import { logout } from "../services/auth.service";
 
 export default {
   components: { AppHeader, VButton, VCard, VTextField },
@@ -260,7 +261,9 @@ export default {
     });
 
     function onLogout() {
-      router.push("/signin");
+      logout();
+      store.dispatch("updateAccessToken", null);
+      router.push({ name: "Login" });
     }
 
     return {
