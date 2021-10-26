@@ -150,8 +150,7 @@ function padWithZeroes(e, t) {
 }
 
 export function signTypedData_v4(e, t) {
-  console.log("Signed Data ==========================", t.data, typeof t.data);
-  const r = keccak(t.data);
+  const r = keccak256(t.data);
   console.log(typeof r, r);
   const n = ethUtil.ecsign(r, e);
   return ethUtil.bufferToHex(concatSig(n.v, n.r, n.s));

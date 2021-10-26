@@ -397,7 +397,8 @@ import {
   updateApp,
   deleteApp as deleteAppApi,
 } from "@/services/app-config.service";
-import { makeTx } from "../utils/main";
+import { signerMakeTx } from "../utils/signer";
+import getEnvApi from "../services/get-env-api";
 
 export default {
   components: {
@@ -500,13 +501,68 @@ export default {
           router.replace("/");
         });
 
-        // console.log(store.getters.smartContractAddress, "setGoogleClientId", [
-        //   "random-client-id",
-        // ]);
+        console.log(
+          "Make Tx",
+          store.getters.smartContractAddress,
+          "setGoogleClientId",
+          ["random-client-id"]
+        );
 
-        // makeTx(store.getters.smartContractAddress, "setGoogleClientId", [
-        //   "random-client-id",
-        // ]);
+        const googleClientId = store.getters[
+          store.getters.env + "/authDetails"
+        ].find((el) => el.verifier === "google")?.clientId;
+
+        console.log({ googleClientId });
+
+        if (googleClientId) {
+          signerMakeTx({
+            ...getTxRequestProps(),
+            method: "setGoogleClientId",
+            value: [googleClientId],
+          }).then((response) => {
+            console.log(response);
+          });
+        }
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
 
         // console.log(store.getters.smartContractAddress, "setAppName", [
         //   store.getters.appName,
@@ -516,6 +572,17 @@ export default {
         //   store.getters.appName,
         // ]);
       }
+    }
+
+    function getTxRequestProps() {
+      return {
+        privateKey: store.getters.keys.privateKey,
+        appAddress: store.getters.smartContractAddress,
+        rpc: import.meta.env.VITE_ARCANA_RPC,
+        gateway: getEnvApi(),
+        forwarderAddress: import.meta.env.VITE_ARCANA_FORWARDER_ADDRESS,
+        accessToken: store.getters.accessToken,
+      };
     }
 
     function onFooterCancel() {

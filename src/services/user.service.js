@@ -13,6 +13,21 @@ export function fetchAllUsers() {
   );
 }
 
+export function searchUsers(address) {
+  return axios.get(
+    getEnvApi() +
+      "/api/user-details/?id=" +
+      store.getters.appId +
+      "&address=" +
+      address,
+    {
+      headers: {
+        Authorization: "Bearer " + store.getters.accessToken,
+      },
+    }
+  );
+}
+
 export function fetchAllUserTransactions(userAddress) {
   return axios.get(
     getEnvApi() +

@@ -641,6 +641,7 @@ import {
 import { useStore } from "vuex";
 import bytes from "bytes";
 import copyToClipboard from "../utils/copyToClipboard";
+import { getAddress } from "../utils/get-address";
 
 export default {
   components: {
@@ -696,7 +697,12 @@ export default {
           const currentApp = apps.data[0];
           store.dispatch("updateAppName", currentApp.name);
           store.dispatch("updateAppId", currentApp.ID);
-          smartContractAddress.value = currentApp.address;
+
+          // Get Address
+          const appAddress = await getAddress(currentApp.address);
+          console.log(appAddress);
+
+          smartContractAddress.value = appAddress;
           store.dispatch(
             "updateSmartContractAddress",
             smartContractAddress.value
@@ -772,6 +778,7 @@ export default {
           }
         );
         const appDetails = await fetchApp(appId);
+
         if (appDetails.data.cred) {
           store.dispatch(
             env + "/updateAuthDetails",

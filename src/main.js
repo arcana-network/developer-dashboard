@@ -9,9 +9,11 @@ import * as Sentry from "@sentry/vue";
 import { Integrations } from "@sentry/tracing";
 import { sentry as sentryConfig } from "./utils/constants";
 import { Buffer } from "buffer";
+import { Stream } from "stream-browserify";
 
 window.global = window;
-window.Buffer = Buffer;
+window.Buffer = window.Buffer || Buffer;
+window.Stream = Stream;
 
 const app = createApp(App);
 // Sentry.init({

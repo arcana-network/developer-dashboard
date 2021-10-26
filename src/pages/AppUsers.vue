@@ -10,9 +10,12 @@
         <h4 style="">USER DETAILS</h4>
         <v-text-field
           :icon="SearchIcon"
+          clickable-icon
           :noMessage="true"
           placeholder="Enter Wallet Address"
+          v-model="walletAddress"
           :style="'width: 20em'"
+          @icon-clicked="searchWalletAddress"
         />
       </div>
       <v-card
@@ -298,6 +301,7 @@ import {
   fetchAllUsers,
   fetchAllUserTransactions,
   fetchMonthlyUsers,
+  searchUsers,
 } from "../services/user.service";
 import moment from "moment";
 
@@ -305,6 +309,7 @@ export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
   setup() {
     let data = ref([]);
+    let walletAddress = ref("");
     for (let i = 0; i < 40; i++) {
       let logs = [];
       for (let j = 0; j < 5; j++) {
@@ -531,6 +536,24 @@ export default {
       return address.substr(0, 4) + "...." + address.substr(address.length - 4);
     }
 
+    function searchWalletAddress() {
+      if (walletAddress.value.trim()) {
+        searchUsers(walletAddress.value).then((response) => {
+          if (response.data instanceof Array) {
+            response.data.forEach((user) => {
+              data.value.push({
+                id: user.id,
+                walletAddress: user.address,
+                storage: user.storage,
+                bandwidth: user.bandwidth,
+                actionCount: user.action_count,
+              });
+            });
+          }
+        });
+      }
+    }
+
     return {
       SearchIcon,
       data,
@@ -540,6 +563,8 @@ export default {
       getDate,
       getTime,
       ellipsify,
+      walletAddress,
+      searchWalletAddress,
     };
   },
 };
