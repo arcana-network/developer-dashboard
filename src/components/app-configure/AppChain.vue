@@ -29,24 +29,33 @@
                 justify="space-between"
                 class="width-100"
               >
-                <span class="body-1">Ethereum</span>
-                <v-switch v-model="chainTypes.ethereum" />
+                <span class="body-1"> Ethereum </span>
+                <v-switch
+                  :value="chainType === 'ethereum'"
+                  @checked="changeChainType($event, 'ethereum')"
+                />
               </v-stack>
               <v-stack
                 direction="row"
                 justify="space-between"
                 class="width-100"
               >
-                <span class="body-1">Polygon</span>
-                <v-switch v-model="chainTypes.polygon" />
+                <span class="body-1"> Polygon </span>
+                <v-switch
+                  :value="chainType === 'polygon'"
+                  @checked="changeChainType($event, 'polygon')"
+                />
               </v-stack>
               <v-stack
                 direction="row"
                 justify="space-between"
                 class="width-100"
               >
-                <span class="body-1">Binance</span>
-                <v-switch v-model="chainTypes.binance" />
+                <span class="body-1"> Binance </span>
+                <v-switch
+                  :value="chainType === 'binance'"
+                  @checked="changeChainType($event, 'binance')"
+                />
               </v-stack>
             </v-stack>
           </v-card>
@@ -72,11 +81,14 @@ h4 {
 </style>
 
 <script>
-import VCard from "../lib/VCard/VCard.vue";
+import { computed } from "@vue/runtime-core";
+import { useStore } from "vuex";
+
 import VButton from "../lib/VButton/VButton.vue";
-import VSwitch from "../lib/VSwitch/VSwitch.vue";
+import VCard from "../lib/VCard/VCard.vue";
 import VStack from "../lib/VStack/VStack.vue";
-import { ref } from "@vue/reactivity";
+import VSwitch from "../lib/VSwitch/VSwitch.vue";
+
 export default {
   name: "ConfigureAppChainType",
   props: {
@@ -84,16 +96,29 @@ export default {
     store: Object,
   },
   components: { VCard, VButton, VSwitch, VStack },
-  setup() {
-    let __chainTypesCopy = {
-      ethereum: false,
-      polygon: false,
-      binance: false,
-    };
-    let chainTypes = ref({ ...__chainTypesCopy });
+  setup(props) {
+    const store = useStore();
+
+    const env = computed(() => {
+      return store.getters.env;
+    });
+
+    let chainType = computed(() => {
+      return store.getters[env.value + "/chainType"];
+    });
+
+    function changeChainType(ev, selectedChainType) {
+      if (ev.value) {
+        store.dispatch(env.value + "/updateChainType", selectedChainType);
+        if (props.isConfigured && !store.getters.onConfigChange) {
+          store.dispatch("configChangeDetected");
+        }
+      }
+    }
 
     return {
-      chainTypes,
+      chainType,
+      changeChainType,
     };
   },
 };

@@ -3,7 +3,9 @@
     <app-header />
     <main class="container" v-if="isConfigured">
       <section class="flex dashboard-heading flex-wrap">
-        <h1 class="text-ellipsis flex-grow" style="min-width: 150px">ASPIRE</h1>
+        <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
+          {{ appName }}
+        </h1>
         <div
           class="
             flex
@@ -27,6 +29,7 @@
             style="margin-right: 1em; margin-top: 2px"
             v-model="liveEnv"
             class="mobile-remove"
+            disabled
           />
           <span
             style="color: var(--text-grey); margin-right: 5px"
@@ -34,7 +37,11 @@
           >
             Smart Contract Address:
           </span>
-          <v-tooltip :title="smartContractAddress" class="mobile-remove">
+          <v-tooltip
+            :title="smartContractAddress"
+            tooltip-style="max-width: max-content; left: -250%"
+            class="mobile-remove"
+          >
             <div
               class="text-ellipsis body-1 cursor-pointer font-500"
               style="color: var(--text-white); width: 6em"
@@ -61,14 +68,20 @@
           @click.stop="goToConfigure"
         >
           <img
-            :src="SettingsIcon"
+            src="@/assets/iconography/settings.svg"
             alt="configure app settings"
             @click.stop="goToConfigure"
           />
           <v-button
+            disabled
             variant="link"
             label="Configure"
-            style="margin-top: 3px; margin-left: 0.5em"
+            style="
+              margin-top: 3px;
+              margin-left: 0.5em;
+              color: var(--primary);
+              cursor: pointer;
+            "
             @click.stop="goToConfigure"
           />
         </div>
@@ -118,12 +131,17 @@
             variant="elevated"
           >
             <div class="card-icon">
-              <img :src="TotalUsersIcon" alt="Total users" />
+              <img
+                src="@/assets/iconography/total-users.svg"
+                alt="Total users"
+              />
             </div>
             <div class="flex flex-grow">
               <div>
                 <h4 class="font-400">Total Users</h4>
-                <h2 style="margin-top: 0.5em; font-size: 2em">0</h2>
+                <h2 style="margin-top: 0.5em; font-size: 2em">
+                  {{ totalUsers }}
+                </h2>
               </div>
               <v-icon-button
                 :icon="ArrowRightIcon"
@@ -139,7 +157,7 @@
           >
             <div class="card-icon">
               <img
-                :src="NoOfFilesIcon"
+                src="@/assets/iconography/no-of-files.svg"
                 alt="Number of files"
                 style="margin-left: -2px; margin-top: 1px"
               />
@@ -147,7 +165,9 @@
             <div class="flex" style="flex-grow: 1">
               <div>
                 <h4 style="font-weight: 400">No of Files</h4>
-                <h2 style="margin-top: 0.5em; font-size: 2em">0</h2>
+                <h2 style="margin-top: 0.5em; font-size: 2em">
+                  {{ actions.upload }}
+                </h2>
               </div>
               <v-icon-button
                 :icon="ArrowRightIcon"
@@ -163,7 +183,7 @@
           >
             <div class="card-icon">
               <img
-                :src="NoOfFilesIcon"
+                src="@/assets/iconography/no-of-files.svg"
                 alt="Number of files"
                 style="margin-left: -2px; margin-top: 1px"
               />
@@ -178,28 +198,28 @@
       <v-card
         class="column usage-container"
         variant="elevated"
-        style="align-items: stretch; margin-top: 6vh"
+        style="align-items: stretch; margin: 6vh auto"
       >
         <div class="flex flex-wrap duration" style="margin-bottom: 1em">
           <v-card-button
             label="Weekly"
-            :active="durationSelected === 'weekly'"
-            @click.stop="durationSelected = 'weekly'"
+            :active="durationSelected === 'day'"
+            @click.stop="durationSelected = 'day'"
           />
           <v-card-button
             label="Monthly"
-            :active="durationSelected === 'monthly'"
-            @click.stop="durationSelected = 'monthly'"
+            :active="durationSelected === 'month'"
+            @click.stop="durationSelected = 'month'"
           />
           <v-card-button
             label="Quarterly"
-            :active="durationSelected === 'quarterly'"
-            @click.stop="durationSelected = 'quarterly'"
+            :active="durationSelected === 'quarter'"
+            @click.stop="durationSelected = 'quarter'"
           />
           <v-card-button
             label="Yearly"
-            :active="durationSelected === 'yearly'"
-            @click.stop="durationSelected = 'yearly'"
+            :active="durationSelected === 'year'"
+            @click.stop="durationSelected = 'year'"
           />
         </div>
         <section class="flex sm-column">
@@ -212,7 +232,10 @@
               <v-tooltip
                 title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
               >
-                <img :src="InfoIcon" style="cursor: pointer" />
+                <img
+                  src="@/assets/iconography/info-circle-outline.svg"
+                  style="cursor: pointer"
+                />
               </v-tooltip>
             </div>
             <div
@@ -224,15 +247,18 @@
               "
             >
               <h2 style="font-family: var(--font-body); font-size: 2.25em">
-                30 GB used
+                {{ storageUsed }} used
               </h2>
               <span
                 class="body-1"
                 style="color: var(--text-grey); font-weight: 600"
-                >270 GB Remaining</span
+                >{{ storageRemaining }} Remaining</span
               >
             </div>
-            <v-progress-bar style="width: 95%" :percentage="10" />
+            <v-progress-bar
+              style="width: 95%"
+              :percentage="storageUsedPercentage || 1"
+            />
             <div
               id="storageChartContainer"
               style="margin-top: 0.65em; min-width: 300px"
@@ -249,7 +275,10 @@
               <v-tooltip
                 title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
               >
-                <img :src="InfoIcon" style="cursor: pointer" />
+                <img
+                  src="@/assets/iconography/info-circle-outline.svg"
+                  style="cursor: pointer"
+                />
               </v-tooltip>
             </div>
             <div
@@ -261,15 +290,19 @@
               "
             >
               <h2 style="font-family: var(--font-body); font-size: 2.25em">
-                0 GB used
+                {{ bandwidthUsed }} used
               </h2>
               <span
                 class="body-1"
                 style="color: var(--text-grey); font-weight: 600"
-                >300 GB Remaining</span
+                >{{ bandwidthRemaining }} Remaining</span
               >
             </div>
-            <v-progress-bar style="width: 95%" :percentage="1" state="error" />
+            <v-progress-bar
+              style="width: 95%"
+              :percentage="bandwidthUsedPercentage || 1"
+              state="error"
+            />
             <div
               id="bandwidthChartContainer"
               style="margin-top: 0.65em; min-width: 300px"
@@ -284,7 +317,10 @@
           <v-tooltip
             title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
           >
-            <img :src="InfoIcon" style="cursor: pointer" />
+            <img
+              src="@/assets/iconography/info-circle-outline.svg"
+              style="cursor: pointer"
+            />
           </v-tooltip>
         </div>
         <div
@@ -293,48 +329,48 @@
         >
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.upload }}</h2>
               <span class="body-1">Upload</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.download }}</h2>
               <span class="body-1">Download</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.share }}</h2>
               <span class="body-1">Share</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.transfers }}</h2>
               <span class="body-1">Transfers</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.revoke }}</h2>
               <span class="body-1">Revoke</span>
             </div>
             <v-seperator :vertical="true" class="vr-border mobile-remove" />
           </div>
           <div class="flex" style="flex-grow: 1">
             <div class="flex column action" style="flex-grow: 1">
-              <h2>0</h2>
+              <h2>{{ actions.delete }}</h2>
               <span class="body-1">Delete</span>
             </div>
           </div>
         </div>
       </v-card>
-      <section
+      <!-- <section
         class="flex column"
         style="margin-top: 8vh; margin-bottom: 8vh; color: var(--text-white)"
       >
@@ -347,13 +383,12 @@
             <v-tooltip
               title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
             >
-              <img :src="InfoIcon" style="cursor: pointer" />
+              <img src="@/assets/iconography/info-circle-outline.svg" style="cursor: pointer" />
             </v-tooltip>
           </div>
           <v-button variant="link" label="VIEW ALL" />
         </div>
         <v-stack gap="4vw" direction="row" class="overflow-x-auto">
-          <!-- <div class="flex tutorials-pane flex-row-gap" style="--flex-gap: 4vw"> -->
           <v-card
             v-for="i in 3"
             :key="'tutorial' + i"
@@ -378,7 +413,7 @@
                   transform: translate(-50%, -50%);
                 "
               >
-                <img class="play-pause" :src="PlayIcon" />
+                <img class="play-pause" src="@/assets/iconography/play.svg" />
               </div>
             </div>
             <span class="sub-heading-3 tutorial-heading">
@@ -394,9 +429,8 @@
               style="align-self: flex-start"
             />
           </v-card>
-          <!-- </div> -->
         </v-stack>
-      </section>
+      </section> -->
     </main>
     <main v-else>
       <v-overlay>
@@ -456,6 +490,15 @@
   border-right: unset;
   border-top: unset;
   border-bottom: unset;
+}
+.configure-btn {
+  transition: tranform 0.4s;
+}
+.configure-btn:hover {
+  opacity: 0.7;
+}
+.configure-btn:active {
+  transform: scale(0.98);
 }
 .action {
   margin: 2em;
@@ -565,29 +608,41 @@
 </style>
 
 <script>
-import VTooltip from "../components/lib/VTooltip/VTooltip.vue";
-import CopyIcon from "../assets/iconography/copy.svg";
-import CheckIcon from "../assets/iconography/check.svg";
-import ArrowRightIcon from "../assets/iconography/arrow-right.svg";
-import RectanglePlaceholderIcon from "../assets/iconography/Rectangle-placeholder.svg";
-import SettingsIcon from "../assets/iconography/settings.svg";
-import NoOfFilesIcon from "../assets/iconography/no-of-files.svg";
-import TotalUsersIcon from "../assets/iconography/total-users.svg";
-import InfoIcon from "../assets/iconography/info-circle-outline.svg";
-import PlayIcon from "../assets/iconography/play.svg";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+import CopyIcon from "@/assets/iconography/copy.svg";
+import CheckIcon from "@/assets/iconography/check.svg";
+import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
+import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
 import VButton from "../components/lib/VButton/VButton.vue";
-import VCard from "../components/lib/VCard/VCard.vue";
-import VSeperator from "../components/lib/VSeperator/VSeperator.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import { useRouter } from "vue-router";
-import VProgressBar from "../components/lib/VProgressBar/VProgressBar.vue";
+import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
 import { Chart, registerables } from "chart.js";
-import { onMounted, ref, watch } from "@vue/runtime-core";
-import AppHeader from "../components/AppHeader.vue";
-import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
-import VIconButton from "../components/lib/VIconButton/VIconButton.vue";
-import VSwitch from "../components/lib/VSwitch/VSwitch.vue";
-import VCardButton from "../components/lib/VCardButton/VCardButton.vue";
-import VStack from "../components/lib/VStack/VStack.vue";
+import {
+  computed,
+  onBeforeMount,
+  onMounted,
+  ref,
+  watch,
+} from "@vue/runtime-core";
+import AppHeader from "@/components/AppHeader.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import {
+  fetchAllApps,
+  fetchStats,
+  fetchPeriodicUsage,
+  fetchApp,
+} from "@/services/dashboard.service";
+import { useStore } from "vuex";
+import bytes from "bytes";
+import copyToClipboard from "../utils/copyToClipboard";
+import { getAddress } from "../utils/get-address";
+
 export default {
   components: {
     VTooltip,
@@ -604,13 +659,153 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const smartContractAddress = "xxyyyxxyyyxxyyyxxyyyxxyyy";
-    const durationSelected = ref("weekly");
-
-    const isConfigured = ref(false);
+    const store = useStore();
+    const smartContractAddress = ref("");
+    const durationSelected = ref("day");
+    durationSelected.value = "month";
+    const actions = ref({
+      upload: 0,
+      download: 0,
+      share: 0,
+      transfers: 0,
+      revoke: 0,
+      delete: 0,
+    });
+    const totalUsers = ref(0);
+    const isConfigured = ref(true);
     const liveEnv = ref(false);
+    const appName = computed(() => {
+      return store.getters.appName;
+    });
+    const storageUsed = ref("0 B");
+    const bandwidthUsed = ref("0 B");
+    const storageUsedPercentage = ref(0);
+    const bandwidthUsedPercentage = ref(0);
+    const storageRemaining = ref("300 GB");
+    const bandwidthRemaining = ref("300 GB");
+
+    onBeforeMount(() => {
+      updateAppDetails();
+    });
+
+    async function updateAppDetails() {
+      try {
+        const apps = await fetchAllApps();
+        if (apps.data.length) {
+          isConfigured.value = true;
+          store.dispatch("updateAppConfigurationStatus", true);
+          const currentApp = apps.data[0];
+          store.dispatch("updateAppName", currentApp.name);
+          store.dispatch("updateAppId", currentApp.ID);
+
+          // Get Address
+          const appAddress = await getAddress(currentApp.address);
+          console.log(appAddress);
+
+          smartContractAddress.value = appAddress;
+          store.dispatch(
+            "updateSmartContractAddress",
+            smartContractAddress.value
+          );
+          const env = store.getters.env;
+          const chainType = ["ethereum", "polygon", "binance"][
+            currentApp.chain
+          ];
+          store.dispatch(env + "/updateChainType", chainType);
+          const storage = bytes(currentApp.storage_limit, {
+            unitSeparator: " ",
+          });
+          const storageValues = storage.split(" ");
+          store.dispatch(env + "/updateStorage", {
+            value: storageValues[0],
+            unit: storageValues[1],
+          });
+          const bandwidth = bytes(currentApp.bandwidth_limit, {
+            unitSeparator: " ",
+          });
+          const bandwidthValues = bandwidth.split(" ");
+          store.dispatch(env + "/updateBandwidth", {
+            value: bandwidthValues[0],
+            unit: bandwidthValues[1],
+          });
+          fetchOtherDetails(currentApp.ID);
+          return;
+        } else {
+          isConfigured.value = false;
+          store.dispatch("updateAppConfigurationStatus", false);
+        }
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
+    }
+
+    async function fetchOtherDetails(appId) {
+      try {
+        updateChart();
+        const stats = await fetchStats(appId);
+        const env = store.getters.env;
+        totalUsers.value = stats.data.no_of_users;
+        actions.value = {
+          download: stats.data.actions?.download,
+          upload: stats.data.actions?.upload,
+          delete: stats.data.actions?.delete,
+          transfers: stats.data.actions?.transfers,
+          share: stats.data.actions?.share,
+          revoke: stats.data.actions?.revoke,
+        };
+        const bytes300Gb = bytes("300 GB");
+        storageUsed.value = bytes(stats.data.actions?.storage, {
+          unitSeparator: " ",
+        });
+        bandwidthUsed.value = bytes(stats.data.actions?.bandwidth, {
+          unitSeparator: " ",
+        });
+        storageUsedPercentage.value =
+          (stats.data.actions?.storage / bytes300Gb) * 100;
+        bandwidthUsedPercentage.value =
+          (stats.data.actions?.bandwidth / bytes300Gb) * 100;
+        storageRemaining.value = bytes(
+          bytes300Gb - stats.data.actions?.storage,
+          {
+            unitSeparator: " ",
+          }
+        );
+        bandwidthRemaining.value = bytes(
+          bytes300Gb - stats.data.actions?.bandwidth,
+          {
+            unitSeparator: " ",
+          }
+        );
+        const appDetails = await fetchApp(appId);
+
+        if (appDetails.data.cred) {
+          store.dispatch(
+            env + "/updateAuthDetails",
+            appDetails.data.cred.map((el) => {
+              return {
+                type: el.verifier,
+                authType: el.verifier,
+                verifier: el.verifier,
+                clientId: el.clientId,
+                clientSecret: el.clientSecret,
+                redirectUrl: el.redirectUrl,
+              };
+            })
+          );
+        } else {
+          store.dispatch(env + "/updateAuthDetails", []);
+        }
+        const periodicUsage = await fetchPeriodicUsage(durationSelected.value);
+        console.log(periodicUsage);
+      } catch (e) {
+        console.error(e);
+        return [];
+      }
+    }
 
     function goToConfigure() {
+      console.log("Button clicked");
       router.push("/configure");
     }
 
@@ -620,6 +815,7 @@ export default {
     function copySmartContractAddress() {
       SmartContractIcon.value = CheckIcon;
       smartContractTooltip.value = "Copied";
+      copyToClipboard(smartContractAddress.value);
       setTimeout(() => {
         SmartContractIcon.value = CopyIcon;
         smartContractTooltip.value = "Click to copy";
@@ -629,11 +825,24 @@ export default {
     const config = {
       type: "line",
       data: {
-        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
         datasets: [
           {
             label: "Storage used in GB",
-            data: [50, 120, 270, 150, 100, 130, 120],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             borderColor: "white",
             borderWidth: 4,
             lineTension: 0.2,
@@ -653,6 +862,9 @@ export default {
         scales: {
           y: {
             beginAtZero: true,
+            steps: 10,
+            stepValue: 5,
+            max: 300,
             grid: {
               color: "#373737",
               borderDash: [10, 10],
@@ -690,11 +902,24 @@ export default {
     const config2 = {
       type: "line",
       data: {
-        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        labels: [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec",
+        ],
         datasets: [
           {
             label: "Bandwidth used in GB",
-            data: [150, 20, 270, 50, 100, 13, 120],
+            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             borderColor: "white",
             borderWidth: 4,
             lineTension: 0.2,
@@ -715,6 +940,9 @@ export default {
         scales: {
           y: {
             beginAtZero: true,
+            steps: 10,
+            stepValue: 5,
+            max: 300,
             grid: {
               color: "#373737",
               borderDash: [10, 10],
@@ -753,7 +981,6 @@ export default {
     let StorageChart, BandwidthChart;
 
     onMounted(() => {
-      isConfigured.value = !!localStorage.getItem("isConfigured");
       Chart.register(...registerables);
 
       setTimeout(() => {
@@ -776,84 +1003,104 @@ export default {
       router.push("/users");
     }
 
+    function updateChart() {
+      try {
+        let labels;
+        let storageData;
+        let bandwidthData;
+        fetchPeriodicUsage(durationSelected.value).then((periodicUsage) => {
+          console.log(periodicUsage.data);
+          const data = periodicUsage.data;
+          switch (durationSelected.value) {
+            case "day":
+              if (data.length) {
+              } else {
+                labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+                storageData = [0, 0, 0, 0, 0, 0, 0];
+                bandwidthData = [0, 0, 0, 0, 0, 0, 0];
+              }
+              break;
+            case "month":
+              if (data.length) {
+              } else {
+                labels = [
+                  "Jan",
+                  "Feb",
+                  "Mar",
+                  "Apr",
+                  "May",
+                  "Jun",
+                  "Jul",
+                  "Aug",
+                  "Sep",
+                  "Oct",
+                  "Nov",
+                  "Dec",
+                ];
+                storageData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                bandwidthData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+              }
+              break;
+            case "quarter":
+              if (data.length) {
+              } else {
+                labels = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
+                storageData = [0, 0, 0, 0];
+                bandwidthData = [0, 0, 0, 0];
+              }
+              break;
+            case "year":
+              if (data.length) {
+              } else {
+                labels = ["2019", "2020", "2021"];
+                storageData = [0, 0, 0];
+                bandwidthData = [0, 0, 0];
+              }
+              break;
+            default:
+              break;
+          }
+          console.log(labels);
+          StorageChart.data.datasets = [
+            {
+              label: "Storage used in GB",
+              data: storageData,
+              borderColor: "white",
+              borderWidth: 4,
+              lineTension: 0.2,
+            },
+          ];
+          StorageChart.data.labels = labels;
+          StorageChart.update();
+          BandwidthChart.data.datasets = [
+            {
+              label: "Bandwidth used in GB",
+              data: bandwidthData,
+              borderColor: "white",
+              borderWidth: 4,
+              lineTension: 0.2,
+            },
+          ];
+          BandwidthChart.data.labels = labels;
+          BandwidthChart.update();
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
     watch(
       () => durationSelected.value,
       () => {
-        let labels;
-        let data;
-        let data2;
-        switch (durationSelected.value) {
-          case "weekly":
-            labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-            data2 = [50, 120, 270, 150, 100, 130, 120];
-            data = [20, 22, 30, 50, 120, 180, 220];
-            break;
-          case "monthly":
-            labels = [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ];
-            data2 = [50, 120, 270, 150, 100, 130, 120, 50, 120, 240, 290, 290];
-            data = [20, 22, 30, 50, 120, 180, 220, 250, 280, 290, 298, 300];
-            break;
-          case "quarterly":
-            labels = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
-            data2 = [50, 120, 270, 150];
-            data = [60, 100, 170, 250];
-            break;
-          case "yearly":
-            labels = ["2019", "2020", "2021"];
-            data2 = [200, 300, 300];
-            data = [100, 200, 300];
-            break;
-          default:
-            break;
-        }
-        StorageChart.data.datasets = [
-          {
-            label: "Storage used in GB",
-            data,
-            borderColor: "white",
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ];
-        StorageChart.data.labels = labels;
-        StorageChart.update();
-        BandwidthChart.data.datasets = [
-          {
-            label: "Bandwidth used in GB",
-            data: data2,
-            borderColor: "white",
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ];
-        BandwidthChart.data.labels = labels;
-        BandwidthChart.update();
+        updateChart();
       }
     );
 
     return {
       SmartContractIcon,
-      SettingsIcon,
       RectanglePlaceholderIcon,
       smartContractAddress,
-      NoOfFilesIcon,
-      TotalUsersIcon,
       isConfigured,
-      PlayIcon,
-      InfoIcon,
       ArrowRightIcon,
       liveEnv,
       copySmartContractAddress,
@@ -861,6 +1108,15 @@ export default {
       goToUsers,
       durationSelected,
       smartContractTooltip,
+      actions,
+      appName,
+      totalUsers,
+      storageUsed,
+      bandwidthUsed,
+      storageUsedPercentage,
+      bandwidthUsedPercentage,
+      storageRemaining,
+      bandwidthRemaining,
     };
   },
 };

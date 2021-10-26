@@ -29,7 +29,7 @@
             class="flex justify-space-between region-anywhere-container"
           >
             <span class="body-1">Anywhere</span>
-            <v-switch v-model="region.any" />
+            <v-switch v-model="region.any" disabled />
           </v-card>
           <v-card
             variant="depressed"
@@ -44,15 +44,15 @@
             >
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Asia</span>
-                <v-switch v-model="region.asia" />
+                <v-switch v-model="region.asia" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Africa</span>
-                <v-switch v-model="region.africa" />
+                <v-switch v-model="region.africa" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Australia</span>
-                <v-switch v-model="region.australia" />
+                <v-switch v-model="region.australia" disabled />
               </div>
             </v-stack>
             <v-seperator
@@ -67,15 +67,15 @@
             >
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Europe</span>
-                <v-switch v-model="region.europe" />
+                <v-switch v-model="region.europe" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">North America</span>
-                <v-switch v-model="region.northAmerica" />
+                <v-switch v-model="region.northAmerica" disabled />
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">South America</span>
-                <v-switch v-model="region.southAmerica" />
+                <v-switch v-model="region.southAmerica" disabled />
               </div>
             </v-stack>
           </v-card>
@@ -106,47 +106,54 @@ import VCard from "../lib/VCard/VCard.vue";
 import VButton from "../lib/VButton/VButton.vue";
 import VSwitch from "../lib/VSwitch/VSwitch.vue";
 import VSeperator from "../lib/VSeperator/VSeperator.vue";
-import { ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import { watch, ref, computed } from "@vue/runtime-core";
 import VStack from "../lib/VStack/VStack.vue";
+import { useStore } from "vuex";
+
 export default {
   name: "ConfigureAppRegion",
   props: {
     isConfigured: Boolean,
-    store: Object,
   },
   components: { VCard, VButton, VSwitch, VSeperator, VStack },
-  setup() {
-    let __regionCopy = {
-      any: false,
-      asia: false,
-      africa: false,
-      austrialia: false,
-      europe: false,
-      northAmerica: false,
-      southAmerica: false,
-    };
-    let region = ref({ ...__regionCopy });
+  setup(props) {
+    const store = useStore();
+
+    const env = computed(() => {
+      return store.getters.env;
+    });
+
+    let region = ref({ ...store.getters[env.value + "/region"] });
+
+    watch(
+      () => env.value,
+      () => {
+        region.value = { ...store.getters[env.value + "/region"] };
+      }
+    );
 
     watch(
       () => region.value,
       () => {
+        // Make changes depending on previous state
+        const previousRegionCopy = { ...store.getters[env.value + "/region"] };
         Object.keys(region.value).forEach((key) => {
           if (key !== "any") {
-            if (region.value.any && !__regionCopy.any) {
+            if (region.value.any && !previousRegionCopy.any) {
               region.value[key] = false;
             } else if (
               region.value[key] &&
-              !__regionCopy[key] &&
+              !previousRegionCopy[key] &&
               region.value.any
             ) {
               region.value.any = false;
             }
           }
         });
-        __regionCopy = { ...region.value };
-        const env = store.getters.env;
-        store.dispatch[env + "/"];
+        store.dispatch(env.value + "/updateRegion", region.value);
+        if (props.isConfigured && !store.getters.onConfigChange) {
+          store.dispatch("configChangeDetected");
+        }
       },
       { deep: true }
     );

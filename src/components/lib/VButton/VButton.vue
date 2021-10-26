@@ -44,13 +44,14 @@ a {
   min-width: 9em;
   border-radius: 10px;
   background: none;
+  transition: opacity 0.3s;
 }
 button.primary {
   background: linear-gradient(to bottom, #0085ff, #29c8fa);
   color: var(--text-white);
 }
 button.primary:hover:not(:disabled) {
-  background: linear-gradient(0deg, #1891ff 0%, #b0ecff 100%);
+  opacity: 0.8;
   /* box-shadow: inset 0px 25px 47px rgba(0, 52, 101, 0.71); */
 }
 button.primary:disabled {

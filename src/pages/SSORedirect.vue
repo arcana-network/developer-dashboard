@@ -4,13 +4,14 @@
 
 <script>
 import { onMounted } from "@vue/runtime-core";
+import constants from "../utils/constants";
 export default {
   setup() {
     onMounted(() => {
       const { AuthProvider } = window.arcana_login;
 
       // window.onload = () => {
-      AuthProvider.handleRedirectPage();
+      AuthProvider.handleRedirectPage(constants.origin);
       // };
     });
   },

@@ -1,5 +1,5 @@
 import { createWebHistory, createRouter } from "vue-router";
-// import store from "../store";
+import store from "../store";
 
 const AppSignup = () => import("../pages/AppSignup.vue");
 const AppSignin = () => import("../pages/AppSignin.vue");
@@ -92,14 +92,15 @@ const router = createRouter({
   },
 });
 
-// router.beforeEach((to, from, next) => {
-//   if (to.name !== "Login") {
-//     if (!store.getters.publicKey || !store.getters.privateKey) {
-//       store.dispatch("updateRedirect", to);
-//       router.replace({ name: "Login" });
-//     }
-//   }
-//   return next();
-// });
+const openRoutes = ["SSO Redirect", "Login", "Signup", "Signin"];
+
+router.beforeEach((to, from, next) => {
+  if (!openRoutes.includes(to.name) && !store.getters.accessToken) {
+    router.replace({ name: "Login" });
+  } else if (to.name === "Login" && store.getters.accessToken) {
+    router.replace({ name: "Dashboard" });
+  }
+  return next();
+});
 
 export default router;

@@ -10,9 +10,12 @@
         <h4 style="">USER DETAILS</h4>
         <v-text-field
           :icon="SearchIcon"
+          clickable-icon
           :noMessage="true"
           placeholder="Enter Wallet Address"
+          v-model="walletAddress"
           :style="'width: 20em'"
+          @icon-clicked="searchWalletAddress"
         />
       </div>
       <v-card
@@ -31,23 +34,21 @@
               </tr>
             </thead>
           </table>
-          <table style="width: 100%">
+          <table v-if="data.length" style="width: 100%">
             <tbody>
               <tr
-                v-for="el in data"
+                v-for="(el, index) in data"
                 :key="el.walletAddress"
-                @click.stop="
-                  userLog = el;
-                  showDetails = true;
-                "
+                @click.stop="fetchUserLogsApi(el.walletAddress, index)"
               >
-                <td>{{ el.walletAddress }}</td>
+                <td>{{ ellipsify(el.walletAddress) }}</td>
                 <td>{{ el.storage }}</td>
                 <td>{{ el.bandwidth }}</td>
                 <td>{{ el.actionCount }}</td>
               </tr>
             </tbody>
           </table>
+          <h4 v-else>No records found</h4>
         </div>
       </v-card>
       <div class="flex column" style="gap: 2em; margin-top: 4em">
@@ -99,7 +100,7 @@
             Wallet Address
           </span>
           <span class="sub-heading-3" style="color: var(--text-white)">
-            0x8B123123123b121w233x44c1saad3
+            {{ userLog.walletAddress }}
           </span>
         </div>
         <div
@@ -160,8 +161,8 @@
                 <tbody>
                   <tr v-for="el in userLog.logs" :key="el">
                     <td>{{ el.type }}</td>
-                    <td>{{ el.date }}</td>
-                    <td>{{ el.time }}</td>
+                    <td>{{ getDate(el.date) }}</td>
+                    <td>{{ getTIme(el.date) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -175,7 +176,7 @@
 
 <style scoped>
 .table-container {
-  height: 30vh;
+  max-height: 30vh;
   overflow-x: auto;
 }
 .log-container {
@@ -294,12 +295,21 @@ import SearchIcon from "../assets/iconography/search.svg";
 import VCard from "../components/lib/VCard/VCard.vue";
 import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import { ref } from "@vue/reactivity";
-import { onMounted } from "@vue/runtime-core";
+import { onBeforeMount, onMounted } from "@vue/runtime-core";
 import { Chart, registerables } from "chart.js";
+import {
+  fetchAllUsers,
+  fetchAllUserTransactions,
+  fetchMonthlyUsers,
+  searchUsers,
+} from "../services/user.service";
+import moment from "moment";
+
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
   setup() {
-    let data = [];
+    let data = ref([]);
+    let walletAddress = ref("");
     for (let i = 0; i < 40; i++) {
       let logs = [];
       for (let j = 0; j < 5; j++) {
@@ -382,15 +392,17 @@ export default {
           },
         ];
       }
-      data.push({
-        walletAddress: "0x8B......1234",
-        storage: "2GB",
-        bandwidth: "5GB",
-        actionCount: "10",
-        email: "john@cena.com",
-        logs,
-      });
+      // data.value.push({
+      //   walletAddress: "0x8B......1234",
+      //   storage: "2GB",
+      //   bandwidth: "5GB",
+      //   actionCount: "10",
+      //   email: "john@cena.com",
+      //   logs,
+      // });
     }
+
+    console.log(data.value);
 
     let showDetails = ref(false);
     let userLog = ref({});
@@ -418,7 +430,7 @@ export default {
           datasets: [
             {
               label: "No of users",
-              data: [50, 120, 270, 150, 100, 130, 120, 270, 150, 100, 130, 120],
+              data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               borderColor: "white",
               borderWidth: 4,
               lineTension: 0.2,
@@ -438,9 +450,10 @@ export default {
           scales: {
             y: {
               beginAtZero: true,
+              max: 2000,
               grid: {
                 color: "#373737",
-                borderDash: [10, 10],
+                borderDash: [15, 15],
               },
               title: {
                 font: {
@@ -482,11 +495,76 @@ export default {
       }, 100);
     });
 
+    onBeforeMount(() => {
+      fetchAllUsers().then((response) => {
+        if (response.data instanceof Array) {
+          response.data.forEach((user) => {
+            data.value.push({
+              id: user.id,
+              walletAddress: user.address,
+              storage: user.storage,
+              bandwidth: user.bandwidth,
+              actionCount: user.action_count,
+            });
+          });
+        }
+      });
+
+      fetchMonthlyUsers().then((response) => {
+        console.log(response.data);
+      });
+    });
+
+    function fetchUserLogsApi(address, index) {
+      fetchAllUserTransactions(address).then((response) => {
+        data.value[index].email = response.data.email;
+        data.value[index].logs = [...response.data.transactions];
+        userLog.value = data.value[index];
+        showDetails.value = true;
+      });
+    }
+
+    function getTime(date) {
+      return moment(date).format("HH:mm:ss");
+    }
+
+    function getDate(date) {
+      return moment(date).format("DD-MM-YYYY");
+    }
+
+    function ellipsify(address) {
+      return address.substr(0, 4) + "...." + address.substr(address.length - 4);
+    }
+
+    function searchWalletAddress() {
+      if (walletAddress.value.trim()) {
+        searchUsers(walletAddress.value).then((response) => {
+          if (response.data instanceof Array) {
+            response.data.forEach((user) => {
+              data.value.push({
+                id: user.id,
+                walletAddress: user.address,
+                storage: user.storage,
+                bandwidth: user.bandwidth,
+                actionCount: user.action_count,
+              });
+            });
+          }
+        });
+      }
+    }
+
     return {
       SearchIcon,
       data,
       showDetails,
       userLog,
+      fetchUserLogsApi,
+      getDate,
+      getTime,
+      ellipsify,
+      walletAddress,
+      searchWalletAddress,
     };
   },
 };
