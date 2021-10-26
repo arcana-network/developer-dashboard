@@ -137,7 +137,7 @@ export default {
     message: String,
     id: String,
     validation: Function,
-    modelValue: String,
+    modelValue: [String, Number],
     type: String,
     messageType: String,
     placeholder: String,

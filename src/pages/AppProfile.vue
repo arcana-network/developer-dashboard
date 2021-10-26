@@ -9,7 +9,12 @@
           style="justify-content: space-between; margin-right: 1.5em"
         >
           <h2>PERSONAL DETAILS</h2>
-          <v-button variant="link" label="Edit" :disabled="true" />
+          <v-button
+            variant="link"
+            label="Edit"
+            :disabled="true"
+            style="visibility: hidden"
+          />
         </div>
         <v-card
           variant="elevated"
@@ -23,13 +28,13 @@
         >
           <div class="flex column details">
             <span class="body-2">Name</span>
-            <span class="sub-heading-3">John Doe</span>
+            <span class="sub-heading-3">{{ name }}</span>
           </div>
           <div class="flex column details">
             <span class="body-2">Email</span>
-            <span class="sub-heading-3">johndoe@gmail.com</span>
+            <span class="sub-heading-3">{{ email }}</span>
           </div>
-          <div class="flex column details">
+          <div class="flex column details" style="visibility: hidden">
             <span class="body-2" style="margin-bottom: 5px">Password</span>
             <span class="sub-heading-3" v-if="!editPersonalDetails"> </span>
             <v-text-field
@@ -66,7 +71,7 @@
               variant="link"
               label="Save"
               :disabled="false"
-              @click="editOrganisationDetails = false"
+              @click="onUpdateOrganization"
             />
           </div>
         </div>
@@ -128,7 +133,7 @@
           </div>
         </v-card>
       </section>
-      <section style="margin-top: 3em">
+      <section style="margin-top: 3em" v-if="false">
         <div class="flex" style="justify-content: space-between">
           <h2>PAYMENT DETAILS</h2>
         </div>
@@ -200,27 +205,65 @@
 
 <script>
 import { ref } from "@vue/reactivity";
-import AppHeader from "../components/AppHeader.vue";
-import VButton from "../components/lib/VButton/VButton.vue";
-import VCard from "../components/lib/VCard/VCard.vue";
-import VTextField from "../components/lib/VTextField/VTextField.vue";
+import AppHeader from "@/components/AppHeader.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import { useRouter } from "vue-router";
+import { onBeforeMount } from "@vue/runtime-core";
+import { fetchProfile, updateOrganization } from "../services/profile.service";
+import { useStore } from "vuex";
+import { logout } from "../services/auth.service";
+
 export default {
   components: { AppHeader, VButton, VCard, VTextField },
   setup() {
+    const store = useStore();
     const editPersonalDetails = ref(false);
     const editOrganisationDetails = ref(false);
     const password = ref("");
     const organisationDetails = ref({
-      name: "John Doe",
-      size: 5,
-      country: "India",
-      region: "Asia Pacific",
+      name: " ",
+      size: 0,
+      country: " ",
+      region: " ",
     });
+    const name = ref("");
+    name.value = store.getters.userInfo.name;
+    const email = ref("");
+    email.value = store.getters.userInfo.email;
     const router = useRouter();
 
+    function onUpdateOrganization() {
+      try {
+        updateOrganization({
+          name: organisationDetails.value.name,
+          size: parseInt(organisationDetails.value.size),
+          country: organisationDetails.value.country,
+          region: organisationDetails.value.region,
+        }).then((response) => {
+          editOrganisationDetails.value = false;
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    onBeforeMount(() => {
+      fetchProfile().then((response) => {
+        organisationDetails.value = {
+          name: response.data.organization.name,
+          size: response.data.organization.size,
+          country: response.data.organization.country,
+          region: response.data.organization.region,
+        };
+      });
+    });
+
     function onLogout() {
-      router.push("/signin");
+      logout();
+      store.dispatch("updateAccessToken", null);
+      router.push({ name: "Login" });
     }
 
     return {
@@ -229,6 +272,9 @@ export default {
       organisationDetails,
       password,
       onLogout,
+      onUpdateOrganization,
+      name,
+      email,
     };
   },
 };

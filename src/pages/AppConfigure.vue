@@ -2,472 +2,99 @@
   <div>
     <app-header v-if="isConfigured" />
     <header v-else class="first-time-configure-header">
-      <div class="container flex" style="justify-content: space-between">
-        <h1>CONFIGURE YOUR APP</h1>
-        <div style="position: relative">
+      <div
+        class="container flex justify-space-between"
+        style="align-items: center"
+      >
+        <h1>CONFIGURE</h1>
+        <div class="position-relative">
           <circle-progress
             :percent="(step / 5) * 100"
-            :size="80"
+            :size="60"
             :border-width="4"
             :border-bg-width="4"
             fill-color="#13A3FD"
             empty-color="transparent"
           >
           </circle-progress>
-          <h3
-            style="
-              position: absolute;
-              color: #13a3fd;
-              top: 50%;
-              left: 50%;
-              transform: translate(-50%, -50%);
-            "
-          >
-            {{ step }}/5
-          </h3>
+          <h4 class="position-absolute step-counter">{{ step }}/5</h4>
         </div>
       </div>
     </header>
     <main class="container" :style="!isConfigured ? 'margin-bottom: 10em' : ''">
       <section class="flex flex-wrap" v-if="isConfigured">
         <img
-          :src="BackIcon"
-          style="cursor: pointer; margin-right: 2em"
+          src="@/assets/iconography/back.svg"
+          style="margin-right: 2em"
+          class="cursor-pointer"
           alt="go back"
           @click.stop="backToDashboard"
         />
         <h1>CONFIGURE</h1>
-        <div
-          style="gap: 1.2em; align-items: center"
-          class="flex sm-column configure-options"
+        <v-stack
+          direction="row"
+          gap="1.2em"
+          align="center"
+          class="configure-options"
         >
-          <div class="flex" style="gap: 1em">
+          <v-stack direction="row" gap="1em">
             <span
               class="body-1"
               :style="liveEnvironment ? 'color: var(--text-grey)' : ''"
-              >TestNet</span
             >
+              TestNet
+            </span>
             <v-switch
               variant="secondary"
               v-model="liveEnvironment"
+              disabled
               style="margin-top: 1px"
             />
             <span
               class="body-1"
               :style="!liveEnvironment ? 'color: var(--text-grey)' : ''"
-              >MainNet</span
             >
-          </div>
-          <div>
-            <v-tooltip title="Pause App">
-              <v-icon-button
-                :icon="PauseIcon"
-                style="margin-left: 1vw; padding: 0.8em"
-              />
-            </v-tooltip>
+              MainNet
+            </span>
+          </v-stack>
+          <div style="margin-left: auto">
+            <!-- <v-tooltip title="Pause App">
+              <v-icon-button :icon="PauseIcon" class="app-action" disabled />
+            </v-tooltip> -->
             <v-tooltip title="Delete App">
               <v-icon-button
                 :icon="DeleteIcon"
-                style="margin-left: 1vw; padding: 0.8em"
+                class="app-action"
                 @click="deleteApp = true"
               />
             </v-tooltip>
           </div>
-        </div>
+        </v-stack>
       </section>
-      <section
-        class="flex column"
-        style="margin-top: 3em; gap: 1em; align-items: flex-start"
-        v-if="isConfigured"
-      >
-        <h2>APP NAME</h2>
-        <v-text-field
-          v-model="appName"
-          strong
-          style="width: 20vw; min-width: 200px; max-width: 400px"
-        />
-      </section>
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
-        v-else
-        :id="'configure-step-' + 1"
-      >
-        <h4 style="width: 100%; display: block">ENTER APP NAME</h4>
-        <div
-          class="flex flex-wrap"
-          style="gap: 4vw; justify-content: space-between"
-        >
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <v-text-field
-            v-model="appName"
-            strong
-            style="width: 10vw; min-width: 200px"
-          />
-        </div>
-      </v-card>
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
+      <configure-app-name :isConfigured="isConfigured" />
+      <configure-app-region
         v-if="isConfigured || step >= 2"
         :style="step === 2 ? 'margin-bottom: 2em' : ''"
-        :id="'configure-step-' + 2"
-      >
-        <h4 style="width: 100%; display: block">CHOOSE REGION</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              All assets stored by your application will be distributed across
-              several storage nodes located at various physical locations across
-              the world. Turn on specific regions only if your application needs
-              these assets to be stored in storage nodes within a region.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div class="flex column" style="gap: 2em; flex-grow: 1">
-            <v-card
-              variant="depressed"
-              class="flex"
-              style="
-                padding: 1.2em;
-                width: calc(50% - 5em);
-                min-width: 200px;
-                justify-content: space-between;
-              "
-            >
-              <span class="body-1">Anywhere</span>
-              <v-switch v-model="location.any" />
-            </v-card>
-            <v-card
-              variant="depressed"
-              class="flex sm-column"
-              style="padding: 1.2em; justify-content: space-between"
-            >
-              <div class="flex column flex-wrap" style="flex-grow: 1; gap: 1em">
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Asia</span>
-                  <v-switch v-model="location.asia" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Africa</span>
-                  <v-switch v-model="location.africa" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Australia</span>
-                  <v-switch v-model="location.australia" />
-                </div>
-              </div>
-              <v-seperator
-                :vertical="true"
-                style="margin: 0 2em"
-                class="mobile-remove"
-              />
-              <div
-                class="flex column sm-column-gap"
-                style="flex-grow: 1; gap: 1em"
-              >
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">Europe</span>
-                  <v-switch v-model="location.europe" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">North America</span>
-                  <v-switch v-model="location.northAmerica" />
-                </div>
-                <div
-                  class="flex"
-                  style="justify-content: space-between; width: calc(100%)"
-                >
-                  <span class="body-1">South America</span>
-                  <v-switch v-model="location.southAmerica" />
-                </div>
-              </div>
-            </v-card>
-          </div>
-        </div>
-      </v-card>
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
+        :isConfigured="isConfigured"
+      />
+      <configure-app-chain-type
         v-if="isConfigured || step >= 3"
         :style="step === 3 ? 'margin-bottom: 2em' : ''"
-        :id="'configure-step-' + 3"
-      >
-        <h4 style="width: 100%; display: block">CHOOSE CHAIN TYPE</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              If your application is being built for one or more of these
-              blockchains, please specify the same by turning on the relevant
-              chains.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div class="flex column" style="gap: 2em; flex-grow: 1">
-            <v-card
-              variant="depressed"
-              class="flex column"
-              style="
-                padding: 1.2em;
-                justify-content: space-between;
-                gap: 1.2em;
-                width: calc(50% - 6em);
-                min-width: 200px;
-              "
-            >
-              <div
-                class="flex"
-                style="justify-content: space-between; width: calc(100%)"
-              >
-                <span class="body-1">Ethereum</span>
-                <v-switch v-model="chainTypes.ethereum" />
-              </div>
-              <div
-                class="flex"
-                style="justify-content: space-between; width: calc(100%)"
-              >
-                <span class="body-1">Polygon</span>
-                <v-switch v-model="chainTypes.polygon" />
-              </div>
-              <div
-                class="flex"
-                style="justify-content: space-between; width: calc(100%)"
-              >
-                <span class="body-1">Binance</span>
-                <v-switch v-model="chainTypes.binance" />
-              </div>
-            </v-card>
-          </div>
-        </div>
-      </v-card>
-      <v-card
-        style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-        class="column"
+        :isConfigured="isConfigured"
+      />
+      <configure-app-auth
         v-if="isConfigured || step >= 4"
         :style="step === 4 ? 'margin-bottom: 2em' : ''"
-        :id="'configure-step-' + 4"
-      >
-        <h4 style="width: 100%; display: block">CHOOSE LOGIN TYPE</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              Your users can bring their own public and private keys or be
-              assigned a pair of them upon registration through our trustless
-              Distributed Key Generation system. These are ECDSA keys on the
-              secp256k1 curve which work with any EVM compatible chains.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div class="flex column">
-            <div
-              class="flex sm-column"
-              style="gap: 2em; align-items: flex-start"
-            >
-              <v-dropdown
-                :options="authenticationTypes"
-                placeholder="Authentication Type"
-                style="width: calc(36% - 4em); min-width: 270px"
-                v-model="selectedAuthenticationType"
-              />
-              <v-text-field
-                v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
-                placeholder="Enter Client ID"
-                :icon="PlusIcon"
-                v-model="selectedAuthClientId"
-                @icon-clicked="addAuthentication"
-                :clickableIcon="true"
-                @keyup.enter="addAuthentication"
-                :messageType="selectedAuthClientIdError ? 'error' : ''"
-                message="Login type already added"
-              />
-            </div>
-            <div class="flex flex-wrap" style="gap: 2em">
-              <v-chip
-                v-for="(authDetail, index) in authenticationDetails"
-                :key="authDetail"
-                :cancellable="true"
-                @cancel="removeAuthentication(index)"
-                style="
-                  max-width: 240px;
-                  overflow: hidden;
-                  white-space: nowrap;
-                  text-overflow: ellipsis;
-                "
-              >
-                <span class="body-1">
-                  {{ authDetail.authType }} | {{ authDetail.clientId }}
-                </span>
-              </v-chip>
-            </div>
-          </div>
-        </div>
-      </v-card>
-      <v-card
-        style="
-          margin-top: 2em;
-          padding: 1.5em 2em;
-          gap: 1.2em;
-          margin-bottom: 2em;
-        "
-        class="column"
+        :isConfigured="isConfigured"
+      />
+      <configure-user-limits
         v-if="isConfigured || step >= 5"
-        :id="'configure-step-' + 5"
-      >
-        <h4 style="width: 100%; display: block">SET PER USER LIMIT</h4>
-        <div class="flex flex-wrap" style="gap: 4vw">
-          <div
-            class="flex column"
-            style="
-              gap: 1.2em;
-              align-items: flex-start;
-              width: 22vw;
-              min-width: 280px;
-            "
-          >
-            <span class="body-1" style="color: var(--text-grey)">
-              Your application’s limits will act as the default storage and
-              bandwidth limits for each user of your application unless you
-              choose to specify it for each user here.
-            </span>
-            <v-button variant="link" label="LEARN MORE" />
-          </div>
-          <div
-            class="flex sm-column"
-            style="gap: 3em; flex-grow: 1; align-items: flex-start"
-          >
-            <div class="flex column" style="flex-grow: 1; gap: 20px">
-              <div
-                class="flex sm-column"
-                style="justify-content: space-between; width: calc(90%)"
-              >
-                <h3>STORAGE</h3>
-                <div
-                  class="flex sm-column-gap"
-                  style="align-items: center; gap: 1em"
-                >
-                  <span class="body-2">Unlimited</span>
-                  <v-switch
-                    v-model="storageUnlimited"
-                    style="margin-top: 2px"
-                  />
-                </div>
-              </div>
-              <div
-                class="text-field flex"
-                style="width: 90%; justify-content: space-between"
-              >
-                <input
-                  type="number"
-                  maxlength="1"
-                  id="storage"
-                  min="0"
-                  pattern="[0-9]"
-                />
-                <v-dropdown
-                  :options="['MB', 'GB']"
-                  placeholder="unit"
-                  class="usage"
-                  style="min-width: 8em"
-                  triggerStyle="padding: 18px 20px"
-                />
-              </div>
-            </div>
-            <div class="flex column" style="flex-grow: 1; gap: 20px">
-              <div
-                class="flex sm-column sm-column-gap"
-                style="justify-content: space-between; width: calc(90%)"
-              >
-                <h3>BANDWIDTH</h3>
-                <div
-                  class="flex sm-column-gap"
-                  style="align-items: center; gap: 1em"
-                >
-                  <span class="body-2">Unlimited</span>
-                  <v-switch
-                    v-model="bandwidthUnlimited"
-                    style="margin-top: 2px"
-                  />
-                </div>
-              </div>
-              <div
-                class="text-field flex"
-                style="width: 90%; justify-content: space-between"
-              >
-                <input
-                  type="number"
-                  maxlength="1"
-                  id="storage"
-                  min="0"
-                  pattern="[0-9]"
-                />
-                <v-dropdown
-                  :options="['MB', 'GB']"
-                  placeholder="unit"
-                  class="usage"
-                  style="min-width: 8em"
-                  triggerStyle="padding: 18px 20px"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </v-card>
+        :style="step === 5 ? 'margin-bottom: 2em' : ''"
+        :isConfigured="isConfigured"
+      />
     </main>
     <configure-footer
       v-if="!isConfigured"
-      :show="!isConfigured"
       :saveLabel="step === 5 ? 'SAVE' : 'NEXT'"
       @save="onFooterSave"
       @cancel="onFooterCancel"
@@ -476,9 +103,10 @@
     <configure-footer
       v-else
       :show="isEdited"
-      @save="isEdited = false"
-      @cancel="isEdited = false"
+      @save="onFooterSave"
+      @cancel="onFooterCancel"
     />
+
     <v-overlay
       v-if="deleteApp"
       style="align-items: center; justify-content: center; display: flex"
@@ -530,17 +158,18 @@
             label="CANCEL"
             v-wave
             style="border: 3px solid #28c6fa"
-            @click="deleteApp = false"
+            @click.stop="deleteApp = false"
           />
           <v-button
             variant="primary"
             label="DELETE"
             v-wave
-            @click="startDeleteTimer"
+            :action="startDeleteTimer"
           />
         </footer>
       </v-card>
     </v-overlay>
+
     <v-overlay
       v-if="proceedDelete"
       style="align-items: center; justify-content: center; display: flex"
@@ -572,9 +201,9 @@
             :size="200"
           />
           <div class="flex inner-clock">
-            <span class="sub-heading-2"
-              >00:{{ timer.toString().padStart(2, "0") }}</span
-            >
+            <span class="sub-heading-2">
+              00:{{ timer.toString().padStart(2, "0") }}
+            </span>
           </div>
         </div>
         <footer
@@ -591,13 +220,13 @@
             label="CANCEL"
             v-wave
             style="border: 3px solid #28c6fa"
-            @click="handleCancelDelete"
+            @click.stop="handleCancelDelete"
           />
           <v-button
             variant="primary"
             label="DELETE"
             v-wave
-            @click="handleDelete"
+            @click.stop="handleDelete"
           />
         </footer>
       </v-card>
@@ -609,6 +238,18 @@
 .container {
   margin-top: 4vh;
   margin-bottom: 6vh;
+}
+
+.step-counter {
+  color: #13a3fd;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.app-action {
+  margin-left: 1vw;
+  padding: 0.8em;
 }
 
 .outer-clock {
@@ -625,33 +266,8 @@
   margin: 3em 0;
 }
 
-.outer-clock-progress {
-  width: 12em;
-  height: 12em;
-  border-radius: 50%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  box-sizing: border-box;
-  border: none;
-  background-color: transparent;
-  overflow: hidden;
-}
-
 .configure-options {
   margin-left: auto;
-}
-
-progress::-webkit-progress-bar {
-  background-color: transparent;
-}
-progress::-webkit-progress-value {
-  background: #8fff00;
-  border-radius: 999px;
-  transition: width 0.4s;
 }
 
 .first-time-configure-header {
@@ -737,116 +353,110 @@ input[type="number"] {
 }
 </style>
 
+<style>
+.app-section-description {
+  width: 22vw;
+  min-width: 280px;
+}
+.app-section-description .body-1 {
+  color: var(--text-grey);
+}
+</style>
+
 <script>
-import BackIcon from "../assets/iconography/back.svg";
-import DeleteIcon from "../assets/iconography/delete.svg";
-import PauseIcon from "../assets/iconography/pause.svg";
-import PlusIcon from "../assets/iconography/plus.svg";
-import { useRouter } from "vue-router";
-import VSwitch from "../components/lib/VSwitch/VSwitch.vue";
+import { computed, onBeforeMount, onMounted, watch } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
-import VTextField from "../components/lib/VTextField/VTextField.vue";
-import VCard from "../components/lib/VCard/VCard.vue";
-import VButton from "../components/lib/VButton/VButton.vue";
-import VSeperator from "../components/lib/VSeperator/VSeperator.vue";
-import VDropdown from "../components/lib/VDropdown/VDropdown.vue";
-import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
-import VTooltip from "../components/lib/VTooltip/VTooltip.vue";
-import VChip from "../components/lib/VChip/VChip.vue";
-import { onMounted, watch } from "@vue/runtime-core";
-import ConfigureFooter from "../components/ConfigureFooter.vue";
-import AppHeader from "../components/AppHeader.vue";
-import VIconButton from "../components/lib/VIconButton/VIconButton.vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+
+import AppHeader from "@/components/AppHeader.vue";
 import CircleProgress from "vue3-circle-progress";
-import VCircularProgress from "../components/lib/VCircularProgress/VCircularProgress.vue";
+import ConfigureAppAuth from "@/components/app-configure/AppAuth.vue";
+import ConfigureAppChainType from "@/components/app-configure/AppChain.vue";
+import ConfigureAppName from "@/components/app-configure/AppName.vue";
+import ConfigureAppRegion from "@/components/app-configure/AppRegion.vue";
+import ConfigureFooter from "@/components/ConfigureFooter.vue";
+import ConfigureUserLimits from "@/components/app-configure/AppUserLimits.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VChip from "@/components/lib/VChip/VChip.vue";
+import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
+import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+
+import PauseIcon from "@/assets/iconography/pause-disabled.svg";
+import DeleteIcon from "@/assets/iconography/delete.svg";
+import {
+  createApp,
+  updateApp,
+  deleteApp as deleteAppApi,
+} from "@/services/app-config.service";
+import { signerMakeTx } from "../utils/signer";
+import getEnvApi from "../services/get-env-api";
+
 export default {
   components: {
+    AppHeader,
+    CircleProgress,
+    ConfigureAppAuth,
+    ConfigureAppChainType,
+    ConfigureAppName,
+    ConfigureAppRegion,
+    ConfigureFooter,
+    ConfigureUserLimits,
+    VButton,
+    VCard,
+    VChip,
+    VCircularProgress,
+    VDropdown,
+    VIconButton,
+    VOverlay,
+    VSeperator,
+    VStack,
     VSwitch,
     VTextField,
-    VCard,
-    VButton,
-    VSeperator,
-    VDropdown,
     VTooltip,
-    ConfigureFooter,
-    AppHeader,
-    VOverlay,
-    VChip,
-    VIconButton,
-    CircleProgress,
-    VCircularProgress,
   },
   setup() {
     const router = useRouter();
-    const appName = ref("Aspire");
-    let liveEnvironment = ref(false);
-    let isConfigured = ref(false);
+    const store = useStore();
+    let liveEnvironment = ref(store.getters.env === "test" ? false : true);
+    let isConfigured = computed(() => {
+      return store.getters.isAppConfigured;
+    });
     let step = ref(1);
-    let isEdited = ref(false);
     let deleteApp = ref(false);
     let proceedDelete = ref(false);
-    let __locationCopy = {
-      any: false,
-      asia: false,
-      africa: false,
-      austrialia: false,
-      europe: false,
-      northAmerica: false,
-      southAmerica: false,
-    };
-    let location = ref({ ...__locationCopy });
     let timer = ref(59);
     let progressTimer = ref(59000);
 
-    let __chainTypesCopy = {
-      ethereum: false,
-      polygon: false,
-      binance: false,
+    const env = computed(() => {
+      return store.getters.env;
+    });
+
+    let testConfig = {
+      region: store.getters["test/region"],
+      chainType: store.getters["test/chainType"],
     };
-    let chainTypes = ref({ ...__chainTypesCopy });
+    let liveConfig = {
+      region: store.getters["live/region"],
+      chainType: store.getters["live/chainType"],
+    };
 
-    let storageUnlimited = ref(false);
-    let bandwidthUnlimited = ref(false);
-    let selectedAuthenticationType = ref("");
-    let selectedAuthClientId = ref("");
-    const authenticationTypes = [
-      "Bring Your Own Keys",
-      "Google",
-      "Github",
-      "Reddit",
-      "Discord",
-      "Twitter",
-      "Twitch",
-    ];
-    let authenticationDetails = ref([]);
-    let selectedAuthClientIdError = ref(false);
+    const isEdited = computed(() => {
+      return store.getters.onConfigChange;
+    });
 
     watch(
-      () => location.value,
+      () => liveEnvironment.value,
       () => {
-        Object.keys(location.value).forEach((key) => {
-          if (key !== "any") {
-            if (location.value.any && !__locationCopy.any) {
-              location.value[key] = false;
-            } else if (
-              location.value[key] &&
-              !__locationCopy[key] &&
-              location.value.any
-            ) {
-              location.value.any = false;
-            }
-          }
-        });
-        __locationCopy = { ...location.value };
-        isEdited.value = true;
-      },
-      { deep: true }
-    );
-
-    watch(
-      () => chainTypes.value,
-      () => {
-        isEdited.value = true;
+        store.dispatch("toggleEnv");
       }
     );
 
@@ -854,72 +464,160 @@ export default {
       router.back();
     }
 
-    function addAuthentication() {
-      console.log(selectedAuthenticationType.value, selectedAuthClientId.value);
-      if (
-        selectedAuthClientId.value.trim() &&
-        selectedAuthenticationType.value
-      ) {
-        console.log("Here");
-        const type =
-          selectedAuthenticationType.value === "Bring Your Own Keys"
-            ? "user-keys"
-            : selectedAuthenticationType.value.toLowerCase();
-        if (
-          !authenticationDetails.value.find(
-            (authDetail) => authDetail.type === type
-          )
-        ) {
-          authenticationDetails.value.push({
-            type,
-            authType: selectedAuthenticationType.value,
-            clientId: selectedAuthClientId.value.trim(),
+    async function onFooterSave() {
+      if (!isConfigured.value) {
+        if (step.value < 6) step.value++;
+        if (step.value <= 5) {
+          setTimeout(() => {
+            document
+              .getElementById("configure-step-" + step.value)
+              .scrollIntoView({ behavior: "smooth" });
+          }, 10);
+        } else if (step.value === 6) {
+          step.value = 5;
+          createApp({
+            name: store.getters.appName,
+            ...store.getters[env.value + "/config"],
+          }).then(() => {
+            router.replace("/");
           });
-          selectedAuthClientId.value = "";
-          selectedAuthenticationType.value = "";
-        } else {
-          selectedAuthClientIdError.value = true;
         }
+      } else {
+        console.log(store.getters["test/config"]);
+        const config = { ...store.getters[env.value + "/config"] };
+        // const makeTxUserLimits = makeTx(
+        //   store.getters.smartContractAddress,
+        //   "setDefaultLimit",
+        //   [config.storage, config.bandwidth]
+        // );
+
+        // await Promise.all([makeTxUserLimits]);
+
+        updateApp(store.getters.appId, {
+          name: store.getters.appName,
+          ...config,
+        }).then(() => {
+          store.dispatch("configChangeReset");
+          router.replace("/");
+        });
+
+        console.log(
+          "Make Tx",
+          store.getters.smartContractAddress,
+          "setGoogleClientId",
+          ["random-client-id"]
+        );
+
+        const googleClientId = store.getters[
+          store.getters.env + "/authDetails"
+        ].find((el) => el.verifier === "google")?.clientId;
+
+        console.log({ googleClientId });
+
+        if (googleClientId) {
+          signerMakeTx({
+            ...getTxRequestProps(),
+            method: "setGoogleClientId",
+            value: [googleClientId],
+          }).then((response) => {
+            console.log(response);
+          });
+        }
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setGoogleClientId",
+          value: ["random-client-id"],
+        }).then((response) => {
+          console.log(response);
+        });
+
+        // console.log(store.getters.smartContractAddress, "setAppName", [
+        //   store.getters.appName,
+        // ]);
+
+        // makeTx(store.getters.smartContractAddress, "setAppName", [
+        //   store.getters.appName,
+        // ]);
       }
     }
 
-    function removeAuthentication(index) {
-      console.log("Remove", index);
-      authenticationDetails.value.splice(index, 1);
-      console.log(authenticationDetails.value);
-    }
-
-    function onFooterSave() {
-      if (step.value < 6) step.value++;
-      if (step.value <= 5) {
-        setTimeout(() => {
-          document
-            .getElementById("configure-step-" + step.value)
-            .scrollIntoView({ behavior: "smooth" });
-        }, 10);
-      } else if (step.value === 6) {
-        step.value = 5;
-        localStorage.setItem("isConfigured", "true");
-        router.replace("/");
-      }
+    function getTxRequestProps() {
+      return {
+        privateKey: store.getters.keys.privateKey,
+        appAddress: store.getters.smartContractAddress,
+        rpc: import.meta.env.VITE_ARCANA_RPC,
+        gateway: getEnvApi(),
+        forwarderAddress: import.meta.env.VITE_ARCANA_FORWARDER_ADDRESS,
+        accessToken: store.getters.accessToken,
+      };
     }
 
     function onFooterCancel() {
-      if (step.value > 0) step.value--;
-      if (step.value >= 1) {
-        setTimeout(() => {
-          document
-            .getElementById("configure-step-" + step.value)
-            .scrollIntoView({ behavior: "smooth" });
-        }, 10);
-      } else if (step.value === 0) {
-        router.replace("/");
+      if (!isConfigured.value) {
+        if (step.value > 0) step.value--;
+        if (step.value >= 1) {
+          setTimeout(() => {
+            document
+              .getElementById("configure-step-" + step.value)
+              .scrollIntoView({ behavior: "smooth" });
+          }, 10);
+        } else if (step.value === 0) {
+          router.replace("/");
+        }
+      } else {
+        if (env.value === "test") {
+          store.dispatch("test/updateRegion", testConfig.region);
+          store.dispatch("test/updateChainType", testConfig.chainType);
+        } else {
+          store.dispatch("live/updateRegion", liveConfig.region);
+          store.dispatch("live/updateChaintype", testConfig.chainType);
+        }
+        store.dispatch("configChangeReset");
       }
     }
 
     function handleDelete() {
       localStorage.clear();
-      router.push("/");
+      deleteAppApi().then((response) => {
+        console.log(response);
+        store.dispatch("test/resetConfigStore");
+        store.dispatch("live/resetConfigStore");
+        store.dispatch("resetStore");
+        router.push("/");
+      });
     }
 
     let intervalForDelete;
@@ -953,27 +651,9 @@ export default {
       proceedDelete.value = false;
     }
 
-    onMounted(() => {
-      isConfigured.value = !!localStorage.getItem("isConfigured");
-    });
-
     return {
-      BackIcon,
-      DeleteIcon,
-      PauseIcon,
-      PlusIcon,
       backToDashboard,
       liveEnvironment,
-      appName,
-      location,
-      chainTypes,
-      storageUnlimited,
-      bandwidthUnlimited,
-      authenticationTypes,
-      selectedAuthenticationType,
-      authenticationDetails,
-      selectedAuthClientId,
-      selectedAuthClientIdError,
       step,
       isConfigured,
       isEdited,
@@ -981,13 +661,14 @@ export default {
       proceedDelete,
       timer,
       progressTimer,
+      store,
       onFooterSave,
       onFooterCancel,
-      addAuthentication,
-      removeAuthentication,
       handleDelete,
       startDeleteTimer,
       handleCancelDelete,
+      PauseIcon,
+      DeleteIcon,
     };
   },
 };

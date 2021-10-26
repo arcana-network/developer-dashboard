@@ -145,8 +145,7 @@ header {
   position: sticky;
   display: flex;
   top: 0;
-  opacity: 1;
-  transition: opacity 0.4s;
+  transition: transform 0.6s;
   visibility: visible;
 }
 
@@ -186,8 +185,7 @@ ul {
 }
 
 .hide-header {
-  opacity: 0;
-  visibility: hidden;
+  transform: translateY(-100%);
 }
 header section {
   justify-content: space-between;

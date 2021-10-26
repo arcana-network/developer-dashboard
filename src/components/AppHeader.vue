@@ -25,12 +25,14 @@ import MenuIcon from "../assets/iconography/menu.svg";
 import ArcanaFavicon from "../assets/iconography/arcana-favicon.svg";
 import VHeader from "./lib/VHeader/VHeader.vue";
 import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
 export default {
   name: "AppHeader",
   components: { VHeader },
   setup() {
     const route = useRoute();
     const router = useRouter();
+    const store = useStore();
     const menuItems = computed(() => {
       let arr = [
         {
@@ -47,13 +49,13 @@ export default {
           },
           selected: false,
         },
-        {
-          label: "Help",
-          action() {
-            // router.push("/help");
-          },
-          selected: false,
-        },
+        // {
+        //   label: "Help",
+        //   action() {
+        //     // router.push("/help");
+        //   },
+        //   selected: false,
+        // },
         {
           label: "Docs",
           action() {
@@ -71,7 +73,7 @@ export default {
     });
 
     const loggedInUser = {
-      name: "John Doe",
+      name: store.getters.userInfo.name,
       action() {
         router.push("/profile");
       },

@@ -151,7 +151,6 @@ import GoogleLogo from "../assets/iconography/google.svg";
 import TwitterLogo from "../assets/iconography/twitter.svg";
 import GithubLogo from "../assets/iconography/github.svg";
 import AppLogo from "../assets/logo.svg";
-import { launchGoogleSSO, launchTwitterSSO } from "../utils/sso";
 export default {
   name: "AppSignin",
   components: { VTextField, VButton, LandingDescriptor },
@@ -176,8 +175,6 @@ export default {
       GithubLogo,
       AppLogo,
       navigateToSignup,
-      launchGoogleSSO,
-      launchTwitterSSO,
       goToForgotPassword,
       onSignin,
     };

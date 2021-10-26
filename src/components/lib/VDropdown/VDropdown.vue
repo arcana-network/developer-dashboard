@@ -7,7 +7,14 @@
     :aria-expanded="isOpen"
   >
     <div class="custom-select__trigger" :style="triggerStyle">
-      <span v-if="value">{{ value }}</span>
+      <span v-if="value">
+        <span v-if="displayField">
+          {{ value[displayField] }}
+        </span>
+        <span v-else>
+          {{ value }}
+        </span>
+      </span>
       <span v-else class="placeholder">{{ placeholder }}</span>
       <div class="arrow"></div>
     </div>
@@ -21,7 +28,12 @@
         class="custom-option"
         @click.stop="onChange(option, $event)"
       >
-        {{ option }}
+        <span v-if="displayField">
+          {{ option[displayField] }}
+        </span>
+        <span v-else>
+          {{ option }}
+        </span>
       </span>
     </div>
   </div>
@@ -139,7 +151,8 @@ export default {
   name: "VDropdown",
   props: {
     options: Array,
-    modelValue: String,
+    displayField: String,
+    modelValue: [String, Object],
     placeholder: String,
     triggerStyle: [String, Object, Array],
   },

@@ -1,5 +1,5 @@
 <template>
-  <button class="card-button" :class="{ active }">
+  <button class="card-button" :disabled="disabled" :class="{ active }">
     <span v-if="label">{{ label }}</span>
     <slot v-else></slot>
   </button>
@@ -18,7 +18,7 @@
   border-radius: 10px;
   font-family: var(--font-body);
 }
-.card-button:hover {
+.card-button:not(:disabled):hover {
   background: linear-gradient(
     44.81deg,
     #000000 -147.88%,
@@ -30,8 +30,8 @@
     inset 44px 25px 7px 8px rgba(32, 32, 32, 0.4);
   color: #13a3fd;
 }
-.card-button:active,
-.card-button.active {
+.card-button:not(:disabled):active,
+.card-button.active:not(:disabled) {
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   box-shadow: inset -2px -2px 4px rgba(57, 57, 57, 0.44),
     inset 5px 5px 10px rgba(11, 11, 11, 0.5);
@@ -45,6 +45,7 @@ export default {
   props: {
     label: String,
     active: Boolean,
+    disabled: Boolean,
   },
   setup() {},
 };

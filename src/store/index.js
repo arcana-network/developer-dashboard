@@ -1,68 +1,104 @@
 import { createStore, createLogger } from "vuex";
-// import authState from "./auth.store";
-// import loaderState from "./loader.store";
-// import fileState from "./file.store";
+import configureStore from "./configure.store";
+import authStore from "./auth.store";
 
 const debug = process.env.NODE_ENV !== "production";
 
 const state = {
-  redirectTo: {},
-  totalStorage: 0,
-  storageUsed: 0,
+  env: "test",
+  appName: "",
+  appId: null,
+  onConfigChange: false,
+  isAppConfigured: false,
+  smartContractAddress: "",
 };
 
 const getters = {
-  redirectTo: (state) => {
-    return state.redirectTo;
-  },
-  storage: (state) => {
-    return {
-      totalStorage: state.totalStorage,
-      storageUsed: state.storageUsed,
-    };
-  },
+  env: (state) => state.env,
+  appName: (state) => state.appName,
+  appId: (state) => state.appId,
+  onConfigChange: (state) => state.onConfigChange,
+  isAppConfigured: (state) => state.isAppConfigured,
+  smartContractAddress: (state) => state.smartContractAddress,
 };
 
 const mutations = {
-  updateRedirect(state, toRoute) {
-    state.redirectTo = toRoute;
+  toggleEnv(state) {
+    state.env = state.env === "test" ? "live" : "test";
   },
-  removeRedirect(state) {
-    state.redirectTo = {};
+  updateAppName(state, appName) {
+    state.appName = appName;
   },
-  updateTotalStorage(state, totalStorage) {
-    state.totalStorage = totalStorage;
+  updateAppId(state, appId) {
+    state.appId = appId;
   },
-  updateStorageUsed(state, storageUsed) {
-    state.storageUsed = storageUsed;
+  configChangeDetected(state) {
+    state.onConfigChange = true;
+  },
+  configChangeReset(state) {
+    state.onConfigChange = false;
+  },
+  updateAppConfigurationStatus(state, isAppConfigured) {
+    state.isAppConfigured = isAppConfigured;
+  },
+  resetStore(state) {
+    state.appName = "";
+    state.appId = "";
+  },
+  updateSmartContractAddress(state, smartContractAddress) {
+    state.smartContractAddress = smartContractAddress;
   },
 };
 
 const actions = {
-  updateRedirect({ commit }, payload) {
-    commit("updateRedirect", payload);
+  toggleEnv({ commit }) {
+    commit("toggleEnv");
   },
-  removeRedirect({ commit }) {
-    commit("removeRedirect");
+  updateAppName({ commit }, appName) {
+    commit("updateAppName", appName);
   },
-  updateStorage({ commit }, payload) {
-    commit("updateTotalStorage", payload.totalStorage);
-    commit("updateStorageUsed", payload.storageUsed);
+  updateAppId({ commit }, appId) {
+    commit("updateAppId", appId);
+  },
+  configChangeDetected({ commit }) {
+    commit("configChangeDetected");
+  },
+  configChangeReset({ commit }) {
+    commit("configChangeReset");
+  },
+  updateAppConfigurationStatus({ commit }, isAppConfigured) {
+    commit("updateAppConfigurationStatus", isAppConfigured);
+  },
+  resetStore({ commit }) {
+    commit("resetStore");
+  },
+  updateSmartContractAddress({ commit }, smartContractAddress) {
+    commit("updateSmartContractAddress", smartContractAddress);
   },
 };
 
 const store = createStore({
   modules: {
-    // authState,
-    // loaderState,
-    // fileState,
+    test: {
+      namespaced: true,
+      modules: {
+        configureStore,
+      },
+    },
+    live: {
+      namespaced: true,
+      modules: {
+        configureStore,
+      },
+    },
+    authStore,
   },
   state,
   mutations,
   actions,
   getters,
-  strict: debug,
-  plugins: debug ? [createLogger()] : [],
+  // strict: debug,
+  // plugins: debug ? [createLogger()] : [],
 });
 
 export default store;
