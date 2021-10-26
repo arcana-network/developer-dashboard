@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "copy": "node ./copy-to-dist.js",
+    "build": "vite build && npm run copy",
     "serve": "vite preview"
   },
   "dependencies": {
