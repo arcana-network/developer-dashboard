@@ -34,14 +34,11 @@
           <table v-if="data.length" style="width: 100%">
             <tbody>
               <tr
-                v-for="el in data"
+                v-for="(el, index) in data"
                 :key="el.walletAddress"
-                @click.stop="
-                  userLog = el;
-                  showDetails = true;
-                "
+                @click.stop="fetchUserLogsApi(el.walletAddress, index)"
               >
-                <td>{{ el.walletAddress }}</td>
+                <td>{{ ellipsify(el.walletAddress) }}</td>
                 <td>{{ el.storage }}</td>
                 <td>{{ el.bandwidth }}</td>
                 <td>{{ el.actionCount }}</td>
@@ -100,7 +97,7 @@
             Wallet Address
           </span>
           <span class="sub-heading-3" style="color: var(--text-white)">
-            0x8B123123123b121w233x44c1saad3
+            {{ userLog.walletAddress }}
           </span>
         </div>
         <div
@@ -161,8 +158,8 @@
                 <tbody>
                   <tr v-for="el in userLog.logs" :key="el">
                     <td>{{ el.type }}</td>
-                    <td>{{ el.date }}</td>
-                    <td>{{ el.time }}</td>
+                    <td>{{ getDate(el.date) }}</td>
+                    <td>{{ getTIme(el.date) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -297,7 +294,12 @@ import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import { ref } from "@vue/reactivity";
 import { onBeforeMount, onMounted } from "@vue/runtime-core";
 import { Chart, registerables } from "chart.js";
-import { fetchAllUsers } from "../services/user.service";
+import {
+  fetchAllUsers,
+  fetchAllUserTransactions,
+  fetchMonthlyUsers,
+} from "../services/user.service";
+import moment from "moment";
 
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
@@ -443,9 +445,10 @@ export default {
           scales: {
             y: {
               beginAtZero: true,
+              max: 2000,
               grid: {
                 color: "#373737",
-                borderDash: [10, 10],
+                borderDash: [15, 15],
               },
               title: {
                 font: {
@@ -489,16 +492,54 @@ export default {
 
     onBeforeMount(() => {
       fetchAllUsers().then((response) => {
-        console.log(response);
-        // data.value = response.data || [];/
+        if (response.data instanceof Array) {
+          response.data.forEach((user) => {
+            data.value.push({
+              id: user.id,
+              walletAddress: user.address,
+              storage: user.storage,
+              bandwidth: user.bandwidth,
+              actionCount: user.action_count,
+            });
+          });
+        }
+      });
+
+      fetchMonthlyUsers().then((response) => {
+        console.log(response.data);
       });
     });
+
+    function fetchUserLogsApi(address, index) {
+      fetchAllUserTransactions(address).then((response) => {
+        data.value[index].email = response.data.email;
+        data.value[index].logs = [...response.data.transactions];
+        userLog.value = data.value[index];
+        showDetails.value = true;
+      });
+    }
+
+    function getTime(date) {
+      return moment(date).format("HH:mm:ss");
+    }
+
+    function getDate(date) {
+      return moment(date).format("DD-MM-YYYY");
+    }
+
+    function ellipsify(address) {
+      return address.substr(0, 4) + "...." + address.substr(address.length - 4);
+    }
 
     return {
       SearchIcon,
       data,
       showDetails,
       userLog,
+      fetchUserLogsApi,
+      getDate,
+      getTime,
+      ellipsify,
     };
   },
 };

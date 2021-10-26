@@ -500,21 +500,21 @@ export default {
           router.replace("/");
         });
 
-        console.log(store.getters.smartContractAddress, "setGoogleClientId", [
-          "random-client-id",
-        ]);
+        // console.log(store.getters.smartContractAddress, "setGoogleClientId", [
+        //   "random-client-id",
+        // ]);
 
-        makeTx(store.getters.smartContractAddress, "setGoogleClientId", [
-          "random-client-id",
-        ]);
+        // makeTx(store.getters.smartContractAddress, "setGoogleClientId", [
+        //   "random-client-id",
+        // ]);
 
-        console.log(store.getters.smartContractAddress, "setAppName", [
-          store.getters.appName,
-        ]);
+        // console.log(store.getters.smartContractAddress, "setAppName", [
+        //   store.getters.appName,
+        // ]);
 
-        makeTx(store.getters.smartContractAddress, "setAppName", [
-          store.getters.appName,
-        ]);
+        // makeTx(store.getters.smartContractAddress, "setAppName", [
+        //   store.getters.appName,
+        // ]);
       }
     }
 

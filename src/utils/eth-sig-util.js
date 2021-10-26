@@ -1,6 +1,8 @@
-import { keccak } from "ethereumjs-util";
 import ethAbi from "ethereumjs-abi";
 import { Buffer } from "buffer";
+// import { keccak256 } from "web3-utils";
+import * as ethUtil from "ethereumjs-util";
+import { keccak256, keccak } from "ethereumjs-util";
 
 const TYPED_MESSAGE_SCHEMA = {
   type: "object",
@@ -34,22 +36,22 @@ const TypedDataUtils = {
             "bytes32",
             null == i
               ? "0x0000000000000000000000000000000000000000000000000000000000000000"
-              : keccak(this.encodeData(t, i, r, n)),
+              : keccak256(this.encodeData(t, i, r, n)),
           ];
         if (void 0 === i)
           throw new Error(`missing value for field ${e} of type ${t}`);
-        if ("bytes" === t) return ["bytes32", keccak(i)];
+        if ("bytes" === t) return ["bytes32", keccak256(i)];
         if ("string" === t)
           return (
             "string" == typeof i && (i = Buffer.from(i, "utf8")),
-            ["bytes32", keccak(i)]
+            ["bytes32", keccak256(i)]
           );
         if (t.lastIndexOf("]") === t.length - 1) {
           const r = t.slice(0, t.lastIndexOf("[")),
             n = i.map((t) => a(e, r, t));
           return [
             "bytes32",
-            keccak(
+            keccak256(
               ethAbi.rawEncode(
                 n.map(([e]) => e),
                 n.map(([, e]) => e)
@@ -67,15 +69,16 @@ const TypedDataUtils = {
       for (const a of r[e]) {
         let e = t[a.name];
         if (void 0 !== e)
-          if ("bytes" === a.type) i.push("bytes32"), (e = keccak(e)), o.push(e);
+          if ("bytes" === a.type)
+            i.push("bytes32"), (e = keccak256(e)), o.push(e);
           else if ("string" === a.type)
             i.push("bytes32"),
               "string" == typeof e && (e = Buffer.from(e, "utf8")),
-              (e = keccak(e)),
+              (e = keccak256(e)),
               o.push(e);
           else if (void 0 !== r[a.type])
             i.push("bytes32"),
-              (e = keccak(this.encodeData(a.type, e, r, n))),
+              (e = keccak256(this.encodeData(a.type, e, r, n))),
               o.push(e);
           else {
             if (a.type.lastIndexOf("]") === a.type.length - 1)
@@ -106,10 +109,10 @@ const TypedDataUtils = {
     return r;
   },
   hashStruct(e, t, r, n = !0) {
-    return keccak(this.encodeData(e, t, r, n));
+    return keccak256(this.encodeData(e, t, r, n));
   },
   hashType(e, t) {
-    return keccak(this.encodeType(e, t));
+    return keccak256(this.encodeType(e, t));
   },
   sanitizeData(e) {
     const t = {};
@@ -126,7 +129,7 @@ const TypedDataUtils = {
       n.push(this.hashStruct("EIP712Domain", r.domain, r.types, t)),
       "EIP712Domain" !== r.primaryType &&
         n.push(this.hashStruct(r.primaryType, r.message, r.types, t)),
-      keccak(Buffer.concat(n))
+      keccak256(Buffer.concat(n))
     );
   },
 };
@@ -147,7 +150,9 @@ function padWithZeroes(e, t) {
 }
 
 export function signTypedData_v4(e, t) {
-  const r = TypedDataUtils.sign(t.data),
-    n = ethUtil.ecsign(r, e);
+  console.log("Signed Data ==========================", t.data, typeof t.data);
+  const r = keccak(t.data);
+  console.log(typeof r, r);
+  const n = ethUtil.ecsign(r, e);
   return ethUtil.bufferToHex(concatSig(n.v, n.r, n.s));
 }

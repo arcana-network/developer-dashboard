@@ -855,6 +855,9 @@ export default {
         scales: {
           y: {
             beginAtZero: true,
+            steps: 10,
+            stepValue: 5,
+            max: 300,
             grid: {
               color: "#373737",
               borderDash: [10, 10],
@@ -930,6 +933,9 @@ export default {
         scales: {
           y: {
             beginAtZero: true,
+            steps: 10,
+            stepValue: 5,
+            max: 300,
             grid: {
               color: "#373737",
               borderDash: [10, 10],
@@ -1048,28 +1054,28 @@ export default {
               break;
           }
           console.log(labels);
-          // StorageChart.data.datasets = [
-          //   {
-          //     label: "Storage used in GB",
-          //     data: storageData,
-          //     borderColor: "white",
-          //     borderWidth: 4,
-          //     lineTension: 0.2,
-          //   },
-          // ];
-          // StorageChart.data.labels = labels;
-          // StorageChart.update();
-          // BandwidthChart.data.datasets = [
-          //   {
-          //     label: "Bandwidth used in GB",
-          //     data: bandwidthData,
-          //     borderColor: "white",
-          //     borderWidth: 4,
-          //     lineTension: 0.2,
-          //   },
-          // ];
-          // BandwidthChart.data.labels = labels;
-          // BandwidthChart.update();
+          StorageChart.data.datasets = [
+            {
+              label: "Storage used in GB",
+              data: storageData,
+              borderColor: "white",
+              borderWidth: 4,
+              lineTension: 0.2,
+            },
+          ];
+          StorageChart.data.labels = labels;
+          StorageChart.update();
+          BandwidthChart.data.datasets = [
+            {
+              label: "Bandwidth used in GB",
+              data: bandwidthData,
+              borderColor: "white",
+              borderWidth: 4,
+              lineTension: 0.2,
+            },
+          ];
+          BandwidthChart.data.labels = labels;
+          BandwidthChart.update();
         });
       } catch (e) {
         console.log(e);
