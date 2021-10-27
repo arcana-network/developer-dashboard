@@ -44,15 +44,21 @@
             >
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Asia</span>
-                <v-switch v-model="region.asia" disabled />
+                <v-tooltip title="Coming Soon">
+                  <v-switch v-model="region.asia" disabled />
+                </v-tooltip>
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Africa</span>
-                <v-switch v-model="region.africa" disabled />
+                <v-tooltip title="Coming Soon">
+                  <v-switch v-model="region.africa" disabled />
+                </v-tooltip>
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Australia</span>
-                <v-switch v-model="region.australia" disabled />
+                <v-tooltip title="Coming Soon">
+                  <v-switch v-model="region.australia" disabled />
+                </v-tooltip>
               </div>
             </v-stack>
             <v-seperator
@@ -67,15 +73,21 @@
             >
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Europe</span>
-                <v-switch v-model="region.europe" disabled />
+                <v-tooltip title="Coming Soon">
+                  <v-switch v-model="region.europe" disabled />
+                </v-tooltip>
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">North America</span>
-                <v-switch v-model="region.northAmerica" disabled />
+                <v-tooltip title="Coming Soon">
+                  <v-switch v-model="region.northAmerica" disabled />
+                </v-tooltip>
               </div>
               <div class="flex justify-space-between width-100">
                 <span class="body-1">South America</span>
-                <v-switch v-model="region.southAmerica" disabled />
+                <v-tooltip title="Coming Soon">
+                  <v-switch v-model="region.southAmerica" disabled />
+                </v-tooltip>
               </div>
             </v-stack>
           </v-card>
@@ -109,13 +121,14 @@ import VSeperator from "../lib/VSeperator/VSeperator.vue";
 import { watch, ref, computed } from "@vue/runtime-core";
 import VStack from "../lib/VStack/VStack.vue";
 import { useStore } from "vuex";
+import VTooltip from "../lib/VTooltip/VTooltip.vue";
 
 export default {
   name: "ConfigureAppRegion",
   props: {
     isConfigured: Boolean,
   },
-  components: { VCard, VButton, VSwitch, VSeperator, VStack },
+  components: { VCard, VButton, VSwitch, VSeperator, VStack, VTooltip },
   setup(props) {
     const store = useStore();
 

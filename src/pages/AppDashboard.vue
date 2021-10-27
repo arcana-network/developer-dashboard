@@ -682,8 +682,8 @@ export default {
     const bandwidthUsed = ref("0 B");
     const storageUsedPercentage = ref(0);
     const bandwidthUsedPercentage = ref(0);
-    const storageRemaining = ref("300 GB");
-    const bandwidthRemaining = ref("300 GB");
+    const storageRemaining = ref("100 GB");
+    const bandwidthRemaining = ref("100 GB");
 
     onBeforeMount(() => {
       updateAppDetails();
@@ -765,7 +765,7 @@ export default {
           share: stats.data.actions?.share,
           revoke: stats.data.actions?.revoke,
         };
-        const bytes300Gb = bytes("300 GB");
+        const bytes100Gb = bytes("100 GB");
         storageUsed.value = bytes(stats.data.actions?.storage, {
           unitSeparator: " ",
         });
@@ -773,17 +773,17 @@ export default {
           unitSeparator: " ",
         });
         storageUsedPercentage.value =
-          (stats.data.actions?.storage / bytes300Gb) * 100;
+          (stats.data.actions?.storage / bytes100Gb) * 100;
         bandwidthUsedPercentage.value =
-          (stats.data.actions?.bandwidth / bytes300Gb) * 100;
+          (stats.data.actions?.bandwidth / bytes100Gb) * 100;
         storageRemaining.value = bytes(
-          bytes300Gb - stats.data.actions?.storage,
+          bytes100Gb - stats.data.actions?.storage,
           {
             unitSeparator: " ",
           }
         );
         bandwidthRemaining.value = bytes(
-          bytes300Gb - stats.data.actions?.bandwidth,
+          bytes100Gb - stats.data.actions?.bandwidth,
           {
             unitSeparator: " ",
           }

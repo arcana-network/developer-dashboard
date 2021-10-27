@@ -26,7 +26,7 @@
       <div class="flex column">
         <div
           class="flex sm-column flex-wrap"
-          style="gap: 2em; align-items: flex-start"
+          style="gap: 2em; align-items: flex-start; margin-bottom: 1em"
         >
           <v-dropdown
             :options="authenticationTypes"
@@ -35,14 +35,21 @@
             style="width: calc(36% - 4em); min-width: 260px"
             v-model="selectedAuthenticationType"
           />
+        </div>
+        <div
+          class="flex sm-column flex-wrap"
+          style="gap: 2em; align-items: flex-start"
+        >
           <v-text-field
-            v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
+            v-if="selectedAuthenticationType"
             placeholder="Enter Client ID"
             v-model="selectedAuthClientId"
+            :messageType="selectedAuthClientIdError ? 'error' : ''"
+            :message="errorMessage"
           />
           <v-text-field
             v-if="
-              selectedAuthenticationType !== 'Bring Your Own Keys' &&
+              selectedAuthenticationType &&
               selectedAuthenticationType.secretRequired
             "
             placeholder="Enter Client Secret"
@@ -50,15 +57,27 @@
             @keyup.enter="addAuthentication"
           />
           <v-text-field
-            v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
+            v-if="
+              selectedAuthenticationType &&
+              selectedAuthenticationType.redirectUrlRequired
+            "
             placeholder="Enter Redirect Url"
             :icon="PlusIcon"
             v-model="selectedAuthRedirectUrl"
-            @icon-clicked="addAuthentication"
-            :clickableIcon="true"
-            @keyup.enter="addAuthentication"
-            :messageType="selectedAuthClientIdError ? 'error' : ''"
-            :message="errorMessage"
+          />
+          <!-- <v-card-button
+            @click.stop="addAuthentication"
+            v-if="selectedAuthenticationType"
+            style="margin-top: 4px"
+          >
+            <img :src="PlusIcon" />
+            <span style="margin-left: 1em">ADD</span>
+          </v-card-button> -->
+          <v-button
+            variant="secondary"
+            @click.stop="addAuthentication"
+            v-if="selectedAuthenticationType"
+            label="ADD"
           />
         </div>
         <div class="flex flex-wrap" style="gap: 2em">
@@ -66,6 +85,7 @@
             v-for="(authDetail, index) in authenticationDetails"
             :key="authDetail"
             :title="`${authDetail.authType} | ${authDetail.clientId} | ${authDetail.redirectUrl}`"
+            tooltip-style=" word-wrap: break-word;"
           >
             <v-chip
               :cancellable="true"
@@ -100,6 +120,8 @@ import { computed, watch } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import PlusIcon from "@/assets/iconography/plus.svg";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+import VIconButton from "../lib/VIconButton/VIconButton.vue";
+import VCardButton from "../lib/VCardButton/VCardButton.vue";
 
 export default {
   name: "ConfigureAppAuth",
@@ -113,6 +135,8 @@ export default {
     VDropdown,
     VTextField,
     VTooltip,
+    VIconButton,
+    VCardButton,
   },
   setup(props) {
     const store = useStore();
@@ -120,7 +144,6 @@ export default {
       // "Bring Your Own Keys",
       {
         name: "Google",
-        secretRequired: false,
       },
       {
         name: "Github",
@@ -128,19 +151,17 @@ export default {
       },
       {
         name: "Reddit",
-        secretRequired: false,
       },
       {
         name: "Discord",
-        secretRequired: false,
       },
       {
         name: "Twitter",
         secretRequired: true,
+        redirectUrlRequired: true,
       },
       {
         name: "Twitch",
-        secretRequired: false,
       },
     ];
     let authenticationDetails = ref([]);
@@ -160,7 +181,6 @@ export default {
     function addAuthentication() {
       if (
         selectedAuthClientId.value.trim() &&
-        selectedAuthRedirectUrl.value.trim() &&
         selectedAuthenticationType.value.name
       ) {
         const type =

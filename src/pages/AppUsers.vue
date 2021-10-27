@@ -42,8 +42,8 @@
                 @click.stop="fetchUserLogsApi(el.walletAddress, index)"
               >
                 <td>{{ ellipsify(el.walletAddress) }}</td>
-                <td>{{ el.storage }}</td>
-                <td>{{ el.bandwidth }}</td>
+                <td>{{ convertToBytes(el.storage) }}</td>
+                <td>{{ convertToBytes(el.bandwidth) }}</td>
                 <td>{{ el.actionCount }}</td>
               </tr>
             </tbody>
@@ -125,7 +125,7 @@
               Storage
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ userLog.storage }}
+              {{ convertToBytes(userLog.storage) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -133,7 +133,7 @@
               Bandwidth
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ userLog.bandwidth }}
+              {{ convertToBytes(userLog.bandwidth) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -159,10 +159,13 @@
               </table>
               <table style="width: 100%">
                 <tbody>
-                  <tr v-for="el in userLog.logs" :key="el">
-                    <td>{{ el.type }}</td>
-                    <td>{{ getDate(el.date) }}</td>
-                    <td>{{ getTIme(el.date) }}</td>
+                  <tr
+                    v-for="transaction in userTransactions"
+                    :key="transaction.date"
+                  >
+                    <td>{{ transaction.type }}</td>
+                    <td>{{ getDate(transaction.date) }}</td>
+                    <td>{{ getTIme(transaction.date) }}</td>
                   </tr>
                 </tbody>
               </table>
@@ -304,108 +307,16 @@ import {
   searchUsers,
 } from "../services/user.service";
 import moment from "moment";
+import bytes from "bytes";
 
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
   setup() {
     let data = ref([]);
     let walletAddress = ref("");
-    for (let i = 0; i < 40; i++) {
-      let logs = [];
-      for (let j = 0; j < 5; j++) {
-        logs = [
-          ...logs,
-          {
-            type: "TRANSFER",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "UPLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "TRANSFER",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DELETE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "SHARE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "REVOKE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "UPLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "SHARE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "SHARE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DELETE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-        ];
-      }
-      // data.value.push({
-      //   walletAddress: "0x8B......1234",
-      //   storage: "2GB",
-      //   bandwidth: "5GB",
-      //   actionCount: "10",
-      //   email: "john@cena.com",
-      //   logs,
-      // });
-    }
-
-    console.log(data.value);
-
     let showDetails = ref(false);
     let userLog = ref({});
+    let userTransactions = ref([]);
 
     onMounted(() => {
       Chart.register(...registerables);
@@ -518,7 +429,20 @@ export default {
     function fetchUserLogsApi(address, index) {
       fetchAllUserTransactions(address).then((response) => {
         data.value[index].email = response.data.email;
-        data.value[index].logs = [...response.data.transactions];
+        console.log(response.data);
+        if (response.data.transaction instanceof Array) {
+          console.log(response.data.transaction);
+          userLog.value = data.value[index];
+          console.log(userLog.value);
+          // response.data.transaction.forEach((transaction) => {
+          //   userTransactions.value.push(transaction);
+          // });
+          // userTransactions.value = [...response.data.transaction];
+          console.log(userLog.value);
+        } else {
+          userTransactions.value = [];
+        }
+        console.log(userTransactions.value);
         userLog.value = data.value[index];
         showDetails.value = true;
       });
@@ -554,6 +478,10 @@ export default {
       }
     }
 
+    function convertToBytes(value) {
+      return bytes(value, { unitSeparator: " " });
+    }
+
     return {
       SearchIcon,
       data,
@@ -565,6 +493,8 @@ export default {
       ellipsify,
       walletAddress,
       searchWalletAddress,
+      convertToBytes,
+      userTransactions,
     };
   },
 };

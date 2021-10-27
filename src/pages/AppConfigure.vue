@@ -399,6 +399,7 @@ import {
 } from "@/services/app-config.service";
 import { signerMakeTx } from "../utils/signer";
 import getEnvApi from "../services/get-env-api";
+import { getAddress } from "../utils/get-address";
 
 export default {
   components: {
@@ -478,12 +479,18 @@ export default {
           createApp({
             name: store.getters.appName,
             ...store.getters[env.value + "/config"],
-          }).then(() => {
+          }).then(async (response) => {
+            console.log(response.data);
+            const appAddress = await getAddress(response.data.app?.address);
+
+            store.dispatch("updateSmartContractAddress", appAddress);
+
+            makeTx();
             router.replace("/");
           });
         }
       } else {
-        console.log(store.getters["test/config"]);
+        // console.log(store.getters["test/config"]);
         const config = { ...store.getters[env.value + "/config"] };
 
         updateApp(store.getters.appId, {
@@ -495,77 +502,57 @@ export default {
           router.replace("/");
         });
 
-        console.log(
-          "Make Tx",
-          store.getters.smartContractAddress,
-          "setGoogleClientId",
-          ["random-client-id"]
-        );
+        makeTx();
+      }
+    }
 
-        const googleClientId = store.getters[
-          store.getters.env + "/authDetails"
-        ].find((el) => el.verifier === "google")?.clientId;
+    function makeTx() {
+      const ssoClients = [
+        {
+          type: "google",
+          method: "setGoogleClientId",
+        },
+        {
+          type: "github",
+          method: "setGithubClientId",
+        },
+        {
+          type: "twitter",
+          method: "setTwitterClientId",
+        },
+        {
+          type: "twitch",
+          method: "setTwitchClientId",
+        },
+        {
+          type: "reddit",
+          method: "setRedditClientId",
+        },
+        {
+          type: "discord",
+          method: "setDiscordClientId",
+        },
+      ];
 
-        console.log({ googleClientId });
+      ssoClients.forEach((ssoClient) => {
+        const clientId = store.getters[store.getters.env + "/authDetails"].find(
+          (el) => el.verifier === ssoClient.type
+        )?.clientId;
 
-        if (googleClientId) {
+        if (clientId) {
+          console.log("Making tx for adding " + ssoClient.type + " client id");
           signerMakeTx({
             ...getTxRequestProps(),
-            method: "setGoogleClientId",
-            value: [googleClientId],
+            method: ssoClient.method,
+            value: [clientId],
           }).then((response) => {
-            console.log(response);
+            console.log(
+              "Tx for added " + ssoClient.type + " client id",
+              response
+            );
           });
         }
-
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
-
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
-
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
-
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
-
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
-
-        // console.log(store.getters.smartContractAddress, "setAppName", [
-        //   store.getters.appName,
-        // ]);
-
-        // makeTx(store.getters.smartContractAddress, "setAppName", [
-        //   store.getters.appName,
-        // ]);
-      }
+      });
     }
 
     function getTxRequestProps() {
