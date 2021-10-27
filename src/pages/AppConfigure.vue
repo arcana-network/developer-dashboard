@@ -524,45 +524,45 @@ export default {
           });
         }
 
-        signerMakeTx({
-          ...getTxRequestProps(),
-          method: "setGoogleClientId",
-          value: ["random-client-id"],
-        }).then((response) => {
-          console.log(response);
-        });
+        // signerMakeTx({
+        //   ...getTxRequestProps(),
+        //   method: "setGoogleClientId",
+        //   value: ["random-client-id"],
+        // }).then((response) => {
+        //   console.log(response);
+        // });
 
-        signerMakeTx({
-          ...getTxRequestProps(),
-          method: "setGoogleClientId",
-          value: ["random-client-id"],
-        }).then((response) => {
-          console.log(response);
-        });
+        // signerMakeTx({
+        //   ...getTxRequestProps(),
+        //   method: "setGoogleClientId",
+        //   value: ["random-client-id"],
+        // }).then((response) => {
+        //   console.log(response);
+        // });
 
-        signerMakeTx({
-          ...getTxRequestProps(),
-          method: "setGoogleClientId",
-          value: ["random-client-id"],
-        }).then((response) => {
-          console.log(response);
-        });
+        // signerMakeTx({
+        //   ...getTxRequestProps(),
+        //   method: "setGoogleClientId",
+        //   value: ["random-client-id"],
+        // }).then((response) => {
+        //   console.log(response);
+        // });
 
-        signerMakeTx({
-          ...getTxRequestProps(),
-          method: "setGoogleClientId",
-          value: ["random-client-id"],
-        }).then((response) => {
-          console.log(response);
-        });
+        // signerMakeTx({
+        //   ...getTxRequestProps(),
+        //   method: "setGoogleClientId",
+        //   value: ["random-client-id"],
+        // }).then((response) => {
+        //   console.log(response);
+        // });
 
-        signerMakeTx({
-          ...getTxRequestProps(),
-          method: "setGoogleClientId",
-          value: ["random-client-id"],
-        }).then((response) => {
-          console.log(response);
-        });
+        // signerMakeTx({
+        //   ...getTxRequestProps(),
+        //   method: "setGoogleClientId",
+        //   value: ["random-client-id"],
+        // }).then((response) => {
+        //   console.log(response);
+        // });
 
         // console.log(store.getters.smartContractAddress, "setAppName", [
         //   store.getters.appName,
