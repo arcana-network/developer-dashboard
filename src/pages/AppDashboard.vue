@@ -263,7 +263,7 @@
               id="storageChartContainer"
               style="margin-top: 0.65em; min-width: 300px"
             >
-              <canvas id="storageChart" width="300"></canvas>
+              <canvas id="storageChart" width="200"></canvas>
             </div>
           </section>
           <section
@@ -307,7 +307,7 @@
               id="bandwidthChartContainer"
               style="margin-top: 0.65em; min-width: 300px"
             >
-              <canvas id="bandwidthChart" width="300"></canvas>
+              <canvas id="bandwidthChart" width="200"></canvas>
             </div>
           </section>
         </section>
@@ -642,6 +642,7 @@ import { useStore } from "vuex";
 import bytes from "bytes";
 import copyToClipboard from "../utils/copyToClipboard";
 import { getAddress } from "../utils/get-address";
+import { updateApp } from "../services/app-config.service";
 
 export default {
   components: {
@@ -701,6 +702,16 @@ export default {
           // Get Address
           const appAddress = await getAddress(currentApp.address);
           console.log(appAddress);
+
+          const config = { ...store.getters["test/config"] };
+
+          updateApp(store.getters.appId, {
+            name: store.getters.appName,
+            address: appAddress.replace("0x", ""),
+            ...config,
+          }).then((response) => {
+            console.log(response);
+          });
 
           smartContractAddress.value = appAddress;
           store.dispatch(

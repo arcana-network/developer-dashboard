@@ -16,7 +16,7 @@ export function fetchAllUsers() {
 export function searchUsers(address) {
   return axios.get(
     getEnvApi() +
-      "/api/user-details/?id=" +
+      "/api/user-transactions/?id=" +
       store.getters.appId +
       "&address=" +
       address,

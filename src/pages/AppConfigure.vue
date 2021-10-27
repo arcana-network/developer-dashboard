@@ -485,16 +485,10 @@ export default {
       } else {
         console.log(store.getters["test/config"]);
         const config = { ...store.getters[env.value + "/config"] };
-        // const makeTxUserLimits = makeTx(
-        //   store.getters.smartContractAddress,
-        //   "setDefaultLimit",
-        //   [config.storage, config.bandwidth]
-        // );
-
-        // await Promise.all([makeTxUserLimits]);
 
         updateApp(store.getters.appId, {
           name: store.getters.appName,
+          address: store.getters.smartContractAddress.replace("0x", ""),
           ...config,
         }).then(() => {
           store.dispatch("configChangeReset");

@@ -30,17 +30,8 @@ export function createApp({
 
 export function updateApp(
   appId,
-  { name, region, chain, bandwidth_limit, storage_limit, cred }
+  { name, region, chain, bandwidth_limit, storage_limit, cred, address }
 ) {
-  console.log({
-    ID: appId,
-    name,
-    region,
-    chain,
-    bandwidth_limit,
-    storage_limit,
-    cred,
-  });
   return axios.post(
     getEnvApi() + "/api/update-app/?id=" + appId,
     {
@@ -51,6 +42,7 @@ export function updateApp(
       bandwidth_limit,
       storage_limit,
       cred,
+      address,
     },
     {
       headers: {

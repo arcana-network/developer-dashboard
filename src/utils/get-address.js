@@ -4,6 +4,8 @@ export async function getAddress(hash) {
   console.log(hash);
   if (hash.length === 42) {
     return hash;
+  } else if (hash.length === 40) {
+    return "0x" + hash;
   }
   if (!localStorage.getItem(hash)) {
     const provider = new ethers.providers.JsonRpcProvider(
