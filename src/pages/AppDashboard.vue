@@ -701,7 +701,6 @@ export default {
 
           // Get Address
           const appAddress = await getAddress(currentApp.address);
-          console.log(appAddress);
 
           const config = { ...store.getters["test/config"] };
 
@@ -710,7 +709,7 @@ export default {
             address: appAddress.replace("0x", ""),
             ...config,
           }).then((response) => {
-            console.log(response);
+            console.log(response.data);
           });
 
           smartContractAddress.value = appAddress;
@@ -765,7 +764,7 @@ export default {
           share: stats.data.actions?.share,
           revoke: stats.data.actions?.revoke,
         };
-        const bytes100Gb = bytes("100 GB");
+        const bytes100Gb = bytes("5 GB");
         storageUsed.value = bytes(stats.data.actions?.storage, {
           unitSeparator: " ",
         });
@@ -816,7 +815,6 @@ export default {
     }
 
     function goToConfigure() {
-      console.log("Button clicked");
       router.push("/configure");
     }
 
@@ -1020,7 +1018,6 @@ export default {
         let storageData;
         let bandwidthData;
         fetchPeriodicUsage(durationSelected.value).then((periodicUsage) => {
-          console.log(periodicUsage.data);
           const data = periodicUsage.data;
           switch (durationSelected.value) {
             case "day":
@@ -1071,7 +1068,6 @@ export default {
             default:
               break;
           }
-          console.log(labels);
           StorageChart.data.datasets = [
             {
               label: "Storage used in GB",
@@ -1096,7 +1092,7 @@ export default {
           BandwidthChart.update();
         });
       } catch (e) {
-        console.log(e);
+        console.error(e);
       }
     }
 

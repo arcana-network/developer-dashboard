@@ -480,7 +480,6 @@ export default {
             name: store.getters.appName,
             ...store.getters[env.value + "/config"],
           }).then(async (response) => {
-            console.log(response.data);
             const appAddress = await getAddress(response.data.app?.address);
 
             store.dispatch("updateSmartContractAddress", appAddress);
@@ -490,7 +489,6 @@ export default {
           });
         }
       } else {
-        // console.log(store.getters["test/config"]);
         const config = { ...store.getters[env.value + "/config"] };
 
         updateApp(store.getters.appId, {
@@ -507,6 +505,7 @@ export default {
     }
 
     async function makeTx() {
+      const config = { ...store.getters[env.value + "/config"] };
       const ssoClients = [
         {
           type: "google",
@@ -536,11 +535,9 @@ export default {
 
       for (let ssoClient of ssoClients) {
         try {
-          console.log(ssoClient);
           const clientId = store.getters[
             store.getters.env + "/authDetails"
           ].find((el) => el.verifier === ssoClient.type)?.clientId;
-          console.log({ clientId });
           if (clientId) {
             console.log(
               "Making tx for adding " + ssoClient.type + " client id"
@@ -551,13 +548,26 @@ export default {
               value: [clientId],
             });
             console.log(
-              "Tx for added " + ssoClient.type + " client id",
+              "Tx added for " + ssoClient.type + " client id",
               response
             );
           }
         } catch (e) {
-          console.log("Tx failed for " + ssoClient.type);
+          console.error("Tx failed for " + ssoClient.type);
+          console.error(e);
         }
+      }
+
+      try {
+        const userLimitTxResponse = await signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setDefaultLimit",
+          value: [config.storage_limit, config.bandwidth_limit],
+        });
+        console.log("Tx added for default limit", userLimitTxResponse);
+      } catch (e) {
+        console.error("Tx failed for default limit");
+        console.error(e);
       }
     }
 
@@ -599,7 +609,6 @@ export default {
     function handleDelete() {
       localStorage.clear();
       deleteAppApi().then((response) => {
-        console.log(response);
         store.dispatch("test/resetConfigStore");
         store.dispatch("live/resetConfigStore");
         store.dispatch("resetStore");

@@ -310,7 +310,6 @@ export default {
       Chart.register(...registerables);
 
       fetchMonthlyUsers().then((response) => {
-        console.log(response.data);
         const currentMonth = new Date().getMonth();
         const months = [
           "Jan",
@@ -425,11 +424,8 @@ export default {
     function fetchUserLogsApi(address, index) {
       fetchAllUserTransactions(address).then((response) => {
         data.value[index].email = response.data.email;
-        console.log(response.data);
         if (response.data.transaction instanceof Array) {
-          console.log(response.data.transaction);
           userLog.value = data.value[index];
-          console.log(userLog.value);
           // response.data.transaction.forEach((transaction) => {
           //   userTransactions.value.push(transaction);
           // });
@@ -437,11 +433,9 @@ export default {
             (transaction) =>
               transaction.type && transaction.type !== "Set convergence"
           );
-          console.log(userLog.value);
         } else {
           userTransactions.value = [];
         }
-        console.log(userTransactions.value);
         userLog.value = data.value[index];
         showDetails.value = true;
       });

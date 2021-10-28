@@ -38,13 +38,6 @@ const getters = {
   bandwidth: (state) => state.userLimits.bandwidth.limit,
   config: (state) => {
     let chain;
-    console.log(
-      state.userLimits.storage.limit.value + state.userLimits.storage.limit.unit
-    );
-    console.log(
-      state.userLimits.bandwidth.limit.value +
-        state.userLimits.bandwidth.limit.unit
-    );
     const storage_limit = bytes(
       state.userLimits.storage.limit.value + state.userLimits.storage.limit.unit
     );
@@ -107,11 +100,9 @@ const mutations = {
   },
   updateStorage(state, { unit, value }) {
     state.userLimits.storage.limit = { value, unit };
-    console.log(state.userLimits);
   },
   updateBandwidth(state, { unit, value }) {
     state.userLimits.bandwidth.limit = { value, unit };
-    console.log(state.userLimits);
   },
   resetConfigStore(state) {
     state = {

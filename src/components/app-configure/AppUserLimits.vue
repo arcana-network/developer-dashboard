@@ -34,7 +34,6 @@
             <h3>STORAGE</h3>
             <div
               class="flex sm-column-gap"
-              v-show="false"
               style="align-items: center; gap: 1em"
             >
               <span class="body-2">Unlimited</span>
@@ -71,7 +70,6 @@
             <h3>BANDWIDTH</h3>
             <div
               class="flex sm-column-gap"
-              v-show="false"
               style="align-items: center; gap: 1em"
             >
               <span class="body-2">Unlimited</span>
@@ -167,7 +165,6 @@ export default {
     watch(
       () => bandwidth.value,
       () => {
-        console.log(bandwidth.value);
         store.dispatch(env.value + "/updateBandwidth", { ...bandwidth.value });
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");
