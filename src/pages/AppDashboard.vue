@@ -682,8 +682,8 @@ export default {
     const bandwidthUsed = ref("0 B");
     const storageUsedPercentage = ref(0);
     const bandwidthUsedPercentage = ref(0);
-    const storageRemaining = ref("100 GB");
-    const bandwidthRemaining = ref("100 GB");
+    const storageRemaining = ref("5 GB");
+    const bandwidthRemaining = ref("5 GB");
 
     onBeforeMount(() => {
       updateAppDetails();

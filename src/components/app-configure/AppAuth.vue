@@ -237,6 +237,9 @@ export default {
         env.value + "/updateAuthDetails",
         authenticationDetails.value
       );
+      if (props.isConfigured && !store.getters.onConfigChange) {
+        store.dispatch("configChangeDetected");
+      }
     }
 
     watch(

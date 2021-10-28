@@ -63,7 +63,7 @@ const getters = {
         chain = 2;
         break;
       default:
-        chain = null;
+        chain = 3;
     }
 
     return {

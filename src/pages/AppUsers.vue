@@ -99,7 +99,10 @@
           <span class="body-1" style="color: var(--text-grey)">
             Wallet Address
           </span>
-          <span class="sub-heading-3" style="color: var(--text-white)">
+          <span
+            class="sub-heading-3"
+            style="color: var(--text-white); word-wrap: break-word"
+          >
             {{ userLog.walletAddress }}
           </span>
         </div>
@@ -157,18 +160,21 @@
                   </tr>
                 </thead>
               </table>
-              <table style="width: 100%">
+              <table style="width: 100%" v-if="userTransactions.length">
                 <tbody>
                   <tr
                     v-for="transaction in userTransactions"
-                    :key="transaction.date"
+                    :key="transaction"
                   >
                     <td>{{ transaction.type }}</td>
                     <td>{{ getDate(transaction.date) }}</td>
-                    <td>{{ getTIme(transaction.date) }}</td>
+                    <td>{{ getTime(transaction.date) }}</td>
                   </tr>
                 </tbody>
               </table>
+              <div v-else>
+                <h4>No transactions found</h4>
+              </div>
             </div>
           </v-card>
         </div>
@@ -183,7 +189,7 @@
   overflow-x: auto;
 }
 .log-container {
-  height: 30vh;
+  max-height: 30vh;
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -201,17 +207,6 @@ thead {
 tbody {
   font-family: var(--font-body);
   color: var(--text-grey);
-}
-.log-container table tbody tr td {
-  min-width: 8em;
-  width: 12vw;
-  text-align: left;
-}
-.log-container table thead tr th {
-  padding: 0 0.8em;
-  min-width: 9em;
-  width: 12vw;
-  text-align: left;
 }
 .table-head {
   margin: 1em 0 2em;
@@ -272,13 +267,6 @@ tbody tr:active {
   .log-container {
     height: 30vh;
   }
-  .log-container table tbody tr td {
-    min-width: 4em;
-    padding: 0.8em 0.2em;
-  }
-  .log-container table thead tr th {
-    min-width: 5em;
-  }
   th,
   td {
     min-width: 6.4em;
@@ -321,109 +309,117 @@ export default {
     onMounted(() => {
       Chart.register(...registerables);
 
-      const config = {
-        type: "line",
-        data: {
-          labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sept",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
-          datasets: [
-            {
-              label: "No of users",
-              data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              borderColor: "white",
-              borderWidth: 4,
-              lineTension: 0.2,
-            },
-          ],
-        },
-        options: {
-          animations: {
-            tension: {
-              duration: 1000,
-              easing: "linear",
-              from: 0.1,
-              to: 0.2,
-              loop: false,
-            },
-          },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 2000,
-              grid: {
-                color: "#373737",
-                borderDash: [15, 15],
+      fetchMonthlyUsers().then((response) => {
+        console.log(response.data);
+        const currentMonth = new Date().getMonth();
+        const months = [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sept",
+          "Oct",
+          "Nov",
+          "Dec",
+        ];
+
+        let monthLabels = [];
+
+        for (let i; i < 12; i++) {}
+
+        const config = {
+          type: "line",
+          data: {
+            labels: monthLabels,
+            datasets: [
+              {
+                label: "No of users",
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                borderColor: "white",
+                borderWidth: 4,
+                lineTension: 0.2,
               },
-              title: {
-                font: {
-                  family: "'Montserrat', sans-serif",
-                  size: 20,
-                  weight: 600,
+            ],
+          },
+          options: {
+            animations: {
+              tension: {
+                duration: 1000,
+                easing: "linear",
+                from: 0.1,
+                to: 0.2,
+                loop: false,
+              },
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 2000,
+                grid: {
+                  color: "#373737",
+                  borderDash: [15, 15],
+                },
+                title: {
+                  font: {
+                    family: "'Montserrat', sans-serif",
+                    size: 20,
+                    weight: 600,
+                  },
+                },
+                position: "right",
+              },
+              x: {
+                grid: {
+                  display: false,
                 },
               },
-              position: "right",
             },
-            x: {
-              grid: {
+            plugins: {
+              legend: {
                 display: false,
-              },
-            },
-          },
-          plugins: {
-            legend: {
-              display: false,
-              labels: {
-                font: {
-                  family: "'Montserrat', sans-serif",
-                  size: 20,
-                  weight: 400,
+                labels: {
+                  font: {
+                    family: "'Montserrat', sans-serif",
+                    size: 20,
+                    weight: 400,
+                  },
                 },
               },
+              tooltip: {},
             },
-            tooltip: {},
           },
-        },
-      };
-      setTimeout(() => {
+        };
         var numberOfUsersCtx = document
           .getElementById("numberOfUsersChart")
           ?.getContext("2d");
         if (numberOfUsersCtx) {
           new Chart(numberOfUsersCtx, { ...config });
         }
-      }, 100);
+      });
     });
 
-    onBeforeMount(() => {
+    function fetchUsers() {
       fetchAllUsers().then((response) => {
         if (response.data instanceof Array) {
-          response.data.forEach((user) => {
-            data.value.push({
+          data.value = response.data.map((user) => {
+            return {
               id: user.id,
               walletAddress: user.address,
               storage: user.storage,
               bandwidth: user.bandwidth,
               actionCount: user.action_count,
-            });
+            };
           });
         }
       });
+    }
 
-      fetchMonthlyUsers().then((response) => {
-        console.log(response.data);
-      });
+    onBeforeMount(() => {
+      fetchUsers();
     });
 
     function fetchUserLogsApi(address, index) {
@@ -437,7 +433,10 @@ export default {
           // response.data.transaction.forEach((transaction) => {
           //   userTransactions.value.push(transaction);
           // });
-          // userTransactions.value = [...response.data.transaction];
+          userTransactions.value = response.data.transaction.filter(
+            (transaction) =>
+              transaction.type && transaction.type !== "Set convergence"
+          );
           console.log(userLog.value);
         } else {
           userTransactions.value = [];
@@ -449,11 +448,11 @@ export default {
     }
 
     function getTime(date) {
-      return moment(date).format("HH:mm:ss");
+      return moment(new Date(date)).format("HH:mm:ss");
     }
 
     function getDate(date) {
-      return moment(date).format("DD-MM-YYYY");
+      return moment(new Date(date)).format("DD-MM-YYYY");
     }
 
     function ellipsify(address) {
@@ -463,18 +462,21 @@ export default {
     function searchWalletAddress() {
       if (walletAddress.value.trim()) {
         searchUsers(walletAddress.value).then((response) => {
-          if (response.data instanceof Array) {
-            response.data.forEach((user) => {
-              data.value.push({
-                id: user.id,
+          if (response.data?.usage?.address) {
+            const user = response.data.usage;
+            data.value = [
+              {
+                id: user.user_id,
                 walletAddress: user.address,
                 storage: user.storage,
                 bandwidth: user.bandwidth,
                 actionCount: user.action_count,
-              });
-            });
+              },
+            ];
           }
         });
+      } else {
+        fetchUsers();
       }
     }
 

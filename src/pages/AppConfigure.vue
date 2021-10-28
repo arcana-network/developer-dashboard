@@ -506,7 +506,7 @@ export default {
       }
     }
 
-    function makeTx() {
+    async function makeTx() {
       const ssoClients = [
         {
           type: "google",
@@ -534,25 +534,31 @@ export default {
         },
       ];
 
-      ssoClients.forEach((ssoClient) => {
-        const clientId = store.getters[store.getters.env + "/authDetails"].find(
-          (el) => el.verifier === ssoClient.type
-        )?.clientId;
-
-        if (clientId) {
-          console.log("Making tx for adding " + ssoClient.type + " client id");
-          signerMakeTx({
-            ...getTxRequestProps(),
-            method: ssoClient.method,
-            value: [clientId],
-          }).then((response) => {
+      for (let ssoClient of ssoClients) {
+        try {
+          console.log(ssoClient);
+          const clientId = store.getters[
+            store.getters.env + "/authDetails"
+          ].find((el) => el.verifier === ssoClient.type)?.clientId;
+          console.log({ clientId });
+          if (clientId) {
+            console.log(
+              "Making tx for adding " + ssoClient.type + " client id"
+            );
+            const response = await signerMakeTx({
+              ...getTxRequestProps(),
+              method: ssoClient.method,
+              value: [clientId],
+            });
             console.log(
               "Tx for added " + ssoClient.type + " client id",
               response
             );
-          });
+          }
+        } catch (e) {
+          console.log("Tx failed for " + ssoClient.type);
         }
-      });
+      }
     }
 
     function getTxRequestProps() {
