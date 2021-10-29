@@ -702,43 +702,63 @@ export default {
           // Get Address
           const appAddress = await getAddress(currentApp.address);
 
-          const config = { ...store.getters["test/config"] };
-
-          updateApp(store.getters.appId, {
-            name: store.getters.appName,
-            address: appAddress.replace("0x", ""),
-            ...config,
-          }).then((response) => {
-            console.log(response.data);
-          });
-
           smartContractAddress.value = appAddress;
-          store.dispatch(
-            "updateSmartContractAddress",
-            smartContractAddress.value
-          );
+
           const env = store.getters.env;
           const chainType = ["ethereum", "polygon", "binance"][
             currentApp.chain
           ];
           store.dispatch(env + "/updateChainType", chainType);
-          const storage = bytes(currentApp.storage_limit, {
-            unitSeparator: " ",
-          });
-          const storageValues = storage.split(" ");
-          store.dispatch(env + "/updateStorage", {
-            value: storageValues[0],
-            unit: storageValues[1],
-          });
-          const bandwidth = bytes(currentApp.bandwidth_limit, {
-            unitSeparator: " ",
-          });
-          const bandwidthValues = bandwidth.split(" ");
-          store.dispatch(env + "/updateBandwidth", {
-            value: bandwidthValues[0],
-            unit: bandwidthValues[1],
-          });
+          const unlimitedBytes = 10995116277760;
+
+          if (currentApp.storage_limit < unlimitedBytes) {
+            const storage = bytes(currentApp.storage_limit, {
+              unitSeparator: " ",
+            });
+            const storageValues = storage.split(" ");
+            store.dispatch(env + "/updateStorage", {
+              value: storageValues[0],
+              unit: storageValues[1],
+              isUnlimited: false,
+            });
+          } else {
+            store.dispatch(env + "/updateStorage", {
+              value: "",
+              unit: "",
+              isUnlimited: true,
+            });
+          }
+          if (currentApp.banwidth_limit < unlimitedBytes) {
+            const bandwidth = bytes(currentApp.bandwidth_limit, {
+              unitSeparator: " ",
+            });
+            const bandwidthValues = bandwidth.split(" ");
+            store.dispatch(env + "/updateBandwidth", {
+              value: bandwidthValues[0],
+              unit: bandwidthValues[1],
+            });
+          } else {
+            store.dispatch(env + "/updateBandwidth", {
+              value: "",
+              unit: "",
+              isUnlimited: true,
+            });
+          }
           fetchOtherDetails(currentApp.ID);
+          if (!store.getters.smartContractAddress) {
+            const config = { ...store.getters["test/config"] };
+            updateApp(store.getters.appId, {
+              name: store.getters.appName,
+              address: smartContractAddress.value.replace("0x", ""),
+              ...config,
+            }).then((response) => {
+              console.log(response.data);
+            });
+          }
+          store.dispatch(
+            "updateSmartContractAddress",
+            smartContractAddress.value
+          );
           return;
         } else {
           isConfigured.value = false;

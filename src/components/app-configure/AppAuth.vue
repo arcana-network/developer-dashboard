@@ -38,11 +38,15 @@
         </div>
         <div
           class="flex sm-column flex-wrap"
-          style="gap: 2em; align-items: flex-start"
+          style="gap: 1.5em; align-items: flex-start"
         >
           <v-text-field
             v-if="selectedAuthenticationType"
-            placeholder="Enter Client ID"
+            :placeholder="
+              selectedAuthenticationType.idName
+                ? 'Enter ' + selectedAuthenticationType.idName
+                : 'Enter Client ID'
+            "
             v-model="selectedAuthClientId"
             :messageType="selectedAuthClientIdError ? 'error' : ''"
             :message="errorMessage"
@@ -52,7 +56,11 @@
               selectedAuthenticationType &&
               selectedAuthenticationType.secretRequired
             "
-            placeholder="Enter Client Secret"
+            :placeholder="
+              selectedAuthenticationType.idSecret
+                ? 'Enter ' + selectedAuthenticationType.idSecret
+                : 'Enter Client Secret'
+            "
             v-model="selectedAuthClientSecret"
             @keyup.enter="addAuthentication"
           />
@@ -62,23 +70,35 @@
               selectedAuthenticationType.redirectUrlRequired
             "
             placeholder="Enter Redirect Url"
-            :icon="PlusIcon"
             v-model="selectedAuthRedirectUrl"
           />
-          <!-- <v-card-button
-            @click.stop="addAuthentication"
-            v-if="selectedAuthenticationType"
-            style="margin-top: 4px"
-          >
-            <img :src="PlusIcon" />
-            <span style="margin-left: 1em">ADD</span>
-          </v-card-button> -->
           <v-button
             variant="secondary"
             @click.stop="addAuthentication"
             v-if="selectedAuthenticationType"
             label="ADD"
           />
+        </div>
+        <div v-if="selectedAuthenticationType">
+          <span class="body-2">
+            To get the required credentials visit
+            <a
+              :href="selectedAuthenticationType.setup"
+              target="__blank"
+              class="auth-link"
+            >
+              {{ selectedAuthenticationType.setup }}
+            </a>
+          </span>
+        </div>
+        <div
+          v-if="selectedAuthenticationType?.additionalSteps"
+          style="margin-top: 1em"
+        >
+          <span class="body-2">
+            <strong>Note: </strong>
+            {{ selectedAuthenticationType.additionalSteps }}
+          </span>
         </div>
         <div class="flex flex-wrap" style="gap: 2em">
           <v-tooltip
@@ -144,24 +164,34 @@ export default {
       // "Bring Your Own Keys",
       {
         name: "Google",
+        setup: "https://developers.google.com/identity/sign-in/web/sign-in",
       },
       {
-        name: "Github",
+        name: "GitHub",
         secretRequired: true,
+        setup:
+          "https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app",
       },
       {
         name: "Reddit",
+        setup: "https://github.com/reddit-archive/reddit/wiki/OAuth2",
+        additionalSteps: "Select installed app to be get proper client id",
       },
       {
         name: "Discord",
+        setup: "https://canary.discord.com/developers/applications",
       },
       {
         name: "Twitter",
         secretRequired: true,
         redirectUrlRequired: true,
+        idName: "API Key",
+        idSecret: "API Secret",
+        setup: "https://developer.twitter.com/en/docs/apps/overview",
       },
       {
         name: "Twitch",
+        setup: "https://dev.twitch.tv/docs/authentication#registration",
       },
     ];
     let authenticationDetails = ref([]);
@@ -267,4 +297,7 @@ export default {
 </script>
 
 <style scoped>
+.auth-link {
+  color: var(--primary);
+}
 </style>

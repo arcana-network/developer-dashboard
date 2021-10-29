@@ -462,7 +462,7 @@ export default {
     );
 
     function backToDashboard() {
-      router.back();
+      router.replace("/");
     }
 
     async function onFooterSave() {
@@ -542,14 +542,14 @@ export default {
             console.log(
               "Making tx for adding " + ssoClient.type + " client id"
             );
-            const response = await signerMakeTx({
+            const txResponse = await signerMakeTx({
               ...getTxRequestProps(),
               method: ssoClient.method,
               value: [clientId],
             });
             console.log(
               "Tx added for " + ssoClient.type + " client id",
-              response
+              txResponse
             );
           }
         } catch (e) {
@@ -567,6 +567,18 @@ export default {
         console.log("Tx added for default limit", userLimitTxResponse);
       } catch (e) {
         console.error("Tx failed for default limit");
+        console.error(e);
+      }
+
+      try {
+        const appNameTxResponse = await signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setAppName",
+          value: [store.getters.appName],
+        });
+        console.log("Tx added for app name", appNameTxResponse);
+      } catch (e) {
+        console.error("Tx failed for app name");
         console.error(e);
       }
     }
@@ -609,6 +621,8 @@ export default {
     function handleDelete() {
       localStorage.clear();
       deleteAppApi().then((response) => {
+        clearInterval(intervalForTimer);
+        clearInterval(intervalForDelete);
         store.dispatch("test/resetConfigStore");
         store.dispatch("live/resetConfigStore");
         store.dispatch("resetStore");
@@ -637,6 +651,7 @@ export default {
       proceedDelete.value = true;
       timer.value = 59;
       progressTimer.value = 59000;
+      console.log("Delete started");
       intervalForTimer = setInterval(timerInterval, 100);
       intervalForDelete = setInterval(deleteInterval, 1000);
     }
