@@ -44,6 +44,7 @@ const mutations = {
   resetStore(state) {
     state.appName = "";
     state.appId = "";
+    state.smartContractAddress = "";
   },
   updateSmartContractAddress(state, smartContractAddress) {
     state.smartContractAddress = smartContractAddress;
@@ -97,8 +98,8 @@ const store = createStore({
   mutations,
   actions,
   getters,
-  // strict: debug,
-  // plugins: debug ? [createLogger()] : [],
+  strict: debug,
+  plugins: debug ? [createLogger()] : [],
 });
 
 export default store;

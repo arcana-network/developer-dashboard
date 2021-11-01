@@ -42,6 +42,14 @@ const mutations = {
     state.name = name;
     state.email = email;
   },
+  resetAuth(state) {
+    state.name = "";
+    state.email = "";
+    state.walletAddress = "";
+    state.privateKey = "";
+    state.publicKey = "";
+    state.accessToken = "";
+  },
 };
 
 const actions = {
@@ -59,6 +67,10 @@ const actions = {
 
   updateUserInfo({ commit }, { name, email }) {
     commit("updateUserInfo", { name, email });
+  },
+
+  resetAuth({ commit }) {
+    commit("resetAuth");
   },
 };
 

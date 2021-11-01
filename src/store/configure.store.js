@@ -13,21 +13,22 @@ const state = {
   chainType: "",
   userLimits: {
     storage: {
-      isUnlimited: false,
+      isUnlimited: true,
       limit: {
-        value: 2,
-        unit: "MB",
+        value: "",
+        unit: "",
       },
     },
     bandwidth: {
-      isUnlimited: false,
+      isUnlimited: true,
       limit: {
-        value: 2,
-        unit: "MB",
+        value: "",
+        unit: "",
       },
     },
   },
   authDetails: [],
+  authToRemove: [],
 };
 
 const getters = {
@@ -36,22 +37,29 @@ const getters = {
   authDetails: (state) => state.authDetails,
   storage: (state) => state.userLimits.storage.limit,
   bandwidth: (state) => state.userLimits.bandwidth.limit,
+  userLimits: (state) => state.userLimits,
+  isStorageUnlimited: (state) => state.userLimits.storage.isUnlimited,
+  isBandwidthUnlimited: (state) => state.userLimits.bandwidth.isUnlimited,
+  authToRemove: (state) => state.authToRemove,
   config: (state) => {
     let chain;
-    console.log(
-      state.userLimits.storage.limit.value + state.userLimits.storage.limit.unit
-    );
-    console.log(
-      state.userLimits.bandwidth.limit.value +
-        state.userLimits.bandwidth.limit.unit
-    );
-    const storage_limit = bytes(
-      state.userLimits.storage.limit.value + state.userLimits.storage.limit.unit
-    );
-    const bandwidth_limit = bytes(
-      state.userLimits.bandwidth.limit.value +
-        state.userLimits.bandwidth.limit.unit
-    );
+    let storage_limit, bandwidth_limit;
+    if (state.userLimits.storage.isUnlimited) {
+      storage_limit = bytes("10 TB");
+    } else {
+      storage_limit = bytes(
+        state.userLimits.storage.limit.value +
+          state.userLimits.storage.limit.unit
+      );
+    }
+    if (state.userLimits.bandwidth.isUnlimited) {
+      bandwidth_limit = bytes("10 TB");
+    } else {
+      bandwidth_limit = bytes(
+        state.userLimits.bandwidth.limit.value +
+          state.userLimits.bandwidth.limit.unit
+      );
+    }
     switch (state.chainType) {
       case "ethereum":
         chain = 0;
@@ -63,7 +71,7 @@ const getters = {
         chain = 2;
         break;
       default:
-        chain = null;
+        chain = 3;
     }
 
     return {
@@ -105,44 +113,62 @@ const mutations = {
   updateAuthDetails(state, authDetails) {
     state.authDetails = [...authDetails];
   },
-  updateStorage(state, { unit, value }) {
-    state.userLimits.storage.limit = { value, unit };
-    console.log(state.userLimits);
+  updateStorage(state, { unit = "MB", value = 2, isUnlimited }) {
+    if (isUnlimited) {
+      state.userLimits.storage.limit = { value, unit };
+      state.userLimits.storage.isUnlimited = true;
+    } else {
+      state.userLimits.storage.limit = { value, unit };
+      state.userLimits.storage.isUnlimited = false;
+    }
   },
-  updateBandwidth(state, { unit, value }) {
-    state.userLimits.bandwidth.limit = { value, unit };
-    console.log(state.userLimits);
+  updateBandwidth(state, { unit = "MB", value = 2, isUnlimited }) {
+    if (isUnlimited) {
+      state.userLimits.bandwidth.limit = { value, unit };
+      state.userLimits.bandwidth.isUnlimited = true;
+    } else {
+      state.userLimits.bandwidth.limit = { value, unit };
+      state.userLimits.bandwidth.isUnlimited = false;
+    }
   },
   resetConfigStore(state) {
-    state = {
-      region: {
-        any: true,
-        asia: false,
-        africa: false,
-        australia: false,
-        europe: false,
-        northAmerica: false,
-        southAmerica: false,
-      },
-      chainType: "",
-      userLimits: {
-        storage: {
-          isUnlimited: false,
-          limit: {
-            value: 2,
-            unit: "MB",
-          },
-        },
-        bandwidth: {
-          isUnlimited: false,
-          limit: {
-            value: 2,
-            unit: "MB",
-          },
-        },
-      },
-      authDetails: [],
+    state.region = {
+      any: true,
+      asia: false,
+      africa: false,
+      australia: false,
+      europe: false,
+      northAmerica: false,
+      southAmerica: false,
     };
+    state.chainType = "";
+    state.userLimits = {
+      storage: {
+        isUnlimited: true,
+        limit: {
+          value: "",
+          unit: "",
+        },
+      },
+      bandwidth: {
+        isUnlimited: true,
+        limit: {
+          value: "",
+          unit: "",
+        },
+      },
+    };
+    state.authDetails = [];
+    state.authToRemove = [];
+  },
+  updateAuthToRemove(state, authToRemove) {
+    state.authToRemove = authToRemove;
+  },
+  clearAuthToRemove(state) {
+    state.authToRemove = [];
+  },
+  updateUserLimits(state, userLimits) {
+    state.userLimits = userLimits;
   },
 };
 
@@ -158,14 +184,23 @@ const actions = {
   updateAuthDetails({ commit }, authDetails) {
     commit("updateAuthDetails", authDetails);
   },
-  updateStorage({ commit }, { unit, value }) {
-    commit("updateStorage", { value, unit });
+  updateUserLimits({ commit }, userLimits) {
+    commit("updateUserLimits", userLimits);
   },
-  updateBandwidth({ commit }, { unit, value }) {
-    commit("updateBandwidth", { value, unit });
+  updateStorage({ commit }, { unit, value, isUnlimited }) {
+    commit("updateStorage", { value, unit, isUnlimited });
+  },
+  updateBandwidth({ commit }, { unit, value, isUnlimited }) {
+    commit("updateBandwidth", { value, unit, isUnlimited });
   },
   resetConfigStore({ commit }) {
     commit("resetConfigStore");
+  },
+  updateAuthToRemove({ commit }, authToRemove) {
+    commit("updateAuthToRemove", authToRemove);
+  },
+  clearAuthToRemove({ commit }) {
+    commit("clearAuthToRemove");
   },
 };
 

@@ -1,10 +1,11 @@
 <template>
   <div
     class="custom-select"
-    :class="{ open: isOpen }"
+    :class="{ open: isOpen, disabled }"
     @click.stop="toggle"
     aria-haspopup="listbox"
     :aria-expanded="isOpen"
+    :aria-disabled="disabled"
   >
     <div class="custom-select__trigger" :style="triggerStyle">
       <span v-if="value">
@@ -142,6 +143,10 @@
   left: 5px;
   transform: rotate(-45deg);
 }
+
+.custom-select.disabled .custom-select__trigger {
+  cursor: grab;
+}
 </style>
 
 <script>
@@ -154,6 +159,7 @@ export default {
     displayField: String,
     modelValue: [String, Object],
     placeholder: String,
+    disabled: Boolean,
     triggerStyle: [String, Object, Array],
   },
   setup(props, { emit }) {
@@ -161,7 +167,9 @@ export default {
     let value = ref(props.modelValue);
     let isOpen = ref(false);
     function toggle() {
-      isOpen.value = !isOpen.value;
+      if (!props.disabled) {
+        isOpen.value = !isOpen.value;
+      }
     }
 
     function onChange(option, ev) {

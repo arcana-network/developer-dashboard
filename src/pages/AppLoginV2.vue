@@ -261,7 +261,6 @@ export default {
           publicKey: actualPublicKey,
         });
         store.dispatch("updateWalletAddress", wallet.address);
-        console.log("Wallet address", wallet.address);
         store.dispatch("updateUserInfo", {
           email: userInfo.id,
           name: userInfo.name || userInfo.id,

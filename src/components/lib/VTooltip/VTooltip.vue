@@ -23,7 +23,7 @@ span.tooltip {
   position: absolute;
   top: calc(100% + 5px);
   padding: 1em;
-  left: -150%;
+  left: 0;
   min-height: 1.25em;
   min-width: 6em;
   width: max-content;
