@@ -246,14 +246,15 @@
                 align-items: flex-end;
               "
             >
-              <h2 style="font-family: var(--font-body); font-size: 2.25em">
+              <h2 style="font-family: var(--font-body); font-size: 2em">
                 {{ storageUsed }} used
               </h2>
               <span
                 class="body-1"
                 style="color: var(--text-grey); font-weight: 600"
-                >{{ storageRemaining }} Remaining</span
               >
+                {{ storageRemaining }} Remaining
+              </span>
             </div>
             <v-progress-bar
               style="width: 95%"
@@ -289,14 +290,15 @@
                 align-items: flex-end;
               "
             >
-              <h2 style="font-family: var(--font-body); font-size: 2.25em">
+              <h2 style="font-family: var(--font-body); font-size: 2em">
                 {{ bandwidthUsed }} used
               </h2>
               <span
                 class="body-1"
                 style="color: var(--text-grey); font-weight: 600"
-                >{{ bandwidthRemaining }} Remaining</span
               >
+                {{ bandwidthRemaining }} Remaining
+              </span>
             </div>
             <v-progress-bar
               style="width: 95%"
@@ -618,7 +620,6 @@ import VCard from "@/components/lib/VCard/VCard.vue";
 import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import { useRouter } from "vue-router";
 import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
-import { Chart, registerables } from "chart.js";
 import {
   computed,
   onBeforeMount,
@@ -643,6 +644,12 @@ import bytes from "bytes";
 import copyToClipboard from "../utils/copyToClipboard";
 import { getAddress } from "../utils/get-address";
 import { updateApp } from "../services/app-config.service";
+import {
+  createChartView,
+  updateChartView,
+  getInitialChartConfig,
+} from "../utils/chart";
+import moment from "moment";
 
 export default {
   components: {
@@ -826,8 +833,6 @@ export default {
         } else {
           store.dispatch(env + "/updateAuthDetails", []);
         }
-        const periodicUsage = await fetchPeriodicUsage(durationSelected.value);
-        console.log(periodicUsage);
       } catch (e) {
         console.error(e);
         return [];
@@ -851,179 +856,25 @@ export default {
       }, 3000);
     }
 
-    const config = {
-      type: "line",
-      data: {
-        labels: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
-        datasets: [
-          {
-            label: "Storage used in GB",
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            borderColor: "white",
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ],
-      },
-      options: {
-        animations: {
-          tension: {
-            duration: 1000,
-            easing: "linear",
-            from: 0.1,
-            to: 0.2,
-            loop: false,
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            steps: 10,
-            stepValue: 5,
-            max: 300,
-            grid: {
-              color: "#373737",
-              borderDash: [10, 10],
-            },
-            title: {
-              font: {
-                family: "'Montserrat', sans-serif",
-                size: 20,
-                weight: 600,
-              },
-            },
-            position: "right",
-          },
-          x: {
-            grid: {
-              display: false,
-            },
-          },
-        },
-        plugins: {
-          legend: {
-            display: false,
-            labels: {
-              font: {
-                family: "'Montserrat', sans-serif",
-                size: 20,
-                weight: 400,
-              },
-            },
-          },
-          tooltip: {},
-        },
-      },
-    };
-    const config2 = {
-      type: "line",
-      data: {
-        labels: [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
-        datasets: [
-          {
-            label: "Bandwidth used in GB",
-            data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            borderColor: "white",
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        animations: {
-          tension: {
-            duration: 1000,
-            easing: "linear",
-            from: 0.1,
-            to: 0.2,
-            loop: false,
-          },
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            steps: 10,
-            stepValue: 5,
-            max: 300,
-            grid: {
-              color: "#373737",
-              borderDash: [10, 10],
-            },
-            title: {
-              font: {
-                family: "'Montserrat', sans-serif",
-                size: 20,
-                weight: 600,
-              },
-            },
-            position: "right",
-          },
-          x: {
-            grid: {
-              display: false,
-            },
-          },
-        },
-        plugins: {
-          legend: {
-            display: false,
-            labels: {
-              font: {
-                family: "'Montserrat', sans-serif",
-                size: 20,
-                weight: 400,
-              },
-            },
-          },
-          tooltip: {},
-        },
-      },
-    };
-
     let StorageChart, BandwidthChart;
 
     onMounted(() => {
-      Chart.register(...registerables);
-
       setTimeout(() => {
         var storageCtx = document
           .getElementById("storageChart")
           ?.getContext("2d");
         if (storageCtx) {
-          StorageChart = new Chart(storageCtx, { ...config });
+          StorageChart = createChartView(storageCtx, {
+            ...getInitialChartConfig(),
+          });
         }
         var bandwidthCtx = document
           .getElementById("bandwidthChart")
           ?.getContext("2d");
         if (bandwidthCtx) {
-          BandwidthChart = new Chart(bandwidthCtx, { ...config2 });
+          BandwidthChart = createChartView(bandwidthCtx, {
+            ...getInitialChartConfig(),
+          });
         }
       }, 100);
     });
@@ -1034,82 +885,126 @@ export default {
 
     function updateChart() {
       try {
-        let labels;
-        let storageData;
-        let bandwidthData;
+        let labels = [];
+        let labelAliases = [];
+        let storageData = [];
+        let bandwidthData = [];
         fetchPeriodicUsage(durationSelected.value).then((periodicUsage) => {
           const data = periodicUsage.data;
+          const currentDate = moment();
           switch (durationSelected.value) {
             case "day":
-              if (data.length) {
-              } else {
-                labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-                storageData = [0, 0, 0, 0, 0, 0, 0];
-                bandwidthData = [0, 0, 0, 0, 0, 0, 0];
+              for (let i = 7 - 1; i >= 0; i--) {
+                const date = currentDate.clone().subtract(i, "days");
+                labels.push(date.format("DD/MM"));
+                labelAliases.push(date.format("D-M-Y"));
+              }
+              storageData = [0, 0, 0, 0, 0, 0, 0];
+              bandwidthData = [0, 0, 0, 0, 0, 0, 0];
+              if (data instanceof Array && data.length) {
+                data.forEach((d) => {
+                  const index = labelAliases.indexOf(d.day);
+                  storageData[index] = Number(
+                    bytes(d.storage, { unit: "MB" }).replace("MB", "")
+                  );
+                  bandwidthData[index] = Number(
+                    bytes(d.bandwidth, {
+                      unit: "MB",
+                    }).replace("MB", "")
+                  );
+                });
               }
               break;
             case "month":
-              if (data.length) {
-              } else {
-                labels = [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ];
-                storageData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                bandwidthData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+              for (let i = 12 - 1; i >= 0; i--) {
+                const date = currentDate.clone().subtract(i, "months");
+                labels.push(date.format("MMM"));
+                labelAliases.push(date.format("M-Y"));
+              }
+              storageData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+              bandwidthData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+              if (data instanceof Array && data.length) {
+                data.forEach((d) => {
+                  const index = labelAliases.indexOf(d.month);
+                  storageData[index] = Number(
+                    bytes(d.storage, { unit: "MB" }).replace("MB", "")
+                  );
+                  bandwidthData[index] = Number(
+                    bytes(d.bandwidth, {
+                      unit: "MB",
+                    }).replace("MB", "")
+                  );
+                });
               }
               break;
             case "quarter":
-              if (data.length) {
-              } else {
-                labels = ["Jan-Mar", "Apr-Jun", "Jul-Sep", "Oct-Dec"];
-                storageData = [0, 0, 0, 0];
-                bandwidthData = [0, 0, 0, 0];
+              const quarters = ["Jan-Mar", "Apr-Jun", "Jul-Sept", "Oct-Dec"];
+              for (let i = 4 - 1; i >= 0; i--) {
+                const date = currentDate.clone().subtract(i, "quarter");
+                labels.push(quarters[date.quarter() - 1]);
+                labelAliases.push(date.format("Q-Y"));
+              }
+              storageData = [0, 0, 0, 0];
+              bandwidthData = [0, 0, 0, 0];
+              if (data instanceof Array && data.length) {
+                data.forEach((d) => {
+                  const index = labelAliases.indexOf(d.quarter);
+                  storageData[index] = Number(
+                    bytes(d.storage, { unit: "MB" }).replace("MB", "")
+                  );
+                  bandwidthData[index] = Number(
+                    bytes(d.bandwidth, {
+                      unit: "MB",
+                    }).replace("MB", "")
+                  );
+                });
               }
               break;
             case "year":
-              if (data.length) {
-              } else {
-                labels = ["2019", "2020", "2021"];
-                storageData = [0, 0, 0];
-                bandwidthData = [0, 0, 0];
+              for (let i = 2; i >= 0; i--) {
+                labels.push(
+                  currentDate.clone().subtract(i, "years").format("YYYY")
+                );
+              }
+              storageData = [0, 0, 0];
+              bandwidthData = [0, 0, 0];
+              if (data instanceof Array && data.length) {
+                data.forEach((d) => {
+                  const index = labels.indexOf("" + d.year);
+                  storageData[index] = Number(
+                    bytes(d.storage, { unit: "MB" }).replace("MB", "")
+                  );
+                  bandwidthData[index] = Number(
+                    bytes(d.bandwidth, {
+                      unit: "MB",
+                    }).replace("MB", "")
+                  );
+                });
               }
               break;
             default:
               break;
           }
-          StorageChart.data.datasets = [
+          const storageDatasets = [
             {
-              label: "Storage used in GB",
+              label: "Storage used in MB",
               data: storageData,
               borderColor: "white",
               borderWidth: 4,
               lineTension: 0.2,
             },
           ];
-          StorageChart.data.labels = labels;
-          StorageChart.update();
-          BandwidthChart.data.datasets = [
+          updateChartView(StorageChart, labels, storageDatasets);
+          const bandwidthDatasets = [
             {
-              label: "Bandwidth used in GB",
+              label: "Bandwidth used in MB",
               data: bandwidthData,
               borderColor: "white",
               borderWidth: 4,
               lineTension: 0.2,
             },
           ];
-          BandwidthChart.data.labels = labels;
-          BandwidthChart.update();
+          updateChartView(BandwidthChart, labels, bandwidthDatasets);
         });
       } catch (e) {
         console.error(e);
@@ -1119,7 +1014,9 @@ export default {
     watch(
       () => durationSelected.value,
       () => {
-        updateChart();
+        if (store.getters.appId) {
+          updateChart();
+        }
       }
     );
 

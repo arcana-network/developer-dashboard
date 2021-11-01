@@ -287,7 +287,7 @@ import VCard from "../components/lib/VCard/VCard.vue";
 import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import { ref } from "@vue/reactivity";
 import { onBeforeMount, onMounted } from "@vue/runtime-core";
-import { Chart, registerables } from "chart.js";
+import { createChartView } from "../utils/chart";
 import {
   fetchAllUsers,
   fetchAllUserTransactions,
@@ -307,28 +307,15 @@ export default {
     let userTransactions = ref([]);
 
     onMounted(() => {
-      Chart.register(...registerables);
-
       fetchMonthlyUsers().then((response) => {
-        const currentMonth = new Date().getMonth();
-        const months = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sept",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-
+        const currentMonth = moment();
         let monthLabels = [];
 
-        for (let i; i < 12; i++) {}
+        for (let i = 12 - 1; i >= 0; i--) {
+          monthLabels.push(
+            currentMonth.clone().subtract(i, "months").format("MMM")
+          );
+        }
 
         const config = {
           type: "line",
@@ -340,7 +327,7 @@ export default {
                 data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                 borderColor: "white",
                 borderWidth: 4,
-                lineTension: 0.2,
+                lineTension: 0.4,
               },
             ],
           },
@@ -396,7 +383,7 @@ export default {
           .getElementById("numberOfUsersChart")
           ?.getContext("2d");
         if (numberOfUsersCtx) {
-          new Chart(numberOfUsersCtx, { ...config });
+          createChartView(numberOfUsersCtx, { ...config });
         }
       });
     });

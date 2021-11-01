@@ -577,7 +577,6 @@ export default {
       }
 
       try {
-        console.log(config);
         const userLimitTxResponse = await signerMakeTx({
           ...getTxRequestProps(),
           method: "setDefaultLimit",
