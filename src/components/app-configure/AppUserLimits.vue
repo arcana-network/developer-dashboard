@@ -5,7 +5,7 @@
     :id="'configure-step-' + 5"
   >
     <h4 style="width: 100%; display: block">SET PER USER LIMIT</h4>
-    <div class="flex flex-wrap" style="gap: 4vw">
+    <div class="flex sm-column" style="gap: 4vw">
       <div
         class="flex column"
         style="
@@ -24,7 +24,7 @@
       </div>
       <div
         class="flex sm-column"
-        style="gap: 6em; flex-wrap: wrap; flex-grow: 1"
+        style="gap: 3em; flex-wrap: wrap; flex-grow: 1"
       >
         <div class="flex column" style="gap: 20px">
           <div class="flex sm-column" style="justify-content: space-between">

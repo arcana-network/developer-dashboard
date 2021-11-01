@@ -44,6 +44,7 @@ const mutations = {
   resetStore(state) {
     state.appName = "";
     state.appId = "";
+    state.smartContractAddress = "";
   },
   updateSmartContractAddress(state, smartContractAddress) {
     state.smartContractAddress = smartContractAddress;
