@@ -1,7 +1,6 @@
 import { ethers } from "ethers";
 
 export async function getAddress(hash) {
-  console.log(hash);
   if (hash.length === 42) {
     return hash;
   } else if (hash.length === 40) {
@@ -16,13 +15,10 @@ export async function getAddress(hash) {
     let abi = ["event NewApp(address owner, address appProxy)"];
     let iface = new ethers.utils.Interface(abi);
     let app_address = "";
-    console.log({ data });
     data.logs.map((d) => {
-      console.log(d);
       if (d.topics.includes(iface.getEventTopic("NewApp"))) {
         const args = iface.parseLog(d).args;
         app_address = args.appProxy;
-        console.log("App proxy:", app_address);
         localStorage.setItem(hash, app_address);
       }
     });

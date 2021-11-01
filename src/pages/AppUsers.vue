@@ -42,8 +42,8 @@
                 @click.stop="fetchUserLogsApi(el.walletAddress, index)"
               >
                 <td>{{ ellipsify(el.walletAddress) }}</td>
-                <td>{{ el.storage }}</td>
-                <td>{{ el.bandwidth }}</td>
+                <td>{{ convertToBytes(el.storage) }}</td>
+                <td>{{ convertToBytes(el.bandwidth) }}</td>
                 <td>{{ el.actionCount }}</td>
               </tr>
             </tbody>
@@ -99,7 +99,10 @@
           <span class="body-1" style="color: var(--text-grey)">
             Wallet Address
           </span>
-          <span class="sub-heading-3" style="color: var(--text-white)">
+          <span
+            class="sub-heading-3"
+            style="color: var(--text-white); word-wrap: break-word"
+          >
             {{ userLog.walletAddress }}
           </span>
         </div>
@@ -125,7 +128,7 @@
               Storage
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ userLog.storage }}
+              {{ convertToBytes(userLog.storage) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -133,7 +136,7 @@
               Bandwidth
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ userLog.bandwidth }}
+              {{ convertToBytes(userLog.bandwidth) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -157,15 +160,21 @@
                   </tr>
                 </thead>
               </table>
-              <table style="width: 100%">
+              <table style="width: 100%" v-if="userTransactions.length">
                 <tbody>
-                  <tr v-for="el in userLog.logs" :key="el">
-                    <td>{{ el.type }}</td>
-                    <td>{{ getDate(el.date) }}</td>
-                    <td>{{ getTIme(el.date) }}</td>
+                  <tr
+                    v-for="transaction in userTransactions"
+                    :key="transaction"
+                  >
+                    <td>{{ transaction.type }}</td>
+                    <td>{{ getDate(transaction.date) }}</td>
+                    <td>{{ getTime(transaction.date) }}</td>
                   </tr>
                 </tbody>
               </table>
+              <div v-else>
+                <h4>No transactions found</h4>
+              </div>
             </div>
           </v-card>
         </div>
@@ -180,7 +189,7 @@
   overflow-x: auto;
 }
 .log-container {
-  height: 30vh;
+  max-height: 30vh;
   overflow-y: auto;
   overflow-x: auto;
 }
@@ -198,17 +207,6 @@ thead {
 tbody {
   font-family: var(--font-body);
   color: var(--text-grey);
-}
-.log-container table tbody tr td {
-  min-width: 8em;
-  width: 12vw;
-  text-align: left;
-}
-.log-container table thead tr th {
-  padding: 0 0.8em;
-  min-width: 9em;
-  width: 12vw;
-  text-align: left;
 }
 .table-head {
   margin: 1em 0 2em;
@@ -269,13 +267,6 @@ tbody tr:active {
   .log-container {
     height: 30vh;
   }
-  .log-container table tbody tr td {
-    min-width: 4em;
-    padding: 0.8em 0.2em;
-  }
-  .log-container table thead tr th {
-    min-width: 5em;
-  }
   th,
   td {
     min-width: 6.4em;
@@ -296,7 +287,7 @@ import VCard from "../components/lib/VCard/VCard.vue";
 import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import { ref } from "@vue/reactivity";
 import { onBeforeMount, onMounted } from "@vue/runtime-core";
-import { Chart, registerables } from "chart.js";
+import { createChartView, getInitialUsersChartConfig } from "../utils/chart";
 import {
   fetchAllUsers,
   fetchAllUserTransactions,
@@ -304,232 +295,114 @@ import {
   searchUsers,
 } from "../services/user.service";
 import moment from "moment";
+import bytes from "bytes";
 
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
   setup() {
     let data = ref([]);
     let walletAddress = ref("");
-    for (let i = 0; i < 40; i++) {
-      let logs = [];
-      for (let j = 0; j < 5; j++) {
-        logs = [
-          ...logs,
-          {
-            type: "TRANSFER",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "UPLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "TRANSFER",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DELETE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "SHARE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "REVOKE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "UPLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DOWNLOAD",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "SHARE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "SHARE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-          {
-            type: "DELETE",
-            date: "22/07/21",
-            time: "06:31:00",
-          },
-        ];
-      }
-      // data.value.push({
-      //   walletAddress: "0x8B......1234",
-      //   storage: "2GB",
-      //   bandwidth: "5GB",
-      //   actionCount: "10",
-      //   email: "john@cena.com",
-      //   logs,
-      // });
-    }
-
-    console.log(data.value);
-
     let showDetails = ref(false);
     let userLog = ref({});
+    let userTransactions = ref([]);
 
     onMounted(() => {
-      Chart.register(...registerables);
+      fetchMonthlyUsers().then((response) => {
+        const currentMonth = moment();
+        let monthLabels = [];
+        let monthAliases = [];
 
-      const config = {
-        type: "line",
-        data: {
-          labels: [
-            "Jan",
-            "Feb",
-            "Mar",
-            "Apr",
-            "May",
-            "Jun",
-            "Jul",
-            "Aug",
-            "Sept",
-            "Oct",
-            "Nov",
-            "Dec",
-          ],
-          datasets: [
-            {
-              label: "No of users",
-              data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-              borderColor: "white",
-              borderWidth: 4,
-              lineTension: 0.2,
-            },
-          ],
-        },
-        options: {
-          animations: {
-            tension: {
-              duration: 1000,
-              easing: "linear",
-              from: 0.1,
-              to: 0.2,
-              loop: false,
-            },
+        for (let i = 12 - 1; i >= 0; i--) {
+          const date = currentMonth.clone().subtract(i, "months");
+          monthLabels.push(date.format("MMM"));
+          monthAliases.push({
+            month: Number(date.format("M")),
+            year: Number(date.format("Y")),
+          });
+        }
+
+        const config = getInitialUsersChartConfig();
+        config.data.labels = monthLabels;
+        const usersData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        if (response.data instanceof Array && response.data.length) {
+          console.log(response.data, monthAliases);
+          response.data.forEach((data) => {
+            const index = monthAliases.findIndex((monthAlias) => {
+              return (
+                monthAlias.month === data.month && monthAlias.year === data.year
+              );
+            });
+            usersData[index] = data.count;
+          });
+        }
+
+        console.log(usersData);
+
+        config.data.datasets = [
+          {
+            label: "No of users",
+            data: usersData,
+            borderColor: "white",
+            borderWidth: 4,
+            lineTension: 0.2,
           },
-          scales: {
-            y: {
-              beginAtZero: true,
-              max: 2000,
-              grid: {
-                color: "#373737",
-                borderDash: [15, 15],
-              },
-              title: {
-                font: {
-                  family: "'Montserrat', sans-serif",
-                  size: 20,
-                  weight: 600,
-                },
-              },
-              position: "right",
-            },
-            x: {
-              grid: {
-                display: false,
-              },
-            },
-          },
-          plugins: {
-            legend: {
-              display: false,
-              labels: {
-                font: {
-                  family: "'Montserrat', sans-serif",
-                  size: 20,
-                  weight: 400,
-                },
-              },
-            },
-            tooltip: {},
-          },
-        },
-      };
-      setTimeout(() => {
+        ];
         var numberOfUsersCtx = document
           .getElementById("numberOfUsersChart")
           ?.getContext("2d");
         if (numberOfUsersCtx) {
-          new Chart(numberOfUsersCtx, { ...config });
+          createChartView(numberOfUsersCtx, { ...config });
         }
-      }, 100);
+      });
     });
 
-    onBeforeMount(() => {
+    function fetchUsers() {
       fetchAllUsers().then((response) => {
         if (response.data instanceof Array) {
-          response.data.forEach((user) => {
-            data.value.push({
+          data.value = response.data.map((user) => {
+            return {
               id: user.id,
               walletAddress: user.address,
               storage: user.storage,
               bandwidth: user.bandwidth,
               actionCount: user.action_count,
-            });
+            };
           });
         }
       });
+    }
 
-      fetchMonthlyUsers().then((response) => {
-        console.log(response.data);
-      });
+    onBeforeMount(() => {
+      fetchUsers();
     });
 
     function fetchUserLogsApi(address, index) {
       fetchAllUserTransactions(address).then((response) => {
         data.value[index].email = response.data.email;
-        data.value[index].logs = [...response.data.transactions];
+        if (response.data.transaction instanceof Array) {
+          userLog.value = data.value[index];
+          // response.data.transaction.forEach((transaction) => {
+          //   userTransactions.value.push(transaction);
+          // });
+          userTransactions.value = response.data.transaction.filter(
+            (transaction) =>
+              transaction.type && transaction.type !== "Set convergence"
+          );
+        } else {
+          userTransactions.value = [];
+        }
         userLog.value = data.value[index];
         showDetails.value = true;
       });
     }
 
     function getTime(date) {
-      return moment(date).format("HH:mm:ss");
+      return moment(new Date(date)).format("HH:mm:ss");
     }
 
     function getDate(date) {
-      return moment(date).format("DD-MM-YYYY");
+      return moment(new Date(date)).format("DD-MM-YYYY");
     }
 
     function ellipsify(address) {
@@ -539,19 +412,26 @@ export default {
     function searchWalletAddress() {
       if (walletAddress.value.trim()) {
         searchUsers(walletAddress.value).then((response) => {
-          if (response.data instanceof Array) {
-            response.data.forEach((user) => {
-              data.value.push({
-                id: user.id,
+          if (response.data?.usage?.address) {
+            const user = response.data.usage;
+            data.value = [
+              {
+                id: user.user_id,
                 walletAddress: user.address,
                 storage: user.storage,
                 bandwidth: user.bandwidth,
                 actionCount: user.action_count,
-              });
-            });
+              },
+            ];
           }
         });
+      } else {
+        fetchUsers();
       }
+    }
+
+    function convertToBytes(value) {
+      return bytes(value, { unitSeparator: " " });
     }
 
     return {
@@ -565,6 +445,8 @@ export default {
       ellipsify,
       walletAddress,
       searchWalletAddress,
+      convertToBytes,
+      userTransactions,
     };
   },
 };

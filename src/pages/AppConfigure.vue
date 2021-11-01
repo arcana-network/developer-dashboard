@@ -396,9 +396,11 @@ import {
   createApp,
   updateApp,
   deleteApp as deleteAppApi,
+  deleteCred,
 } from "@/services/app-config.service";
 import { signerMakeTx } from "../utils/signer";
 import getEnvApi from "../services/get-env-api";
+import { getAddress } from "../utils/get-address";
 
 export default {
   components: {
@@ -443,10 +445,14 @@ export default {
     let testConfig = {
       region: store.getters["test/region"],
       chainType: store.getters["test/chainType"],
+      authDetails: store.getters["test/authDetails"],
+      userLimits: store.getters["test/userLimits"],
     };
     let liveConfig = {
       region: store.getters["live/region"],
       chainType: store.getters["live/chainType"],
+      authDetails: store.getters["live/authDetails"],
+      userLimits: store.getters["live/userLimits"],
     };
 
     const isEdited = computed(() => {
@@ -461,7 +467,7 @@ export default {
     );
 
     function backToDashboard() {
-      router.back();
+      router.replace("/");
     }
 
     async function onFooterSave() {
@@ -478,93 +484,120 @@ export default {
           createApp({
             name: store.getters.appName,
             ...store.getters[env.value + "/config"],
-          }).then(() => {
+          }).then(async (response) => {
+            const appAddress = await getAddress(response.data.app?.address);
+
+            store.dispatch("updateSmartContractAddress", appAddress);
+
+            makeTx();
             router.replace("/");
           });
         }
       } else {
-        console.log(store.getters["test/config"]);
         const config = { ...store.getters[env.value + "/config"] };
-
-        updateApp(store.getters.appId, {
+        await updateApp(store.getters.appId, {
           name: store.getters.appName,
           address: store.getters.smartContractAddress.replace("0x", ""),
           ...config,
-        }).then(() => {
-          store.dispatch("configChangeReset");
-          router.replace("/");
         });
-
-        console.log(
-          "Make Tx",
-          store.getters.smartContractAddress,
-          "setGoogleClientId",
-          ["random-client-id"]
-        );
-
-        const googleClientId = store.getters[
-          store.getters.env + "/authDetails"
-        ].find((el) => el.verifier === "google")?.clientId;
-
-        console.log({ googleClientId });
-
-        if (googleClientId) {
-          signerMakeTx({
-            ...getTxRequestProps(),
-            method: "setGoogleClientId",
-            value: [googleClientId],
-          }).then((response) => {
-            console.log(response);
-          });
+        const authToRemove = [...store.getters[env.value + "/authToRemove"]];
+        if (authToRemove.length) {
+          const authToRemovePromises = authToRemove.map((el) => deleteCred(el));
+          await Promise.all(authToRemovePromises);
+          store.dispatch(env.value + "/clearAuthToRemove");
         }
+        makeTx();
+        store.dispatch("configChangeReset");
+        router.replace("/");
+      }
+    }
 
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
+    async function makeTx() {
+      const config = { ...store.getters[env.value + "/config"] };
+      const ssoClients = [
+        {
+          type: "google",
+          method: "setGoogleClientId",
+        },
+        {
+          type: "github",
+          method: "setGithubClientId",
+        },
+        {
+          type: "twitter",
+          method: "setTwitterClientId",
+        },
+        {
+          type: "twitch",
+          method: "setTwitchClientId",
+        },
+        {
+          type: "reddit",
+          method: "setRedditClientId",
+        },
+        {
+          type: "discord",
+          method: "setDiscordClientId",
+        },
+      ];
 
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
+      for (let ssoClient of ssoClients) {
+        try {
+          const clientId = store.getters[
+            store.getters.env + "/authDetails"
+          ].find((el) => el.verifier === ssoClient.type)?.clientId;
+          if (clientId) {
+            console.log(
+              "Making tx for adding " + ssoClient.type + " client id"
+            );
+            const txResponse = await signerMakeTx({
+              ...getTxRequestProps(),
+              method: ssoClient.method,
+              value: [clientId],
+            });
+            console.log(
+              "Tx added for " + ssoClient.type + " client id",
+              txResponse
+            );
+          } else {
+            const txResponse = await signerMakeTx({
+              ...getTxRequestProps(),
+              method: ssoClient.method,
+              value: [""],
+            });
+            console.log(
+              "Tx added for " + ssoClient.type + " client id",
+              txResponse
+            );
+          }
+        } catch (e) {
+          console.error("Tx failed for " + ssoClient.type);
+          console.error(e);
+        }
+      }
 
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
+      try {
+        const userLimitTxResponse = await signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setDefaultLimit",
+          value: [config.storage_limit, config.bandwidth_limit],
+        });
+        console.log("Tx added for default limit", userLimitTxResponse);
+      } catch (e) {
+        console.error("Tx failed for default limit");
+        console.error(e);
+      }
 
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
-
-        // signerMakeTx({
-        //   ...getTxRequestProps(),
-        //   method: "setGoogleClientId",
-        //   value: ["random-client-id"],
-        // }).then((response) => {
-        //   console.log(response);
-        // });
-
-        // console.log(store.getters.smartContractAddress, "setAppName", [
-        //   store.getters.appName,
-        // ]);
-
-        // makeTx(store.getters.smartContractAddress, "setAppName", [
-        //   store.getters.appName,
-        // ]);
+      try {
+        const appNameTxResponse = await signerMakeTx({
+          ...getTxRequestProps(),
+          method: "setAppName",
+          value: [store.getters.appName],
+        });
+        console.log("Tx added for app name", appNameTxResponse);
+      } catch (e) {
+        console.error("Tx failed for app name");
+        console.error(e);
       }
     }
 
@@ -595,18 +628,26 @@ export default {
         if (env.value === "test") {
           store.dispatch("test/updateRegion", testConfig.region);
           store.dispatch("test/updateChainType", testConfig.chainType);
+          store.dispatch("test/updateAuthToRemove", []);
+          store.dispatch("test/updateAuthDetails", testConfig.authDetails);
+          store.dispatch("test/updateUserLimits", testConfig.userLimits);
         } else {
           store.dispatch("live/updateRegion", liveConfig.region);
           store.dispatch("live/updateChaintype", testConfig.chainType);
+          store.dispatch("live/updateAuthToRemove", []);
+          store.dispatch("live/updateAuthDetails", liveConfig.authDetails);
+          store.dispatch("live/updateUserLimits", liveConfig.userLimits);
         }
         store.dispatch("configChangeReset");
+        router.replace("/");
       }
     }
 
     function handleDelete() {
       localStorage.clear();
       deleteAppApi().then((response) => {
-        console.log(response);
+        clearInterval(intervalForTimer);
+        clearInterval(intervalForDelete);
         store.dispatch("test/resetConfigStore");
         store.dispatch("live/resetConfigStore");
         store.dispatch("resetStore");
@@ -635,6 +676,7 @@ export default {
       proceedDelete.value = true;
       timer.value = 59;
       progressTimer.value = 59000;
+      console.log("Delete started");
       intervalForTimer = setInterval(timerInterval, 100);
       intervalForDelete = setInterval(deleteInterval, 1000);
     }

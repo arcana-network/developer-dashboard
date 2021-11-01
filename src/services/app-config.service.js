@@ -52,6 +52,21 @@ export function updateApp(
   );
 }
 
+export function deleteCred(verifier) {
+  return axios.get(
+    getEnvApi() +
+      "/api/delete-cred/?id=" +
+      store.getters.appId +
+      "&verifier=" +
+      verifier,
+    {
+      headers: {
+        Authorization: "Bearer " + store.getters.accessToken,
+      },
+    }
+  );
+}
+
 export function deleteApp() {
   return axios.delete(
     getEnvApi() + "/api/delete-app/?id=" + store.getters.appId,

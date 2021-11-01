@@ -2,7 +2,13 @@
   <v-card class="chain-type-card" :id="'configure-step-' + 3">
     <v-stack direction="column" gap="1.2em" class="flex-grow">
       <h4 class="width-100">CHOOSE CHAIN TYPE</h4>
-      <v-stack direction="row" :wrap="true" gap="4vw">
+      <v-stack
+        direction="row"
+        smDirection="column"
+        smGap="4vw"
+        :wrap="true"
+        gap="4vw"
+      >
         <v-stack
           direction="column"
           align="start"

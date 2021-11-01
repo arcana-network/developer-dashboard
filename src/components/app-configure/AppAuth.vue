@@ -26,7 +26,7 @@
       <div class="flex column">
         <div
           class="flex sm-column flex-wrap"
-          style="gap: 2em; align-items: flex-start"
+          style="gap: 2em; align-items: flex-start; margin-bottom: 1em"
         >
           <v-dropdown
             :options="authenticationTypes"
@@ -35,37 +35,90 @@
             style="width: calc(36% - 4em); min-width: 260px"
             v-model="selectedAuthenticationType"
           />
+        </div>
+        <div
+          class="flex sm-column flex-wrap"
+          style="gap: 1.5em; align-items: flex-start"
+        >
           <v-text-field
-            v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
-            placeholder="Enter Client ID"
+            v-if="selectedAuthenticationType"
+            :placeholder="
+              selectedAuthenticationType.idName
+                ? 'Enter ' + selectedAuthenticationType.idName
+                : 'Enter Client ID'
+            "
             v-model="selectedAuthClientId"
+            :messageType="selectedAuthClientIdError ? 'error' : ''"
+            :message="errorMessage"
           />
           <v-text-field
             v-if="
-              selectedAuthenticationType !== 'Bring Your Own Keys' &&
+              selectedAuthenticationType &&
               selectedAuthenticationType.secretRequired
             "
-            placeholder="Enter Client Secret"
+            :placeholder="
+              selectedAuthenticationType.idSecret
+                ? 'Enter ' + selectedAuthenticationType.idSecret
+                : 'Enter Client Secret'
+            "
             v-model="selectedAuthClientSecret"
             @keyup.enter="addAuthentication"
           />
           <v-text-field
-            v-if="selectedAuthenticationType !== 'Bring Your Own Keys'"
+            v-if="
+              selectedAuthenticationType &&
+              selectedAuthenticationType.redirectUrlRequired
+            "
             placeholder="Enter Redirect Url"
-            :icon="PlusIcon"
             v-model="selectedAuthRedirectUrl"
-            @icon-clicked="addAuthentication"
-            :clickableIcon="true"
-            @keyup.enter="addAuthentication"
-            :messageType="selectedAuthClientIdError ? 'error' : ''"
-            :message="errorMessage"
           />
+          <v-button
+            variant="secondary"
+            @click.stop="addAuthentication"
+            v-if="selectedAuthenticationType"
+            label="ADD"
+          />
+        </div>
+        <div
+          v-if="selectedAuthenticationType"
+          style="
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 1em;
+          "
+        >
+          <span class="body-2" style="line-height: 2em">
+            To get the required credentials visit
+            <br />
+            <a
+              :href="selectedAuthenticationType.setup"
+              target="__blank"
+              class="auth-link"
+              style="
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                font-size: 1.125em;
+              "
+            >
+              {{ selectedAuthenticationType.setup }}
+            </a>
+          </span>
+          <div
+            v-if="selectedAuthenticationType?.additionalSteps"
+            style="margin-top: 1em"
+          >
+            <span class="body-2">
+              <strong>Note: </strong>
+              {{ selectedAuthenticationType.additionalSteps }}
+            </span>
+          </div>
         </div>
         <div class="flex flex-wrap" style="gap: 2em">
           <v-tooltip
             v-for="(authDetail, index) in authenticationDetails"
             :key="authDetail"
-            :title="`${authDetail.authType} | ${authDetail.clientId} | ${authDetail.redirectUrl}`"
+            :title="getAuthTooltip(authDetail)"
+            tooltip-style=" word-wrap: break-word;"
           >
             <v-chip
               :cancellable="true"
@@ -78,8 +131,7 @@
               "
             >
               <span class="body-1">
-                {{ authDetail.authType }} | {{ authDetail.clientId }} |
-                {{ authDetail.redirectUrl }}
+                {{ getAuthTooltip(authDetail) }}
               </span>
             </v-chip>
           </v-tooltip>
@@ -100,6 +152,8 @@ import { computed, watch } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import PlusIcon from "@/assets/iconography/plus.svg";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+import VIconButton from "../lib/VIconButton/VIconButton.vue";
+import VCardButton from "../lib/VCardButton/VCardButton.vue";
 
 export default {
   name: "ConfigureAppAuth",
@@ -113,34 +167,44 @@ export default {
     VDropdown,
     VTextField,
     VTooltip,
+    VIconButton,
+    VCardButton,
   },
   setup(props) {
     const store = useStore();
+    let authToRemove = [];
     const authenticationTypes = [
       // "Bring Your Own Keys",
       {
         name: "Google",
-        secretRequired: false,
+        setup: "https://developers.google.com/identity/sign-in/web/sign-in",
       },
       {
-        name: "Github",
+        name: "GitHub",
         secretRequired: true,
+        setup:
+          "https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app",
       },
       {
         name: "Reddit",
-        secretRequired: false,
+        setup: "https://github.com/reddit-archive/reddit/wiki/OAuth2",
+        additionalSteps: "Select installed app to be get proper client id",
       },
       {
         name: "Discord",
-        secretRequired: false,
+        setup: "https://canary.discord.com/developers/applications",
       },
       {
         name: "Twitter",
         secretRequired: true,
+        redirectUrlRequired: true,
+        idName: "API Key",
+        idSecret: "API Secret",
+        setup: "https://developer.twitter.com/en/docs/apps/overview",
       },
       {
         name: "Twitch",
-        secretRequired: false,
+        setup: "https://dev.twitch.tv/docs/authentication#registration",
       },
     ];
     let authenticationDetails = ref([]);
@@ -160,7 +224,6 @@ export default {
     function addAuthentication() {
       if (
         selectedAuthClientId.value.trim() &&
-        selectedAuthRedirectUrl.value.trim() &&
         selectedAuthenticationType.value.name
       ) {
         const type =
@@ -179,6 +242,10 @@ export default {
             selectedAuthClientIdError.value = true;
             errorMessage.value = "Enter all details to continue";
             return;
+          }
+          if (authToRemove.includes(type)) {
+            authToRemove.splice(authToRemove.indexOf(type), 1);
+            store.dispatch(env.value + "/updateAuthToRemove", authToRemove);
           }
           authenticationDetails.value.push({
             type,
@@ -212,11 +279,27 @@ export default {
     }
 
     function removeAuthentication(index) {
+      authToRemove.push(authenticationDetails.value[index].type.toLowerCase());
+      store.dispatch(env.value + "/updateAuthToRemove", authToRemove);
       authenticationDetails.value.splice(index, 1);
       store.dispatch(
         env.value + "/updateAuthDetails",
         authenticationDetails.value
       );
+      if (props.isConfigured && !store.getters.onConfigChange) {
+        store.dispatch("configChangeDetected");
+      }
+    }
+
+    function getAuthTooltip({ authType, clientId, clientSecret, redirectUrl }) {
+      let tooltip = `${authType} | ${clientId}`;
+      if (clientSecret) {
+        tooltip += ` | ${clientSecret}`;
+      }
+      if (redirectUrl) {
+        tooltip += ` | ${redirectUrl}`;
+      }
+      return tooltip;
     }
 
     watch(
@@ -238,10 +321,14 @@ export default {
       errorMessage,
       addAuthentication,
       removeAuthentication,
+      getAuthTooltip,
     };
   },
 };
 </script>
 
 <style scoped>
+.auth-link {
+  color: var(--primary);
+}
 </style>

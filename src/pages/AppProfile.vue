@@ -262,7 +262,10 @@ export default {
 
     function onLogout() {
       logout();
-      store.dispatch("updateAccessToken", null);
+      store.dispatch("test/resetConfigStore");
+      store.dispatch("live/resetConfigStore");
+      store.dispatch("resetAuth");
+      store.dispatch("resetStore");
       router.push({ name: "Login" });
     }
 
