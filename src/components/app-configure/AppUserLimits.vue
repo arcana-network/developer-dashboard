@@ -160,12 +160,14 @@ export default {
     watch(
       () => storage.value,
       () => {
-        store.dispatch(env.value + "/updateStorage", {
-          ...storage.value,
-          isUnlimited: false,
-        });
-        if (props.isConfigured && !store.getters.onConfigChange) {
-          store.dispatch("configChangeDetected");
+        if (storage.value.value !== "") {
+          store.dispatch(env.value + "/updateStorage", {
+            ...storage.value,
+            isUnlimited: false,
+          });
+          if (props.isConfigured && !store.getters.onConfigChange) {
+            store.dispatch("configChangeDetected");
+          }
         }
       },
       { deep: true }
@@ -174,12 +176,14 @@ export default {
     watch(
       () => bandwidth.value,
       () => {
-        store.dispatch(env.value + "/updateBandwidth", {
-          ...bandwidth.value,
-          isUnlimited: false,
-        });
-        if (props.isConfigured && !store.getters.onConfigChange) {
-          store.dispatch("configChangeDetected");
+        if (bandwidth.value.value !== "") {
+          store.dispatch(env.value + "/updateBandwidth", {
+            ...bandwidth.value,
+            isUnlimited: false,
+          });
+          if (props.isConfigured && !store.getters.onConfigChange) {
+            store.dispatch("configChangeDetected");
+          }
         }
       },
       { deep: true }

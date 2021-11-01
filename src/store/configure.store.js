@@ -15,19 +15,20 @@ const state = {
     storage: {
       isUnlimited: true,
       limit: {
-        value: 2,
-        unit: "MB",
+        value: "",
+        unit: "",
       },
     },
     bandwidth: {
       isUnlimited: true,
       limit: {
-        value: 2,
-        unit: "MB",
+        value: "",
+        unit: "",
       },
     },
   },
   authDetails: [],
+  authToRemove: [],
 };
 
 const getters = {
@@ -36,8 +37,10 @@ const getters = {
   authDetails: (state) => state.authDetails,
   storage: (state) => state.userLimits.storage.limit,
   bandwidth: (state) => state.userLimits.bandwidth.limit,
+  userLimits: (state) => state.userLimits,
   isStorageUnlimited: (state) => state.userLimits.storage.isUnlimited,
   isBandwidthUnlimited: (state) => state.userLimits.bandwidth.isUnlimited,
+  authToRemove: (state) => state.authToRemove,
   config: (state) => {
     let chain;
     let storage_limit, bandwidth_limit;
@@ -129,35 +132,43 @@ const mutations = {
     }
   },
   resetConfigStore(state) {
-    state = {
-      region: {
-        any: true,
-        asia: false,
-        africa: false,
-        australia: false,
-        europe: false,
-        northAmerica: false,
-        southAmerica: false,
-      },
-      chainType: "",
-      userLimits: {
-        storage: {
-          isUnlimited: true,
-          limit: {
-            value: "",
-            unit: "",
-          },
-        },
-        bandwidth: {
-          isUnlimited: true,
-          limit: {
-            value: "",
-            unit: "",
-          },
-        },
-      },
-      authDetails: [],
+    state.region = {
+      any: true,
+      asia: false,
+      africa: false,
+      australia: false,
+      europe: false,
+      northAmerica: false,
+      southAmerica: false,
     };
+    state.chainType = "";
+    state.userLimits = {
+      storage: {
+        isUnlimited: true,
+        limit: {
+          value: "",
+          unit: "",
+        },
+      },
+      bandwidth: {
+        isUnlimited: true,
+        limit: {
+          value: "",
+          unit: "",
+        },
+      },
+    };
+    state.authDetails = [];
+    state.authToRemove = [];
+  },
+  updateAuthToRemove(state, authToRemove) {
+    state.authToRemove = authToRemove;
+  },
+  clearAuthToRemove(state) {
+    state.authToRemove = [];
+  },
+  updateUserLimits(state, userLimits) {
+    state.userLimits = userLimits;
   },
 };
 
@@ -173,6 +184,9 @@ const actions = {
   updateAuthDetails({ commit }, authDetails) {
     commit("updateAuthDetails", authDetails);
   },
+  updateUserLimits({ commit }, userLimits) {
+    commit("updateUserLimits", userLimits);
+  },
   updateStorage({ commit }, { unit, value, isUnlimited }) {
     commit("updateStorage", { value, unit, isUnlimited });
   },
@@ -181,6 +195,12 @@ const actions = {
   },
   resetConfigStore({ commit }) {
     commit("resetConfigStore");
+  },
+  updateAuthToRemove({ commit }, authToRemove) {
+    commit("updateAuthToRemove", authToRemove);
+  },
+  clearAuthToRemove({ commit }) {
+    commit("clearAuthToRemove");
   },
 };
 

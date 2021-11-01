@@ -97,8 +97,8 @@ const store = createStore({
   mutations,
   actions,
   getters,
-  // strict: debug,
-  // plugins: debug ? [createLogger()] : [],
+  strict: debug,
+  plugins: debug ? [createLogger()] : [],
 });
 
 export default store;

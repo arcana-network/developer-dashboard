@@ -79,13 +79,22 @@
             label="ADD"
           />
         </div>
-        <div v-if="selectedAuthenticationType">
-          <span class="body-2">
+        <div
+          v-if="selectedAuthenticationType"
+          style="overflow-x: hidden; text-overflow: ellipsis"
+        >
+          <span class="body-2" style="line-height: 2em">
             To get the required credentials visit
+            <br />
             <a
               :href="selectedAuthenticationType.setup"
               target="__blank"
               class="auth-link"
+              style="
+                font-weight: 600;
+                letter-spacing: 0.5px;
+                font-size: 1.125em;
+              "
             >
               {{ selectedAuthenticationType.setup }}
             </a>
@@ -160,6 +169,7 @@ export default {
   },
   setup(props) {
     const store = useStore();
+    let authToRemove = [];
     const authenticationTypes = [
       // "Bring Your Own Keys",
       {
@@ -230,6 +240,10 @@ export default {
             errorMessage.value = "Enter all details to continue";
             return;
           }
+          if (authToRemove.includes(type)) {
+            authToRemove.splice(authToRemove.indexOf(type), 1);
+            store.dispatch(env.value + "/updateAuthToRemove", authToRemove);
+          }
           authenticationDetails.value.push({
             type,
             verifier: type,
@@ -262,6 +276,8 @@ export default {
     }
 
     function removeAuthentication(index) {
+      authToRemove.push(authenticationDetails.value[index].type.toLowerCase());
+      store.dispatch(env.value + "/updateAuthToRemove", authToRemove);
       authenticationDetails.value.splice(index, 1);
       store.dispatch(
         env.value + "/updateAuthDetails",

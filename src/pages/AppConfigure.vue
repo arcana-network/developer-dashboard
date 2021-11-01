@@ -396,6 +396,7 @@ import {
   createApp,
   updateApp,
   deleteApp as deleteAppApi,
+  deleteCred,
 } from "@/services/app-config.service";
 import { signerMakeTx } from "../utils/signer";
 import getEnvApi from "../services/get-env-api";
@@ -444,10 +445,14 @@ export default {
     let testConfig = {
       region: store.getters["test/region"],
       chainType: store.getters["test/chainType"],
+      authDetails: store.getters["test/authDetails"],
+      userLimits: store.getters["test/userLimits"],
     };
     let liveConfig = {
       region: store.getters["live/region"],
       chainType: store.getters["live/chainType"],
+      authDetails: store.getters["live/authDetails"],
+      userLimits: store.getters["live/userLimits"],
     };
 
     const isEdited = computed(() => {
@@ -490,17 +495,20 @@ export default {
         }
       } else {
         const config = { ...store.getters[env.value + "/config"] };
-
-        updateApp(store.getters.appId, {
+        await updateApp(store.getters.appId, {
           name: store.getters.appName,
           address: store.getters.smartContractAddress.replace("0x", ""),
           ...config,
-        }).then(() => {
-          store.dispatch("configChangeReset");
-          router.replace("/");
         });
-
+        const authToRemove = [...store.getters[env.value + "/authToRemove"]];
+        if (authToRemove.length) {
+          const authToRemovePromises = authToRemove.map((el) => deleteCred(el));
+          await Promise.all(authToRemovePromises);
+          store.dispatch(env.value + "/clearAuthToRemove");
+        }
         makeTx();
+        store.dispatch("configChangeReset");
+        router.replace("/");
       }
     }
 
@@ -551,6 +559,16 @@ export default {
               "Tx added for " + ssoClient.type + " client id",
               txResponse
             );
+          } else {
+            const txResponse = await signerMakeTx({
+              ...getTxRequestProps(),
+              method: ssoClient.method,
+              value: [""],
+            });
+            console.log(
+              "Tx added for " + ssoClient.type + " client id",
+              txResponse
+            );
           }
         } catch (e) {
           console.error("Tx failed for " + ssoClient.type);
@@ -559,6 +577,7 @@ export default {
       }
 
       try {
+        console.log(config);
         const userLimitTxResponse = await signerMakeTx({
           ...getTxRequestProps(),
           method: "setDefaultLimit",
@@ -610,11 +629,18 @@ export default {
         if (env.value === "test") {
           store.dispatch("test/updateRegion", testConfig.region);
           store.dispatch("test/updateChainType", testConfig.chainType);
+          store.dispatch("test/updateAuthToRemove", []);
+          store.dispatch("test/updateAuthDetails", testConfig.authDetails);
+          store.dispatch("test/updateUserLimits", testConfig.userLimits);
         } else {
           store.dispatch("live/updateRegion", liveConfig.region);
           store.dispatch("live/updateChaintype", testConfig.chainType);
+          store.dispatch("live/updateAuthToRemove", []);
+          store.dispatch("live/updateAuthDetails", liveConfig.authDetails);
+          store.dispatch("live/updateUserLimits", liveConfig.userLimits);
         }
         store.dispatch("configChangeReset");
+        router.replace("/");
       }
     }
 
