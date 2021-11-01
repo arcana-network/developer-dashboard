@@ -1,26 +1,27 @@
 import { Chart, registerables } from "chart.js";
-import bytes from "bytes";
 
 Chart.register(...registerables);
 
-export function getInitialChartConfig() {
+const monthLabels = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec",
+];
+
+export function getInitialUsageChartConfig() {
   return {
     type: "line",
     data: {
-      labels: [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-      ],
+      labels: monthLabels,
       datasets: [
         {
           label: "Storage used in MB",
@@ -104,6 +105,78 @@ export function getInitialChartConfig() {
           //   },
           // },
         },
+      },
+    },
+  };
+}
+
+export function getInitialUsersChartConfig() {
+  return {
+    type: "line",
+    data: {
+      labels: monthLabels,
+      datasets: [
+        {
+          label: "No of users",
+          data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+          borderColor: "white",
+          borderWidth: 4,
+          lineTension: 0.4,
+        },
+      ],
+    },
+    options: {
+      animations: {
+        tension: {
+          duration: 1000,
+          easing: "linear",
+          from: 0.1,
+          to: 0.2,
+          loop: false,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: {
+            color: "#373737",
+            borderDash: [15, 15],
+          },
+          ticks: {
+            callback: function (label, index, labels) {
+              if (label === 0) {
+                return "";
+              }
+              return label;
+            },
+          },
+          title: {
+            font: {
+              family: "'Montserrat', sans-serif",
+              size: 20,
+              weight: 600,
+            },
+          },
+          position: "right",
+        },
+        x: {
+          grid: {
+            display: false,
+          },
+        },
+      },
+      plugins: {
+        legend: {
+          display: false,
+          labels: {
+            font: {
+              family: "'Montserrat', sans-serif",
+              size: 20,
+              weight: 400,
+            },
+          },
+        },
+        tooltip: {},
       },
     },
   };

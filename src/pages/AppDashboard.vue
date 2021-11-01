@@ -647,7 +647,7 @@ import { updateApp } from "../services/app-config.service";
 import {
   createChartView,
   updateChartView,
-  getInitialChartConfig,
+  getInitialUsageChartConfig,
 } from "../utils/chart";
 import moment from "moment";
 
@@ -865,7 +865,7 @@ export default {
           ?.getContext("2d");
         if (storageCtx) {
           StorageChart = createChartView(storageCtx, {
-            ...getInitialChartConfig(),
+            ...getInitialUsageChartConfig(),
           });
         }
         var bandwidthCtx = document
@@ -873,7 +873,7 @@ export default {
           ?.getContext("2d");
         if (bandwidthCtx) {
           BandwidthChart = createChartView(bandwidthCtx, {
-            ...getInitialChartConfig(),
+            ...getInitialUsageChartConfig(),
           });
         }
       }, 100);

@@ -287,7 +287,7 @@ import VCard from "../components/lib/VCard/VCard.vue";
 import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 import { ref } from "@vue/reactivity";
 import { onBeforeMount, onMounted } from "@vue/runtime-core";
-import { createChartView } from "../utils/chart";
+import { createChartView, getInitialUsersChartConfig } from "../utils/chart";
 import {
   fetchAllUsers,
   fetchAllUserTransactions,
@@ -310,75 +310,39 @@ export default {
       fetchMonthlyUsers().then((response) => {
         const currentMonth = moment();
         let monthLabels = [];
+        let monthAliases = [];
 
         for (let i = 12 - 1; i >= 0; i--) {
-          monthLabels.push(
-            currentMonth.clone().subtract(i, "months").format("MMM")
-          );
+          const date = currentMonth.clone().subtract(i, "months");
+          monthLabels.push(date.format("MMM"));
+          monthAliases.push({
+            month: Number(date.format("M")),
+            year: Number(date.format("Y")),
+          });
         }
 
-        const config = {
-          type: "line",
-          data: {
-            labels: monthLabels,
-            datasets: [
-              {
-                label: "No of users",
-                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                borderColor: "white",
-                borderWidth: 4,
-                lineTension: 0.4,
-              },
-            ],
+        const config = getInitialUsersChartConfig();
+        config.data.labels = monthLabels;
+        const usersData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        if (response.data instanceof Array && response.data.length) {
+          response.data.forEach((data) => {
+            const index = monthAliases.findIndex((monthAlias) => {
+              monthAlias.month === data.month && monthAlias.year === data.year;
+            });
+            usersData[index] = data.count;
+          });
+        }
+
+        config.data.datasets = [
+          {
+            label: "No of users",
+            data: usersData,
+            borderColor: "white",
+            borderWidth: 4,
+            lineTension: 0.2,
           },
-          options: {
-            animations: {
-              tension: {
-                duration: 1000,
-                easing: "linear",
-                from: 0.1,
-                to: 0.2,
-                loop: false,
-              },
-            },
-            scales: {
-              y: {
-                beginAtZero: true,
-                max: 2000,
-                grid: {
-                  color: "#373737",
-                  borderDash: [15, 15],
-                },
-                title: {
-                  font: {
-                    family: "'Montserrat', sans-serif",
-                    size: 20,
-                    weight: 600,
-                  },
-                },
-                position: "right",
-              },
-              x: {
-                grid: {
-                  display: false,
-                },
-              },
-            },
-            plugins: {
-              legend: {
-                display: false,
-                labels: {
-                  font: {
-                    family: "'Montserrat', sans-serif",
-                    size: 20,
-                    weight: 400,
-                  },
-                },
-              },
-              tooltip: {},
-            },
-          },
-        };
+        ];
         var numberOfUsersCtx = document
           .getElementById("numberOfUsersChart")
           ?.getContext("2d");
