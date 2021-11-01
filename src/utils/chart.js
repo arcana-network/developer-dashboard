@@ -143,6 +143,7 @@ export function getInitialUsersChartConfig() {
             borderDash: [15, 15],
           },
           ticks: {
+            precision: 0,
             callback: function (label, index, labels) {
               if (label === 0) {
                 return "";
