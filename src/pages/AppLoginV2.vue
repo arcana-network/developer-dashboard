@@ -31,7 +31,7 @@
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin('google')"
+                @click.stop="launchLogin(false, 'google')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -43,7 +43,7 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin('github')"
+                @click.stop="launchLogin(false, 'github')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -60,7 +60,7 @@
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin('twitch')"
+                @click.stop="launchLogin(false, 'twitch')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -72,7 +72,7 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin('reddit')"
+                @click.stop="launchLogin(false, 'reddit')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -89,7 +89,7 @@
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin('discord')"
+                @click.stop="launchLogin(false, 'discord')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -101,7 +101,7 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin('twitter')"
+                @click.stop="launchLogin(false, 'twitter')"
                 style="visibility: hidden"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
@@ -232,38 +232,41 @@ export default {
       router.push({ name: "Dashboard" });
     }
 
-    async function launchLogin(type) {
+    async function launchLogin(isLoggedIn, type) {
       try {
+        console.log(arcanaAuth);
         loading.value = true;
-        loadingMessage.value = "Signing In...";
-        const pk = await arcanaAuth.signIn(type);
+        if (!isLoggedIn) {
+          loadingMessage.value = "Signing In...";
+          await arcanaAuth.login(type);
+        }
         loadingMessage.value = "Fetching user info...";
-        const userInfo = await arcanaAuth.getUserInfo(type);
+        const userInfo = await arcanaAuth.getUserInfo();
         loadingMessage.value = "Generating Public key...";
         const publicKey = await arcanaAuth.getPublicKey({
           verifier: type,
-          id: userInfo.id,
+          id: userInfo.userInfo.id,
         });
         const actualPublicKey =
           publicKey.X.padStart(64, "0") + publicKey.Y.padStart(64, "0");
-        const wallet = new Wallet(pk.privateKey);
+        const wallet = new Wallet(userInfo.privateKey);
         const nonce = await getNonce(wallet.address);
         loadingMessage.value = "Signing In...";
-        const signature = await sign(pk.privateKey, nonce.data);
+        const signature = await sign(userInfo.privateKey, nonce.data);
         const access_token = await login({
           signature,
-          email: userInfo.id,
+          email: userInfo.userInfo.id,
           address: wallet.address,
         });
         store.dispatch("updateAccessToken", access_token.data.token);
         store.dispatch("updateKeys", {
-          privateKey: pk.privateKey,
+          privateKey: userInfo.privateKey,
           publicKey: actualPublicKey,
         });
         store.dispatch("updateWalletAddress", wallet.address);
         store.dispatch("updateUserInfo", {
-          email: userInfo.id,
-          name: userInfo.name || userInfo.id,
+          email: userInfo.userInfo.id,
+          name: userInfo.userInfo.name || userInfo.userInfo.id,
         });
         loading.value = false;
         router.replace({ name: "Dashboard" });
@@ -274,19 +277,9 @@ export default {
     }
 
     onMounted(() => {
-      const loginTypes = [
-        "google",
-        "twitch",
-        "reddit",
-        "discord",
-        "twitter",
-        "reddit",
-      ];
-      for (let i = 0; i < loginTypes.length; i++) {
-        if (arcanaAuth.isLoggedIn(loginTypes[i])) {
-          launchLogin(loginTypes[i]);
-          break;
-        }
+      const isLoggedIn = arcanaAuth.isLoggedIn();
+      if (isLoggedIn) {
+        launchLogin(isLoggedIn);
       }
     });
 
