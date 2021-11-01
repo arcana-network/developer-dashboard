@@ -81,7 +81,11 @@
         </div>
         <div
           v-if="selectedAuthenticationType"
-          style="overflow-x: hidden; text-overflow: ellipsis"
+          style="
+            overflow-x: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 1em;
+          "
         >
           <span class="body-2" style="line-height: 2em">
             To get the required credentials visit
@@ -99,21 +103,21 @@
               {{ selectedAuthenticationType.setup }}
             </a>
           </span>
-        </div>
-        <div
-          v-if="selectedAuthenticationType?.additionalSteps"
-          style="margin-top: 1em"
-        >
-          <span class="body-2">
-            <strong>Note: </strong>
-            {{ selectedAuthenticationType.additionalSteps }}
-          </span>
+          <div
+            v-if="selectedAuthenticationType?.additionalSteps"
+            style="margin-top: 1em"
+          >
+            <span class="body-2">
+              <strong>Note: </strong>
+              {{ selectedAuthenticationType.additionalSteps }}
+            </span>
+          </div>
         </div>
         <div class="flex flex-wrap" style="gap: 2em">
           <v-tooltip
             v-for="(authDetail, index) in authenticationDetails"
             :key="authDetail"
-            :title="`${authDetail.authType} | ${authDetail.clientId} | ${authDetail.redirectUrl}`"
+            :title="getAuthTooltip(authDetail)"
             tooltip-style=" word-wrap: break-word;"
           >
             <v-chip
@@ -127,8 +131,7 @@
               "
             >
               <span class="body-1">
-                {{ authDetail.authType }} | {{ authDetail.clientId }} |
-                {{ authDetail.redirectUrl }}
+                {{ getAuthTooltip(authDetail) }}
               </span>
             </v-chip>
           </v-tooltip>
@@ -288,6 +291,17 @@ export default {
       }
     }
 
+    function getAuthTooltip({ authType, clientId, clientSecret, redirectUrl }) {
+      let tooltip = `${authType} | ${clientId}`;
+      if (clientSecret) {
+        tooltip += ` | ${clientSecret}`;
+      }
+      if (redirectUrl) {
+        tooltip += ` | ${redirectUrl}`;
+      }
+      return tooltip;
+    }
+
     watch(
       () => env.value,
       () => {
@@ -307,6 +321,7 @@ export default {
       errorMessage,
       addAuthentication,
       removeAuthentication,
+      getAuthTooltip,
     };
   },
 };
