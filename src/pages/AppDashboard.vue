@@ -452,6 +452,13 @@
           <h2 style="font-weight: 500; margin-top: 1.1em; text-align: center">
             Create and Configure your Application
           </h2>
+          <h4 class="testnet-disclaimer">
+            <strong>DISCLAIMER: </strong>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+            aliquip ex ea commodo consequat.
+          </h4>
           <v-button
             label="CONFIGURE"
             style="margin-top: 1.2em"
@@ -466,6 +473,15 @@
 <style scoped>
 .container {
   margin-top: 4vh;
+}
+.testnet-disclaimer {
+  font-weight: 400;
+  margin-top: 1.1em;
+  text-align: center;
+  min-width: 320px;
+  max-width: 1080px;
+  width: 80%;
+  line-height: 1.5em;
 }
 .usage-container {
   padding: 2em;
