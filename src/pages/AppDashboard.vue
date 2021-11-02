@@ -2,6 +2,15 @@
   <div>
     <app-header />
     <main class="container" v-if="isConfigured">
+      <section>
+        <h4 class="testnet-disclaimer banner">
+          <strong>DISCLAIMER: </strong>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+          aliquip ex ea commodo consequat.
+        </h4>
+      </section>
       <section class="flex dashboard-heading flex-wrap">
         <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
           {{ appName }}
@@ -329,42 +338,42 @@
           class="flex flex-wrap"
           style="align-content: stretch; margin-top: 3vh"
         >
-          <div class="flex" style="flex-grow: 1">
+          <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
               <h2>{{ actions.upload }}</h2>
               <span class="body-1">Upload</span>
             </div>
-            <v-seperator :vertical="true" class="vr-border mobile-remove" />
+            <v-seperator :vertical="true" class="vr-border tablet-remove" />
           </div>
-          <div class="flex" style="flex-grow: 1">
+          <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
               <h2>{{ actions.download }}</h2>
               <span class="body-1">Download</span>
             </div>
-            <v-seperator :vertical="true" class="vr-border mobile-remove" />
+            <v-seperator :vertical="true" class="vr-border tablet-remove" />
           </div>
-          <div class="flex" style="flex-grow: 1">
+          <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
               <h2>{{ actions.share }}</h2>
               <span class="body-1">Share</span>
             </div>
-            <v-seperator :vertical="true" class="vr-border mobile-remove" />
+            <v-seperator :vertical="true" class="vr-border tablet-remove" />
           </div>
-          <div class="flex" style="flex-grow: 1">
+          <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
               <h2>{{ actions.transfers }}</h2>
               <span class="body-1">Transfers</span>
             </div>
-            <v-seperator :vertical="true" class="vr-border mobile-remove" />
+            <v-seperator :vertical="true" class="vr-border tablet-remove" />
           </div>
-          <div class="flex" style="flex-grow: 1">
+          <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
               <h2>{{ actions.revoke }}</h2>
               <span class="body-1">Revoke</span>
             </div>
-            <v-seperator :vertical="true" class="vr-border mobile-remove" />
+            <v-seperator :vertical="true" class="vr-border tablet-remove" />
           </div>
-          <div class="flex" style="flex-grow: 1">
+          <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
               <h2>{{ actions.delete }}</h2>
               <span class="body-1">Delete</span>
@@ -452,7 +461,7 @@
           <h2 style="font-weight: 500; margin-top: 1.1em; text-align: center">
             Create and Configure your Application
           </h2>
-          <h4 class="testnet-disclaimer">
+          <h4 class="testnet-disclaimer popup">
             <strong>DISCLAIMER: </strong>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
             eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
@@ -477,11 +486,16 @@
 .testnet-disclaimer {
   font-weight: 400;
   margin-top: 1.1em;
-  text-align: center;
+  line-height: 1.5em;
+}
+.testnet-disclaimer.popup {
   min-width: 320px;
   max-width: 1080px;
   width: 80%;
-  line-height: 1.5em;
+  text-align: center;
+}
+.testnet-disclaimer.banner {
+  margin-bottom: 1.5em;
 }
 .usage-container {
   padding: 2em;
@@ -517,6 +531,10 @@
 }
 .configure-btn:active {
   transform: scale(0.98);
+}
+.action-container {
+  flex-grow: 1;
+  flex: 16.5%;
 }
 .action {
   margin: 2em;
@@ -560,6 +578,10 @@
   .dashboard-heading h1 {
     width: 100%;
     margin-bottom: 1em;
+  }
+  .action-container {
+    flex-grow: 1;
+    flex: 33%;
   }
 }
 @media only screen and (max-width: 1023px) {

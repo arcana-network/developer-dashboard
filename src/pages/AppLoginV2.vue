@@ -234,17 +234,16 @@ export default {
 
     async function launchLogin(isLoggedIn, type) {
       try {
-        console.log(arcanaAuth);
         loading.value = true;
         if (!isLoggedIn) {
           loadingMessage.value = "Signing In...";
           await arcanaAuth.login(type);
         }
         loadingMessage.value = "Fetching user info...";
-        const userInfo = await arcanaAuth.getUserInfo();
+        const userInfo = arcanaAuth.getUserInfo();
         loadingMessage.value = "Generating Public key...";
         const publicKey = await arcanaAuth.getPublicKey({
-          verifier: type,
+          verifier: userInfo.loginType,
           id: userInfo.userInfo.id,
         });
         const actualPublicKey =
