@@ -2,15 +2,6 @@
   <div>
     <app-header />
     <main class="container" v-if="isConfigured">
-      <section>
-        <h4 class="testnet-disclaimer banner">
-          <strong>DISCLAIMER: </strong>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat.
-        </h4>
-      </section>
       <section class="flex dashboard-heading flex-wrap">
         <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
           {{ appName }}
@@ -462,11 +453,12 @@
             Create and Configure your Application
           </h2>
           <h4 class="testnet-disclaimer popup">
-            <strong>DISCLAIMER: </strong>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat.
+            DISCLAIMER: All features are in BETA stage of development. Use with
+            caution . The platform is provided in an “as is” basis without any
+            express or implied warranty of any kind including warranties of
+            merchantability or fitness of purpose. In no event will Arcana
+            Networks or its subsidiaries be held responsible for any damages. BY
+            CLICKING “Configure” below, you accept the same.
           </h4>
           <v-button
             label="CONFIGURE"
@@ -484,14 +476,16 @@
   margin-top: 4vh;
 }
 .testnet-disclaimer {
+  font: var(--font-serif);
   font-weight: 400;
   margin-top: 1.1em;
   line-height: 1.5em;
 }
 .testnet-disclaimer.popup {
   min-width: 320px;
-  max-width: 1080px;
-  width: 80%;
+  max-width: 720px;
+  font-weight: 600;
+  width: 90%;
   text-align: center;
 }
 .testnet-disclaimer.banner {
