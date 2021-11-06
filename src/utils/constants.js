@@ -38,14 +38,13 @@ export const api = {
 
 export const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID;
 
-export const origin = import.meta.env.VITE_ORIGIN;
+export const origin = window.location;
 
 export default {
   sso,
   ssoRedirectUrl,
   sentry,
   api,
-  ssoRedirectUrl,
   arcanaAppId,
   origin,
 };
