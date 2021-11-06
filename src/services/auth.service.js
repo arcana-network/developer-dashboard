@@ -9,34 +9,29 @@ const arcanaAuth = new AuthProvider({
     {
       type: "google",
       clientId: constants.sso.google.clientId,
-      redirectUri: constants.ssoRedirectUrl,
     },
     {
       type: "twitch",
       clientId: constants.sso.twitch.clientId,
-      redirectUri: constants.ssoRedirectUrl,
     },
     {
       type: "discord",
       clientId: constants.sso.discord.clientId,
-      redirectUri: constants.ssoRedirectUrl,
     },
     {
       type: "reddit",
       clientId: constants.sso.reddit.clientId,
-      redirectUri: constants.ssoRedirectUrl,
     },
     {
       type: "twitter",
       clientId: constants.sso.twitter.clientId,
-      redirectUri: constants.ssoRedirectUrl,
     },
     {
       type: "github",
       clientId: constants.sso.github.clientId,
-      redirectUri: constants.ssoRedirectUrl,
     },
   ],
+  redirectUri: constants.ssoRedirectUrl,
 });
 
 export function getArcanaAuth() {
@@ -44,7 +39,7 @@ export function getArcanaAuth() {
 }
 
 export function logout() {
-  arcanaAuth.clearSession();
+  arcanaAuth.logout();
   sessionStorage.clear();
 }
 

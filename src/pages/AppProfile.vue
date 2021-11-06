@@ -35,14 +35,14 @@
             <span class="sub-heading-3">{{ email }}</span>
           </div>
           <div class="flex column details" style="visibility: hidden">
-            <span class="body-2" style="margin-bottom: 5px">Password</span>
-            <span class="sub-heading-3" v-if="!editPersonalDetails"> </span>
-            <v-text-field
+            <!-- <span class="body-2">Password</span>
+            <span class="sub-heading-3" v-if="!editPersonalDetails"> </span> -->
+            <!-- <v-text-field
               type="password"
               v-else
               v-model="password"
               no-message
-            />
+            /> -->
           </div>
         </v-card>
       </section>
