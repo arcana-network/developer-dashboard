@@ -1,6 +1,6 @@
 <template>
   <div>
-    <app-header />
+    <app-header :hide-banner="!isConfigured" />
     <main class="container" v-if="isConfigured">
       <section class="flex dashboard-heading flex-wrap">
         <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
@@ -453,13 +453,17 @@
             Create and Configure your Application
           </h2>
           <h4 class="testnet-disclaimer popup">
-            DISCLAIMER: All features are in BETA stage of development. Use with
-            caution . The platform is provided in an “as is” basis without any
-            express or implied warranty of any kind including warranties of
-            merchantability or fitness of purpose. In no event will Arcana
-            Networks or its subsidiaries be held responsible for any damages. BY
-            CLICKING “Configure” below, you accept the same.
+            DISCLAIMER: Use with caution. This is an ALPHA release with all
+            features being experimental. Please do not use important data
+            without back ups.
           </h4>
+          <h5 class="testnet-disclaimer popup">
+            The platform is provided in an "as is" basis without any express or
+            implied warranty of any kind including warranties of merchantability
+            or fitness of purpose. In no event will Arcana Networks or its
+            subsidiaries be held responsible for any damages. BY CLICKING
+            "Configure" below, you accept the same.
+          </h5>
           <v-button
             label="CONFIGURE"
             style="margin-top: 1.2em"
@@ -476,7 +480,7 @@
   margin-top: 4vh;
 }
 .testnet-disclaimer {
-  font: var(--font-serif);
+  font-family: var(--font-body);
   font-weight: 400;
   margin-top: 1.1em;
   line-height: 1.5em;
@@ -484,9 +488,16 @@
 .testnet-disclaimer.popup {
   min-width: 320px;
   max-width: 720px;
-  font-weight: 600;
   width: 90%;
   text-align: center;
+}
+h4.testnet-disclaimer.popup {
+  font-weight: 600;
+  font-size: 1.125em;
+}
+h5.testnet-disclaimer.popup {
+  font-weight: 400;
+  font-size: 0.85em;
 }
 .testnet-disclaimer.banner {
   margin-bottom: 1.5em;
