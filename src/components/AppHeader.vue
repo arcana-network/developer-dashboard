@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <div class="banner" :class="{ hide: !showBanner }">
+  <section :class="hideHeader ? 'hide-header' : ''">
+    <div class="banner" :class="{ hide: !showBanner || hideBanner }">
       <h4>Disclaimer:</h4>
       <h5>
-        All features are in BETA stage of development. Use with caution as
-        breaking changes could be made at any time.
+        This is an ALPHA release with all features being experimental. Please do
+        not use important data without back ups.
       </h5>
       <span class="banner-close" @click.stop="onCloseBanner">X</span>
     </div>
@@ -13,17 +13,24 @@
       logoAlt="Arcana Logo"
       :loggedInUser="loggedInUser"
       :menuItems="menuItems"
-      :hideOnScroll="true"
       :selectedItem="selectedItem"
       :mobileMenuIcon="MenuIcon"
       :mobileLogo="ArcanaFavicon"
       :mobileAccountIcon="AccountUserIcon"
       @logo-click="onLogoClick"
     />
-  </div>
+  </section>
 </template>
 
 <style scoped>
+section {
+  transition: transform 0.4s;
+  width: 100%;
+  z-index: 1000;
+  position: sticky;
+  top: 0;
+}
+
 .banner {
   background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
   padding: 0.75em 1.5em;
@@ -31,6 +38,7 @@
   font-family: var(--font-body);
   text-align: center;
   line-height: 1.5em;
+  position: relative;
 }
 .banner h4 {
   display: inline-block;
@@ -52,10 +60,13 @@
   font-size: 1.25em;
   font-weight: 600;
 }
+.hide-header {
+  transform: translateY(-100%);
+}
 </style>
 
 <script>
-import { computed, onMounted, ref } from "@vue/runtime-core";
+import { computed, onMounted, ref, onUnmounted } from "@vue/runtime-core";
 import ArcanaLogo from "../assets/iconography/arcana-dark-vertical.svg";
 import NotificationBellIcon from "../assets/iconography/notification-dot.svg";
 import AccountUserIcon from "../assets/iconography/account-user.svg";
@@ -69,11 +80,19 @@ import CancelIcon from "@/assets/iconography/cancel.svg";
 export default {
   name: "AppHeader",
   components: { VHeader },
+  props: {
+    hideBanner: Boolean,
+  },
   setup() {
     const route = useRoute();
     const router = useRouter();
     const store = useStore();
     const showBanner = ref(true);
+    const hideHeader = ref(false);
+
+    let lastScrollTop = 0;
+    const scrollDelta = 10;
+
     const menuItems = computed(() => {
       let arr = [
         {
@@ -141,7 +160,27 @@ export default {
 
     onMounted(() => {
       showBanner.value = !sessionStorage.getItem("hide-banner");
+      document.querySelector("#app").addEventListener("scroll", handleScroll);
     });
+
+    onUnmounted(() => {
+      document
+        .querySelector("#app")
+        .removeEventListener("scroll", handleScroll);
+    });
+
+    function handleScroll(ev) {
+      const scrollTop = ev.target.scrollTop;
+      if (!hideHeader.value && scrollTop > lastScrollTop + scrollDelta) {
+        hideHeader.value = true;
+      } else if (hideHeader.value && scrollTop < lastScrollTop) {
+        hideHeader.value = false;
+      }
+      if (ev.target.scrollHeight - scrollTop === ev.target.clientHeight) {
+        hideHeader.value = false;
+      }
+      lastScrollTop = ev.target.scrollTop;
+    }
 
     return {
       menuItems,
@@ -156,6 +195,7 @@ export default {
       CancelIcon,
       showBanner,
       onCloseBanner,
+      hideHeader,
     };
   },
 };
