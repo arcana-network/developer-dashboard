@@ -13,8 +13,12 @@
       sm-gap="1.2em"
       justify="center"
     >
-      <h4>ENTER APP NAME</h4>
-      <v-text-field v-model="appName" strong class="app-name-init" />
+      <h4 style="margin-top: 1em">ENTER APP NAME</h4>
+      <v-text-field
+        v-model="appName"
+        strong
+        style="width: 30vw; min-width: 300px"
+      />
     </v-stack>
   </v-card>
 </template>
@@ -24,10 +28,6 @@
   width: 20vw;
   min-width: 300px;
   max-width: 400px;
-}
-.app-name-init {
-  width: 30vw;
-  min-width: 300px;
 }
 .app-name-card {
   margin-top: 2em;

@@ -1,5 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import store from "../store";
+import { isAppDown } from "../utils/constants";
 
 const AppSignup = () => import("../pages/AppSignup.vue");
 const AppSignin = () => import("../pages/AppSignin.vue");
@@ -14,6 +15,16 @@ const AppNewPassword = () => import("../pages/AppNewPassword.vue");
 const AppUsers = () => import("../pages/AppUsers.vue");
 const AppLoginV2 = () => import("../pages/AppLoginV2.vue");
 const SSORedirect = () => import("../pages/SSORedirect.vue");
+const AppDownNotification = () => import("../pages/AppDownNotification.vue");
+
+function toBoolean(val) {
+  if (typeof val === "string") {
+    if (val === "0" || val === "false") {
+      return false;
+    }
+  }
+  return !!val;
+}
 
 const routes = [
   {
@@ -71,7 +82,7 @@ const routes = [
   {
     name: "Login",
     path: "/login",
-    component: AppLoginV2,
+    component: toBoolean(isAppDown) ? AppDownNotification : AppLoginV2,
   },
   {
     name: "SSO Redirect",
