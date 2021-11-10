@@ -230,7 +230,7 @@
             <div class="flex" style="gap: 1em; margin-top: 1.2em">
               <h3>STORAGE</h3>
               <v-tooltip
-                title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
+                title="This is an aggregation of the data uploaded/stored by all users of your app"
               >
                 <img
                   src="@/assets/iconography/info-circle-outline.svg"
@@ -274,7 +274,7 @@
             <div class="flex" style="gap: 1em; margin-top: 1.2em">
               <h3>BANDWIDTH</h3>
               <v-tooltip
-                title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
+                title="This is an aggregation of data downloaded/egress by all users of your app"
               >
                 <img
                   src="@/assets/iconography/info-circle-outline.svg"
@@ -317,7 +317,7 @@
         <div class="flex" style="gap: 1em; margin-top: 1.2em">
           <h3>ACTIONS</h3>
           <v-tooltip
-            title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
+            title="This is an aggregation of all Actions (uploads, downloads, shares, revokes and deletes) by all users of your app"
           >
             <img
               src="@/assets/iconography/info-circle-outline.svg"
@@ -797,6 +797,10 @@ export default {
           fetchOtherDetails(currentApp.ID);
           if (!store.getters.smartContractAddress) {
             const config = { ...store.getters["test/config"] };
+            console.log(
+              "Smart Contract Address",
+              smartContractAddress.value.replace("0x", "")
+            );
             updateApp(store.getters.appId, {
               name: store.getters.appName,
               address: smartContractAddress.value.replace("0x", ""),

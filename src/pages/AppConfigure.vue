@@ -108,6 +108,46 @@
     />
 
     <v-overlay
+      v-if="showLearnMorePopup"
+      style="align-items: center; justify-content: center; display: flex"
+    >
+      <v-card
+        variant="popup"
+        style="
+          padding: 4em 2em;
+          min-width: 200px;
+          max-width: 560px;
+          width: 72%;
+          flex-direction: column;
+          gap: 1vh;
+          position: relative;
+        "
+      >
+        <header
+          class="sub-heading-2"
+          style="justify-content: center; flex-grow: 1; display: flex"
+        >
+          {{ selectedSubType.header }}
+        </header>
+        <v-seperator style="width: 100%" />
+        <main
+          class="body-1"
+          style="
+            padding: 2vw;
+            font-size: 0.9em;
+            line-height: 1.6em;
+            text-align: center;
+          "
+        >
+          {{ selectedSubType.description }}
+        </main>
+        <span class="close-learn-more body-1" @click.stop="hideLearnMorePopup">
+          X
+        </span>
+      </v-card>
+    </v-overlay>
+
+    <v-overlay
       v-if="deleteApp"
       style="align-items: center; justify-content: center; display: flex"
     >
@@ -240,6 +280,14 @@
   margin-bottom: 6vh;
 }
 
+.close-learn-more {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  font-weight: 600;
+  cursor: pointer;
+}
+
 .step-counter {
   color: #13a3fd;
   top: 50%;
@@ -364,7 +412,7 @@ input[type="number"] {
 </style>
 
 <script>
-import { computed, onBeforeMount, onMounted, watch } from "@vue/runtime-core";
+import { computed, watch } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -437,6 +485,12 @@ export default {
     let proceedDelete = ref(false);
     let timer = ref(59);
     let progressTimer = ref(59000);
+    let showLearnMorePopup = computed(() => {
+      return store.getters.showLearnMorePopup;
+    });
+    let selectedSubType = computed(() => {
+      return store.getters.configDetails;
+    });
 
     const env = computed(() => {
       return store.getters.env;
@@ -488,6 +542,12 @@ export default {
             const appAddress = await getAddress(response.data.app?.address);
 
             store.dispatch("updateSmartContractAddress", appAddress);
+
+            await updateApp(response.data.app?.ID, {
+              name: store.getters.appName,
+              address: store.getters.smartContractAddress.replace("0x", ""),
+              ...store.getters[env.value + "/config"],
+            });
 
             makeTx();
             router.replace("/");
@@ -687,6 +747,10 @@ export default {
       proceedDelete.value = false;
     }
 
+    function hideLearnMorePopup() {
+      store.dispatch("hideLearnMorePopup");
+    }
+
     return {
       backToDashboard,
       liveEnvironment,
@@ -705,6 +769,9 @@ export default {
       handleCancelDelete,
       PauseIcon,
       DeleteIcon,
+      showLearnMorePopup,
+      selectedSubType,
+      hideLearnMorePopup,
     };
   },
 };

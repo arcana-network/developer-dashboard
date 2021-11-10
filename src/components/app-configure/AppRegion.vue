@@ -21,7 +21,11 @@
             the world. Turn on specific regions only if your application needs
             these assets to be stored in storage nodes within a region.
           </span>
-          <v-button variant="link" label="LEARN MORE" />
+          <v-button
+            variant="link"
+            label="LEARN MORE"
+            :action="onLearnMoreClicked"
+          />
         </v-stack>
         <v-stack direction="column" gap="2em" class="flex-grow">
           <v-card
@@ -138,6 +142,13 @@ export default {
 
     let region = ref({ ...store.getters[env.value + "/region"] });
 
+    function onLearnMoreClicked() {
+      store.dispatch("showLearnMorePopup", {
+        header: "STORAGE REGION",
+        description: `Arcana's storage network is designed to afford for your user's data to be distributed and stored within a specific region to aid in both faster uploads/downloads as well conforming with any data regulatory requirements such as GDPR. if your app has no such requirements, you can simply choose to store "Anywhere" and data will automatically get distributed and stored on immediately available nodes.`,
+      });
+    }
+
     watch(
       () => env.value,
       () => {
@@ -173,6 +184,7 @@ export default {
 
     return {
       region,
+      onLearnMoreClicked,
     };
   },
 };

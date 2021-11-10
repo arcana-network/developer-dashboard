@@ -14,8 +14,11 @@
       Make your dApps secure from the ground up!
     </h1>
     <div class="body-3" style="margin-top: 4vh">
-      Lorem ipsum dolor sit amet,<br />
-      consectetuer adipiscing elit,
+      <ul>
+        <li>Signup and configure your apps requirements</li>
+        <li>Download and integrate our SDKs from here (link to npm)</li>
+        <li>Provide security and privacy to your users and their data</li>
+      </ul>
     </div>
     <img src="@/assets/sidebar-illustration.png" style="margin: 6vh auto 0" />
   </div>
@@ -35,6 +38,14 @@ h1 {
   font-size: 0.9em;
   font-weight: 300;
   line-height: 1.8em;
+}
+ul {
+  list-style-type: "-  ";
+  padding: 0;
+  margin-right: 2em;
+}
+ul li {
+  margin: 4px;
 }
 </style>
 
