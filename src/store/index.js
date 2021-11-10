@@ -11,6 +11,8 @@ const state = {
   onConfigChange: false,
   isAppConfigured: false,
   smartContractAddress: "",
+  showLearnMorePopup: false,
+  configDetails: {},
 };
 
 const getters = {
@@ -20,6 +22,8 @@ const getters = {
   onConfigChange: (state) => state.onConfigChange,
   isAppConfigured: (state) => state.isAppConfigured,
   smartContractAddress: (state) => state.smartContractAddress,
+  showLearnMorePopup: (state) => state.showLearnMorePopup,
+  configDetails: (state) => state.configDetails,
 };
 
 const mutations = {
@@ -49,6 +53,13 @@ const mutations = {
   updateSmartContractAddress(state, smartContractAddress) {
     state.smartContractAddress = smartContractAddress;
   },
+  showLearnMorePopup(state, configDetails) {
+    state.showLearnMorePopup = true;
+    state.configDetails = configDetails;
+  },
+  hideLearnMorePopup(state) {
+    state.showLearnMorePopup = false;
+  },
 };
 
 const actions = {
@@ -75,6 +86,12 @@ const actions = {
   },
   updateSmartContractAddress({ commit }, smartContractAddress) {
     commit("updateSmartContractAddress", smartContractAddress);
+  },
+  showLearnMorePopup({ commit }, configDetails) {
+    commit("showLearnMorePopup", configDetails);
+  },
+  hideLearnMorePopup({ commit }) {
+    commit("hideLearnMorePopup");
   },
 };
 

@@ -20,7 +20,11 @@
             blockchains, please specify the same by turning on the relevant
             chains.
           </span>
-          <v-button variant="link" label="LEARN MORE" />
+          <v-button
+            variant="link"
+            label="LEARN MORE"
+            :action="onLearnMoreClicked"
+          />
         </v-stack>
         <v-stack direction="column" gap="2em" class="flex-grow">
           <v-card variant="depressed" class="chain-options-container">
@@ -113,6 +117,14 @@ export default {
       return store.getters[env.value + "/chainType"];
     });
 
+    function onLearnMoreClicked() {
+      store.dispatch("showLearnMorePopup", {
+        header: "CHAIN TYPE",
+        description:
+          "Where are you currently building your DApp? This is optional for now but will give us good insights into which bridges/integrations we should prioritise here at Arcana.",
+      });
+    }
+
     function changeChainType(ev, selectedChainType) {
       if (ev.value) {
         store.dispatch(env.value + "/updateChainType", selectedChainType);
@@ -125,6 +137,7 @@ export default {
     return {
       chainType,
       changeChainType,
+      onLearnMoreClicked,
     };
   },
 };

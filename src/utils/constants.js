@@ -40,6 +40,8 @@ export const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID;
 
 export const origin = window.location;
 
+export const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false;
+
 export default {
   sso,
   ssoRedirectUrl,
@@ -47,4 +49,5 @@ export default {
   api,
   arcanaAppId,
   origin,
+  isAppDown,
 };

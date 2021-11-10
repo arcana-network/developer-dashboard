@@ -21,7 +21,11 @@
           Generation system. These are ECDSA keys on the secp256k1 curve which
           work with any EVM compatible chains.
         </span>
-        <v-button variant="link" label="LEARN MORE" />
+        <v-button
+          variant="link"
+          label="LEARN MORE"
+          :action="onLearnMoreClicked"
+        />
       </div>
       <div class="flex column">
         <div
@@ -302,6 +306,14 @@ export default {
       return tooltip;
     }
 
+    function onLearnMoreClicked() {
+      store.dispatch("showLearnMorePopup", {
+        header: "LOGIN TYPE",
+        description:
+          "Choose how your users signup/login to your app. Options for Signup/Login include popular oAuth mechanisms and once the uses any mechanism to enter your app, they will be assigned a public-private keypair which is then used as the basis for signing transactions as well as encrypting/decrypting data being uploaded/downloaded (both managed by the SDK). In the near future, there will be options for users to bring their own keys and/or use from a variety of wallet options.",
+      });
+    }
+
     watch(
       () => env.value,
       () => {
@@ -322,6 +334,7 @@ export default {
       addAuthentication,
       removeAuthentication,
       getAuthTooltip,
+      onLearnMoreClicked,
     };
   },
 };

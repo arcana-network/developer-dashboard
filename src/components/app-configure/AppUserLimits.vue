@@ -20,7 +20,11 @@
           bandwidth limits for each user of your application unless you choose
           to specify it for each user here.
         </span>
-        <v-button variant="link" label="LEARN MORE" />
+        <v-button
+          variant="link"
+          label="LEARN MORE"
+          :action="onLearnMoreClicked"
+        />
       </div>
       <div
         class="flex sm-column"
@@ -149,6 +153,14 @@ export default {
     storage.value = { ...store.getters[env.value + "/storage"] };
     bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
 
+    function onLearnMoreClicked() {
+      store.dispatch("showLearnMorePopup", {
+        header: "USER LIMITS",
+        description:
+          "Set storage and bandwidth limits for each user. This can of course be handled by you on the application layer but you can leverage this feature to set default upload/download limits for your users and further update them, on a user level, depending on your app's requirements or business model. If there are no such limititation in your app, then you can simply set the limit to unlimited for both storage and bandwidth consumption by your users.",
+      });
+    }
+
     watch(
       () => env.value,
       () => {
@@ -255,6 +267,7 @@ export default {
       bandwidthUnlimited,
       storage,
       bandwidth,
+      onLearnMoreClicked,
     };
   },
 };

@@ -1,5 +1,5 @@
 <template>
-  <header :class="hideHeader ? 'hide-header' : ''">
+  <header>
     <section class="container flex" style="margin-bottom: 0">
       <div
         class="logo laptop-remove"
@@ -138,13 +138,9 @@
 
 <style scoped>
 header {
-  width: 100%;
   background: #1f1f1f;
   box-shadow: 0px 9px 25px rgba(15, 15, 15, 0.25);
-  z-index: 1000;
-  position: sticky;
   display: flex;
-  top: 0;
   transition: transform 0.6s;
   visibility: visible;
 }
@@ -246,7 +242,6 @@ export default {
     hasNotifications: Boolean,
     height: Number,
     width: Number,
-    hideOnScroll: Boolean,
     logoStyle: [String, Object],
     selectedItem: String,
     mobileMenuIcon: [Object, String],
@@ -259,36 +254,6 @@ export default {
     });
 
     const showMenu = ref(false);
-
-    const hideHeader = ref(false);
-
-    let lastScrollTop = 0;
-    const scrollDelta = 10;
-
-    function handleScroll(ev) {
-      const scrollTop = ev.target.scrollTop;
-      if (!hideHeader.value && scrollTop > lastScrollTop + scrollDelta) {
-        hideHeader.value = true;
-      } else if (hideHeader.value && scrollTop < lastScrollTop) {
-        hideHeader.value = false;
-      }
-      if (ev.target.scrollHeight - scrollTop === ev.target.clientHeight) {
-        hideHeader.value = false;
-      }
-      lastScrollTop = ev.target.scrollTop;
-    }
-
-    onMounted(() => {
-      if (props.hideOnScroll)
-        document.querySelector("#app").addEventListener("scroll", handleScroll);
-    });
-
-    onUnmounted(() => {
-      if (props.hideOnScroll)
-        document
-          .querySelector("#app")
-          .removeEventListener("scroll", handleScroll);
-    });
 
     function handleMenuItemClick(menuItem) {
       if (menuItem.action) {
@@ -310,7 +275,6 @@ export default {
 
     return {
       logoAltText,
-      hideHeader,
       showMenu,
       handleMenuItemClick,
       handleUserClick,

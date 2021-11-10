@@ -6,22 +6,19 @@
     </v-stack>
   </section>
   <v-card class="app-name-card" v-else :id="'configure-step-' + 1">
-    <v-stack direction="column" gap="1.2em">
-      <h4>ENTER APP NAME</h4>
-      <v-stack :wrap="true" direction="row" gap="4vw" justify="space-between">
-        <v-stack
-          direction="column"
-          align="start"
-          gap="1.2em"
-          class="app-section-description"
-        >
-          <span class="body-1">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-          </span>
-          <v-button variant="link" label="LEARN MORE" />
-        </v-stack>
-        <v-text-field v-model="appName" strong class="app-name-init" />
-      </v-stack>
+    <v-stack
+      direction="row"
+      sm-direction="column"
+      gap="1.2em"
+      sm-gap="1.2em"
+      justify="center"
+    >
+      <h4 style="margin-top: 1em">ENTER APP NAME</h4>
+      <v-text-field
+        v-model="appName"
+        strong
+        style="width: 30vw; min-width: 300px"
+      />
     </v-stack>
   </v-card>
 </template>
@@ -29,12 +26,8 @@
 <style scoped>
 .app-name {
   width: 20vw;
-  min-width: 200px;
+  min-width: 300px;
   max-width: 400px;
-}
-.app-name-init {
-  width: 10vw;
-  min-width: 200px;
 }
 .app-name-card {
   margin-top: 2em;
