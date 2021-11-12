@@ -1,4 +1,5 @@
 import { ethers } from "ethers";
+import store from "../store";
 
 export async function getAddress(hash) {
   if (hash.length === 42) {
@@ -8,7 +9,7 @@ export async function getAddress(hash) {
   }
   if (!localStorage.getItem(hash)) {
     const provider = new ethers.providers.JsonRpcProvider(
-      import.meta.env.VITE_ARCANA_RPC
+      store.getters["test/rpc"]
     );
     let data = await (await provider.getTransaction(hash)).wait();
     if (!data.events) data.events = [];

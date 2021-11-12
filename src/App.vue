@@ -7,11 +7,26 @@
 </template>
 
 <script>
-import { watch } from "@vue/runtime-core";
+import { onBeforeMount, watch } from "@vue/runtime-core";
 import { useRoute } from "vue-router";
+import { getConfig } from "./services/app-config.service";
+import { useStore } from "vuex";
+
 export default {
   setup() {
     const route = useRoute();
+    const store = useStore();
+
+    onBeforeMount(() => {
+      if (!store.getters["test/forwarder"] || !store.getters["test/rpc"]) {
+        getConfig().then((res) => {
+          const config = res.data;
+          // Later use store.getters.env to update according to env
+          store.dispatch("test/updateForwarder", config?.Forwarder);
+          store.dispatch("test/updateRPCUrl", config?.RPC_URL);
+        });
+      }
+    });
 
     watch(route, () => {
       const app = document.getElementById("app");

@@ -665,9 +665,9 @@ export default {
       return {
         privateKey: store.getters.keys.privateKey,
         appAddress: store.getters.smartContractAddress,
-        rpc: import.meta.env.VITE_ARCANA_RPC,
+        rpc: store.getters["test/rpc"],
         gateway: getEnvApi(),
-        forwarderAddress: import.meta.env.VITE_ARCANA_FORWARDER_ADDRESS,
+        forwarderAddress: store.getters["test/forwarder"],
         accessToken: store.getters.accessToken,
       };
     }
