@@ -539,23 +539,35 @@ export default {
           }, 10);
         } else if (step.value === 6) {
           step.value = 5;
-          createApp({
-            name: store.getters.appName,
-            ...store.getters[env.value + "/config"],
-          }).then(async (response) => {
-            const appAddress = await getAddress(response.data.app?.address);
 
-            store.dispatch("updateSmartContractAddress", appAddress);
+          if (!store.getters.appName?.trim()) {
+            store.dispatch("updateAppNameError", true);
+            document
+              .getElementById("app")
+              .scroll({ top: 0, behavior: "smooth" });
+          } else {
+            store.dispatch("updateAppNameError", false);
+          }
 
-            await updateApp(response.data.app?.ID, {
+          if (!store.getters.appNameError) {
+            createApp({
               name: store.getters.appName,
-              address: store.getters.smartContractAddress.replace("0x", ""),
               ...store.getters[env.value + "/config"],
-            });
+            }).then(async (response) => {
+              const appAddress = await getAddress(response.data.app?.address);
 
-            makeTx();
-            router.replace("/");
-          });
+              store.dispatch("updateSmartContractAddress", appAddress);
+
+              await updateApp(response.data.app?.ID, {
+                name: store.getters.appName,
+                address: store.getters.smartContractAddress.replace("0x", ""),
+                ...store.getters[env.value + "/config"],
+              });
+
+              makeTx();
+              router.replace("/");
+            });
+          }
         }
       } else {
         const config = { ...store.getters[env.value + "/config"] };
