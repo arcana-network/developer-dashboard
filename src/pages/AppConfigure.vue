@@ -22,7 +22,11 @@
       </div>
     </header>
     <main class="container" :style="!isConfigured ? 'margin-bottom: 10em' : ''">
-      <section class="flex flex-wrap" v-if="isConfigured">
+      <section
+        class="flex flex-wrap"
+        style="align-items: center"
+        v-if="isConfigured"
+      >
         <img
           src="@/assets/iconography/back.svg"
           style="margin-right: 2em"

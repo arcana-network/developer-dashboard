@@ -37,18 +37,18 @@
           >
             App ID:
           </span>
-          <v-tooltip
+          <!-- <v-tooltip
             :title="appId"
             tooltip-style="max-width: max-content; left: -250%"
             class="mobile-remove"
+          > -->
+          <div
+            class="text-ellipsis body-1 cursor-pointer font-500"
+            style="color: var(--text-white); max-width: 6em"
           >
-            <div
-              class="text-ellipsis body-1 cursor-pointer font-500"
-              style="color: var(--text-white); max-width: 6em"
-            >
-              {{ appId }}
-            </div>
-          </v-tooltip>
+            {{ appId }}
+          </div>
+          <!-- </v-tooltip> -->
           <v-tooltip
             :title="smartContractTooltip"
             @click.stop="copySmartContractAddress"
@@ -778,7 +778,7 @@ export default {
               isUnlimited: true,
             });
           }
-          if (currentApp.banwidth_limit < unlimitedBytes) {
+          if (currentApp.bandwidth_limit < unlimitedBytes) {
             const bandwidth = bytes(currentApp.bandwidth_limit, {
               unitSeparator: " ",
             });
@@ -786,6 +786,7 @@ export default {
             store.dispatch(env + "/updateBandwidth", {
               value: bandwidthValues[0],
               unit: bandwidthValues[1],
+              isUnlimited: false,
             });
           } else {
             store.dispatch(env + "/updateBandwidth", {
