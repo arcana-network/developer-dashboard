@@ -275,6 +275,8 @@
         </footer>
       </v-card>
     </v-overlay>
+
+    <full-screen-loader v-if="loading" :message="loadingMessage" />
   </div>
 </template>
 
@@ -453,6 +455,7 @@ import {
 import { signerMakeTx } from "../utils/signer";
 import getEnvApi from "../services/get-env-api";
 import { getAddress } from "../utils/get-address";
+import FullScreenLoader from "../components/FullScreenLoader.vue";
 
 export default {
   components: {
@@ -476,6 +479,7 @@ export default {
     VSwitch,
     VTextField,
     VTooltip,
+    FullScreenLoader,
   },
   setup() {
     const router = useRouter();
@@ -495,6 +499,14 @@ export default {
     let selectedSubType = computed(() => {
       return store.getters.configDetails;
     });
+    let loading = ref(false);
+    let loadingMessage = ref("");
+    let previousConfig = {
+      name: store.getters.appName,
+      appName: store.getters.appName,
+      ...store.getters["test/config"],
+    };
+    let previousAuthDetails = [...store.getters["test/authDetails"]];
 
     const env = computed(() => {
       return store.getters.env;
@@ -550,6 +562,8 @@ export default {
           }
 
           if (!store.getters.appNameError) {
+            loading.value = true;
+            loadingMessage.value = "Creating app...";
             createApp({
               name: store.getters.appName,
               ...store.getters[env.value + "/config"],
@@ -557,7 +571,7 @@ export default {
               const appAddress = await getAddress(response.data.app?.address);
 
               store.dispatch("updateSmartContractAddress", appAddress);
-
+              loadingMessage.value = "Generating Address...";
               await updateApp(response.data.app?.ID, {
                 name: store.getters.appName,
                 address: store.getters.smartContractAddress.replace("0x", ""),
@@ -565,12 +579,13 @@ export default {
               });
 
               makeTx();
-              router.replace("/");
             });
           }
         }
       } else {
         const config = { ...store.getters[env.value + "/config"] };
+        loading.value = true;
+        loadingMessage.value = "Updating app...";
         await updateApp(store.getters.appId, {
           name: store.getters.appName,
           address: store.getters.smartContractAddress.replace("0x", ""),
@@ -582,9 +597,8 @@ export default {
           await Promise.all(authToRemovePromises);
           store.dispatch(env.value + "/clearAuthToRemove");
         }
-        makeTx();
         store.dispatch("configChangeReset");
-        router.replace("/");
+        makeTx();
       }
     }
 
@@ -616,13 +630,18 @@ export default {
           method: "setDiscordClientId",
         },
       ];
-
       for (let ssoClient of ssoClients) {
         try {
-          const clientId = store.getters[
-            store.getters.env + "/authDetails"
-          ].find((el) => el.verifier === ssoClient.type)?.clientId;
-          if (clientId) {
+          const clientId = store.getters[store.getters.env + "/authDetails"]
+            .find((el) => el.verifier === ssoClient.type)
+            ?.clientId?.trim();
+
+          const previousClientId = previousAuthDetails.find(
+            (el) => el.verifier === ssoClient.type
+          )?.clientId;
+
+          if (clientId && previousClientId !== clientId) {
+            loadingMessage.value = `Updating ${ssoClient.type} client id in smart contract...`;
             console.log(
               "Making tx for adding " + ssoClient.type + " client id"
             );
@@ -630,16 +649,6 @@ export default {
               ...getTxRequestProps(),
               method: ssoClient.method,
               value: [clientId],
-            });
-            console.log(
-              "Tx added for " + ssoClient.type + " client id",
-              txResponse
-            );
-          } else {
-            const txResponse = await signerMakeTx({
-              ...getTxRequestProps(),
-              method: ssoClient.method,
-              value: [""],
             });
             console.log(
               "Tx added for " + ssoClient.type + " client id",
@@ -653,28 +662,40 @@ export default {
       }
 
       try {
-        const userLimitTxResponse = await signerMakeTx({
-          ...getTxRequestProps(),
-          method: "setDefaultLimit",
-          value: [config.storage_limit, config.bandwidth_limit],
-        });
-        console.log("Tx added for default limit", userLimitTxResponse);
+        if (
+          config.storage_limit !== previousConfig.storage_limit ||
+          config.bandwidth_limit !== previousConfig.bandwidth_limit
+        ) {
+          loadingMessage.value = `Updating user limits in smart contract...`;
+          const userLimitTxResponse = await signerMakeTx({
+            ...getTxRequestProps(),
+            method: "setDefaultLimit",
+            value: [config.storage_limit, config.bandwidth_limit],
+          });
+          console.log("Tx added for default limit", userLimitTxResponse);
+        }
       } catch (e) {
         console.error("Tx failed for default limit");
         console.error(e);
       }
 
       try {
-        const appNameTxResponse = await signerMakeTx({
-          ...getTxRequestProps(),
-          method: "setAppName",
-          value: [store.getters.appName],
-        });
-        console.log("Tx added for app name", appNameTxResponse);
+        if (store.getters.appName !== previousConfig.appName) {
+          loadingMessage.value = `Updating app name in smart contract...`;
+          const appNameTxResponse = await signerMakeTx({
+            ...getTxRequestProps(),
+            method: "setAppName",
+            value: [store.getters.appName],
+          });
+          console.log("Tx added for app name", appNameTxResponse);
+        }
       } catch (e) {
         console.error("Tx failed for app name");
         console.error(e);
       }
+
+      loading.value = false;
+      router.replace("/");
     }
 
     function getTxRequestProps() {
@@ -788,6 +809,8 @@ export default {
       showLearnMorePopup,
       selectedSubType,
       hideLearnMorePopup,
+      loading,
+      loadingMessage,
     };
   },
 };
