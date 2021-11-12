@@ -8,6 +8,7 @@ const state = {
   env: "test",
   appName: "",
   appId: null,
+  appNameError: false,
   onConfigChange: false,
   isAppConfigured: false,
   smartContractAddress: "",
@@ -24,6 +25,7 @@ const getters = {
   smartContractAddress: (state) => state.smartContractAddress,
   showLearnMorePopup: (state) => state.showLearnMorePopup,
   configDetails: (state) => state.configDetails,
+  appNameError: (state) => state.appNameError,
 };
 
 const mutations = {
@@ -60,6 +62,9 @@ const mutations = {
   hideLearnMorePopup(state) {
     state.showLearnMorePopup = false;
   },
+  updateAppNameError(state, isError) {
+    state.appNameError = isError;
+  },
 };
 
 const actions = {
@@ -92,6 +97,9 @@ const actions = {
   },
   hideLearnMorePopup({ commit }) {
     commit("hideLearnMorePopup");
+  },
+  updateAppNameError({ commit }, isError) {
+    commit("updateAppNameError", isError);
   },
 };
 

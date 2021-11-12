@@ -49,6 +49,7 @@ section {
   display: inline-block;
   font-weight: 400;
   margin-left: 1em;
+  margin-right: 2em;
 }
 .banner.hide {
   display: none;

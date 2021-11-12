@@ -117,21 +117,7 @@
         </section>
       </section>
     </main>
-    <v-overlay v-if="loading">
-      <div
-        style="
-          width: 100%;
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        "
-      >
-        <v-circular-progress color="var(--primary)" size="6em" />
-        <h4 style="margin-top: 1em">{{ loadingMessage }}</h4>
-      </div>
-    </v-overlay>
+    <full-screen-loader v-if="loading" :message="loadingMessage" />
   </div>
 </template>
 
@@ -204,6 +190,7 @@ import LandingDescriptor from "@/components/LandingDescriptor.vue";
 import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
 import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
 import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
+import FullScreenLoader from "../components/FullScreenLoader.vue";
 import { getNonce, login, getArcanaAuth } from "@/services/auth.service";
 import sign from "@/services/sign";
 import { Wallet } from "ethers";
@@ -212,7 +199,13 @@ import { onMounted, ref } from "@vue/runtime-core";
 
 export default {
   name: "AppLoginV2",
-  components: { LandingDescriptor, VCardButton, VOverlay, VCircularProgress },
+  components: {
+    LandingDescriptor,
+    VCardButton,
+    VOverlay,
+    VCircularProgress,
+    FullScreenLoader,
+  },
   setup() {
     const router = useRouter();
     const arcanaAuth = getArcanaAuth();

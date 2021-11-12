@@ -28,7 +28,7 @@ footer {
   background: rgba(29, 29, 29, 0.95);
   padding: 1.5em 0;
   display: flex;
-  z-index: 1000;
+  z-index: 100;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s;

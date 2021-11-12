@@ -2,7 +2,13 @@
   <section style="margin-top: 3em" v-if="isConfigured">
     <v-stack direction="column" gap="1em" align="start">
       <h2>APP NAME</h2>
-      <v-text-field v-model="appName" strong class="app-name" />
+      <v-text-field
+        v-model="appName"
+        strong
+        class="app-name"
+        :messageType="appNameError ? 'error' : ''"
+        message="App name is required"
+      />
     </v-stack>
   </section>
   <v-card class="app-name-card" v-else :id="'configure-step-' + 1">
@@ -11,13 +17,18 @@
       sm-direction="column"
       gap="1.2em"
       sm-gap="1.2em"
-      justify="center"
+      justify="space-between"
+      style="flex-grow: 1"
     >
-      <h4 style="margin-top: 1em">ENTER APP NAME</h4>
+      <h4 style="margin-top: 1.5em; width: 25vw; min-width: 280px">
+        ENTER APP NAME
+      </h4>
       <v-text-field
         v-model="appName"
         strong
-        style="width: 30vw; min-width: 300px"
+        style="width: 20vw; min-width: 300px; max-width: 400px; margin-top: 1em"
+        :messageType="appNameError ? 'error' : ''"
+        message="App name is required"
       />
     </v-stack>
   </v-card>
@@ -40,7 +51,7 @@ h4 {
 </style>
 
 <script>
-import { ref, watch } from "@vue/runtime-core";
+import { computed, ref, watch } from "@vue/runtime-core";
 import VTextField from "../lib/VTextField/VTextField.vue";
 import VCard from "../lib/VCard/VCard.vue";
 import VButton from "../lib/VButton/VButton.vue";
@@ -55,18 +66,32 @@ export default {
   },
   setup(props) {
     const store = useStore();
-    const appName = ref(store.getters.appName);
+    const appName = ref("");
+
+    const appNameError = computed(() => {
+      return store.getters.appNameError;
+    });
+
+    appName.value = store.getters.appName;
+
     watch(
       () => appName.value,
       () => {
         store.dispatch("updateAppName", appName.value);
+        if (!appName.value?.trim()) {
+          store.dispatch("updateAppNameError", true);
+        } else {
+          store.dispatch("updateAppNameError", false);
+        }
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");
         }
       }
     );
+
     return {
       appName,
+      appNameError,
     };
   },
 };
