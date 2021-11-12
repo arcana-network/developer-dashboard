@@ -17,15 +17,16 @@
       sm-direction="column"
       gap="1.2em"
       sm-gap="1.2em"
-      justify="center"
+      justify="space-between"
+      style="flex-grow: 1"
     >
-      <h4 style="margin-top: 1em; width: 25vw; min-width: 280px">
+      <h4 style="margin-top: 1.5em; width: 25vw; min-width: 280px">
         ENTER APP NAME
       </h4>
       <v-text-field
         v-model="appName"
         strong
-        style="width: 20vw; min-width: 300px; max-width: 400px"
+        style="width: 20vw; min-width: 300px; max-width: 400px; margin-top: 1em"
         :messageType="appNameError ? 'error' : ''"
         message="App name is required"
       />

@@ -29,6 +29,7 @@
             padding: 0 1em;
             margin: 1.25em auto 0;
             max-width: 720px;
+            line-height: 1.5em;
           "
         >
           The dashboard is currently undergoing maintenance and will be back
