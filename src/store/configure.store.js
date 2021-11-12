@@ -29,6 +29,8 @@ const state = {
   },
   authDetails: [],
   authToRemove: [],
+  forwarderAddress: "",
+  rpcUrl: "",
 };
 
 const getters = {
@@ -41,6 +43,8 @@ const getters = {
   isStorageUnlimited: (state) => state.userLimits.storage.isUnlimited,
   isBandwidthUnlimited: (state) => state.userLimits.bandwidth.isUnlimited,
   authToRemove: (state) => state.authToRemove,
+  forwarder: (state) => state.forwarderAddress,
+  rpc: (state) => state.rpcUrl,
   config: (state) => {
     let chain;
     let storage_limit, bandwidth_limit;
@@ -170,6 +174,12 @@ const mutations = {
   updateUserLimits(state, userLimits) {
     state.userLimits = userLimits;
   },
+  updateForwarder(state, forwarderAddress) {
+    state.forwarderAddress = forwarderAddress;
+  },
+  updateRPCUrl(state, rpcUrl) {
+    state.rpcUrl = rpcUrl;
+  },
 };
 
 const actions = {
@@ -201,6 +211,12 @@ const actions = {
   },
   clearAuthToRemove({ commit }) {
     commit("clearAuthToRemove");
+  },
+  updateForwarder({ commit }, forwarderAddress) {
+    commit("updateForwarder", forwarderAddress);
+  },
+  updateRPCUrl({ commit }, rpcUrl) {
+    commit("updateRPCUrl", rpcUrl);
   },
 };
 

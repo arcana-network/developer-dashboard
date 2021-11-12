@@ -2,6 +2,10 @@ import axios from "axios";
 import getEnvApi from "./get-env-api";
 import store from "../store";
 
+export function getConfig() {
+  return axios.get(getEnvApi() + "/get-config/");
+}
+
 export function createApp({
   name,
   region,
