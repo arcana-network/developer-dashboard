@@ -35,18 +35,18 @@
             style="color: var(--text-grey); margin-right: 5px"
             class="body-1 mobile-remove"
           >
-            Smart Contract Address:
+            App ID:
           </span>
           <v-tooltip
-            :title="smartContractAddress"
+            :title="appId"
             tooltip-style="max-width: max-content; left: -250%"
             class="mobile-remove"
           >
             <div
               class="text-ellipsis body-1 cursor-pointer font-500"
-              style="color: var(--text-white); width: 6em"
+              style="color: var(--text-white); max-width: 6em"
             >
-              {{ smartContractAddress }}
+              {{ appId }}
             </div>
           </v-tooltip>
           <v-tooltip
@@ -686,7 +686,6 @@ import { useStore } from "vuex";
 import bytes from "bytes";
 import copyToClipboard from "../utils/copyToClipboard";
 import { getAddress } from "../utils/get-address";
-import { updateApp } from "../services/app-config.service";
 import {
   createChartView,
   updateChartView,
@@ -712,8 +711,8 @@ export default {
     const router = useRouter();
     const store = useStore();
     const smartContractAddress = ref("");
-    const durationSelected = ref("day");
-    durationSelected.value = "month";
+    const appId = ref("");
+    const durationSelected = ref("month");
     const actions = ref({
       upload: 0,
       download: 0,
@@ -753,6 +752,7 @@ export default {
           const appAddress = await getAddress(currentApp.address);
 
           smartContractAddress.value = appAddress;
+          appId.value = currentApp.ID;
 
           const env = store.getters.env;
           const chainType = ["ethereum", "polygon", "binance"][
@@ -795,20 +795,6 @@ export default {
             });
           }
           fetchOtherDetails(currentApp.ID);
-          if (!store.getters.smartContractAddress) {
-            const config = { ...store.getters["test/config"] };
-            console.log(
-              "Smart Contract Address",
-              smartContractAddress.value.replace("0x", "")
-            );
-            updateApp(store.getters.appId, {
-              name: store.getters.appName,
-              address: smartContractAddress.value.replace("0x", ""),
-              ...config,
-            }).then((response) => {
-              console.log(response.data);
-            });
-          }
           store.dispatch(
             "updateSmartContractAddress",
             smartContractAddress.value
@@ -896,7 +882,7 @@ export default {
     function copySmartContractAddress() {
       SmartContractIcon.value = CheckIcon;
       smartContractTooltip.value = "Copied";
-      copyToClipboard(smartContractAddress.value);
+      copyToClipboard(appId.value);
       setTimeout(() => {
         SmartContractIcon.value = CopyIcon;
         smartContractTooltip.value = "Click to copy";
@@ -1071,6 +1057,7 @@ export default {
       SmartContractIcon,
       RectanglePlaceholderIcon,
       smartContractAddress,
+      appId,
       isConfigured,
       ArrowRightIcon,
       liveEnv,
