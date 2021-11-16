@@ -43,7 +43,7 @@
             class="mobile-remove"
           > -->
           <div
-            class="text-ellipsis body-1 cursor-pointer font-500"
+            class="text-ellipsis body-1 font-500"
             style="color: var(--text-white); max-width: 6em"
           >
             {{ appId }}
