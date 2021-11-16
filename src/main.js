@@ -9,10 +9,17 @@ import * as Sentry from "@sentry/vue";
 import { Integrations } from "@sentry/tracing";
 import { sentry as sentryConfig } from "./utils/constants";
 
+function getDSN() {
+  if (import.meta.env.PROD) {
+    return sentryConfig.dsn;
+  }
+  return null;
+}
+
 const app = createApp(App);
 Sentry.init({
   app,
-  dsn: sentryConfig.dsn,
+  dsn: getDSN(),
   integrations: [
     new Integrations.BrowserTracing({
       routingInstrumentation: Sentry.vueRouterInstrumentation(router),
