@@ -21,7 +21,7 @@ export const sso = {
   },
 };
 
-export const ssoRedirectUrl = import.meta.env.VITE_SSO_REDIRECT_URL;
+export const ssoRedirectUrl = window.location.origin + "/oauth/redirect";
 
 export const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -38,7 +38,7 @@ export const api = {
 
 export const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID;
 
-export const origin = window.location;
+export const origin = window.location.origin;
 
 export const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false;
 
