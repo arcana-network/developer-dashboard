@@ -5,6 +5,7 @@ import getEnvApi from "./get-env-api";
 
 const arcanaAuth = new AuthProvider({
   appID: constants.arcanaAppId,
+  network: "testnet",
   oauthCreds: [
     {
       type: "google",
