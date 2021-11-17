@@ -87,9 +87,9 @@
         </div>
         <div
           v-if="selectedAuthenticationType"
-          style="overflow-x: hidden; text-overflow: ellipsis"
+          class="overflow-x-hidden overflow-ellipsis"
         >
-          <span class="body-2" style="line-height: 1.5em">
+          <span class="body-2" style="line-height: 1.5">
             To get the required credentials visit
             <br />
             <a
