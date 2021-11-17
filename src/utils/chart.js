@@ -188,7 +188,9 @@ export function createChartView(ctx, config) {
 }
 
 export function updateChartView(chart, labels, datasets) {
-  chart?.data.labels = labels;
-  chart?.data.datasets = datasets;
-  chart?.update();
+  if (chart) {
+    chart.data.labels = labels;
+    chart.data.datasets = datasets;
+    chart.update();
+  }
 }
