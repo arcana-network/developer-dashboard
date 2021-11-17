@@ -75,7 +75,10 @@
           </div>
         </v-stack>
       </section>
-      <configure-app-name :isConfigured="isConfigured" />
+      <configure-app-name
+        :isConfigured="isConfigured"
+        @enter-click="onFooterSave"
+      />
       <configure-app-region
         v-if="isConfigured || step >= 2"
         :style="step === 2 ? 'margin-bottom: 2em' : ''"
