@@ -89,7 +89,7 @@
           v-if="selectedAuthenticationType"
           style="overflow-x: hidden; text-overflow: ellipsis"
         >
-          <span class="body-2" style="line-height: 2em">
+          <span class="body-2" style="line-height: 1.5em">
             To get the required credentials visit
             <br />
             <a
@@ -97,9 +97,9 @@
               target="__blank"
               class="auth-link"
               style="
-                font-weight: 600;
+                font-weight: 400;
                 letter-spacing: 0.5px;
-                font-size: 1.125em;
+                font-size: 1em;
                 overflow-wrap: break-word;
               "
             >
@@ -108,7 +108,7 @@
           </span>
           <div
             v-if="selectedAuthenticationType?.additionalSteps"
-            style="margin-top: 1em"
+            style="margin-top: 0.5em"
           >
             <span class="body-2">
               <strong>Note: </strong>

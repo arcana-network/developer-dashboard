@@ -239,7 +239,7 @@
           class="sub-heading-1"
           style="justify-content: center; flex-grow: 1; display: flex"
         >
-          Deleting app...
+          Deleting App...
         </header>
         <div class="flex outer-clock">
           <circle-progress
@@ -274,7 +274,7 @@
           />
           <v-button
             variant="primary"
-            label="DELETE"
+            label="CONFIRM"
             v-wave
             @click.stop="handleDelete"
           />
