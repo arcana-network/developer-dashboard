@@ -57,6 +57,7 @@
     inset 5px 5px 5px rgba(0, 0, 0, 0.21),
     inset -10px -26px 33px -28px rgba(255, 255, 255, 0.1),
     inset -50px 49px 29px 22px rgba(28, 28, 28, 0.84);
+  transition: transform 0.4 ease;
 }
 
 .toggle-indicator {
@@ -84,6 +85,10 @@
   height: 2.6em;
   width: 2.6em;
   transform: translateX(0) rotate(270deg);
+}
+
+.toggle-background.checked {
+  transform: matrix(-1, 0, 0, 1, 0, 0);
 }
 
 .toggle-indicator.checked {
