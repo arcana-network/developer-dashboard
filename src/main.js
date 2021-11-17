@@ -37,7 +37,7 @@ app.use(VWave);
 
 if (process.env.NODE_ENV === "production") {
   app.use(VueGtag, {
-    config: { id: VITE_GOOGLE_ANALYTICS_ID },
+    config: { id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID },
   });
 }
 
