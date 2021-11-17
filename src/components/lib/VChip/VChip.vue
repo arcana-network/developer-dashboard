@@ -45,7 +45,7 @@
 </style>
 
 <script>
-import CancelIcon from "../../../assets/iconography/cancel.svg";
+import CancelIcon from "../../../assets/iconography/close.svg";
 export default {
   name: "VChip",
   props: {
