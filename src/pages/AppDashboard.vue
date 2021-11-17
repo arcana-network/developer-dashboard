@@ -712,7 +712,8 @@ export default {
     const store = useStore();
     const smartContractAddress = ref("");
     const appId = ref("");
-    const durationSelected = ref("month");
+    const durationSelected = ref("");
+    durationSelected.value = "month";
     const actions = ref({
       upload: 0,
       download: 0,
