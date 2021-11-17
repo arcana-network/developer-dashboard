@@ -128,12 +128,12 @@
 .arrow::before {
   left: -5px;
   transform: rotate(-45deg);
-  background-color: #8d8d8d;
+  background-color: #13a3fd;
 }
 .arrow::after {
   left: 5px;
   transform: rotate(45deg);
-  background-color: #8d8d8d;
+  background-color: #13a3fd;
 }
 .open .arrow::before {
   left: -5px;
