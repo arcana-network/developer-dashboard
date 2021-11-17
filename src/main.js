@@ -35,7 +35,7 @@ app.use(router);
 app.use(store);
 app.use(VWave);
 
-if (process.env.NODE_ENV === "production") {
+if (import.meta.env.PROD) {
   app.use(VueGtag, {
     config: { id: import.meta.env.VITE_GOOGLE_ANALYTICS_ID },
   });
