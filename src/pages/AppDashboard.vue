@@ -166,7 +166,7 @@
               <div>
                 <h4 style="font-weight: 400">No of Files</h4>
                 <h2 style="margin-top: 0.5em; font-size: 2em">
-                  {{ actions.upload }}
+                  {{ actions.upload - actions.delete }}
                 </h2>
               </div>
               <v-icon-button
