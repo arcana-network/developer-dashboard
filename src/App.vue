@@ -33,6 +33,7 @@ export default {
       if (app) app.style.overflowY = "hidden";
       setTimeout(() => {
         if (app) app.style.overflowY = "auto";
+        app.scrollTo({ top: 0 });
       }, 1000);
     });
   },
