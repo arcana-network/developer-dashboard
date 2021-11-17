@@ -326,7 +326,6 @@ export default {
         const usersData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         if (response.data instanceof Array && response.data.length) {
-          console.log(response.data, monthAliases);
           response.data.forEach((data) => {
             const index = monthAliases.findIndex((monthAlias) => {
               return (
@@ -336,8 +335,6 @@ export default {
             usersData[index] = data.count;
           });
         }
-
-        console.log(usersData);
 
         config.data.datasets = [
           {
