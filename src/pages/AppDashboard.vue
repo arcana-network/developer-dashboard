@@ -712,8 +712,7 @@ export default {
     const store = useStore();
     const smartContractAddress = ref("");
     const appId = ref("");
-    const durationSelected = ref("");
-    durationSelected.value = "month";
+    const durationSelected = ref("week");
     const actions = ref({
       upload: 0,
       download: 0,
@@ -911,6 +910,7 @@ export default {
             ...getInitialUsageChartConfig(),
           });
         }
+        durationSelected.value = "month";
       }, 100);
     });
 
