@@ -110,17 +110,10 @@ export default {
           },
           selected: false,
         },
-        // {
-        //   label: "Help",
-        //   action() {
-        //     // router.push("/help");
-        //   },
-        //   selected: false,
-        // },
         {
           label: "Docs",
           action() {
-            // window.open("https://google.com");
+            window.open("https://docs.arcana.network");
           },
           selected: false,
         },
