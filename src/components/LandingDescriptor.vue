@@ -13,13 +13,6 @@
     <h1 style="margin-top: 4vh; margin-right: 4vw">
       Make your dApps secure from the ground up!
     </h1>
-    <div class="body-3" style="margin-top: 10vh">
-      <!-- <ul>
-        <li>Signup and configure your apps requirements</li>
-        <li>Download and integrate our SDKs from here (link to npm)</li>
-        <li>Provide security and privacy to your users and their data</li>
-      </ul> -->
-    </div>
     <img src="@/assets/sidebar-illustration.png" style="margin: 6vh auto 0" />
   </div>
   <v-seperator
