@@ -75,7 +75,10 @@
           </div>
         </v-stack>
       </section>
-      <configure-app-name :isConfigured="isConfigured" />
+      <configure-app-name
+        :isConfigured="isConfigured"
+        @enter-click="onFooterSave"
+      />
       <configure-app-region
         v-if="isConfigured || step >= 2"
         :style="step === 2 ? 'margin-bottom: 2em' : ''"
@@ -145,9 +148,12 @@
         >
           {{ selectedSubType.description }}
         </main>
-        <span class="close-learn-more body-1" @click.stop="hideLearnMorePopup">
-          X
-        </span>
+        <v-icon-button
+          :icon="CloseIcon"
+          class="close-learn-more"
+          @click.stop="hideLearnMorePopup"
+        >
+        </v-icon-button>
       </v-card>
     </v-overlay>
 
@@ -233,7 +239,7 @@
           class="sub-heading-1"
           style="justify-content: center; flex-grow: 1; display: flex"
         >
-          Deleting app...
+          Deleting App...
         </header>
         <div class="flex outer-clock">
           <circle-progress
@@ -268,7 +274,7 @@
           />
           <v-button
             variant="primary"
-            label="DELETE"
+            label="CONFIRM"
             v-wave
             @click.stop="handleDelete"
           />
@@ -290,7 +296,6 @@
   position: absolute;
   right: 1em;
   top: 1em;
-  font-weight: 600;
   cursor: pointer;
 }
 
@@ -446,6 +451,8 @@ import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 import PauseIcon from "@/assets/iconography/pause-disabled.svg";
 import DeleteIcon from "@/assets/iconography/delete.svg";
+import CloseIcon from "@/assets/iconography/close.svg";
+
 import {
   createApp,
   updateApp,
@@ -811,6 +818,7 @@ export default {
       hideLearnMorePopup,
       loading,
       loadingMessage,
+      CloseIcon,
     };
   },
 };

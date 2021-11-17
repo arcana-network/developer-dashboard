@@ -28,22 +28,14 @@
         />
       </div>
       <div class="flex column">
-        <div
-          class="flex sm-column flex-wrap"
-          style="gap: 2em; align-items: flex-start; margin-bottom: 1em"
-        >
+        <div class="flex input-group">
           <v-dropdown
             :options="authenticationTypes"
             displayField="name"
-            placeholder="Authentication Type"
-            style="width: calc(36% - 4em); min-width: 260px"
+            placeholder="Auth Type"
+            style="min-width: 160px"
             v-model="selectedAuthenticationType"
           />
-        </div>
-        <div
-          class="flex sm-column flex-wrap"
-          style="gap: 1.5em; align-items: flex-start"
-        >
           <v-text-field
             v-if="selectedAuthenticationType"
             :placeholder="
@@ -76,22 +68,28 @@
             placeholder="Enter Redirect Url"
             v-model="selectedAuthRedirectUrl"
           />
-          <v-button
-            variant="secondary"
-            @click.stop="addAuthentication"
-            v-if="selectedAuthenticationType"
-            label="ADD"
-          />
+          <div v-if="selectedAuthenticationType" style="margin-top: 1em">
+            <v-tooltip title="Add">
+              <v-icon-button
+                :icon="CheckIcon"
+                style="margin-left: 1em"
+                @click.stop="addAuthentication"
+              />
+            </v-tooltip>
+            <v-tooltip title="Clear">
+              <v-icon-button
+                :icon="CancelIcon"
+                style="margin-left: 1em"
+                @click.stop="clearAuthentication"
+              />
+            </v-tooltip>
+          </div>
         </div>
         <div
           v-if="selectedAuthenticationType"
-          style="
-            overflow-x: hidden;
-            text-overflow: ellipsis;
-            margin-bottom: 1em;
-          "
+          class="overflow-x-hidden overflow-ellipsis"
         >
-          <span class="body-2" style="line-height: 2em">
+          <span class="body-2" style="line-height: 1.5">
             To get the required credentials visit
             <br />
             <a
@@ -99,9 +97,10 @@
               target="__blank"
               class="auth-link"
               style="
-                font-weight: 600;
+                font-weight: 400;
                 letter-spacing: 0.5px;
-                font-size: 1.125em;
+                font-size: 1em;
+                overflow-wrap: break-word;
               "
             >
               {{ selectedAuthenticationType.setup }}
@@ -109,7 +108,7 @@
           </span>
           <div
             v-if="selectedAuthenticationType?.additionalSteps"
-            style="margin-top: 1em"
+            style="margin-top: 0.5em"
           >
             <span class="body-2">
               <strong>Note: </strong>
@@ -117,7 +116,7 @@
             </span>
           </div>
         </div>
-        <div class="flex flex-wrap" style="gap: 2em">
+        <div class="flex flex-wrap" style="gap: 2em; margin-top: 1em">
           <v-tooltip
             v-for="(authDetail, index) in authenticationDetails"
             :key="authDetail"
@@ -155,6 +154,8 @@ import VChip from "@/components/lib/VChip/VChip.vue";
 import { computed, watch } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import PlusIcon from "@/assets/iconography/plus.svg";
+import CancelIcon from "@/assets/iconography/close.svg";
+import CheckIcon from "@/assets/iconography/check.svg";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 import VIconButton from "../lib/VIconButton/VIconButton.vue";
 import VCardButton from "../lib/VCardButton/VCardButton.vue";
@@ -295,6 +296,15 @@ export default {
       }
     }
 
+    //Resetting all reactive variables
+    function clearAuthentication() {
+      selectedAuthClientIdError.value = false;
+      selectedAuthenticationType.value = "";
+      selectedAuthClientId.value = "";
+      selectedAuthClientSecret.value = "";
+      selectedAuthRedirectUrl.value = "";
+    }
+
     function getAuthTooltip({ authType, clientId, clientSecret, redirectUrl }) {
       let tooltip = `${authType} | ${clientId}`;
       if (clientSecret) {
@@ -331,7 +341,10 @@ export default {
       selectedAuthRedirectUrl,
       selectedAuthenticationType,
       errorMessage,
+      CheckIcon,
+      CancelIcon,
       addAuthentication,
+      clearAuthentication,
       removeAuthentication,
       getAuthTooltip,
       onLearnMoreClicked,
@@ -343,5 +356,9 @@ export default {
 <style scoped>
 .auth-link {
   color: var(--primary);
+}
+
+.input-group * {
+  box-shadow: unset;
 }
 </style>

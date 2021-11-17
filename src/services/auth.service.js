@@ -1,8 +1,8 @@
 import axios from "axios";
+import { AuthProvider } from "@arcana/auth";
 import constants from "../utils/constants";
 import getEnvApi from "./get-env-api";
 
-const { AuthProvider } = window.arcana_login;
 const arcanaAuth = new AuthProvider({
   appID: constants.arcanaAppId,
   oauthCreds: [

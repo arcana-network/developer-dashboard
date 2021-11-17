@@ -230,7 +230,7 @@ export default {
         loading.value = true;
         if (!isLoggedIn) {
           loadingMessage.value = "Signing In...";
-          await arcanaAuth.login(type);
+          await arcanaAuth.loginWithSocial(type);
         }
         loadingMessage.value = "Fetching user info...";
         const userInfo = arcanaAuth.getUserInfo();

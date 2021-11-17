@@ -19,15 +19,6 @@
   font-family: var(--font-body);
 }
 .card-button:not(:disabled):hover {
-  background: linear-gradient(
-    44.81deg,
-    #000000 -147.88%,
-    rgba(31, 31, 31, 0.29) 105.51%
-  );
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.18),
-    10px 10px 17px -4px rgba(10, 10, 10, 0.5),
-    -8px -8px 20px -2px rgba(255, 255, 255, 0.06),
-    inset 44px 25px 7px 8px rgba(32, 32, 32, 0.4);
   color: #13a3fd;
 }
 .card-button:not(:disabled):active,

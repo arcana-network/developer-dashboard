@@ -29,6 +29,7 @@
         style="width: 20vw; min-width: 300px; max-width: 400px; margin-top: 1em"
         :messageType="appNameError ? 'error' : ''"
         message="App name is required"
+        @keyup.enter="onEnterClick"
       />
     </v-stack>
   </v-card>
@@ -64,7 +65,7 @@ export default {
   props: {
     isConfigured: Boolean,
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore();
     const appName = ref("");
 
@@ -73,6 +74,10 @@ export default {
     });
 
     appName.value = store.getters.appName;
+
+    function onEnterClick() {
+      emit("enter-click");
+    }
 
     watch(
       () => appName.value,
@@ -92,6 +97,7 @@ export default {
     return {
       appName,
       appNameError,
+      onEnterClick,
     };
   },
 };
