@@ -193,7 +193,7 @@ export default {
       {
         name: "Reddit",
         setup: "https://github.com/reddit-archive/reddit/wiki/OAuth2",
-        additionalSteps: "Select installed app to be get proper client id",
+        additionalSteps: "Select installed app to get proper client id",
       },
       {
         name: "Discord",
