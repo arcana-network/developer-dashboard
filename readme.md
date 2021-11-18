@@ -8,7 +8,7 @@ Install dependencies.
 npm install
 ```
 
-Create `.env` file in root and copy the content of `.env.example` and fill in the environment variables.
+Create `.env` file in root, copy the content of `.env.example`, and fill in the environment variables.
 
 ```bash
 cp .env.example .env
