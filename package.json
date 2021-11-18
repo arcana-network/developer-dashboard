@@ -1,10 +1,10 @@
 {
   "name": "arcana-developer-dashboard",
   "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "vite",
-    "copy": "node ./copy-to-dist.js",
-    "build": "vite build && npm run copy",
+    "build": "vite build",
     "serve": "vite preview"
   },
   "dependencies": {
