@@ -109,7 +109,7 @@ router.beforeEach((to, from, next) => {
   if (!openRoutes.includes(to.name) && !store.getters.accessToken) {
     router.replace({ name: "Login" });
   } else if (to.name === "Login" && store.getters.accessToken) {
-    router.replace({ name: "Dashboard" });
+    router.push({ name: "Dashboard" });
   }
   return next();
 });

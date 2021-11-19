@@ -544,7 +544,7 @@ export default {
     );
 
     function backToDashboard() {
-      router.replace("/");
+      router.push("/");
     }
 
     async function onFooterSave() {
@@ -702,7 +702,7 @@ export default {
       }
 
       loading.value = false;
-      router.replace("/");
+      router.push("/");
     }
 
     function getTxRequestProps() {
@@ -726,7 +726,7 @@ export default {
               .scrollIntoView({ behavior: "smooth" });
           }, 10);
         } else if (step.value === 0) {
-          router.replace("/");
+          router.push("/");
         }
       } else {
         if (env.value === "test") {
@@ -743,7 +743,7 @@ export default {
           store.dispatch("live/updateUserLimits", liveConfig.userLimits);
         }
         store.dispatch("configChangeReset");
-        router.replace("/");
+        router.push("/");
       }
     }
 

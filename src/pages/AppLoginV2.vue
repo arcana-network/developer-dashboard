@@ -72,23 +72,6 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, 'reddit')"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/reddit-sso.svg"
-                  />
-                  <span class="body-1">Reddit</span>
-                </div>
-              </v-card-button>
-            </div>
-            <div
-              class="flex wrap"
-              style="gap: 1em; margin-top: 2em; justify-content: space-between"
-            >
-              <v-card-button
-                class="sso-button"
                 @click.stop="launchLogin(false, 'discord')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
@@ -97,19 +80,6 @@
                     src="@/assets/discord-sso.svg"
                   />
                   <span class="body-1">Discord</span>
-                </div>
-              </v-card-button>
-              <v-card-button
-                class="sso-button"
-                @click.stop="launchLogin(false, 'twitter')"
-                style="visibility: hidden"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/twitter-sso.svg"
-                  />
-                  <span class="body-1">Twitter</span>
                 </div>
               </v-card-button>
             </div>
@@ -261,7 +231,7 @@ export default {
           name: userInfo.userInfo.name || userInfo.userInfo.id,
         });
         loading.value = false;
-        router.replace({ name: "Dashboard" });
+        router.push({ name: "Dashboard" });
       } catch (e) {
         loading.value = false;
         console.error(e);
