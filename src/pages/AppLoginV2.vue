@@ -261,7 +261,7 @@ export default {
           name: userInfo.userInfo.name || userInfo.userInfo.id,
         });
         loading.value = false;
-        router.replace({ name: "Dashboard" });
+        router.push({ name: "Dashboard" });
       } catch (e) {
         loading.value = false;
         console.error(e);
