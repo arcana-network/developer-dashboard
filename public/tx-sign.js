@@ -273,7 +273,6 @@ window.signerMakeTx = async function ({
       Authorization: "Bearer " + accessToken,
     },
   });
-  // await new Promise((r) => setTimeout(r, 1000));
   let tx = await provider.getTransaction(res.data.txHash);
   await tx.wait();
   return res.data;
