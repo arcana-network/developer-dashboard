@@ -4,7 +4,7 @@
       <landing-descriptor />
       <section class="forgot-password-container">
         <div>
-          <h1 style="text-align: center">Verification Successful</h1>
+          <h1 style="text-align: center">Create New Password</h1>
           <h4
             style="
               text-align: center;
@@ -13,8 +13,7 @@
               line-height: 1.65em;
             "
           >
-            Your new password must be different <br />from previously used
-            password
+            Create a password to encrypt your private key
           </h4>
         </div>
         <form style="margin-top: 2vh" class="flex column">
@@ -24,6 +23,7 @@
             placeholder="Enter Here"
             name="password"
             id="password"
+            v-model="password"
           />
           <v-text-field
             label="Confirm New Password"
@@ -31,31 +31,40 @@
             placeholder="Enter Here"
             name="confirm-password"
             id="confirm-password"
+            v-model="confirmPassword"
           />
           <ul class="flex body-3">
             <li :class="{ 'success-message': passwordValidCases.minChar }">
-              Must be at least 8 characters
+              Must be at least 6 characters
             </li>
             <li :class="{ 'success-message': passwordValidCases.numeric }">
               Atleast one numeric digit
             </li>
           </ul>
           <ul class="flex body-3">
-            <li :class="{ 'success-message': passwordValidCases.uppercase }">
-              Atleast one uppercase letter
+            <li :class="{ 'success-message': passwordValidCases.noSpaces }">
+              Must not contain space
             </li>
-            <li :class="{ 'success-message': passwordValidCases.specialCase }">
-              Atleast one special character
+            <li
+              :class="{
+                'success-message':
+                  password.trim() && password === confirmPassword,
+              }"
+            >
+              Passwords must match
             </li>
           </ul>
           <v-button
             label="SAVE PASSWORD"
             style="margin: 4vh 1% 0 1%"
             type="button"
+            :disabled="!isValidPassword"
+            :action="savePassword"
           />
         </form>
       </section>
     </main>
+    <full-screen-loader v-if="loading" :message="loadingMessage" />
   </div>
 </template>
 
@@ -116,28 +125,92 @@ li.success-message {
 
 <script>
 import { ref } from "@vue/reactivity";
+import { computed, onBeforeMount } from "@vue/runtime-core";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+
 import LandingDescriptor from "../components/LandingDescriptor.vue";
 import VButton from "../components/lib/VButton/VButton.vue";
 import VTextField from "../components/lib/VTextField/VTextField.vue";
-import { onBeforeMount } from "@vue/runtime-core";
+import FullScreenLoader from "../components/FullScreenLoader.vue";
+
+import { encrypt, bufferToString } from "../utils/cryptoUtils";
+
 export default {
-  components: { LandingDescriptor, VButton, VTextField },
+  components: { LandingDescriptor, VButton, VTextField, FullScreenLoader },
   setup() {
-    let passwordValidCases = ref({
-      minChar: false,
-      numeric: false,
-      uppercase: false,
-      specialCase: false,
+    const store = useStore();
+    const router = useRouter();
+    const route = useRoute();
+    const password = ref("");
+    const confirmPassword = ref("");
+    const loading = ref(false);
+    const loadingMessage = ref("");
+
+    const passwordValidCases = computed(() => {
+      let validCases = {
+        minChar: false,
+        numeric: false,
+        noSpaces: false,
+      };
+
+      if (password.value.length > 0) {
+        if (password.value.length >= 6) {
+          validCases.minChar = true;
+        }
+        if (/\d/.test(password.value)) {
+          validCases.numeric = true;
+        }
+        if (!/\s/g.test(password.value)) {
+          validCases.noSpaces = true;
+        }
+      }
+
+      return validCases;
     });
-    let initialTestnetConfiguration = ref(false);
+
+    const isValidPassword = computed(() => {
+      return (
+        passwordValidCases.value.minChar &&
+        passwordValidCases.value.numeric &&
+        passwordValidCases.value.noSpaces &&
+        password.value === confirmPassword.value
+      );
+    });
+
+    async function savePassword() {
+      if (isValidPassword.value) {
+        loading.value = true;
+        loadingMessage.value = "Encrypting private key...";
+        const privateKey = store.getters.keys.privateKey;
+        const accessToken = store.getters.accessToken;
+        const userInfo = store.getters.userInfo;
+        const encryptedPrivateKey = await encrypt(privateKey, password.value);
+        localStorage.setItem("private-key", encryptedPrivateKey);
+        localStorage.setItem("user-info", JSON.stringify(userInfo));
+        localStorage.setItem(
+          "access-token",
+          bufferToString(new TextEncoder().encode(accessToken))
+        );
+        await router.push({ name: route.params.redirectTo });
+        loading.value = false;
+      }
+    }
+
     onBeforeMount(() => {
-      const isConfigured = localStorage.getItem("isConfigured");
-      initialTestnetConfiguration.value = !!isConfigured;
+      if (!store.getters.keys.privateKey) {
+        router.push({ name: "Login" });
+      }
     });
 
     return {
       passwordValidCases,
-      initialTestnetConfiguration,
+      password,
+      confirmPassword,
+      isValidPassword,
+      loading,
+      loadingMessage,
+      savePassword,
     };
   },
 };
