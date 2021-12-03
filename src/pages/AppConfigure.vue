@@ -437,6 +437,13 @@ input[type="number"] {
     align-items: center;
   }
 }
+
+.popup-card {
+  padding: 4em;
+  width: max-content;
+  flex-direction: column;
+  gap: 1vh;
+}
 </style>
 
 <style>
@@ -446,13 +453,6 @@ input[type="number"] {
 }
 .app-section-description .body-1 {
   color: var(--text-grey);
-}
-.popup-card {
-  padding: 4em;
-  max-width: 560px;
-  width: max-content;
-  flex-direction: column;
-  gap: 1vh;
 }
 </style>
 
