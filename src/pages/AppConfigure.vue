@@ -578,10 +578,10 @@ export default {
     });
 
     if (!store.getters.keys.privateKey) {
-      const encryptedPrivateKey = localStorage.getItem("private-key");
       const arcanaAuth = getArcanaAuth();
-      const { privateKey, userInfo } = arcanaAuth.getUserInfo();
-      if (privateKey) {
+      const encryptedPrivateKey = localStorage.getItem("private-key");
+      if (arcanaAuth.isLoggedIn()) {
+        const { privateKey, userInfo } = arcanaAuth.getUserInfo();
         store.dispatch("updateKeys", { privateKey });
         store.dispatch("updateUserInfo", {
           name: userInfo.name,
@@ -877,6 +877,9 @@ export default {
           passwordMessage.value = "Incorrect password";
           passwordMessageType.value = "error";
         }
+      } else {
+        passwordMessage.value = "Enter password to continue";
+        passwordMessageType.value = "error";
       }
     }
 
