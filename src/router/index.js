@@ -74,11 +74,12 @@ const routes = [
     path: "/profile",
     component: AppProfile,
   },
-  // {
-  //   name: "Create New Password",
-  //   path: "/password/create",
-  //   component: AppNewPassword,
-  // },
+  {
+    name: "Create Password",
+    path: "/password/create",
+    component: AppNewPassword,
+    props: true,
+  },
   {
     name: "Login",
     path: "/login",
@@ -103,7 +104,13 @@ const router = createRouter({
   },
 });
 
-const openRoutes = ["SSO Redirect", "Login", "Signup", "Signin"];
+const openRoutes = [
+  "SSO Redirect",
+  "Login",
+  "Signup",
+  "Signin",
+  "Create Password",
+];
 
 router.beforeEach((to, from, next) => {
   if (!openRoutes.includes(to.name) && !store.getters.accessToken) {

@@ -12,7 +12,6 @@ const getters = {
   keys: (state) => {
     return {
       privateKey: state.privateKey,
-      publicKey: state.publicKey,
     };
   },
   walletAddress: (state) => state.walletAddress,
@@ -29,9 +28,8 @@ const mutations = {
     state.accessToken = access_token;
   },
 
-  updateKeys(state, { privateKey, publicKey }) {
+  updateKeys(state, { privateKey }) {
     state.privateKey = privateKey;
-    state.publicKey = publicKey;
   },
 
   updateWalletAddress(state, walletAddress) {
@@ -57,8 +55,8 @@ const actions = {
     commit("updateAccessToken", access_token);
   },
 
-  updateKeys({ commit }, { privateKey, publicKey }) {
-    commit("updateKeys", { privateKey, publicKey });
+  updateKeys({ commit }, { privateKey }) {
+    commit("updateKeys", { privateKey });
   },
 
   updateWalletAddress({ commit }, walletAddress) {

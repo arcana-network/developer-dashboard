@@ -204,13 +204,6 @@ export default {
         }
         loadingMessage.value = "Fetching user info...";
         const userInfo = arcanaAuth.getUserInfo();
-        loadingMessage.value = "Generating Public key...";
-        const publicKey = await arcanaAuth.getPublicKey({
-          verifier: userInfo.loginType,
-          id: userInfo.userInfo.id,
-        });
-        const actualPublicKey =
-          publicKey.X.padStart(64, "0") + publicKey.Y.padStart(64, "0");
         const wallet = new Wallet(userInfo.privateKey);
         const nonce = await getNonce(wallet.address);
         loadingMessage.value = "Signing In...";
@@ -223,7 +216,6 @@ export default {
         store.dispatch("updateAccessToken", access_token.data.token);
         store.dispatch("updateKeys", {
           privateKey: userInfo.privateKey,
-          publicKey: actualPublicKey,
         });
         store.dispatch("updateWalletAddress", wallet.address);
         store.dispatch("updateUserInfo", {
@@ -231,7 +223,10 @@ export default {
           name: userInfo.userInfo.name || userInfo.userInfo.id,
         });
         loading.value = false;
-        router.push({ name: "Dashboard" });
+        router.push({
+          name: "Create Password",
+          params: { redirectTo: "Dashboard" },
+        });
       } catch (e) {
         loading.value = false;
         console.error(e);
