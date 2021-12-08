@@ -262,6 +262,7 @@ export default {
 
     function onLogout() {
       logout();
+      localStorage.clear();
       store.dispatch("test/resetConfigStore");
       store.dispatch("live/resetConfigStore");
       store.dispatch("resetAuth");
