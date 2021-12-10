@@ -1,4 +1,6 @@
 import axios from "axios";
+import jsonp from "jsonp";
+
 import { AuthProvider } from "@arcana/auth";
 import constants from "../utils/constants";
 import getEnvApi from "./get-env-api";
@@ -53,5 +55,23 @@ export function login({ signature, email, address }) {
     signature,
     email,
     address,
+  });
+}
+
+export function addUserToMailchimp(email) {
+  const data = {
+    u: import.meta.env.VITE_MAILCHIMP_USER_ID,
+    id: import.meta.env.VITE_MAILCHIMP_LIST_ID,
+    EMAIL: email,
+    "group[381006][8]": 8,
+  };
+
+  const stringifiedData = new URLSearchParams(data).toString();
+
+  const url = `${import.meta.env.VITE_MAILCHIMP_LIST_URL}?${stringifiedData}`;
+  jsonp(url, { param: "c" }, (error) => {
+    if (error) {
+      console.error(error);
+    }
   });
 }
