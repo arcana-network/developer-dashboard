@@ -17,6 +17,7 @@
     "chart.js": "^3.5.0",
     "cssnano": "^5.0.8",
     "ethers": "^5.4.7",
+    "jsonp": "^0.2.1",
     "moment": "^2.29.1",
     "postcss-custom-media": "^8.0.0",
     "postcss-media-variables": "^2.0.1",
