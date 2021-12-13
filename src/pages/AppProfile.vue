@@ -85,8 +85,8 @@
             justify-content: space-between;
           "
         >
-          <div class="flex column" style="flex-grow: 1">
-            <div class="flex flex-wrap" style="justify-content: space-between">
+          <div class="flex column flex-grow">
+            <div class="flex flex-wrap justify-space-between">
               <div class="flex column details">
                 <span class="body-2">Organisation Name</span>
                 <span class="sub-heading-3" v-if="!editOrganisationDetails">
@@ -96,11 +96,16 @@
               </div>
               <div class="flex column details">
                 <span class="body-2">Size</span>
+                <span class="body-3" style="text-transform: uppercase; letter-spacing: .1em;" v-if="organisationDetails.sizeErrorMessage">
+                  {{ organisationDetails.sizeErrorMessage }}
+                </span>
                 <span class="sub-heading-3" v-if="!editOrganisationDetails">
                   {{ organisationDetails.size }}
                 </span>
                 <v-text-field
                   type="number"
+                  min="1"
+                  step="1"
                   v-else
                   v-model="organisationDetails.size"
                 />
@@ -225,6 +230,7 @@ export default {
     const organisationDetails = ref({
       name: " ",
       size: 0,
+      sizeErrorMessage: null,
       country: " ",
       region: " ",
     });
@@ -235,10 +241,19 @@ export default {
     const router = useRouter();
 
     function onUpdateOrganization() {
+      // Validation
+      const size = Number(organisationDetails.value.size)
+      if (!Number.isFinite(size) || !Number.isSafeInteger(size) || size <= 0) {
+        organisationDetails.value.sizeErrorMessage = 'Invalid organization size.'
+        return
+      }
+      organisationDetails.value.sizeErrorMessage = null
+
+      // API Call
       try {
         updateOrganization({
           name: organisationDetails.value.name,
-          size: parseInt(organisationDetails.value.size),
+          size,
           country: organisationDetails.value.country,
           region: organisationDetails.value.region,
         }).then((response) => {
