@@ -202,7 +202,7 @@
       >
         <div class="flex flex-wrap duration" style="margin-bottom: 1em">
           <v-card-button
-            label="Weekly"
+            label="Daily"
             :active="durationSelected === 'day'"
             @click.stop="durationSelected = 'day'"
           />
