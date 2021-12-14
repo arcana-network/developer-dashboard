@@ -31,7 +31,7 @@
             <span class="sub-heading-3">{{ name }}</span>
           </div>
           <div class="flex column details">
-            <span class="body-2">Email</span>
+            <span class="body-2">Public Identifier</span>
             <span class="sub-heading-3">{{ email }}</span>
           </div>
           <div class="flex column details" style="visibility: hidden">

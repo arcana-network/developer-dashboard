@@ -117,8 +117,8 @@
         >
           <div class="flex column" style="gap: 1vh">
             <span class="body-1" style="color: var(--text-grey)">
-              Email ID</span
-            >
+              Public Identifier
+            </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
               {{ userLog.email }}
             </span>
