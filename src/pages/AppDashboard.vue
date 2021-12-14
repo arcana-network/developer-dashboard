@@ -455,7 +455,7 @@
           <h4 class="testnet-disclaimer popup">
             DISCLAIMER: Use with caution. This is an ALPHA release with all
             features being experimental. Please do not use important data
-            without back ups.
+            without backups.
           </h4>
           <h5 class="testnet-disclaimer popup">
             The platform is provided in an "as is" basis without any express or
