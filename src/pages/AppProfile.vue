@@ -244,9 +244,7 @@ export default {
     email.value = store.getters.userInfo.email;
     const router = useRouter();
 
-    // Need this to maintain state of organisation details before editing
-    // onCancel we can revert organisationDetails to this state and onSave we can update this state
-    let organisationDetailsActualState = {};
+    let organisationDetailsResetState = {};
 
     function onUpdateOrganization() {
       // Validation
@@ -267,7 +265,7 @@ export default {
           region: organisationDetails.value.region,
         }).then((response) => {
           editOrganisationDetails.value = false;
-          organisationDetailsActualState = { ...organisationDetails.value };
+          organisationDetailsResetState = { ...organisationDetails.value };
         });
       } catch (e) {
         console.error(e);
@@ -282,7 +280,7 @@ export default {
           country: response.data.organization.country,
           region: response.data.organization.region,
         };
-        organisationDetailsActualState = { ...organisationDetails.value };
+        organisationDetailsResetState = { ...organisationDetails.value };
       });
     });
 
@@ -298,7 +296,7 @@ export default {
 
     function resetOrganisationDetails() {
       editOrganisationDetails.value = false;
-      organisationDetails.value = { ...organisationDetailsActualState };
+      organisationDetails.value = { ...organisationDetailsResetState };
 
       if (organisationDetails.value.sizeErrorMessage) {
         organisationDetails.value.sizeErrorMessage = null;
