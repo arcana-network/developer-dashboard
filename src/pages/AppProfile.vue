@@ -64,7 +64,7 @@
               variant="link"
               label="Cancel"
               :disabled="false"
-              @click="editOrganisationDetails = false"
+              @click="resetOrganisationDetails"
               style="color: #8d8d8d"
             />
             <v-button
@@ -96,7 +96,11 @@
               </div>
               <div class="flex column details">
                 <span class="body-2">Size</span>
-                <span class="body-3" style="text-transform: uppercase; letter-spacing: .1em;" v-if="organisationDetails.sizeErrorMessage">
+                <span
+                  class="body-3"
+                  style="text-transform: uppercase; letter-spacing: 0.1em"
+                  v-if="organisationDetails.sizeErrorMessage"
+                >
                   {{ organisationDetails.sizeErrorMessage }}
                 </span>
                 <span class="sub-heading-3" v-if="!editOrganisationDetails">
@@ -240,14 +244,17 @@ export default {
     email.value = store.getters.userInfo.email;
     const router = useRouter();
 
+    let organisationDetailsResetState = {};
+
     function onUpdateOrganization() {
       // Validation
-      const size = Number(organisationDetails.value.size)
+      const size = Number(organisationDetails.value.size);
       if (!Number.isFinite(size) || !Number.isSafeInteger(size) || size <= 0) {
-        organisationDetails.value.sizeErrorMessage = 'Invalid organization size.'
-        return
+        organisationDetails.value.sizeErrorMessage =
+          "Invalid organization size.";
+        return;
       }
-      organisationDetails.value.sizeErrorMessage = null
+      organisationDetails.value.sizeErrorMessage = null;
 
       // API Call
       try {
@@ -258,6 +265,7 @@ export default {
           region: organisationDetails.value.region,
         }).then((response) => {
           editOrganisationDetails.value = false;
+          organisationDetailsResetState = { ...organisationDetails.value };
         });
       } catch (e) {
         console.error(e);
@@ -272,6 +280,7 @@ export default {
           country: response.data.organization.country,
           region: response.data.organization.region,
         };
+        organisationDetailsResetState = { ...organisationDetails.value };
       });
     });
 
@@ -285,6 +294,15 @@ export default {
       router.push({ name: "Login" });
     }
 
+    function resetOrganisationDetails() {
+      editOrganisationDetails.value = false;
+      organisationDetails.value = { ...organisationDetailsResetState };
+
+      if (organisationDetails.value.sizeErrorMessage) {
+        organisationDetails.value.sizeErrorMessage = null;
+      }
+    }
+
     return {
       editPersonalDetails,
       editOrganisationDetails,
@@ -292,6 +310,7 @@ export default {
       password,
       onLogout,
       onUpdateOrganization,
+      resetOrganisationDetails,
       name,
       email,
     };
