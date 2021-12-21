@@ -104,21 +104,12 @@ export async function fetchAndStoreAppConfig() {
     const unlimitedBytes = 10995116277760;
 
     if (currentApp.storage_limit < unlimitedBytes) {
-      let storage;
+      const isUnder1GB = currentApp.storage_limit < bytes("1 GB");
 
-      // Convert to MB if storage is less than 1023 MB
-      // else convert to GB
-      if (currentApp.storage_limit <= bytes("1023MB")) {
-        storage = bytes(currentApp.storage_limit, {
-          unitSeparator: " ",
-          unit: "MB",
-        });
-      } else {
-        storage = bytes(currentApp.storage_limit, {
-          unitSeparator: " ",
-          unit: "GB",
-        });
-      }
+      const storage = bytes(currentApp.storage_limit, {
+        unitSeparator: " ",
+        unit: isUnder1GB ? "MB" : "GB",
+      });
 
       const storageValues = storage.split(" ");
       store.dispatch(env + "/updateStorage", {
@@ -135,21 +126,12 @@ export async function fetchAndStoreAppConfig() {
     }
 
     if (currentApp.bandwidth_limit < unlimitedBytes) {
-      let bandwidth;
+      const isUnder1GB = currentApp.bandwidth_limit < bytes("1 GB");
 
-      // Convert to MB if bandwidth is less than 1023 MB
-      // else convert to GB
-      if (currentApp.bandwidth_limit <= bytes("1023MB")) {
-        storage = bytes(currentApp.bandwidth_limit, {
-          unitSeparator: " ",
-          unit: "MB",
-        });
-      } else {
-        storage = bytes(currentApp.bandwidth_limit, {
-          unitSeparator: " ",
-          unit: "GB",
-        });
-      }
+      const bandwidth = bytes(currentApp.bandwidth_limit, {
+        unitSeparator: " ",
+        unit: isUnder1GB ? "MB" : "GB",
+      });
 
       const bandwidthValues = bandwidth.split(" ");
       store.dispatch(env + "/updateBandwidth", {
