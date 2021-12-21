@@ -653,16 +653,9 @@ h5.testnet-disclaimer.popup {
 </style>
 
 <script>
-import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
-import CopyIcon from "@/assets/iconography/copy.svg";
-import CheckIcon from "@/assets/iconography/check.svg";
-import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
-import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
-import VButton from "../components/lib/VButton/VButton.vue";
-import VCard from "@/components/lib/VCard/VCard.vue";
-import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import { fetchAndStoreAppConfig } from "@/services/app-config.service";
 import { useRouter } from "vue-router";
-import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
+import { useStore } from "vuex";
 import {
   computed,
   onBeforeMount,
@@ -670,28 +663,36 @@ import {
   ref,
   watch,
 } from "@vue/runtime-core";
-import AppHeader from "@/components/AppHeader.vue";
-import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
-import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
-import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
-import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
-import VStack from "@/components/lib/VStack/VStack.vue";
-import {
-  fetchAllApps,
-  fetchStats,
-  fetchPeriodicUsage,
-  fetchApp,
-} from "@/services/dashboard.service";
-import { useStore } from "vuex";
-import bytes from "bytes";
-import copyToClipboard from "../utils/copyToClipboard";
-import { getAddress } from "../utils/get-address";
 import {
   createChartView,
   updateChartView,
   getInitialUsageChartConfig,
-} from "../utils/chart";
+} from "@/utils/chart";
+import {
+  fetchStats,
+  fetchPeriodicUsage,
+  fetchApp,
+} from "@/services/dashboard.service";
+
+import AppHeader from "@/components/AppHeader.vue";
+import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
+import bytes from "bytes";
+import CheckIcon from "@/assets/iconography/check.svg";
+import CopyIcon from "@/assets/iconography/copy.svg";
+import copyToClipboard from "@/utils/copyToClipboard";
 import moment from "moment";
+import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
+
+import VButton from "../components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 export default {
   components: {
@@ -710,8 +711,12 @@ export default {
   setup() {
     const router = useRouter();
     const store = useStore();
-    const smartContractAddress = ref("");
-    const appId = ref("");
+    const smartContractAddress = computed(() => {
+      return store.getters.smartContractAddress;
+    });
+    const appId = computed(() => {
+      return store.getters.appId;
+    });
     const durationSelected = ref("week");
     const actions = ref({
       upload: 0,
@@ -734,84 +739,12 @@ export default {
     const storageRemaining = ref("5 GB");
     const bandwidthRemaining = ref("5 GB");
 
-    onBeforeMount(() => {
-      updateAppDetails();
+    onBeforeMount(async () => {
+      await fetchAndStoreAppConfig();
+      await fetchStatistics(appId.value);
     });
 
-    async function updateAppDetails() {
-      try {
-        const apps = await fetchAllApps();
-        if (apps.data.length) {
-          isConfigured.value = true;
-          store.dispatch("updateAppConfigurationStatus", true);
-          const currentApp = apps.data[0];
-          store.dispatch("updateAppName", currentApp.name);
-          store.dispatch("updateAppId", currentApp.ID);
-
-          // Get Address
-          const appAddress = await getAddress(currentApp.address);
-
-          smartContractAddress.value = appAddress;
-          appId.value = currentApp.ID;
-
-          const env = store.getters.env;
-          const chainType = ["ethereum", "polygon", "binance"][
-            currentApp.chain
-          ];
-          store.dispatch(env + "/updateChainType", chainType);
-          const unlimitedBytes = 10995116277760;
-
-          if (currentApp.storage_limit < unlimitedBytes) {
-            const storage = bytes(currentApp.storage_limit, {
-              unitSeparator: " ",
-            });
-            const storageValues = storage.split(" ");
-            store.dispatch(env + "/updateStorage", {
-              value: storageValues[0],
-              unit: storageValues[1],
-              isUnlimited: false,
-            });
-          } else {
-            store.dispatch(env + "/updateStorage", {
-              value: "",
-              unit: "",
-              isUnlimited: true,
-            });
-          }
-          if (currentApp.bandwidth_limit < unlimitedBytes) {
-            const bandwidth = bytes(currentApp.bandwidth_limit, {
-              unitSeparator: " ",
-            });
-            const bandwidthValues = bandwidth.split(" ");
-            store.dispatch(env + "/updateBandwidth", {
-              value: bandwidthValues[0],
-              unit: bandwidthValues[1],
-              isUnlimited: false,
-            });
-          } else {
-            store.dispatch(env + "/updateBandwidth", {
-              value: "",
-              unit: "",
-              isUnlimited: true,
-            });
-          }
-          fetchOtherDetails(currentApp.ID);
-          store.dispatch(
-            "updateSmartContractAddress",
-            smartContractAddress.value
-          );
-          return;
-        } else {
-          isConfigured.value = false;
-          store.dispatch("updateAppConfigurationStatus", false);
-        }
-      } catch (e) {
-        console.error(e);
-        return [];
-      }
-    }
-
-    async function fetchOtherDetails(appId) {
+    async function fetchStatistics(appId) {
       try {
         updateChart();
         const stats = await fetchStats(appId);
