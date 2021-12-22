@@ -5,6 +5,8 @@ import { fetchAllApps, fetchApp } from "./dashboard.service";
 import { getAddress } from "../utils/get-address";
 import bytes from "bytes";
 
+const UNLIMITED_BYTE_SIZE = bytes("10 TB");
+
 export function getConfig() {
   return axios.get(getEnvApi() + "/get-config/");
 }
@@ -101,51 +103,16 @@ export async function fetchAndStoreAppConfig() {
     const env = store.getters.env;
     const chainType = ["ethereum", "polygon", "binance"][currentApp.chain];
     store.dispatch(env + "/updateChainType", chainType);
-    const unlimitedBytes = 10995116277760;
 
-    if (currentApp.storage_limit < unlimitedBytes) {
-      const isUnder1GB = currentApp.storage_limit < bytes("1 GB");
+    calculateAndStoreLimits({
+      userLimit: currentApp.storage_limit,
+      actionName: env + "/updateStorage",
+    });
 
-      const storage = bytes(currentApp.storage_limit, {
-        unitSeparator: " ",
-        unit: isUnder1GB ? "MB" : "GB",
-      });
-
-      const storageValues = storage.split(" ");
-      store.dispatch(env + "/updateStorage", {
-        value: storageValues[0],
-        unit: storageValues[1],
-        isUnlimited: false,
-      });
-    } else {
-      store.dispatch(env + "/updateStorage", {
-        value: "",
-        unit: "",
-        isUnlimited: true,
-      });
-    }
-
-    if (currentApp.bandwidth_limit < unlimitedBytes) {
-      const isUnder1GB = currentApp.bandwidth_limit < bytes("1 GB");
-
-      const bandwidth = bytes(currentApp.bandwidth_limit, {
-        unitSeparator: " ",
-        unit: isUnder1GB ? "MB" : "GB",
-      });
-
-      const bandwidthValues = bandwidth.split(" ");
-      store.dispatch(env + "/updateBandwidth", {
-        value: bandwidthValues[0],
-        unit: bandwidthValues[1],
-        isUnlimited: false,
-      });
-    } else {
-      store.dispatch(env + "/updateBandwidth", {
-        value: "",
-        unit: "",
-        isUnlimited: true,
-      });
-    }
+    calculateAndStoreLimits({
+      userLimit: currentApp.bandwidth_limit,
+      actionName: env + "/updateBandwidth",
+    });
 
     const appDetails = await fetchApp(appId);
 
@@ -168,5 +135,29 @@ export async function fetchAndStoreAppConfig() {
     }
   } else {
     store.dispatch("updateAppConfigurationStatus", false);
+  }
+}
+
+function calculateAndStoreLimits({ userLimit, actionName }) {
+  if (userLimit < UNLIMITED_BYTE_SIZE) {
+    const isUnder1GB = userLimit < bytes("1 GB");
+
+    const calculatedUserLimit = bytes(userLimit, {
+      unitSeparator: " ",
+      unit: isUnder1GB ? "MB" : "GB",
+    });
+
+    const userLimitValues = calculatedUserLimit.split(" ");
+    store.dispatch(actionName, {
+      value: userLimitValues[0],
+      unit: userLimitValues[1],
+      isUnlimited: false,
+    });
+  } else {
+    store.dispatch(actionName, {
+      value: "",
+      unit: "",
+      isUnlimited: true,
+    });
   }
 }
