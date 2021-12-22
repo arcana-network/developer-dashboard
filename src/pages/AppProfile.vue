@@ -28,11 +28,11 @@
         >
           <div class="flex column details">
             <span class="body-2">Name</span>
-            <span class="sub-heading-3">{{ name }}</span>
+            <span class="sub-heading-3 overflow-ellipsis">{{ name }}</span>
           </div>
           <div class="flex column details">
             <span class="body-2">Public Identifier</span>
-            <span class="sub-heading-3">{{ email }}</span>
+            <span class="sub-heading-3 overflow-ellipsis">{{ email }}</span>
           </div>
           <div class="flex column details" style="visibility: hidden">
             <!-- <span class="body-2">Password</span>
@@ -89,7 +89,10 @@
             <div class="flex flex-wrap justify-space-between">
               <div class="flex column details">
                 <span class="body-2">Organisation Name</span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
+                <span
+                  class="sub-heading-3 overflow-ellipsis"
+                  v-if="!editOrganisationDetails"
+                >
                   {{ organisationDetails.name }}
                 </span>
                 <v-text-field v-else v-model="organisationDetails.name" />
@@ -103,7 +106,10 @@
                 >
                   {{ organisationDetails.sizeErrorMessage }}
                 </span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
+                <span
+                  class="sub-heading-3 overflow-ellipsis"
+                  v-if="!editOrganisationDetails"
+                >
                   {{ organisationDetails.size }}
                 </span>
                 <v-text-field
@@ -122,14 +128,20 @@
             <div class="flex flex-wrap" style="justify-content: space-between">
               <div class="flex column details">
                 <span class="body-2">Country</span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
+                <span
+                  class="sub-heading-3 overflow-ellipsis"
+                  v-if="!editOrganisationDetails"
+                >
                   {{ organisationDetails.country }}
                 </span>
                 <v-text-field v-else v-model="organisationDetails.country" />
               </div>
               <div class="flex column details">
                 <span class="body-2">Region</span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
+                <span
+                  class="sub-heading-3 overflow-ellipsis"
+                  v-if="!editOrganisationDetails"
+                >
                   {{ organisationDetails.region }}
                 </span>
                 <v-text-field v-else v-model="organisationDetails.region" />
@@ -201,6 +213,13 @@
 .personal-details {
   margin-top: 4em;
 }
+
+.overflow-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 @media only screen and (max-width: 1023px) {
   .heading {
     margin-top: 0.9em;
