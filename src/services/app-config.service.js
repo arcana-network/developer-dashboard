@@ -6,6 +6,7 @@ import { getAddress } from "../utils/get-address";
 import bytes from "bytes";
 
 const UNLIMITED_BYTE_SIZE = bytes("10 TB");
+const CHAIN_TYPES = ["ethereum", "polygon", "binance"];
 
 export function getConfig() {
   return axios.get(getEnvApi() + "/get-config/");
@@ -101,7 +102,7 @@ export async function fetchAndStoreAppConfig() {
     store.dispatch("updateSmartContractAddress", appAddress);
 
     const env = store.getters.env;
-    const chainType = ["ethereum", "polygon", "binance"][currentApp.chain];
+    const chainType = CHAIN_TYPES[currentApp.chain];
     store.dispatch(env + "/updateChainType", chainType);
 
     calculateAndStoreLimits({
