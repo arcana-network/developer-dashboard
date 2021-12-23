@@ -28,11 +28,15 @@
         >
           <div class="flex column details">
             <span class="body-2">Name</span>
-            <span class="sub-heading-3 overflow-ellipsis">{{ name }}</span>
+            <span class="sub-heading-3 overflow-ellipsis" :title="name">
+              {{ name }}
+            </span>
           </div>
           <div class="flex column details">
             <span class="body-2">Public Identifier</span>
-            <span class="sub-heading-3 overflow-ellipsis">{{ email }}</span>
+            <span class="sub-heading-3 overflow-ellipsis" :title="email">
+              {{ email }}
+            </span>
           </div>
           <div class="flex column details" style="visibility: hidden">
             <!-- <span class="body-2">Password</span>
@@ -91,6 +95,7 @@
                 <span class="body-2">Organisation Name</span>
                 <span
                   class="sub-heading-3 overflow-ellipsis"
+                  :title="organisationDetails.name"
                   v-if="!editOrganisationDetails"
                 >
                   {{ organisationDetails.name }}
@@ -108,6 +113,7 @@
                 </span>
                 <span
                   class="sub-heading-3 overflow-ellipsis"
+                  :title="organisationDetails.size"
                   v-if="!editOrganisationDetails"
                 >
                   {{ organisationDetails.size }}
@@ -130,6 +136,7 @@
                 <span class="body-2">Country</span>
                 <span
                   class="sub-heading-3 overflow-ellipsis"
+                  :title="organisationDetails.country"
                   v-if="!editOrganisationDetails"
                 >
                   {{ organisationDetails.country }}
@@ -140,6 +147,7 @@
                 <span class="body-2">Region</span>
                 <span
                   class="sub-heading-3 overflow-ellipsis"
+                  :title="organisationDetails.region"
                   v-if="!editOrganisationDetails"
                 >
                   {{ organisationDetails.region }}
