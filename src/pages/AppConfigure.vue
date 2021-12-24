@@ -123,7 +123,7 @@
         style="
           padding: 4em 2em;
           min-width: 200px;
-          max-width: 560px;
+          max-width: 700px;
           width: 72%;
           flex-direction: column;
           gap: 1vh;
@@ -132,7 +132,7 @@
       >
         <header
           class="sub-heading-2"
-          style="justify-content: center; flex-grow: 1; display: flex"
+          style="flex-grow: 1; display: flex"
         >
           {{ selectedSubType.header }}
         </header>
@@ -140,10 +140,8 @@
         <main
           class="body-1"
           style="
-            padding: 2vw;
-            font-size: 0.9em;
+            font-size: 1.125em;
             line-height: 1.6em;
-            text-align: center;
           "
         >
           {{ selectedSubType.description }}
