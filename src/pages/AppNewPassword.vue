@@ -104,6 +104,12 @@
               <li>
                 SDK uses popular oAuth mechanisms to assign and fetch an
                 available private key from our DKG scheme.
+                <br />
+                <v-button
+                  variant="link"
+                  label="Learn about our DKG"
+                  @click.stop="openDKGDocs"
+                />
               </li>
               <li>
                 The private key is only held in the app's memory and is wiped
@@ -293,6 +299,10 @@ export default {
       router.push({ name: "Dashboard" });
     }
 
+    function openDKGDocs() {
+      window.open("https://docs.arcana.network/dkg");
+    }
+
     onBeforeMount(() => {
       if (!store.getters.keys.privateKey) {
         router.push({ name: "Login" });
@@ -310,6 +320,7 @@ export default {
       CloseIcon,
       savePassword,
       skipPasswordCreation,
+      openDKGDocs,
     };
   },
 };
