@@ -4,17 +4,7 @@
       <landing-descriptor />
       <section class="forgot-password-container">
         <div>
-          <h1 style="text-align: center">Create New Password</h1>
-          <h4
-            style="
-              text-align: center;
-              margin-top: 2vh;
-              font-weight: 400;
-              line-height: 1.65em;
-            "
-          >
-            Create a password to encrypt your private key
-          </h4>
+          <h1 style="text-align: center">Create Password</h1>
         </div>
         <form style="margin-top: 2vh" class="flex column">
           <v-text-field
