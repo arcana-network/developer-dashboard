@@ -23,7 +23,7 @@
             id="confirm-password"
             v-model="confirmPassword"
           />
-          <ul class="flex body-3">
+          <ul class="flex body-3 password-strength-list">
             <li :class="{ 'success-message': passwordValidCases.minChar }">
               Must be at least 6 characters
             </li>
@@ -31,7 +31,7 @@
               Atleast one numeric digit
             </li>
           </ul>
-          <ul class="flex body-3">
+          <ul class="flex body-3 password-strength-list">
             <li :class="{ 'success-message': passwordValidCases.noSpaces }">
               Must not contain space
             </li>
@@ -45,14 +45,87 @@
             </li>
           </ul>
           <v-button
+            variant="link"
+            label="Why create a password?"
+            style="margin-top: 3vh; align-self: center"
+            @click.stop="showPasswordDescriptionPopup = true"
+          />
+          <v-button
             label="SAVE PASSWORD"
-            style="margin: 4vh 1% 0 1%"
+            style="margin: 3vh 1% 0 1%"
             type="button"
             :disabled="!isValidPassword"
             :action="savePassword"
           />
         </form>
+        <v-stack direction="column" align="center" style="margin-top: 3vh">
+          <h3>OR</h3>
+          <v-button
+            variant="link"
+            label="SKIP THIS STEP"
+            style="margin-top: 1rem"
+            @click.stop="skipPasswordCreation"
+          />
+        </v-stack>
       </section>
+
+      <v-overlay
+        v-if="showPasswordDescriptionPopup"
+        style="align-items: center; justify-content: center; display: flex"
+      >
+        <v-card
+          variant="popup"
+          style="
+            padding: 4em 2em;
+            min-width: 200px;
+            max-width: 560px;
+            width: 72%;
+            flex-direction: column;
+            gap: 1vh;
+            position: relative;
+          "
+        >
+          <header
+            class="sub-heading-2"
+            style="justify-content: center; flex-grow: 1; display: flex"
+          >
+            Why create a password?
+          </header>
+          <v-seperator style="width: 100%" />
+          <main
+            class="body-1"
+            style="padding: 1vw; font-size: 0.9em; line-height: 1.6em"
+          >
+            <ul class="password-description-list">
+              <li>
+                This developer dashboard is a web app that also consumes the
+                Arcana SDK.
+              </li>
+              <li>
+                SDK uses popular oAuth mechanisms to assign and fetch an
+                available private key from our DKG scheme.
+              </li>
+              <li>
+                The private key is only held in the app's memory and is wiped
+                out when you close the tab or refresh the page or log out from
+                the app. By creating a password that only you know, the app can
+                encrypt the private key and store it in the browser's local
+                storage so that your session can be retained even after you
+                refresh the page or close and come back to the app.
+              </li>
+              <li>
+                This password is NOT stored anywhere locally or on any server.
+              </li>
+            </ul>
+          </main>
+          <v-icon-button
+            :icon="CloseIcon"
+            class="close-popup-button"
+            @click.stop="showPasswordDescriptionPopup = false"
+          >
+          </v-icon-button>
+        </v-card>
+      </v-overlay>
     </main>
     <full-screen-loader v-if="loading" :message="loadingMessage" />
   </div>
@@ -62,7 +135,7 @@
 .forgot-password-container {
   width: 50%;
   max-width: 520px;
-  margin: 20vh auto 0 auto;
+  margin: 16vh auto 0 auto;
 }
 
 .body-3 {
@@ -77,25 +150,36 @@ h1 {
   font-size: 2.5em;
 }
 
-ul {
+.password-strength-list {
   color: var(--text-grey);
   gap: 10%;
   margin: 0;
 }
 
-li {
+.password-strength-list li {
   width: 45%;
+}
+
+.password-description-list li {
+  margin-bottom: 1vh;
 }
 
 li.success-message {
   color: var(--colors-green);
 }
 
+.close-popup-button {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+  cursor: pointer;
+}
+
 @media only screen and (max-width: 1023px) {
   .forgot-password-container {
     width: 80%;
     min-width: 340px;
-    margin: 10vh auto;
+    margin: 8vh auto;
   }
   ul {
     flex-direction: column;
@@ -119,15 +203,32 @@ import { computed, onBeforeMount } from "@vue/runtime-core";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 
-import LandingDescriptor from "../components/LandingDescriptor.vue";
-import VButton from "../components/lib/VButton/VButton.vue";
-import VTextField from "../components/lib/VTextField/VTextField.vue";
-import FullScreenLoader from "../components/FullScreenLoader.vue";
+import LandingDescriptor from "@/components/LandingDescriptor.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
 
-import { encrypt, bufferToString } from "../utils/cryptoUtils";
+import CloseIcon from "@/assets/iconography/close.svg";
+
+import { encrypt, bufferToString } from "@/utils/cryptoUtils";
 
 export default {
-  components: { LandingDescriptor, VButton, VTextField, FullScreenLoader },
+  components: {
+    LandingDescriptor,
+    VButton,
+    VIconButton,
+    VStack,
+    VTextField,
+    VCard,
+    VOverlay,
+    VSeperator,
+    FullScreenLoader,
+  },
   setup() {
     const store = useStore();
     const router = useRouter();
@@ -136,6 +237,7 @@ export default {
     const confirmPassword = ref("");
     const loading = ref(false);
     const loadingMessage = ref("");
+    const showPasswordDescriptionPopup = ref(false);
 
     const passwordValidCases = computed(() => {
       let validCases = {
@@ -187,6 +289,10 @@ export default {
       }
     }
 
+    function skipPasswordCreation() {
+      router.push({ name: "Dashboard" });
+    }
+
     onBeforeMount(() => {
       if (!store.getters.keys.privateKey) {
         router.push({ name: "Login" });
@@ -200,7 +306,10 @@ export default {
       isValidPassword,
       loading,
       loadingMessage,
+      showPasswordDescriptionPopup,
+      CloseIcon,
       savePassword,
+      skipPasswordCreation,
     };
   },
 };
