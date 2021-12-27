@@ -446,23 +446,18 @@
             color: var(--text-white);
           "
         >
-          <h1 style="color: #13a3fd; letter-spacing: unset; font-weight: 700">
+          <h1 style="color: #13a3fd; letter-spacing: unset; font-weight: 700; font-size: 4em">
             Getting Started!
           </h1>
-          <h2 style="font-weight: 500; margin-top: 1.1em; text-align: center">
+          <h2 style="font-weight: 500; margin-top: 1.1em; text-align: center; font-size: 1.875em">
             Create and Configure your Application
           </h2>
           <h4 class="testnet-disclaimer popup">
-            DISCLAIMER: Use with caution. This is an ALPHA release with all
-            features being experimental. Please do not use important data
-            without backups.
+            <b>Note</b>: Use with caution. This is an Alpha testnet release with all features being experimental. Please do not upload important data without backups or use it in production.
           </h4>
           <h5 class="testnet-disclaimer popup">
-            The platform is provided in an "as is" basis without any express or
-            implied warranty of any kind including warranties of merchantability
-            or fitness of purpose. In no event will Arcana Networks or its
-            subsidiaries be held responsible for any damages. BY CLICKING
-            "Configure" below, you accept the same.
+            <b>Disclaimer</b>: The platform is provided in an "as is" basis without any express or implied warranty of any kind including warranties of merchantability or fitness of purpose.
+            In no event will Arcana Networks or its subsidiaries be held responsible for any damages. BY CLICKING "Configure" below, you accept the same.
           </h5>
           <v-button
             label="CONFIGURE"
@@ -482,6 +477,7 @@
 .testnet-disclaimer {
   font-family: var(--font-body);
   font-weight: 400;
+  text-transform: uppercase;
   margin-top: 1.1em;
   line-height: 1.5em;
 }
@@ -492,12 +488,12 @@
   text-align: center;
 }
 h4.testnet-disclaimer.popup {
-  font-weight: 600;
-  font-size: 1.125em;
+  font-weight: 400;
+  font-size: 1.25em;
 }
 h5.testnet-disclaimer.popup {
   font-weight: 400;
-  font-size: 0.85em;
+  font-size: 0.875em;
 }
 .testnet-disclaimer.banner {
   margin-bottom: 1.5em;
@@ -727,7 +723,7 @@ export default {
       delete: 0,
     });
     const totalUsers = ref(0);
-    const isConfigured = ref(true);
+    const isConfigured = ref(false);
     const liveEnv = ref(false);
     const appName = computed(() => {
       return store.getters.appName;
