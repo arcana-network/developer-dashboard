@@ -103,7 +103,7 @@
                 <v-text-field v-else v-model="organisationDetails.name" />
               </div>
               <div class="flex column details">
-                <span class="body-2">Size</span>
+                <span class="body-2">Organization Size</span>
                 <span
                   class="body-3"
                   style="text-transform: uppercase; letter-spacing: 0.1em"
@@ -126,12 +126,6 @@
                   v-model="organisationDetails.size"
                 />
               </div>
-              <div
-                class="flex column mobile-remove"
-                style="width: 280px; visibility: hidden"
-              ></div>
-            </div>
-            <div class="flex flex-wrap" style="justify-content: space-between">
               <div class="flex column details">
                 <span class="body-2">Country</span>
                 <span
@@ -143,20 +137,9 @@
                 </span>
                 <v-text-field v-else v-model="organisationDetails.country" />
               </div>
-              <div class="flex column details">
-                <span class="body-2">Region</span>
-                <span
-                  class="sub-heading-3 overflow-ellipsis"
-                  :title="organisationDetails.region"
-                  v-if="!editOrganisationDetails"
-                >
-                  {{ organisationDetails.region }}
-                </span>
-                <v-text-field v-else v-model="organisationDetails.region" />
-              </div>
               <div
                 class="flex column mobile-remove"
-                style="width: 280px; visibility: hidden"
+                style="width: 140px; visibility: hidden"
               ></div>
             </div>
           </div>
@@ -263,7 +246,6 @@ export default {
       size: 0,
       sizeErrorMessage: null,
       country: " ",
-      region: " ",
     });
     const name = ref("");
     name.value = store.getters.userInfo.name;
@@ -289,7 +271,6 @@ export default {
           name: organisationDetails.value.name,
           size,
           country: organisationDetails.value.country,
-          region: organisationDetails.value.region,
         }).then((response) => {
           editOrganisationDetails.value = false;
           organisationDetailsResetState = { ...organisationDetails.value };
@@ -305,7 +286,6 @@ export default {
           name: response.data.organization.name,
           size: response.data.organization.size,
           country: response.data.organization.country,
-          region: response.data.organization.region,
         };
         organisationDetailsResetState = { ...organisationDetails.value };
       });
