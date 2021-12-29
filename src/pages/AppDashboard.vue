@@ -723,7 +723,9 @@ export default {
       delete: 0,
     });
     const totalUsers = ref(0);
-    const isConfigured = ref(false);
+    const isConfigured = computed(() => {
+      return store.getters.isAppConfigured;
+    });
     const liveEnv = ref(false);
     const appName = computed(() => {
       return store.getters.appName;
