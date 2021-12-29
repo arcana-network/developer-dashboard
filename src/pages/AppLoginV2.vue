@@ -233,10 +233,17 @@ export default {
         }
 
         loading.value = false;
-        router.push({
-          name: "Create Password",
-          params: { redirectTo: "Dashboard" },
-        });
+
+        if (!sessionStorage.getItem("skipPassword")) {
+          router.push({
+            name: "Create Password",
+            params: { redirectTo: "Dashboard" },
+          });
+        } else {
+          router.push({
+            name: "Dashboard",
+          });
+        }
       } catch (e) {
         loading.value = false;
         console.error(e);
