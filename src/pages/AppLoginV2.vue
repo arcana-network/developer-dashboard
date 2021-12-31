@@ -234,7 +234,7 @@ export default {
 
         loading.value = false;
 
-        if (!sessionStorage.getItem("skipPassword")) {
+        if (!localStorage.getItem("skipPassword")) {
           router.push({
             name: "Create Password",
             params: { redirectTo: "Dashboard" },

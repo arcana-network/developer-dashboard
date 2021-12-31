@@ -296,7 +296,7 @@ export default {
     }
 
     function skipPasswordCreation() {
-      sessionStorage.setItem("skipPassword", true);
+      localStorage.setItem("skipPassword", true);
       router.push({ name: "Dashboard" });
     }
 
