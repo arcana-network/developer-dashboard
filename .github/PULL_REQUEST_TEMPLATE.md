@@ -1,6 +1,11 @@
 # Pull Request Template
 
-Resolves or continues [AR-XXX](...). Mention blocking dependencies on other tickets, if any.
+Resolves or continues [AR-XXX](...).
+
+## Blocking dependencies
+
+- [AR-YYY](...)
+- [AR-ZZZ](...)
 
 ## Changes
 
