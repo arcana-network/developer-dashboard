@@ -130,20 +130,11 @@
           position: relative;
         "
       >
-        <header
-          class="sub-heading-2"
-          style="flex-grow: 1; display: flex"
-        >
+        <header class="sub-heading-2" style="flex-grow: 1; display: flex">
           {{ selectedSubType.header }}
         </header>
         <v-seperator style="width: 100%" />
-        <main
-          class="body-1"
-          style="
-            font-size: 1.125em;
-            line-height: 1.6em;
-          "
-        >
+        <main class="body-1" style="font-size: 1.125em; line-height: 1.6em">
           {{ selectedSubType.description }}
         </main>
         <v-icon-button
@@ -804,7 +795,6 @@ export default {
     }
 
     function handleDelete() {
-      localStorage.clear();
       deleteAppApi().then((response) => {
         clearInterval(intervalForTimer);
         clearInterval(intervalForDelete);

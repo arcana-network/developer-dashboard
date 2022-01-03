@@ -233,10 +233,17 @@ export default {
         }
 
         loading.value = false;
-        router.push({
-          name: "Create Password",
-          params: { redirectTo: "Dashboard" },
-        });
+
+        if (localStorage.getItem("skipPassword") !== "true") {
+          router.push({
+            name: "Create Password",
+            params: { redirectTo: "Dashboard" },
+          });
+        } else {
+          router.push({
+            name: "Dashboard",
+          });
+        }
       } catch (e) {
         loading.value = false;
         console.error(e);
