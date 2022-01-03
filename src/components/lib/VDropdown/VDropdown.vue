@@ -145,7 +145,7 @@
 }
 
 .custom-select.disabled .custom-select__trigger {
-  cursor: default;
+  cursor: not-allowed;
 }
 </style>
 
