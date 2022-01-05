@@ -29,6 +29,7 @@
         :messageType="appNameError ? 'error' : ''"
         message="App name is required"
         @keyup.enter="onEnterClick"
+        placeholder="Enter app name"
       />
     </v-stack>
   </v-card>
