@@ -17,7 +17,6 @@
       sm-direction="column"
       gap="1.2em"
       sm-gap="1.2em"
-      justify="space-between"
       style="flex-grow: 1"
     >
       <h4 style="margin-top: 1.5em; width: 25vw; min-width: 280px">
@@ -30,6 +29,7 @@
         :messageType="appNameError ? 'error' : ''"
         message="App name is required"
         @keyup.enter="onEnterClick"
+        placeholder="Enter app name"
       />
     </v-stack>
   </v-card>

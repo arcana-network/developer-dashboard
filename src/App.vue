@@ -1,41 +1,59 @@
 <template>
-  <router-view v-slot="{ Component }">
-    <transition name="fade" mode="out-in">
-      <component :is="Component" />
-    </transition>
-  </router-view>
+  <div>
+    <router-view v-slot="{ Component }">
+      <transition name="fade" mode="out-in">
+        <component :is="Component" />
+      </transition>
+    </router-view>
+    <full-screen-loader v-if="loading" :message="loadingMessage" />
+  </div>
 </template>
 
 <script>
-import { onBeforeMount, watch } from "@vue/runtime-core";
-import { useRoute } from "vue-router";
-import { getConfig } from "./services/app-config.service";
+import { onBeforeMount, ref } from "@vue/runtime-core";
+import { getConfig } from "@/services/app-config.service";
 import { useStore } from "vuex";
+import { stringToBuffer } from "@/utils/cryptoUtils";
+import { fetchAndStoreAppConfig } from "@/services/app-config.service";
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
 
 export default {
+  components: { FullScreenLoader },
   setup() {
-    const route = useRoute();
     const store = useStore();
+    const loading = ref("");
+    const loadingMessage = ref("");
 
-    onBeforeMount(() => {
+    onBeforeMount(async () => {
+      const encodedAccessToken = localStorage.getItem("access-token");
+      const userInfo = localStorage.getItem("user-info");
+      if (encodedAccessToken && userInfo) {
+        const accessToken = new TextDecoder().decode(
+          stringToBuffer(encodedAccessToken)
+        );
+        store.dispatch("updateAccessToken", accessToken);
+        store.dispatch("updateUserInfo", JSON.parse(userInfo));
+      }
+
       if (!store.getters["test/forwarder"] || !store.getters["test/rpc"]) {
-        getConfig().then((res) => {
-          const config = res.data;
-          // Later use store.getters.env to update according to env
-          store.dispatch("test/updateForwarder", config?.Forwarder);
-          store.dispatch("test/updateRPCUrl", config?.RPC_URL);
-        });
+        const configResponse = await getConfig();
+        const config = configResponse.data;
+        store.dispatch("test/updateForwarder", config?.Forwarder);
+        store.dispatch("test/updateRPCUrl", config?.RPC_URL);
+      }
+
+      if (!store.getters.appName && store.getters.accessToken) {
+        loading.value = true;
+        loadingMessage.value = "Fetching app configuration...";
+        await fetchAndStoreAppConfig();
+        loading.value = false;
       }
     });
 
-    watch(route, () => {
-      const app = document.getElementById("app");
-      if (app) app.style.overflowY = "hidden";
-      setTimeout(() => {
-        if (app) app.style.overflowY = "auto";
-        app.scrollTo({ top: 0 });
-      }, 1000);
-    });
+    return {
+      loading,
+      loadingMessage,
+    };
   },
 };
 </script>

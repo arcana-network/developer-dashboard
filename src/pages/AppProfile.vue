@@ -28,11 +28,15 @@
         >
           <div class="flex column details">
             <span class="body-2">Name</span>
-            <span class="sub-heading-3">{{ name }}</span>
+            <span class="sub-heading-3 overflow-ellipsis" :title="name">
+              {{ name }}
+            </span>
           </div>
           <div class="flex column details">
-            <span class="body-2">Email</span>
-            <span class="sub-heading-3">{{ email }}</span>
+            <span class="body-2">Public Identifier</span>
+            <span class="sub-heading-3 overflow-ellipsis" :title="email">
+              {{ email }}
+            </span>
           </div>
           <div class="flex column details" style="visibility: hidden">
             <!-- <span class="body-2">Password</span>
@@ -64,7 +68,7 @@
               variant="link"
               label="Cancel"
               :disabled="false"
-              @click="editOrganisationDetails = false"
+              @click="resetOrganisationDetails"
               style="color: #8d8d8d"
             />
             <v-button
@@ -85,49 +89,57 @@
             justify-content: space-between;
           "
         >
-          <div class="flex column" style="flex-grow: 1">
-            <div class="flex flex-wrap" style="justify-content: space-between">
+          <div class="flex column flex-grow">
+            <div class="flex flex-wrap justify-space-between">
               <div class="flex column details">
                 <span class="body-2">Organisation Name</span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
+                <span
+                  class="sub-heading-3 overflow-ellipsis"
+                  :title="organisationDetails.name"
+                  v-if="!editOrganisationDetails"
+                >
                   {{ organisationDetails.name }}
                 </span>
                 <v-text-field v-else v-model="organisationDetails.name" />
               </div>
               <div class="flex column details">
-                <span class="body-2">Size</span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
+                <span class="body-2">Organization Size</span>
+                <span
+                  class="body-3"
+                  style="text-transform: uppercase; letter-spacing: 0.1em"
+                  v-if="organisationDetails.sizeErrorMessage"
+                >
+                  {{ organisationDetails.sizeErrorMessage }}
+                </span>
+                <span
+                  class="sub-heading-3 overflow-ellipsis"
+                  :title="organisationDetails.size"
+                  v-if="!editOrganisationDetails"
+                >
                   {{ organisationDetails.size }}
                 </span>
                 <v-text-field
                   type="number"
+                  min="1"
+                  step="1"
                   v-else
                   v-model="organisationDetails.size"
                 />
               </div>
-              <div
-                class="flex column mobile-remove"
-                style="width: 280px; visibility: hidden"
-              ></div>
-            </div>
-            <div class="flex flex-wrap" style="justify-content: space-between">
               <div class="flex column details">
                 <span class="body-2">Country</span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
+                <span
+                  class="sub-heading-3 overflow-ellipsis"
+                  :title="organisationDetails.country"
+                  v-if="!editOrganisationDetails"
+                >
                   {{ organisationDetails.country }}
                 </span>
                 <v-text-field v-else v-model="organisationDetails.country" />
               </div>
-              <div class="flex column details">
-                <span class="body-2">Region</span>
-                <span class="sub-heading-3" v-if="!editOrganisationDetails">
-                  {{ organisationDetails.region }}
-                </span>
-                <v-text-field v-else v-model="organisationDetails.region" />
-              </div>
               <div
                 class="flex column mobile-remove"
-                style="width: 280px; visibility: hidden"
+                style="width: 140px; visibility: hidden"
               ></div>
             </div>
           </div>
@@ -192,6 +204,13 @@
 .personal-details {
   margin-top: 4em;
 }
+
+.overflow-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 @media only screen and (max-width: 1023px) {
   .heading {
     margin-top: 0.9em;
@@ -225,8 +244,8 @@ export default {
     const organisationDetails = ref({
       name: " ",
       size: 0,
+      sizeErrorMessage: null,
       country: " ",
-      region: " ",
     });
     const name = ref("");
     name.value = store.getters.userInfo.name;
@@ -234,15 +253,27 @@ export default {
     email.value = store.getters.userInfo.email;
     const router = useRouter();
 
+    let organisationDetailsResetState = {};
+
     function onUpdateOrganization() {
+      // Validation
+      const size = Number(organisationDetails.value.size);
+      if (!Number.isFinite(size) || !Number.isSafeInteger(size) || size <= 0) {
+        organisationDetails.value.sizeErrorMessage =
+          "Invalid organization size.";
+        return;
+      }
+      organisationDetails.value.sizeErrorMessage = null;
+
+      // API Call
       try {
         updateOrganization({
           name: organisationDetails.value.name,
-          size: parseInt(organisationDetails.value.size),
+          size,
           country: organisationDetails.value.country,
-          region: organisationDetails.value.region,
         }).then((response) => {
           editOrganisationDetails.value = false;
+          organisationDetailsResetState = { ...organisationDetails.value };
         });
       } catch (e) {
         console.error(e);
@@ -255,18 +286,28 @@ export default {
           name: response.data.organization.name,
           size: response.data.organization.size,
           country: response.data.organization.country,
-          region: response.data.organization.region,
         };
+        organisationDetailsResetState = { ...organisationDetails.value };
       });
     });
 
     function onLogout() {
       logout();
+      localStorage.clear();
       store.dispatch("test/resetConfigStore");
       store.dispatch("live/resetConfigStore");
       store.dispatch("resetAuth");
       store.dispatch("resetStore");
       router.push({ name: "Login" });
+    }
+
+    function resetOrganisationDetails() {
+      editOrganisationDetails.value = false;
+      organisationDetails.value = { ...organisationDetailsResetState };
+
+      if (organisationDetails.value.sizeErrorMessage) {
+        organisationDetails.value.sizeErrorMessage = null;
+      }
     }
 
     return {
@@ -276,6 +317,7 @@ export default {
       password,
       onLogout,
       onUpdateOrganization,
+      resetOrganisationDetails,
       name,
       email,
     };

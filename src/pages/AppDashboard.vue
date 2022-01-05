@@ -202,7 +202,7 @@
       >
         <div class="flex flex-wrap duration" style="margin-bottom: 1em">
           <v-card-button
-            label="Weekly"
+            label="Daily"
             :active="durationSelected === 'day'"
             @click.stop="durationSelected = 'day'"
           />
@@ -446,23 +446,18 @@
             color: var(--text-white);
           "
         >
-          <h1 style="color: #13a3fd; letter-spacing: unset; font-weight: 700">
+          <h1 style="color: #13a3fd; letter-spacing: unset; font-weight: 700; font-size: 4em">
             Getting Started!
           </h1>
-          <h2 style="font-weight: 500; margin-top: 1.1em; text-align: center">
+          <h2 style="font-weight: 500; margin-top: 1.1em; text-align: center; font-size: 1.875em">
             Create and Configure your Application
           </h2>
           <h4 class="testnet-disclaimer popup">
-            DISCLAIMER: Use with caution. This is an ALPHA release with all
-            features being experimental. Please do not use important data
-            without back ups.
+            <b>Note</b>: Use with caution. This is an Alpha testnet release with all features being experimental. Please do not upload important data without backups or use it in production.
           </h4>
           <h5 class="testnet-disclaimer popup">
-            The platform is provided in an "as is" basis without any express or
-            implied warranty of any kind including warranties of merchantability
-            or fitness of purpose. In no event will Arcana Networks or its
-            subsidiaries be held responsible for any damages. BY CLICKING
-            "Configure" below, you accept the same.
+            <b>Disclaimer</b>: The platform is provided in an "as is" basis without any express or implied warranty of any kind including warranties of merchantability or fitness of purpose.
+            In no event will Arcana Networks or its subsidiaries be held responsible for any damages. BY CLICKING "Configure" below, you accept the same.
           </h5>
           <v-button
             label="CONFIGURE"
@@ -482,6 +477,7 @@
 .testnet-disclaimer {
   font-family: var(--font-body);
   font-weight: 400;
+  text-transform: uppercase;
   margin-top: 1.1em;
   line-height: 1.5em;
 }
@@ -492,12 +488,12 @@
   text-align: center;
 }
 h4.testnet-disclaimer.popup {
-  font-weight: 600;
-  font-size: 1.125em;
+  font-weight: 400;
+  font-size: 1.25em;
 }
 h5.testnet-disclaimer.popup {
   font-weight: 400;
-  font-size: 0.85em;
+  font-size: 0.875em;
 }
 .testnet-disclaimer.banner {
   margin-bottom: 1.5em;
@@ -653,16 +649,9 @@ h5.testnet-disclaimer.popup {
 </style>
 
 <script>
-import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
-import CopyIcon from "@/assets/iconography/copy.svg";
-import CheckIcon from "@/assets/iconography/check.svg";
-import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
-import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
-import VButton from "../components/lib/VButton/VButton.vue";
-import VCard from "@/components/lib/VCard/VCard.vue";
-import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import { fetchAndStoreAppConfig } from "@/services/app-config.service";
 import { useRouter } from "vue-router";
-import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
+import { useStore } from "vuex";
 import {
   computed,
   onBeforeMount,
@@ -670,28 +659,36 @@ import {
   ref,
   watch,
 } from "@vue/runtime-core";
-import AppHeader from "@/components/AppHeader.vue";
-import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
-import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
-import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
-import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
-import VStack from "@/components/lib/VStack/VStack.vue";
-import {
-  fetchAllApps,
-  fetchStats,
-  fetchPeriodicUsage,
-  fetchApp,
-} from "@/services/dashboard.service";
-import { useStore } from "vuex";
-import bytes from "bytes";
-import copyToClipboard from "../utils/copyToClipboard";
-import { getAddress } from "../utils/get-address";
 import {
   createChartView,
   updateChartView,
   getInitialUsageChartConfig,
-} from "../utils/chart";
+} from "@/utils/chart";
+import {
+  fetchStats,
+  fetchPeriodicUsage,
+  fetchApp,
+} from "@/services/dashboard.service";
+
+import AppHeader from "@/components/AppHeader.vue";
+import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
+import bytes from "bytes";
+import CheckIcon from "@/assets/iconography/check.svg";
+import CopyIcon from "@/assets/iconography/copy.svg";
+import copyToClipboard from "@/utils/copyToClipboard";
 import moment from "moment";
+import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
+
+import VButton from "../components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VProgressBar from "@/components/lib/VProgressBar/VProgressBar.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 export default {
   components: {
@@ -710,8 +707,12 @@ export default {
   setup() {
     const router = useRouter();
     const store = useStore();
-    const smartContractAddress = ref("");
-    const appId = ref("");
+    const smartContractAddress = computed(() => {
+      return store.getters.smartContractAddress;
+    });
+    const appId = computed(() => {
+      return store.getters.appId;
+    });
     const durationSelected = ref("week");
     const actions = ref({
       upload: 0,
@@ -722,7 +723,9 @@ export default {
       delete: 0,
     });
     const totalUsers = ref(0);
-    const isConfigured = ref(true);
+    const isConfigured = computed(() => {
+      return store.getters.isAppConfigured;
+    });
     const liveEnv = ref(false);
     const appName = computed(() => {
       return store.getters.appName;
@@ -734,84 +737,12 @@ export default {
     const storageRemaining = ref("5 GB");
     const bandwidthRemaining = ref("5 GB");
 
-    onBeforeMount(() => {
-      updateAppDetails();
+    onBeforeMount(async () => {
+      await fetchAndStoreAppConfig();
+      await fetchStatistics(appId.value);
     });
 
-    async function updateAppDetails() {
-      try {
-        const apps = await fetchAllApps();
-        if (apps.data.length) {
-          isConfigured.value = true;
-          store.dispatch("updateAppConfigurationStatus", true);
-          const currentApp = apps.data[0];
-          store.dispatch("updateAppName", currentApp.name);
-          store.dispatch("updateAppId", currentApp.ID);
-
-          // Get Address
-          const appAddress = await getAddress(currentApp.address);
-
-          smartContractAddress.value = appAddress;
-          appId.value = currentApp.ID;
-
-          const env = store.getters.env;
-          const chainType = ["ethereum", "polygon", "binance"][
-            currentApp.chain
-          ];
-          store.dispatch(env + "/updateChainType", chainType);
-          const unlimitedBytes = 10995116277760;
-
-          if (currentApp.storage_limit < unlimitedBytes) {
-            const storage = bytes(currentApp.storage_limit, {
-              unitSeparator: " ",
-            });
-            const storageValues = storage.split(" ");
-            store.dispatch(env + "/updateStorage", {
-              value: storageValues[0],
-              unit: storageValues[1],
-              isUnlimited: false,
-            });
-          } else {
-            store.dispatch(env + "/updateStorage", {
-              value: "",
-              unit: "",
-              isUnlimited: true,
-            });
-          }
-          if (currentApp.bandwidth_limit < unlimitedBytes) {
-            const bandwidth = bytes(currentApp.bandwidth_limit, {
-              unitSeparator: " ",
-            });
-            const bandwidthValues = bandwidth.split(" ");
-            store.dispatch(env + "/updateBandwidth", {
-              value: bandwidthValues[0],
-              unit: bandwidthValues[1],
-              isUnlimited: false,
-            });
-          } else {
-            store.dispatch(env + "/updateBandwidth", {
-              value: "",
-              unit: "",
-              isUnlimited: true,
-            });
-          }
-          fetchOtherDetails(currentApp.ID);
-          store.dispatch(
-            "updateSmartContractAddress",
-            smartContractAddress.value
-          );
-          return;
-        } else {
-          isConfigured.value = false;
-          store.dispatch("updateAppConfigurationStatus", false);
-        }
-      } catch (e) {
-        console.error(e);
-        return [];
-      }
-    }
-
-    async function fetchOtherDetails(appId) {
+    async function fetchStatistics(appId) {
       try {
         updateChart();
         const stats = await fetchStats(appId);

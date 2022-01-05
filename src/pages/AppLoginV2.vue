@@ -161,7 +161,12 @@ import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
 import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
 import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
 import FullScreenLoader from "../components/FullScreenLoader.vue";
-import { getNonce, login, getArcanaAuth } from "@/services/auth.service";
+import {
+  getNonce,
+  login,
+  getArcanaAuth,
+  addUserToMailchimp,
+} from "@/services/auth.service";
 import sign from "@/services/sign";
 import { Wallet } from "ethers";
 import { useStore } from "vuex";
@@ -203,35 +208,42 @@ export default {
           await arcanaAuth.loginWithSocial(type);
         }
         loadingMessage.value = "Fetching user info...";
-        const userInfo = arcanaAuth.getUserInfo();
-        loadingMessage.value = "Generating Public key...";
-        const publicKey = await arcanaAuth.getPublicKey({
-          verifier: userInfo.loginType,
-          id: userInfo.userInfo.id,
-        });
-        const actualPublicKey =
-          publicKey.X.padStart(64, "0") + publicKey.Y.padStart(64, "0");
-        const wallet = new Wallet(userInfo.privateKey);
+        const { userInfo, privateKey } = arcanaAuth.getUserInfo();
+        const wallet = new Wallet(privateKey);
         const nonce = await getNonce(wallet.address);
         loadingMessage.value = "Signing In...";
-        const signature = await sign(userInfo.privateKey, nonce.data);
+        const signature = await sign(privateKey, nonce.data);
         const access_token = await login({
           signature,
-          email: userInfo.userInfo.id,
+          email: userInfo.id,
           address: wallet.address,
         });
         store.dispatch("updateAccessToken", access_token.data.token);
         store.dispatch("updateKeys", {
-          privateKey: userInfo.privateKey,
-          publicKey: actualPublicKey,
+          privateKey,
         });
         store.dispatch("updateWalletAddress", wallet.address);
         store.dispatch("updateUserInfo", {
-          email: userInfo.userInfo.id,
-          name: userInfo.userInfo.name || userInfo.userInfo.id,
+          email: userInfo.id,
+          name: userInfo.name || "",
         });
+
+        if (nonce.data === 0) {
+          addUserToMailchimp(userInfo.id);
+        }
+
         loading.value = false;
-        router.push({ name: "Dashboard" });
+
+        if (localStorage.getItem("skipPassword") !== "true") {
+          router.push({
+            name: "Create Password",
+            params: { redirectTo: "Dashboard" },
+          });
+        } else {
+          router.push({
+            name: "Dashboard",
+          });
+        }
       } catch (e) {
         loading.value = false;
         console.error(e);

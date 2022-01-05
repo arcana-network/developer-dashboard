@@ -4,9 +4,11 @@
       <h4>Disclaimer:</h4>
       <h5>
         This is an ALPHA release with all features being experimental. Please do
-        not use important data without back ups.
+        not use important data without backups.
       </h5>
-      <span class="banner-close" @click.stop="onCloseBanner">X</span>
+      <span class="banner-close" @click.stop="onCloseBanner" role="button">
+        <CloseIcon color="#FFFFFF" />
+      </span>
     </div>
     <v-header
       :logoSrc="ArcanaLogo"
@@ -58,8 +60,6 @@ section {
   cursor: pointer;
   position: absolute;
   right: 2em;
-  font-size: 1.25em;
-  font-weight: 600;
 }
 .hide-header {
   transform: translateY(-100%);
@@ -77,10 +77,11 @@ import VHeader from "./lib/VHeader/VHeader.vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import CancelIcon from "@/assets/iconography/cancel.svg";
+import CloseIcon from "@/components/icons/CloseIcon.vue";
 
 export default {
   name: "AppHeader",
-  components: { VHeader },
+  components: { CloseIcon, VHeader },
   props: {
     hideBanner: Boolean,
   },

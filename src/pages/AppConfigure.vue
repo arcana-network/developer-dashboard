@@ -123,29 +123,18 @@
         style="
           padding: 4em 2em;
           min-width: 200px;
-          max-width: 560px;
+          max-width: 700px;
           width: 72%;
           flex-direction: column;
           gap: 1vh;
           position: relative;
         "
       >
-        <header
-          class="sub-heading-2"
-          style="justify-content: center; flex-grow: 1; display: flex"
-        >
+        <header class="sub-heading-2" style="flex-grow: 1; display: flex">
           {{ selectedSubType.header }}
         </header>
         <v-seperator style="width: 100%" />
-        <main
-          class="body-1"
-          style="
-            padding: 2vw;
-            font-size: 0.9em;
-            line-height: 1.6em;
-            text-align: center;
-          "
-        >
+        <main class="body-1" style="font-size: 1.125em; line-height: 1.6em">
           {{ selectedSubType.description }}
         </main>
         <v-icon-button
@@ -282,6 +271,33 @@
       </v-card>
     </v-overlay>
 
+    <v-overlay
+      v-if="!isPrivateKeyDecrypted"
+      style="align-items: center; justify-content: center; display: flex"
+    >
+      <v-card variant="popup" class="popup-card">
+        <h4>Enter Password to decrypt private key</h4>
+        <v-text-field
+          label="Enter password"
+          type="password"
+          placeholder="Enter Here"
+          name="password"
+          id="password"
+          v-model="password"
+          style="width: 100%"
+          :message-type="passwordMessageType"
+          :message="passwordMessage"
+        />
+        <v-button label="Confirm" :action="onConfirmPassword" />
+        <v-button
+          variant="link"
+          label="Forgot Password?"
+          style="margin-top: 1em; align-self: center"
+          :action="onForgotPassword"
+        />
+      </v-card>
+    </v-overlay>
+
     <full-screen-loader v-if="loading" :message="loadingMessage" />
   </div>
 </template>
@@ -410,6 +426,13 @@ input[type="number"] {
     align-items: center;
   }
 }
+
+.popup-card {
+  padding: 4em;
+  width: max-content;
+  flex-direction: column;
+  gap: 1vh;
+}
 </style>
 
 <style>
@@ -463,6 +486,8 @@ import { signerMakeTx } from "../utils/signer";
 import getEnvApi from "../services/get-env-api";
 import { getAddress } from "../utils/get-address";
 import FullScreenLoader from "../components/FullScreenLoader.vue";
+import { decrypt } from "../utils/cryptoUtils";
+import { getArcanaAuth } from "../services/auth.service";
 
 export default {
   components: {
@@ -508,6 +533,11 @@ export default {
     });
     let loading = ref(false);
     let loadingMessage = ref("");
+    let isPrivateKeyDecrypted = ref(true);
+    let password = ref("");
+    let passwordMessage = ref("");
+    let passwordMessageType = ref("");
+
     let previousConfig = {
       name: store.getters.appName,
       appName: store.getters.appName,
@@ -535,6 +565,23 @@ export default {
     const isEdited = computed(() => {
       return store.getters.onConfigChange;
     });
+
+    if (!store.getters.keys.privateKey) {
+      const arcanaAuth = getArcanaAuth();
+      const encryptedPrivateKey = localStorage.getItem("private-key");
+      if (arcanaAuth.isLoggedIn()) {
+        const { privateKey, userInfo } = arcanaAuth.getUserInfo();
+        store.dispatch("updateKeys", { privateKey });
+        store.dispatch("updateUserInfo", {
+          name: userInfo.name,
+          email: userInfo.id,
+        });
+      } else if (encryptedPrivateKey) {
+        isPrivateKeyDecrypted.value = false;
+      } else {
+        router.push({ name: "Login" });
+      }
+    }
 
     watch(
       () => liveEnvironment.value,
@@ -748,7 +795,6 @@ export default {
     }
 
     function handleDelete() {
-      localStorage.clear();
       deleteAppApi().then((response) => {
         clearInterval(intervalForTimer);
         clearInterval(intervalForDelete);
@@ -795,6 +841,36 @@ export default {
       store.dispatch("hideLearnMorePopup");
     }
 
+    function onForgotPassword() {
+      localStorage.clear();
+      store.dispatch("test/resetConfigStore");
+      store.dispatch("live/resetConfigStore");
+      store.dispatch("resetAuth");
+      store.dispatch("resetStore");
+      router.push({ name: "Login" });
+    }
+
+    async function onConfirmPassword() {
+      passwordMessage.value = "";
+      passwordMessageType.value = "";
+      if (password.value) {
+        try {
+          const privateKey = await decrypt(
+            localStorage.getItem("private-key"),
+            password.value
+          );
+          store.dispatch("updateKeys", { privateKey });
+          isPrivateKeyDecrypted.value = true;
+        } catch (e) {
+          passwordMessage.value = "Incorrect password";
+          passwordMessageType.value = "error";
+        }
+      } else {
+        passwordMessage.value = "Enter password to continue";
+        passwordMessageType.value = "error";
+      }
+    }
+
     return {
       backToDashboard,
       liveEnvironment,
@@ -819,6 +895,12 @@ export default {
       loading,
       loadingMessage,
       CloseIcon,
+      isPrivateKeyDecrypted,
+      password,
+      passwordMessage,
+      passwordMessageType,
+      onConfirmPassword,
+      onForgotPassword,
     };
   },
 };
