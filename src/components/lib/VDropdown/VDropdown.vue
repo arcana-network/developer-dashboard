@@ -150,8 +150,7 @@
 </style>
 
 <script>
-import { reactive, ref } from "@vue/reactivity";
-import { onBeforeUnmount, onMounted, watch } from "@vue/runtime-core";
+import { reactive, ref, onBeforeUnmount, onMounted, watch } from "vue";
 export default {
   name: "VDropdown",
   props: {
@@ -179,7 +178,7 @@ export default {
       toggle();
     }
 
-    function clickListener(e) {
+    function clickListener() {
       isOpen.value = false;
     }
 
