@@ -151,7 +151,7 @@
 
 <script>
 import { reactive, ref } from "@vue/reactivity";
-import { watch } from "@vue/runtime-core";
+import { onBeforeUnmount, onMounted, watch } from "@vue/runtime-core";
 export default {
   name: "VDropdown",
   props: {
@@ -178,6 +178,18 @@ export default {
       emit("change", ev, option);
       toggle();
     }
+
+    function clickListener(e) {
+      isOpen.value = false;
+    }
+
+    onMounted(() => {
+      document.body.addEventListener("click", clickListener);
+    });
+
+    onBeforeUnmount(() => {
+      document.body.removeEventListener("click", clickListener);
+    });
 
     watch(
       () => props.modelValue,
