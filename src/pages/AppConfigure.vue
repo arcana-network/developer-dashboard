@@ -538,8 +538,7 @@ export default {
     let passwordMessage = ref("");
     let passwordMessageType = ref("");
 
-    let previousConfig = {
-      name: store.getters.appName,
+    const previousConfig = {
       appName: store.getters.appName,
       ...store.getters["test/config"],
     };
@@ -591,6 +590,7 @@ export default {
     );
 
     function backToDashboard() {
+      resetSettings();
       router.push("/");
     }
 
@@ -776,22 +776,24 @@ export default {
           router.push("/");
         }
       } else {
-        if (env.value === "test") {
-          store.dispatch("test/updateRegion", testConfig.region);
-          store.dispatch("test/updateChainType", testConfig.chainType);
-          store.dispatch("test/updateAuthToRemove", []);
-          store.dispatch("test/updateAuthDetails", testConfig.authDetails);
-          store.dispatch("test/updateUserLimits", testConfig.userLimits);
-        } else {
-          store.dispatch("live/updateRegion", liveConfig.region);
-          store.dispatch("live/updateChaintype", testConfig.chainType);
-          store.dispatch("live/updateAuthToRemove", []);
-          store.dispatch("live/updateAuthDetails", liveConfig.authDetails);
-          store.dispatch("live/updateUserLimits", liveConfig.userLimits);
-        }
-        store.dispatch("configChangeReset");
+        resetSettings();
         router.push("/");
       }
+    }
+
+    function resetSettings() {
+      store.dispatch("updateAppName", previousConfig.appName);
+      updateEnvConfig("test", testConfig);
+      updateEnvConfig("live", liveConfig);
+      store.dispatch("configChangeReset");
+    }
+
+    function updateEnvConfig(envValue, envConfig) {
+      store.dispatch(envValue + "/updateRegion", envConfig.region);
+      store.dispatch(envValue + "/updateChainType", envConfig.chainType);
+      store.dispatch(envValue + "/updateAuthToRemove", []);
+      store.dispatch(envValue + "/updateAuthDetails", envConfig.authDetails);
+      store.dispatch(envValue + "/updateUserLimits", envConfig.userLimits);
     }
 
     function handleDelete() {
