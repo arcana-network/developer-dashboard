@@ -15,7 +15,8 @@
           placeholder="Enter Wallet Address"
           v-model="walletAddress"
           :style="'width: 20em'"
-          @icon-clicked="searchWalletAddress"
+          @icon-clicked="searchUsersByWalletAddress"
+          @keyup.enter="searchUsersByWalletAddress"
         />
       </div>
       <v-card
@@ -406,7 +407,7 @@ export default {
       return address.substr(0, 4) + "...." + address.substr(address.length - 4);
     }
 
-    function searchWalletAddress() {
+    function searchUsersByWalletAddress() {
       if (walletAddress.value.trim()) {
         searchUsers(walletAddress.value).then((response) => {
           if (response.data?.usage?.address) {
@@ -420,6 +421,8 @@ export default {
                 actionCount: user.action_count,
               },
             ];
+          } else {
+            data.value = [];
           }
         });
       } else {
@@ -441,7 +444,7 @@ export default {
       getTime,
       ellipsify,
       walletAddress,
-      searchWalletAddress,
+      searchUsersByWalletAddress,
       convertToBytes,
       userTransactions,
     };
