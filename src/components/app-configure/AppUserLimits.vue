@@ -47,10 +47,9 @@
           >
             <input
               type="number"
-              maxlength="1"
               id="storage-user-limit"
-              min="0"
-              pattern="[0-9]"
+              min="1"
+              max="1024"
               v-model="storage.value"
               :disabled="storageUnlimited"
             />
@@ -85,10 +84,9 @@
           >
             <input
               type="number"
-              maxlength="1"
               id="bandwidth-user-limit"
-              min="0"
-              pattern="[0-9]"
+              min="1"
+              max="1024"
               v-model="bandwidth.value"
               :disabled="bandwidthUnlimited"
             />
@@ -128,7 +126,7 @@ export default {
     VSwitch,
     VButton,
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore();
 
     const env = computed(() => {
@@ -149,6 +147,8 @@ export default {
       value: 2,
       unit: "MB",
     });
+    let storageError = ref(false),
+      bandwidthError = ref(false);
 
     storage.value = { ...store.getters[env.value + "/storage"] };
     bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
@@ -172,7 +172,8 @@ export default {
     watch(
       () => storage.value,
       () => {
-        if (storage.value.value !== "") {
+        if (storage.value.value !== "" && !isNaN(Number(storage.value.value))) {
+          storageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             ...storage.value,
             isUnlimited: false,
@@ -180,6 +181,8 @@ export default {
           if (props.isConfigured && !store.getters.onConfigChange) {
             store.dispatch("configChangeDetected");
           }
+        } else {
+          storageError.value = true;
         }
       },
       { deep: true }
