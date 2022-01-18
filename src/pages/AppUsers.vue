@@ -35,17 +35,17 @@
               </tr>
             </thead>
           </table>
-          <table v-if="data.length" style="width: 100%">
+          <table v-if="users.length" style="width: 100%">
             <tbody>
               <tr
-                v-for="(el, index) in data"
-                :key="el.walletAddress"
-                @click.stop="fetchUserLogsApi(el.walletAddress, index)"
+                v-for="(user, index) in users"
+                :key="user.walletAddress"
+                @click.stop="fetchUserLogsApi(user.walletAddress, index)"
               >
-                <td>{{ ellipsify(el.walletAddress) }}</td>
-                <td>{{ convertToBytes(el.storage) }}</td>
-                <td>{{ convertToBytes(el.bandwidth) }}</td>
-                <td>{{ el.actionCount }}</td>
+                <td>{{ truncate(user.walletAddress) }}</td>
+                <td>{{ convertToBytes(user.storage) }}</td>
+                <td>{{ convertToBytes(user.bandwidth) }}</td>
+                <td>{{ user.actionCount }}</td>
               </tr>
             </tbody>
           </table>
@@ -301,7 +301,7 @@ import bytes from "bytes";
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
   setup() {
-    let data = ref([]);
+    let users = ref([]);
     let walletAddress = ref("");
     let showDetails = ref(false);
     let userLog = ref({});
@@ -358,7 +358,7 @@ export default {
     function fetchUsers() {
       fetchAllUsers().then((response) => {
         if (response.data instanceof Array) {
-          data.value = response.data.map((user) => {
+          users.value = response.data.map((user) => {
             return {
               id: user.id,
               walletAddress: user.address,
@@ -377,12 +377,9 @@ export default {
 
     function fetchUserLogsApi(address, index) {
       fetchAllUserTransactions(address).then((response) => {
-        data.value[index].email = response.data.email;
+        users.value[index].email = response.data.email;
         if (response.data.transaction instanceof Array) {
-          userLog.value = data.value[index];
-          // response.data.transaction.forEach((transaction) => {
-          //   userTransactions.value.push(transaction);
-          // });
+          userLog.value = users.value[index];
           userTransactions.value = response.data.transaction.filter(
             (transaction) =>
               transaction.type && transaction.type !== "Set convergence"
@@ -390,7 +387,7 @@ export default {
         } else {
           userTransactions.value = [];
         }
-        userLog.value = data.value[index];
+        userLog.value = users.value[index];
         showDetails.value = true;
       });
     }
@@ -403,7 +400,7 @@ export default {
       return moment(new Date(date)).format("DD-MM-YYYY");
     }
 
-    function ellipsify(address) {
+    function truncate(address) {
       return address.substr(0, 4) + "...." + address.substr(address.length - 4);
     }
 
@@ -412,7 +409,7 @@ export default {
         searchUsers(walletAddress.value).then((response) => {
           if (response.data?.usage?.address) {
             const user = response.data.usage;
-            data.value = [
+            users.value = [
               {
                 id: user.user_id,
                 walletAddress: user.address,
@@ -422,7 +419,7 @@ export default {
               },
             ];
           } else {
-            data.value = [];
+            users.value = [];
           }
         });
       } else {
@@ -436,13 +433,13 @@ export default {
 
     return {
       SearchIcon,
-      data,
+      users,
       showDetails,
       userLog,
       fetchUserLogsApi,
       getDate,
       getTime,
-      ellipsify,
+      truncate,
       walletAddress,
       searchUsersByWalletAddress,
       convertToBytes,
