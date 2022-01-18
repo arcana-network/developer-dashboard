@@ -114,6 +114,10 @@ import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import bytes from "bytes";
+
+const MIN_BYTES = bytes("1 MB");
+const MAX_BYTES = bytes("99 GB");
 
 export default {
   name: "ConfigureUserLimits",
@@ -161,6 +165,27 @@ export default {
       });
     }
 
+    function emitError() {
+      if (storageError.value || bandwidthError.value) {
+        emit("input-error", {
+          storage: storageError.value,
+          bandwidth: bandwidthError.value,
+        });
+      }
+    }
+
+    function isValidValue(value) {
+      return (
+        value !== "" &&
+        isNaN(Number(value)) &&
+        isInRange(value, MIN_BYTES, MAX_BYTES)
+      );
+    }
+
+    function isInRange(value, min, max) {
+      return value >= min && value <= max;
+    }
+
     watch(
       () => env.value,
       () => {
@@ -172,7 +197,7 @@ export default {
     watch(
       () => storage.value,
       () => {
-        if (storage.value.value !== "" && !isNaN(Number(storage.value.value))) {
+        if (isValidValue(storage.value.value)) {
           storageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             ...storage.value,
@@ -183,6 +208,7 @@ export default {
           }
         } else {
           storageError.value = true;
+          emitError;
         }
       },
       { deep: true }
@@ -191,7 +217,7 @@ export default {
     watch(
       () => bandwidth.value,
       () => {
-        if (bandwidth.value.value !== "") {
+        if (isValidValue(bandwidth.value.value)) {
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
             isUnlimited: false,
@@ -199,6 +225,8 @@ export default {
           if (props.isConfigured && !store.getters.onConfigChange) {
             store.dispatch("configChangeDetected");
           }
+        } else {
+          bandwidthError.value = true;
         }
       },
       { deep: true }
