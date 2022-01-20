@@ -198,11 +198,7 @@ export default {
         return false;
       }
       const actualValue = bytes(`${value}${unit}`);
-      return isInRange(actualValue, MIN_BYTES, MAX_BYTES);
-    }
-
-    function isInRange(value, min, max) {
-      return value >= min && value <= max;
+      return actualValue >= MIN_BYTES && actualValue <= MAX_BYTES;
     }
 
     watch(
