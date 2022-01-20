@@ -2,7 +2,7 @@
   <v-card
     style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em; margin-bottom: 2em"
     class="column"
-    :id="'configure-step-' + 5"
+    id="configure-step-5"
   >
     <h4 style="width: 100%; display: block">SET PER USER LIMIT</h4>
     <div class="flex sm-column" style="gap: 4vw">
@@ -63,6 +63,12 @@
               :disabled="storageUnlimited"
             />
           </div>
+          <span
+            class="error-message"
+            :class="storageError ? { show: true } : ''"
+          >
+            Value should not be less than 1 MB and more than 99 GB
+          </span>
         </div>
         <div class="flex column" style="gap: 20px">
           <div
@@ -100,6 +106,12 @@
               :disabled="bandwidthUnlimited"
             />
           </div>
+          <span
+            class="error-message"
+            :class="bandwidthError ? { show: true } : ''"
+          >
+            Value should not be less than 1 MB and more than 99 GB
+          </span>
         </div>
       </div>
     </div>
@@ -165,21 +177,28 @@ export default {
       });
     }
 
-    function emitError() {
+    function emitChange() {
+      let eventProps = {
+        state: "default",
+      };
       if (storageError.value || bandwidthError.value) {
-        emit("input-error", {
-          storage: storageError.value,
-          bandwidth: bandwidthError.value,
-        });
+        eventProps = {
+          state: "error",
+          errors: {
+            storage: storageError.value,
+            bandwidth: bandwidthError.value,
+          },
+        };
       }
+      emit("value-change", eventProps);
     }
 
-    function isValidValue(value) {
-      return (
-        value !== "" &&
-        isNaN(Number(value)) &&
-        isInRange(value, MIN_BYTES, MAX_BYTES)
-      );
+    function isValidByteValue({ value, unit }) {
+      if (isNaN(Number(value))) {
+        return false;
+      }
+      const actualValue = bytes(`${value}${unit}`);
+      return isInRange(actualValue, MIN_BYTES, MAX_BYTES);
     }
 
     function isInRange(value, min, max) {
@@ -197,7 +216,7 @@ export default {
     watch(
       () => storage.value,
       () => {
-        if (isValidValue(storage.value.value)) {
+        if (isValidByteValue(storage.value)) {
           storageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             ...storage.value,
@@ -206,10 +225,10 @@ export default {
           if (props.isConfigured && !store.getters.onConfigChange) {
             store.dispatch("configChangeDetected");
           }
-        } else {
+        } else if (!storageUnlimited.value) {
           storageError.value = true;
-          emitError;
         }
+        emitChange();
       },
       { deep: true }
     );
@@ -217,7 +236,8 @@ export default {
     watch(
       () => bandwidth.value,
       () => {
-        if (isValidValue(bandwidth.value.value)) {
+        if (isValidByteValue(bandwidth.value)) {
+          bandwidthError.value = false;
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
             isUnlimited: false,
@@ -225,9 +245,10 @@ export default {
           if (props.isConfigured && !store.getters.onConfigChange) {
             store.dispatch("configChangeDetected");
           }
-        } else {
+        } else if (!bandwidthUnlimited.value) {
           bandwidthError.value = true;
         }
+        emitChange();
       },
       { deep: true }
     );
@@ -240,6 +261,7 @@ export default {
             value: "",
             unit: "",
           };
+          storageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             value: 2,
             unit: "MB",
@@ -257,6 +279,7 @@ export default {
             isUnlimited: false,
           });
         }
+        emitChange();
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");
         }
@@ -271,6 +294,7 @@ export default {
             value: "",
             unit: "",
           };
+          bandwidthError.value = false;
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
             isUnlimited: true,
@@ -287,6 +311,7 @@ export default {
             isUnlimited: false,
           });
         }
+        emitChange();
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");
         }
@@ -298,6 +323,8 @@ export default {
       bandwidthUnlimited,
       storage,
       bandwidth,
+      storageError,
+      bandwidthError,
       onLearnMoreClicked,
     };
   },
@@ -336,5 +363,18 @@ input[type="number"] {
 }
 .usage .custom-select__trigger {
   padding: 20px;
+}
+.error-message {
+  font-family: var(--font-body);
+  font-weight: 400;
+  visibility: hidden;
+  font-size: 0.94em;
+  line-height: 1.5em;
+  margin: 1px 20px;
+  color: #ee193f;
+  max-width: 18em;
+}
+.error-message.show {
+  visibility: visible;
 }
 </style>
