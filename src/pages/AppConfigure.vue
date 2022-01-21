@@ -889,11 +889,7 @@ export default {
     }
 
     function onUserLimitValueChange(ev) {
-      if (ev.state === "error") {
-        userLimitError = true;
-      } else {
-        userLimitError = false;
-      }
+      userLimitError = ev.state === "error";
     }
 
     return {

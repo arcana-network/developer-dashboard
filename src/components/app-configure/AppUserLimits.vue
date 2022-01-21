@@ -63,11 +63,8 @@
               :disabled="storageUnlimited"
             />
           </div>
-          <span
-            class="error-message"
-            :class="storageError ? { show: true } : ''"
-          >
-            Value should not be less than 1 MB and more than 99 GB
+          <span class="error-message" :class="{ show: hasStorageError }">
+            Value should not be less than 1 MB or more than 99 GB
           </span>
         </div>
         <div class="flex column" style="gap: 20px">
@@ -106,11 +103,8 @@
               :disabled="bandwidthUnlimited"
             />
           </div>
-          <span
-            class="error-message"
-            :class="bandwidthError ? { show: true } : ''"
-          >
-            Value should not be less than 1 MB and more than 99 GB
+          <span class="error-message" :class="{ show: hasBandwidthError }">
+            Value should not be less than 1 MB or more than 99 GB
           </span>
         </div>
       </div>
@@ -163,8 +157,8 @@ export default {
       value: 2,
       unit: "MB",
     });
-    let storageError = ref(false),
-      bandwidthError = ref(false);
+    let hasStorageError = ref(false),
+      hasBandwidthError = ref(false);
 
     storage.value = { ...store.getters[env.value + "/storage"] };
     bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
@@ -181,12 +175,12 @@ export default {
       let eventProps = {
         state: "default",
       };
-      if (storageError.value || bandwidthError.value) {
+      if (hasStorageError.value || hasBandwidthError.value) {
         eventProps = {
           state: "error",
           errors: {
-            storage: storageError.value,
-            bandwidth: bandwidthError.value,
+            storage: hasStorageError.value,
+            bandwidth: hasBandwidthError.value,
           },
         };
       }
@@ -213,7 +207,7 @@ export default {
       () => storage.value,
       () => {
         if (isValidByteValue(storage.value)) {
-          storageError.value = false;
+          hasStorageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             ...storage.value,
             isUnlimited: false,
@@ -222,7 +216,7 @@ export default {
             store.dispatch("configChangeDetected");
           }
         } else if (!storageUnlimited.value) {
-          storageError.value = true;
+          hasStorageError.value = true;
         }
         emitChange();
       },
@@ -233,7 +227,7 @@ export default {
       () => bandwidth.value,
       () => {
         if (isValidByteValue(bandwidth.value)) {
-          bandwidthError.value = false;
+          hasBandwidthError.value = false;
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
             isUnlimited: false,
@@ -242,7 +236,7 @@ export default {
             store.dispatch("configChangeDetected");
           }
         } else if (!bandwidthUnlimited.value) {
-          bandwidthError.value = true;
+          hasBandwidthError.value = true;
         }
         emitChange();
       },
@@ -257,7 +251,7 @@ export default {
             value: "",
             unit: "",
           };
-          storageError.value = false;
+          hasStorageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             value: 2,
             unit: "MB",
@@ -290,7 +284,7 @@ export default {
             value: "",
             unit: "",
           };
-          bandwidthError.value = false;
+          hasBandwidthError.value = false;
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
             isUnlimited: true,
@@ -319,8 +313,8 @@ export default {
       bandwidthUnlimited,
       storage,
       bandwidth,
-      storageError,
-      bandwidthError,
+      hasStorageError,
+      hasBandwidthError,
       onLearnMoreClicked,
     };
   },
@@ -365,7 +359,7 @@ input[type="number"] {
   font-weight: 400;
   visibility: hidden;
   font-size: 0.94em;
-  line-height: 1.5em;
+  line-height: 1.5;
   margin: 1px 20px;
   color: #ee193f;
   max-width: 18em;
