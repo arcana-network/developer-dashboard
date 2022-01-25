@@ -2,7 +2,7 @@
   <v-card
     style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em; margin-bottom: 2em"
     class="column"
-    :id="'configure-step-' + 5"
+    id="configure-step-5"
   >
     <h4 style="width: 100%; display: block">SET PER USER LIMIT</h4>
     <div class="flex sm-column" style="gap: 4vw">
@@ -47,10 +47,9 @@
           >
             <input
               type="number"
-              maxlength="1"
               id="storage-user-limit"
-              min="0"
-              pattern="[0-9]"
+              min="1"
+              max="1024"
               v-model="storage.value"
               :disabled="storageUnlimited"
             />
@@ -64,6 +63,9 @@
               :disabled="storageUnlimited"
             />
           </div>
+          <span class="error-message" :class="{ show: hasStorageError }">
+            Value should not be less than 1 MB or more than 99 GB
+          </span>
         </div>
         <div class="flex column" style="gap: 20px">
           <div
@@ -85,10 +87,9 @@
           >
             <input
               type="number"
-              maxlength="1"
               id="bandwidth-user-limit"
-              min="0"
-              pattern="[0-9]"
+              min="1"
+              max="1024"
               v-model="bandwidth.value"
               :disabled="bandwidthUnlimited"
             />
@@ -102,6 +103,9 @@
               :disabled="bandwidthUnlimited"
             />
           </div>
+          <span class="error-message" :class="{ show: hasBandwidthError }">
+            Value should not be less than 1 MB or more than 99 GB
+          </span>
         </div>
       </div>
     </div>
@@ -116,6 +120,10 @@ import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import bytes from "bytes";
+
+const MIN_BYTES = bytes("1 MB");
+const MAX_BYTES = bytes("99 GB");
 
 export default {
   name: "ConfigureUserLimits",
@@ -128,7 +136,7 @@ export default {
     VSwitch,
     VButton,
   },
-  setup(props) {
+  setup(props, { emit }) {
     const store = useStore();
 
     const env = computed(() => {
@@ -149,6 +157,8 @@ export default {
       value: 2,
       unit: "MB",
     });
+    let hasStorageError = ref(false),
+      hasBandwidthError = ref(false);
 
     storage.value = { ...store.getters[env.value + "/storage"] };
     bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
@@ -159,6 +169,30 @@ export default {
         description:
           "Set storage and bandwidth limits for each user. This can of course be handled by you on the application layer but you can leverage this feature to set default upload/download limits for your users and further update them, on a user level, depending on your app's requirements or business model. If there are no such limititation in your app, then you can simply set the limit to unlimited for both storage and bandwidth consumption by your users.",
       });
+    }
+
+    function emitChange() {
+      let eventProps = {
+        state: "default",
+      };
+      if (hasStorageError.value || hasBandwidthError.value) {
+        eventProps = {
+          state: "error",
+          errors: {
+            storage: hasStorageError.value,
+            bandwidth: hasBandwidthError.value,
+          },
+        };
+      }
+      emit("value-change", eventProps);
+    }
+
+    function isValidByteValue({ value, unit }) {
+      if (isNaN(Number(value))) {
+        return false;
+      }
+      const actualValue = bytes(`${value}${unit}`);
+      return actualValue >= MIN_BYTES && actualValue <= MAX_BYTES;
     }
 
     watch(
@@ -172,7 +206,8 @@ export default {
     watch(
       () => storage.value,
       () => {
-        if (storage.value.value !== "") {
+        if (isValidByteValue(storage.value)) {
+          hasStorageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             ...storage.value,
             isUnlimited: false,
@@ -180,7 +215,10 @@ export default {
           if (props.isConfigured && !store.getters.onConfigChange) {
             store.dispatch("configChangeDetected");
           }
+        } else if (!storageUnlimited.value) {
+          hasStorageError.value = true;
         }
+        emitChange();
       },
       { deep: true }
     );
@@ -188,7 +226,8 @@ export default {
     watch(
       () => bandwidth.value,
       () => {
-        if (bandwidth.value.value !== "") {
+        if (isValidByteValue(bandwidth.value)) {
+          hasBandwidthError.value = false;
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
             isUnlimited: false,
@@ -196,7 +235,10 @@ export default {
           if (props.isConfigured && !store.getters.onConfigChange) {
             store.dispatch("configChangeDetected");
           }
+        } else if (!bandwidthUnlimited.value) {
+          hasBandwidthError.value = true;
         }
+        emitChange();
       },
       { deep: true }
     );
@@ -209,6 +251,7 @@ export default {
             value: "",
             unit: "",
           };
+          hasStorageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
             value: 2,
             unit: "MB",
@@ -226,6 +269,7 @@ export default {
             isUnlimited: false,
           });
         }
+        emitChange();
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");
         }
@@ -240,6 +284,7 @@ export default {
             value: "",
             unit: "",
           };
+          hasBandwidthError.value = false;
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
             isUnlimited: true,
@@ -256,6 +301,7 @@ export default {
             isUnlimited: false,
           });
         }
+        emitChange();
         if (props.isConfigured && !store.getters.onConfigChange) {
           store.dispatch("configChangeDetected");
         }
@@ -267,6 +313,8 @@ export default {
       bandwidthUnlimited,
       storage,
       bandwidth,
+      hasStorageError,
+      hasBandwidthError,
       onLearnMoreClicked,
     };
   },
@@ -305,5 +353,18 @@ input[type="number"] {
 }
 .usage .custom-select__trigger {
   padding: 20px;
+}
+.error-message {
+  font-family: var(--font-body);
+  font-weight: 400;
+  visibility: hidden;
+  font-size: 0.94em;
+  line-height: 1.5;
+  margin: 1px 20px;
+  color: #ee193f;
+  max-width: 18em;
+}
+.error-message.show {
+  visibility: visible;
 }
 </style>

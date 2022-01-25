@@ -96,8 +96,9 @@
       />
       <configure-user-limits
         v-if="isConfigured || step >= 5"
-        :style="step === 5 ? 'margin-bottom: 2em' : ''"
+        style="margin-bottom: 8em"
         :isConfigured="isConfigured"
+        @value-change="onUserLimitValueChange"
       />
     </main>
     <configure-footer
@@ -537,6 +538,7 @@ export default {
     let password = ref("");
     let passwordMessage = ref("");
     let passwordMessageType = ref("");
+    let userLimitError = false;
 
     const previousConfig = {
       appName: store.getters.appName,
@@ -637,6 +639,19 @@ export default {
           }
         }
       } else {
+        if (!store.getters.appName?.trim()) {
+          store.dispatch("updateAppNameError", true);
+          document.getElementById("app").scroll({ top: 0, behavior: "smooth" });
+          return;
+        } else {
+          store.dispatch("updateAppNameError", false);
+        }
+        if (userLimitError) {
+          document
+            .getElementById("configure-step-5")
+            .scrollIntoView({ top: 0, behavior: "smooth" });
+          return;
+        }
         const config = { ...store.getters[env.value + "/config"] };
         loading.value = true;
         loadingMessage.value = "Updating app...";
@@ -873,6 +888,10 @@ export default {
       }
     }
 
+    function onUserLimitValueChange(ev) {
+      userLimitError = ev.state === "error";
+    }
+
     return {
       backToDashboard,
       liveEnvironment,
@@ -903,6 +922,7 @@ export default {
       passwordMessageType,
       onConfirmPassword,
       onForgotPassword,
+      onUserLimitValueChange,
     };
   },
 };
