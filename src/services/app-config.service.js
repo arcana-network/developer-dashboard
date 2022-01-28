@@ -21,7 +21,7 @@ export function createApp({
   cred,
 }) {
   return axios.post(
-    getEnvApi() + "/api/create-app/",
+    getEnvApi() + "/create-app/",
     {
       name,
       region,
@@ -43,7 +43,7 @@ export function updateApp(
   { name, region, chain, bandwidth_limit, storage_limit, cred, address }
 ) {
   return axios.post(
-    getEnvApi() + "/api/update-app/?id=" + appId,
+    getEnvApi() + "/update-app/?id=" + appId,
     {
       ID: appId,
       name,
@@ -65,7 +65,7 @@ export function updateApp(
 export function deleteCred(verifier) {
   return axios.get(
     getEnvApi() +
-      "/api/delete-cred/?id=" +
+      "/delete-cred/?id=" +
       store.getters.appId +
       "&verifier=" +
       verifier,
@@ -78,14 +78,11 @@ export function deleteCred(verifier) {
 }
 
 export function deleteApp() {
-  return axios.delete(
-    getEnvApi() + "/api/delete-app/?id=" + store.getters.appId,
-    {
-      headers: {
-        Authorization: "Bearer " + store.getters.accessToken,
-      },
-    }
-  );
+  return axios.delete(getEnvApi() + "/delete-app/?id=" + store.getters.appId, {
+    headers: {
+      Authorization: "Bearer " + store.getters.accessToken,
+    },
+  });
 }
 
 export async function fetchAndStoreAppConfig() {
