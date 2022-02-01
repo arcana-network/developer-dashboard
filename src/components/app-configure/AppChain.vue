@@ -126,11 +126,12 @@ export default {
     }
 
     function changeChainType(ev, selectedChainType) {
-      if (ev.value) {
-        store.dispatch(env.value + "/updateChainType", selectedChainType);
-        if (props.isConfigured && !store.getters.onConfigChange) {
-          store.dispatch("configChangeDetected");
-        }
+      store.dispatch(
+        env.value + "/updateChainType",
+        ev.value ? selectedChainType : ""
+      );
+      if (props.isConfigured && !store.getters.onConfigChange) {
+        store.dispatch("configChangeDetected");
       }
     }
 
