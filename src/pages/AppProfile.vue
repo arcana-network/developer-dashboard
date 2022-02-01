@@ -137,10 +137,6 @@
                 </span>
                 <v-text-field v-else v-model="organisationDetails.country" />
               </div>
-              <div
-                class="flex column mobile-remove"
-                style="width: 140px; visibility: hidden"
-              ></div>
             </div>
           </div>
         </v-card>

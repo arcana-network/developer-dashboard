@@ -31,7 +31,7 @@
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, 'google')"
+                @click.stop="launchLogin(false, SocialLoginType.google)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -43,7 +43,7 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, 'github')"
+                @click.stop="launchLogin(false, SocialLoginType.github)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -60,7 +60,7 @@
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, 'twitch')"
+                @click.stop="launchLogin(false, SocialLoginType.twitch)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -72,7 +72,7 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, 'discord')"
+                @click.stop="launchLogin(false, SocialLoginType.discord)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -183,7 +183,8 @@ export default {
   },
   setup() {
     const router = useRouter();
-    const arcanaAuth = getArcanaAuth();
+    let arcanaAuth;
+    const { SocialLoginType } = window.arcana.auth;
     const store = useStore();
     let loadingMessage = ref("");
     let loading = ref(false);
@@ -250,7 +251,8 @@ export default {
       }
     }
 
-    onMounted(() => {
+    onMounted(async () => {
+      arcanaAuth = await getArcanaAuth();
       const isLoggedIn = arcanaAuth.isLoggedIn();
       if (isLoggedIn) {
         launchLogin(isLoggedIn);
@@ -264,6 +266,7 @@ export default {
       launchLogin,
       loading,
       loadingMessage,
+      SocialLoginType,
     };
   },
 };

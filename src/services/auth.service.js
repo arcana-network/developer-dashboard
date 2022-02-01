@@ -1,48 +1,24 @@
 import axios from "axios";
 import jsonp from "jsonp";
 
-import { AuthProvider } from "@arcana/auth";
+// import { AuthProvider } from "@arcana/auth";
 import constants from "../utils/constants";
 import getEnvApi from "./get-env-api";
 
-const arcanaAuth = new AuthProvider({
-  appID: constants.arcanaAppId,
-  network: "testnet",
-  oauthCreds: [
-    {
-      type: "google",
-      clientId: constants.sso.google.clientId,
-    },
-    {
-      type: "twitch",
-      clientId: constants.sso.twitch.clientId,
-    },
-    {
-      type: "discord",
-      clientId: constants.sso.discord.clientId,
-    },
-    {
-      type: "reddit",
-      clientId: constants.sso.reddit.clientId,
-    },
-    {
-      type: "twitter",
-      clientId: constants.sso.twitter.clientId,
-    },
-    {
-      type: "github",
-      clientId: constants.sso.github.clientId,
-    },
-  ],
-  redirectUri: constants.ssoRedirectUrl,
-});
+const { AuthProvider } = window.arcana.auth;
 
-export function getArcanaAuth() {
-  return arcanaAuth;
+const authConfig = {
+  appID: constants.arcanaAppId,
+  network: "test",
+};
+
+export async function getArcanaAuth() {
+  return await AuthProvider.init(authConfig);
 }
 
-export function logout() {
-  arcanaAuth.logout();
+export async function logout() {
+  const arcanaAuth = await getArcanaAuth();
+  await arcanaAuth.logout();
   sessionStorage.clear();
 }
 
