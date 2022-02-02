@@ -125,10 +125,10 @@ export default {
       });
     }
 
-    function changeChainType(ev, selectedChainType) {
+    function changeChainType({ value: isSelected }, chainType) {
       store.dispatch(
         env.value + "/updateChainType",
-        ev.value ? selectedChainType : ""
+        isSelected ? chainType : ""
       );
       if (props.isConfigured && !store.getters.onConfigChange) {
         store.dispatch("configChangeDetected");
