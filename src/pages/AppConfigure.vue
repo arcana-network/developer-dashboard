@@ -96,8 +96,9 @@
       />
       <configure-user-limits
         v-if="isConfigured || step >= 5"
-        :style="step === 5 ? 'margin-bottom: 2em' : ''"
+        style="margin-bottom: 8em"
         :isConfigured="isConfigured"
+        @value-change="onUserLimitValueChange"
       />
     </main>
     <configure-footer
@@ -537,9 +538,9 @@ export default {
     let password = ref("");
     let passwordMessage = ref("");
     let passwordMessageType = ref("");
+    let userLimitError = false;
 
-    let previousConfig = {
-      name: store.getters.appName,
+    const previousConfig = {
       appName: store.getters.appName,
       ...store.getters["test/config"],
     };
@@ -591,6 +592,7 @@ export default {
     );
 
     function backToDashboard() {
+      resetSettings();
       router.push("/");
     }
 
@@ -637,6 +639,19 @@ export default {
           }
         }
       } else {
+        if (!store.getters.appName?.trim()) {
+          store.dispatch("updateAppNameError", true);
+          document.getElementById("app").scroll({ top: 0, behavior: "smooth" });
+          return;
+        } else {
+          store.dispatch("updateAppNameError", false);
+        }
+        if (userLimitError) {
+          document
+            .getElementById("configure-step-5")
+            .scrollIntoView({ top: 0, behavior: "smooth" });
+          return;
+        }
         const config = { ...store.getters[env.value + "/config"] };
         loading.value = true;
         loadingMessage.value = "Updating app...";
@@ -776,22 +791,24 @@ export default {
           router.push("/");
         }
       } else {
-        if (env.value === "test") {
-          store.dispatch("test/updateRegion", testConfig.region);
-          store.dispatch("test/updateChainType", testConfig.chainType);
-          store.dispatch("test/updateAuthToRemove", []);
-          store.dispatch("test/updateAuthDetails", testConfig.authDetails);
-          store.dispatch("test/updateUserLimits", testConfig.userLimits);
-        } else {
-          store.dispatch("live/updateRegion", liveConfig.region);
-          store.dispatch("live/updateChaintype", testConfig.chainType);
-          store.dispatch("live/updateAuthToRemove", []);
-          store.dispatch("live/updateAuthDetails", liveConfig.authDetails);
-          store.dispatch("live/updateUserLimits", liveConfig.userLimits);
-        }
-        store.dispatch("configChangeReset");
+        resetSettings();
         router.push("/");
       }
+    }
+
+    function resetSettings() {
+      store.dispatch("updateAppName", previousConfig.appName);
+      updateEnvConfig("test", testConfig);
+      updateEnvConfig("live", liveConfig);
+      store.dispatch("configChangeReset");
+    }
+
+    function updateEnvConfig(envValue, envConfig) {
+      store.dispatch(envValue + "/updateRegion", envConfig.region);
+      store.dispatch(envValue + "/updateChainType", envConfig.chainType);
+      store.dispatch(envValue + "/updateAuthToRemove", []);
+      store.dispatch(envValue + "/updateAuthDetails", envConfig.authDetails);
+      store.dispatch(envValue + "/updateUserLimits", envConfig.userLimits);
     }
 
     function handleDelete() {
@@ -871,6 +888,10 @@ export default {
       }
     }
 
+    function onUserLimitValueChange(ev) {
+      userLimitError = ev.state === "error";
+    }
+
     return {
       backToDashboard,
       liveEnvironment,
@@ -901,6 +922,7 @@ export default {
       passwordMessageType,
       onConfirmPassword,
       onForgotPassword,
+      onUserLimitValueChange,
     };
   },
 };
