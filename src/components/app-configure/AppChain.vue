@@ -38,33 +38,13 @@
                 direction="row"
                 justify="space-between"
                 class="width-100"
+                v-for="chain in chains"
+                :key="chain.value"
               >
-                <span class="body-1"> Ethereum </span>
+                <span class="body-1"> {{ chain.label }} </span>
                 <v-switch
-                  :value="chainType === 'ethereum'"
-                  @checked="changeChainType($event, 'ethereum')"
-                />
-              </v-stack>
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> Polygon </span>
-                <v-switch
-                  :value="chainType === 'polygon'"
-                  @checked="changeChainType($event, 'polygon')"
-                />
-              </v-stack>
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> Binance </span>
-                <v-switch
-                  :value="chainType === 'binance'"
-                  @checked="changeChainType($event, 'binance')"
+                  :value="chainType === `${chain.value}`"
+                  @checked="changeChainType($event, `${chain.value}`)"
                 />
               </v-stack>
             </v-stack>
@@ -104,6 +84,24 @@ export default {
   props: {
     isConfigured: Boolean,
     store: Object,
+  },
+  data() {
+    return {
+      chains: [
+        {
+          label: "Ethereum",
+          value: "ethereum",
+        },
+        {
+          label: "Polygon",
+          value: "polygon",
+        },
+        {
+          label: "Binance",
+          value: "binance",
+        },
+      ],
+    };
   },
   components: { VCard, VButton, VSwitch, VStack },
   setup(props) {
