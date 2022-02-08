@@ -34,19 +34,13 @@
               justify="space-between"
               class="flex-grow"
             >
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
+              <v-radio
                 v-for="chain in chains"
                 :key="chain.value"
-              >
-                <span class="body-1"> {{ chain.label }} </span>
-                <v-switch
-                  :value="chainType === `${chain.value}`"
-                  @checked="changeChainType($event, `${chain.value}`)"
-                />
-              </v-stack>
+                :item="chain"
+                :isSelected="chainType === chain.value"
+                @click="changeChainType(chain.value)"
+              />
             </v-stack>
           </v-card>
         </v-stack>
@@ -106,11 +100,8 @@ export default {
       });
     }
 
-    function changeChainType({ value: isSelected }, chainType) {
-      store.dispatch(
-        env.value + "/updateChainType",
-        isSelected ? chainType : ""
-      );
+    function changeChainType(chain) {
+      store.dispatch(env.value + "/updateChainType", chain);
       if (props.isConfigured && !store.getters.onConfigChange) {
         store.dispatch("configChangeDetected");
       }
