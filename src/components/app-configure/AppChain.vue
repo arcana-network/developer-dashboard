@@ -77,7 +77,8 @@ import { useStore } from "vuex";
 import VButton from "../lib/VButton/VButton.vue";
 import VCard from "../lib/VCard/VCard.vue";
 import VStack from "../lib/VStack/VStack.vue";
-import VSwitch from "../lib/VSwitch/VSwitch.vue";
+import VRadio from "../lib/VRadio/VRadio.vue";
+import { chains } from "../../utils/constants";
 
 export default {
   name: "ConfigureAppChainType",
@@ -85,25 +86,7 @@ export default {
     isConfigured: Boolean,
     store: Object,
   },
-  data() {
-    return {
-      chains: [
-        {
-          label: "Ethereum",
-          value: "ethereum",
-        },
-        {
-          label: "Polygon",
-          value: "polygon",
-        },
-        {
-          label: "Binance",
-          value: "binance",
-        },
-      ],
-    };
-  },
-  components: { VCard, VButton, VSwitch, VStack },
+  components: { VCard, VButton, VStack, VRadio },
   setup(props) {
     const store = useStore();
 
@@ -137,6 +120,7 @@ export default {
       chainType,
       changeChainType,
       onLearnMoreClicked,
+      chains,
     };
   },
 };
