@@ -65,7 +65,7 @@ h4 {
 </style>
 
 <script>
-import { computed } from "@vue/runtime-core";
+import { computed, onMounted } from "@vue/runtime-core";
 import { useStore } from "vuex";
 
 import VButton from "../lib/VButton/VButton.vue";
@@ -84,6 +84,12 @@ export default {
   setup(props) {
     const store = useStore();
 
+    onMounted(() => {
+      if (chainType.value.length === 0) {
+        setInitialChainType();
+      }
+    });
+
     const env = computed(() => {
       return store.getters.env;
     });
@@ -91,6 +97,10 @@ export default {
     let chainType = computed(() => {
       return store.getters[env.value + "/chainType"];
     });
+
+    function setInitialChainType() {
+      store.dispatch(env.value + "/updateChainType", chains[0].value);
+    }
 
     function onLearnMoreClicked() {
       store.dispatch("showLearnMorePopup", {
