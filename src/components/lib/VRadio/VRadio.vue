@@ -1,7 +1,8 @@
 <template>
   <div class="flex flex-center justify-space-between">
-    <label class="body-1">{{ label }}</label>
+    <label class="body-1" :for="value">{{ label }}</label>
     <input
+      :id="value"
       type="radio"
       :checked="selectedValue === value"
       v-bind="$attrs"
