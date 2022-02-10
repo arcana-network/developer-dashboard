@@ -35,36 +35,16 @@
               class="flex-grow"
             >
               <v-stack
+                v-for="chain in chains"
+                :key="chain.value"
                 direction="row"
                 justify="space-between"
                 class="width-100"
               >
-                <span class="body-1"> Ethereum </span>
+                <span class="body-1"> {{ chain.label }} </span>
                 <v-switch
-                  :value="chainType === 'ethereum'"
-                  @checked="changeChainType($event, 'ethereum')"
-                />
-              </v-stack>
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> Polygon </span>
-                <v-switch
-                  :value="chainType === 'polygon'"
-                  @checked="changeChainType($event, 'polygon')"
-                />
-              </v-stack>
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> Binance </span>
-                <v-switch
-                  :value="chainType === 'binance'"
-                  @checked="changeChainType($event, 'binance')"
+                  :value="chainType === chain.value"
+                  @checked="changeChainType($event, chain.value)"
                 />
               </v-stack>
             </v-stack>
@@ -98,6 +78,7 @@ import VButton from "../lib/VButton/VButton.vue";
 import VCard from "../lib/VCard/VCard.vue";
 import VStack from "../lib/VStack/VStack.vue";
 import VSwitch from "../lib/VSwitch/VSwitch.vue";
+import { chains } from "../../utils/constants";
 
 export default {
   name: "ConfigureAppChainType",
@@ -136,6 +117,7 @@ export default {
     }
 
     return {
+      chains,
       chainType,
       changeChainType,
       onLearnMoreClicked,
