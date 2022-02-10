@@ -1,13 +1,11 @@
 <template>
   <div class="flex flex-center justify-space-between">
-    <label class="body-1" :for="item.value">{{ item.label }}</label>
+    <label class="body-1">{{ label }}</label>
     <input
-      class="toggle-indicator"
       type="radio"
-      :id="item.value"
-      :value="item.value"
-      :checked="isSelected"
-      @click="onClick"
+      :checked="selectedValue === value"
+      v-bind="$attrs"
+      @change="$emit('update:modelValue', value)"
     />
   </div>
 </template>
@@ -48,16 +46,18 @@ input[type="radio"]:checked::before {
 export default {
   name: "VRadio",
   props: {
-    item: Object,
-    isSelected: Boolean,
-  },
-  setup(props, { emit }) {
-    function onClick() {
-      emit("click", item.value);
-    }
-    return {
-      onClick,
-    };
+    label: {
+      type: String,
+      default: "",
+    },
+    selectedValue: {
+      type: String,
+      default: "",
+    },
+    value: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
