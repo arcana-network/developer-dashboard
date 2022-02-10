@@ -34,19 +34,12 @@
               justify="space-between"
               class="flex-grow"
             >
-              <v-stack
-                v-for="chain in chains"
-                :key="chain.value"
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> {{ chain.label }} </span>
-                <v-switch
-                  :value="chainType === chain.value"
-                  @checked="changeChainType($event, chain.value)"
-                />
-              </v-stack>
+              <v-radio-group
+                :options="chains"
+                :selectedChain="selectedChain"
+                name="ChainSelection"
+                @update:modelValue="changeChainType"
+              />
             </v-stack>
           </v-card>
         </v-stack>
@@ -77,7 +70,7 @@ import { useStore } from "vuex";
 import VButton from "../lib/VButton/VButton.vue";
 import VCard from "../lib/VCard/VCard.vue";
 import VStack from "../lib/VStack/VStack.vue";
-import VSwitch from "../lib/VSwitch/VSwitch.vue";
+import VRadioGroup from "../lib/VRadioGroup/VRadioGroup.vue";
 import { chains } from "../../utils/constants";
 
 export default {
@@ -86,7 +79,7 @@ export default {
     isConfigured: Boolean,
     store: Object,
   },
-  components: { VCard, VButton, VSwitch, VStack },
+  components: { VCard, VButton, VRadioGroup, VStack },
   setup(props) {
     const store = useStore();
 
@@ -94,7 +87,7 @@ export default {
       return store.getters.env;
     });
 
-    let chainType = computed(() => {
+    let selectedChain = computed(() => {
       return store.getters[env.value + "/chainType"];
     });
 
@@ -106,11 +99,8 @@ export default {
       });
     }
 
-    function changeChainType({ value: isSelected }, chainType) {
-      store.dispatch(
-        env.value + "/updateChainType",
-        isSelected ? chainType : ""
-      );
+    function changeChainType(selectedChain) {
+      store.dispatch(env.value + "/updateChainType", selectedChain);
       if (props.isConfigured && !store.getters.onConfigChange) {
         store.dispatch("configChangeDetected");
       }
@@ -118,7 +108,7 @@ export default {
 
     return {
       chains,
-      chainType,
+      selectedChain,
       changeChainType,
       onLearnMoreClicked,
     };
