@@ -34,12 +34,11 @@
               justify="space-between"
               class="flex-grow"
             >
-              <v-radio
-                v-for="chain in chains"
-                :key="chain.value"
-                :item="chain"
-                :isSelected="chainType === chain.value"
-                @click="changeChainType(chain.value)"
+              <v-radio-group
+                :options="chains"
+                :selectedChain="selectedChain"
+                name="ChainSelection"
+                @update:modelValue="changeChainType"
               />
             </v-stack>
           </v-card>
@@ -71,7 +70,7 @@ import { useStore } from "vuex";
 import VButton from "../lib/VButton/VButton.vue";
 import VCard from "../lib/VCard/VCard.vue";
 import VStack from "../lib/VStack/VStack.vue";
-import VRadio from "../lib/VRadio/VRadio.vue";
+import VRadioGroup from "../lib/VRadioGroup/VRadioGroup.vue";
 import { chains } from "../../utils/constants";
 
 export default {
@@ -80,12 +79,12 @@ export default {
     isConfigured: Boolean,
     store: Object,
   },
-  components: { VCard, VButton, VStack, VRadio },
+  components: { VCard, VButton, VStack, VRadioGroup },
   setup(props) {
     const store = useStore();
 
     onMounted(() => {
-      if (chainType.value.length === 0) {
+      if (selectedChain.value.length === 0) {
         setInitialChainType();
       }
     });
@@ -94,7 +93,7 @@ export default {
       return store.getters.env;
     });
 
-    let chainType = computed(() => {
+    let selectedChain = computed(() => {
       return store.getters[env.value + "/chainType"];
     });
 
@@ -118,7 +117,7 @@ export default {
     }
 
     return {
-      chainType,
+      selectedChain,
       changeChainType,
       onLearnMoreClicked,
       chains,
