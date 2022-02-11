@@ -15,6 +15,7 @@ import VRadio from "../VRadio/VRadio.vue";
 
 export default {
   components: { VRadio },
+  emits: ["update:modelValue"],
   props: {
     options: {
       type: Array,

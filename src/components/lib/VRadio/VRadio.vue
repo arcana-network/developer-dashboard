@@ -46,6 +46,7 @@ input[type="radio"]:checked::before {
 <script>
 export default {
   name: "VRadio",
+  emits: ["update:modelValue"],
   props: {
     label: {
       type: String,
