@@ -5,7 +5,7 @@
     :value="option.value"
     :label="option.label"
     :name="name"
-    :selectedValue="selectedChain"
+    :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
   />
 </template>
@@ -24,8 +24,8 @@ export default {
       type: String,
       required: true,
     },
-    selectedChain: {
-      type: String,
+    modelValue: {
+      type: [String, Number, Boolean],
       required: true,
     },
   },

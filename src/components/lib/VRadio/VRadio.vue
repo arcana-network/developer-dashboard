@@ -4,7 +4,7 @@
     <input
       :id="value"
       type="radio"
-      :checked="selectedValue === value"
+      :checked="modelValue === value"
       v-bind="$attrs"
       @change="$emit('update:modelValue', value)"
     />
@@ -51,9 +51,9 @@ export default {
       type: String,
       default: "",
     },
-    selectedValue: {
-      type: String,
-      default: "",
+    modelValue: {
+      type: [String, Number, Boolean],
+      required: true,
     },
     value: {
       type: String,
