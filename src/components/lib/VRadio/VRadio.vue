@@ -1,9 +1,10 @@
 <template>
   <div class="flex flex-center justify-space-between">
-    <label class="body-1">{{ label }}</label>
+    <label class="body-1" :for="value">{{ label }}</label>
     <input
+      :id="value"
       type="radio"
-      :checked="selectedValue === value"
+      :checked="modelValue === value"
       v-bind="$attrs"
       @change="$emit('update:modelValue', value)"
     />
@@ -45,17 +46,18 @@ input[type="radio"]:checked::before {
 <script>
 export default {
   name: "VRadio",
+  emits: ["update:modelValue"],
   props: {
     label: {
       type: String,
       default: "",
     },
-    selectedValue: {
-      type: String,
-      default: "",
+    modelValue: {
+      type: [String, Number, Boolean],
+      required: true,
     },
     value: {
-      type: String,
+      type: [String, Number, Boolean],
       required: true,
     },
   },

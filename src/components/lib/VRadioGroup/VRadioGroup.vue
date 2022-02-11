@@ -5,7 +5,7 @@
     :value="option.value"
     :label="option.label"
     :name="name"
-    :selectedValue="selectedChain"
+    :modelValue="modelValue"
     @update:modelValue="$emit('update:modelValue', $event)"
   />
 </template>
@@ -15,6 +15,7 @@ import VRadio from "../VRadio/VRadio.vue";
 
 export default {
   components: { VRadio },
+  emits: ["update:modelValue"],
   props: {
     options: {
       type: Array,
@@ -24,8 +25,8 @@ export default {
       type: String,
       required: true,
     },
-    selectedChain: {
-      type: String,
+    modelValue: {
+      type: [String, Number, Boolean],
       required: true,
     },
   },
