@@ -9,7 +9,7 @@ export default function getEnvApi(version = CURRENT_API_VERSION) {
       ? constants.api.testnet
       : constants.api.mainnet;
 
-  if (version === false) {
+  if (!version) {
     return apiEndpoint;
   }
 
