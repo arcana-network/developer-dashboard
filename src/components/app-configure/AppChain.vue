@@ -34,39 +34,12 @@
               justify="space-between"
               class="flex-grow"
             >
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> Ethereum </span>
-                <v-switch
-                  :value="chainType === 'ethereum'"
-                  @checked="changeChainType($event, 'ethereum')"
-                />
-              </v-stack>
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> Polygon </span>
-                <v-switch
-                  :value="chainType === 'polygon'"
-                  @checked="changeChainType($event, 'polygon')"
-                />
-              </v-stack>
-              <v-stack
-                direction="row"
-                justify="space-between"
-                class="width-100"
-              >
-                <span class="body-1"> Binance </span>
-                <v-switch
-                  :value="chainType === 'binance'"
-                  @checked="changeChainType($event, 'binance')"
-                />
-              </v-stack>
+              <v-radio-group
+                :options="chains"
+                v-model="selectedChain"
+                name="ChainSelection"
+                @update:modelValue="changeChainType"
+              />
             </v-stack>
           </v-card>
         </v-stack>
@@ -97,7 +70,8 @@ import { useStore } from "vuex";
 import VButton from "../lib/VButton/VButton.vue";
 import VCard from "../lib/VCard/VCard.vue";
 import VStack from "../lib/VStack/VStack.vue";
-import VSwitch from "../lib/VSwitch/VSwitch.vue";
+import VRadioGroup from "../lib/VRadioGroup/VRadioGroup.vue";
+import { chains } from "../../utils/constants";
 
 export default {
   name: "ConfigureAppChainType",
@@ -105,7 +79,7 @@ export default {
     isConfigured: Boolean,
     store: Object,
   },
-  components: { VCard, VButton, VSwitch, VStack },
+  components: { VCard, VButton, VRadioGroup, VStack },
   setup(props) {
     const store = useStore();
 
@@ -113,7 +87,7 @@ export default {
       return store.getters.env;
     });
 
-    let chainType = computed(() => {
+    let selectedChain = computed(() => {
       return store.getters[env.value + "/chainType"];
     });
 
@@ -125,18 +99,16 @@ export default {
       });
     }
 
-    function changeChainType({ value: isSelected }, chainType) {
-      store.dispatch(
-        env.value + "/updateChainType",
-        isSelected ? chainType : ""
-      );
+    function changeChainType(selectedChain) {
+      store.dispatch(env.value + "/updateChainType", selectedChain);
       if (props.isConfigured && !store.getters.onConfigChange) {
         store.dispatch("configChangeDetected");
       }
     }
 
     return {
-      chainType,
+      chains,
+      selectedChain,
       changeChainType,
       onLearnMoreClicked,
     };
