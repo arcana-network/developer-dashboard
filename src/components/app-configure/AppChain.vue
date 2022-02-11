@@ -36,7 +36,7 @@
             >
               <v-radio-group
                 :options="chains"
-                :selectedChain="selectedChain"
+                v-model="selectedChain"
                 name="ChainSelection"
                 @update:modelValue="changeChainType"
               />
