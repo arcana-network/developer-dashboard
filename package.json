@@ -8,7 +8,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@arcana/auth": "0.0.6",
+    "@arcana/auth": "^0.0.8",
     "@sentry/tracing": "^6.16.1",
     "@sentry/vue": "^6.16.1",
     "autoprefixer": "^10.3.4",

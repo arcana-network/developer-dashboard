@@ -171,6 +171,7 @@ import sign from "@/services/sign";
 import { Wallet } from "ethers";
 import { useStore } from "vuex";
 import { onMounted, ref } from "@vue/runtime-core";
+import { SocialLoginType } from "@arcana/auth";
 
 export default {
   name: "AppLoginV2",
@@ -184,7 +185,6 @@ export default {
   setup() {
     const router = useRouter();
     let arcanaAuth;
-    const { SocialLoginType } = window.arcana.auth;
     const store = useStore();
     let loadingMessage = ref("");
     let loading = ref(false);

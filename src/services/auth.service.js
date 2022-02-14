@@ -1,15 +1,14 @@
 import axios from "axios";
 import jsonp from "jsonp";
 
-// import { AuthProvider } from "@arcana/auth";
+import { AuthProvider } from "@arcana/auth";
 import constants from "../utils/constants";
 import getEnvApi from "./get-env-api";
 
-const { AuthProvider } = window.arcana.auth;
-
 const authConfig = {
   appID: constants.arcanaAppId,
-  network: "test",
+  flow: "redirect",
+  redirectUri: `${window.location.origin}/oauth/redirect`,
 };
 
 export async function getArcanaAuth() {
