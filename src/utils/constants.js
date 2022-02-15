@@ -42,6 +42,21 @@ export const origin = window.location.origin;
 
 export const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false;
 
+export const chains = [
+  {
+    label: "Ethereum",
+    value: "ethereum",
+  },
+  {
+    label: "Polygon",
+    value: "polygon",
+  },
+  {
+    label: "Binance",
+    value: "binance",
+  },
+];
+
 export default {
   sso,
   ssoRedirectUrl,
@@ -50,4 +65,5 @@ export default {
   arcanaAppId,
   origin,
   isAppDown,
+  chains,
 };
