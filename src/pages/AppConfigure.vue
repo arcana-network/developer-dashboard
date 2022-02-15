@@ -634,7 +634,8 @@ export default {
                 ...store.getters[env.value + "/config"],
               });
 
-              makeTx();
+              loading.value = false;
+              router.push("/");
             });
           }
         }
