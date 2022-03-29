@@ -1,6 +1,6 @@
 <template>
   <div>
-    <router-view v-if="!isAuthLoaded" v-slot="{ Component }">
+    <router-view v-if="isAuthLoaded" v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
