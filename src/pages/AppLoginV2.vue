@@ -161,17 +161,13 @@ import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
 import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
 import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
 import FullScreenLoader from "../components/FullScreenLoader.vue";
-import {
-  getNonce,
-  login,
-  getArcanaAuth,
-  addUserToMailchimp,
-} from "@/services/auth.service";
+import { getNonce, login, addUserToMailchimp } from "@/services/auth.service";
 import sign from "@/services/sign";
 import { Wallet } from "ethers";
 import { useStore } from "vuex";
 import { onMounted, ref } from "@vue/runtime-core";
 import { SocialLoginType } from "@arcana/auth";
+import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
   name: "AppLoginV2",
@@ -184,10 +180,10 @@ export default {
   },
   setup() {
     const router = useRouter();
-    let arcanaAuth;
     const store = useStore();
     let loadingMessage = ref("");
     let loading = ref(false);
+    const { loginWithSocial, isLoggedIn, fetchUserDetails } = useArcanaAuth();
 
     function navigateToSignup() {
       router.push("/signup");
@@ -206,10 +202,11 @@ export default {
         loading.value = true;
         if (!isLoggedIn) {
           loadingMessage.value = "Signing In...";
-          await arcanaAuth.loginWithSocial(type);
+          await loginWithSocial(type);
         }
         loadingMessage.value = "Fetching user info...";
-        const { userInfo, privateKey } = arcanaAuth.getUserInfo();
+        const { userInfo, privateKey } = await fetchUserDetails();
+        console.log({ userInfo, privateKey });
         const wallet = new Wallet(privateKey);
         const nonce = await getNonce(wallet.address);
         loadingMessage.value = "Signing In...";
@@ -252,10 +249,8 @@ export default {
     }
 
     onMounted(async () => {
-      arcanaAuth = await getArcanaAuth();
-      const isLoggedIn = arcanaAuth.isLoggedIn();
-      if (isLoggedIn) {
-        launchLogin(isLoggedIn);
+      if (isLoggedIn()) {
+        launchLogin(isLoggedIn());
       }
     });
 
