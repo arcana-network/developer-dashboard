@@ -3,20 +3,17 @@ import getEnvApi from "./get-env-api";
 import store from "../store";
 
 export function fetchAllUsers() {
-  return axios.get(
-    getEnvApi() + "/api/user-details/?id=" + store.getters.appId,
-    {
-      headers: {
-        Authorization: "Bearer " + store.getters.accessToken,
-      },
-    }
-  );
+  return axios.get(getEnvApi() + "/user-details/?id=" + store.getters.appId, {
+    headers: {
+      Authorization: "Bearer " + store.getters.accessToken,
+    },
+  });
 }
 
 export function searchUsers(address) {
   return axios.get(
     getEnvApi() +
-      "/api/user-transactions/?id=" +
+      "/user-transactions/?id=" +
       store.getters.appId +
       "&address=" +
       address,
@@ -31,7 +28,7 @@ export function searchUsers(address) {
 export function fetchAllUserTransactions(userAddress) {
   return axios.get(
     getEnvApi() +
-      "/api/user-transactions/?id=" +
+      "/user-transactions/?id=" +
       store.getters.appId +
       "&address=" +
       userAddress,
@@ -44,12 +41,9 @@ export function fetchAllUserTransactions(userAddress) {
 }
 
 export function fetchMonthlyUsers() {
-  return axios.get(
-    getEnvApi() + "/api/no-of-users/?id=" + store.getters.appId,
-    {
-      headers: {
-        Authorization: "Bearer " + store.getters.accessToken,
-      },
-    }
-  );
+  return axios.get(getEnvApi() + "/no-of-users/?id=" + store.getters.appId, {
+    headers: {
+      Authorization: "Bearer " + store.getters.accessToken,
+    },
+  });
 }

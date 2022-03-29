@@ -20,6 +20,42 @@ module.exports={
     {
       "inputs": [
         {
+          "internalType": "string",
+          "name": "_client",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_clientId",
+          "type": "string"
+        }
+      ],
+      "name": "setClientId",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string[]",
+          "name": "_client",
+          "type": "string[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "_clientId",
+          "type": "string[]"
+        }
+      ],
+      "name": "setClientIds",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_store",
           "type": "uint256"
@@ -31,84 +67,6 @@ module.exports={
         }
       ],
       "name": "setDefaultLimit",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setDiscordClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setGithubClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setGoogleClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setRedditClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setTwitchClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setTwitterClientId",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -243,7 +201,7 @@ const ethers = require("ethers");
 const axios = require("axios");
 const sign = require("./signer.js").sign;
 
-window.signerMakeTx = async function ({
+async function signerMakeTx({
   privateKey,
   appAddress,
   rpc,
@@ -253,7 +211,7 @@ window.signerMakeTx = async function ({
   method,
   value,
 }) {
-  let wallet = new ethers.Wallet(privateKey);
+  const wallet = new ethers.Wallet(privateKey);
   const arcanaContract = new ethers.Contract(appAddress, arcana.abi, wallet);
   const provider = new ethers.providers.JsonRpcProvider(rpc);
   const forwarderContract = new ethers.Contract(
@@ -261,23 +219,26 @@ window.signerMakeTx = async function ({
     forwarder.abi,
     provider
   );
-  let req = await sign(
+  const req = await sign(
     wallet,
     arcanaContract,
     forwarderContract,
     method,
     value
   );
-  let res = await axios.post(gateway + "/api/meta-tx/", req, {
+  const res = await axios.post(gateway + "/meta-tx/", req, {
     headers: {
       Authorization: "Bearer " + accessToken,
     },
   });
   await new Promise((r) => setTimeout(r, 1000));
-  let tx = await provider.getTransaction(res.data.txHash);
+  const tx = await provider.getTransaction(res.data.txHash);
   await tx.wait();
+  console.log(method, "Done");
   return res.data;
-};
+}
+
+window.signerMakeTx = signerMakeTx;
 
 },{"./contracts/IArcana.sol/IArcana.json":1,"./contracts/IForwarder.sol/IForwarder.json":2,"./signer.js":264,"axios":125,"ethers":198}],4:[function(require,module,exports){
 "use strict";
@@ -28169,54 +28130,36 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":155,"minimalistic-assert":225,"minimalistic-crypto-utils":226}],174:[function(require,module,exports){
 module.exports={
-  "_args": [
-    [
-      "elliptic@6.5.4",
-      "/home/shrinath/Downloads/DashboardSigner-master"
-    ]
+  "name": "elliptic",
+  "version": "6.5.4",
+  "description": "EC cryptography",
+  "main": "lib/elliptic.js",
+  "files": [
+    "lib"
   ],
-  "_from": "elliptic@6.5.4",
-  "_id": "elliptic@6.5.4",
-  "_inBundle": false,
-  "_integrity": "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==",
-  "_location": "/elliptic",
-  "_phantomChildren": {},
-  "_requested": {
-    "type": "version",
-    "registry": true,
-    "raw": "elliptic@6.5.4",
-    "name": "elliptic",
-    "escapedName": "elliptic",
-    "rawSpec": "6.5.4",
-    "saveSpec": null,
-    "fetchSpec": "6.5.4"
+  "scripts": {
+    "lint": "eslint lib test",
+    "lint:fix": "npm run lint -- --fix",
+    "unit": "istanbul test _mocha --reporter=spec test/index.js",
+    "test": "npm run lint && npm run unit",
+    "version": "grunt dist && git add dist/"
   },
-  "_requiredBy": [
-    "/@ethersproject/signing-key",
-    "/ethereumjs-abi/ethereumjs-util",
-    "/ethereumjs-util",
-    "/secp256k1"
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:indutny/elliptic"
+  },
+  "keywords": [
+    "EC",
+    "Elliptic",
+    "curve",
+    "Cryptography"
   ],
-  "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz",
-  "_spec": "6.5.4",
-  "_where": "/home/shrinath/Downloads/DashboardSigner-master",
-  "author": {
-    "name": "Fedor Indutny",
-    "email": "fedor@indutny.com"
-  },
+  "author": "Fedor Indutny <fedor@indutny.com>",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "dependencies": {
-    "bn.js": "^4.11.9",
-    "brorand": "^1.1.0",
-    "hash.js": "^1.0.0",
-    "hmac-drbg": "^1.0.1",
-    "inherits": "^2.0.4",
-    "minimalistic-assert": "^1.0.1",
-    "minimalistic-crypto-utils": "^1.0.1"
-  },
-  "description": "EC cryptography",
+  "homepage": "https://github.com/indutny/elliptic",
   "devDependencies": {
     "brfs": "^2.0.2",
     "coveralls": "^3.1.0",
@@ -28232,31 +28175,15 @@ module.exports={
     "istanbul": "^0.4.5",
     "mocha": "^8.0.1"
   },
-  "files": [
-    "lib"
-  ],
-  "homepage": "https://github.com/indutny/elliptic",
-  "keywords": [
-    "EC",
-    "Elliptic",
-    "curve",
-    "Cryptography"
-  ],
-  "license": "MIT",
-  "main": "lib/elliptic.js",
-  "name": "elliptic",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/indutny/elliptic.git"
-  },
-  "scripts": {
-    "lint": "eslint lib test",
-    "lint:fix": "npm run lint -- --fix",
-    "test": "npm run lint && npm run unit",
-    "unit": "istanbul test _mocha --reporter=spec test/index.js",
-    "version": "grunt dist && git add dist/"
-  },
-  "version": "6.5.4"
+  "dependencies": {
+    "bn.js": "^4.11.9",
+    "brorand": "^1.1.0",
+    "hash.js": "^1.0.0",
+    "hmac-drbg": "^1.0.1",
+    "inherits": "^2.0.4",
+    "minimalistic-assert": "^1.0.1",
+    "minimalistic-crypto-utils": "^1.0.1"
+  }
 }
 
 },{}],175:[function(require,module,exports){
