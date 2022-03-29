@@ -228,12 +228,14 @@ import { useRouter } from "vue-router";
 import { onBeforeMount } from "@vue/runtime-core";
 import { fetchProfile, updateOrganization } from "../services/profile.service";
 import { useStore } from "vuex";
-import { logout } from "../services/auth.service";
+import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
   components: { AppHeader, VButton, VCard, VTextField },
   setup() {
     const store = useStore();
+    const { logout } = useArcanaAuth();
+
     const editPersonalDetails = ref(false);
     const editOrganisationDetails = ref(false);
     const password = ref("");
