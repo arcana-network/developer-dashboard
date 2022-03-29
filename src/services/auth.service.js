@@ -1,25 +1,7 @@
 import axios from "axios";
 import jsonp from "jsonp";
 
-import { AuthProvider } from "@arcana/auth";
-import constants from "../utils/constants";
 import getEnvApi from "./get-env-api";
-
-const authConfig = {
-  appID: constants.arcanaAppId,
-  flow: "redirect",
-  redirectUri: `${window.location.origin}/oauth/redirect`,
-};
-
-export async function getArcanaAuth() {
-  return await AuthProvider.init(authConfig);
-}
-
-export async function logout() {
-  const arcanaAuth = await getArcanaAuth();
-  await arcanaAuth.logout();
-  sessionStorage.clear();
-}
 
 export function getNonce(address) {
   return axios.get(getEnvApi(false) + "/get-nonce/?address=" + address);
