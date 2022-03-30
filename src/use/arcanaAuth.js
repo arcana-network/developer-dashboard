@@ -11,7 +11,6 @@ function useArcanaAuth() {
   const store = useStore();
 
   async function init() {
-    console.log("Before Init");
     if (!authInstance) {
       authInstance = await AuthProvider.init({
         appId: ARCANA_APP_ID,
@@ -19,7 +18,6 @@ function useArcanaAuth() {
         flow: ARCANA_AUTH_FLOW,
       });
     }
-    console.log("After Init");
   }
 
   function isLoggedIn() {

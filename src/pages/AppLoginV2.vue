@@ -206,7 +206,6 @@ export default {
         }
         loadingMessage.value = "Fetching user info...";
         const { userInfo, privateKey } = await fetchUserDetails();
-        console.log({ userInfo, privateKey });
         const wallet = new Wallet(privateKey);
         const nonce = await getNonce(wallet.address);
         loadingMessage.value = "Signing In...";
