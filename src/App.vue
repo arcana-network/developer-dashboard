@@ -1,11 +1,14 @@
 <template>
   <div>
-    <router-view v-slot="{ Component }">
+    <router-view v-if="isAuthLoaded" v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
-    <full-screen-loader v-if="loading" :message="loadingMessage" />
+    <full-screen-loader
+      v-if="loading || !isAuthLoaded"
+      :message="loadingMessage"
+    />
   </div>
 </template>
 
@@ -16,13 +19,16 @@ import { useStore } from "vuex";
 import { stringToBuffer } from "@/utils/cryptoUtils";
 import { fetchAndStoreAppConfig } from "@/services/app-config.service";
 import FullScreenLoader from "@/components/FullScreenLoader.vue";
+import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
   components: { FullScreenLoader },
   setup() {
     const store = useStore();
+    const arcanaAuth = useArcanaAuth();
     const loading = ref("");
     const loadingMessage = ref("");
+    const isAuthLoaded = ref(false);
 
     onBeforeMount(async () => {
       const encodedAccessToken = localStorage.getItem("access-token");
@@ -34,6 +40,8 @@ export default {
         store.dispatch("updateAccessToken", accessToken);
         store.dispatch("updateUserInfo", JSON.parse(userInfo));
       }
+
+      await arcanaAuth.init();
 
       if (!store.getters["test/forwarder"] || !store.getters["test/rpc"]) {
         const configResponse = await getConfig();
@@ -48,11 +56,14 @@ export default {
         await fetchAndStoreAppConfig();
         loading.value = false;
       }
+
+      isAuthLoaded.value = true;
     });
 
     return {
       loading,
       loadingMessage,
+      isAuthLoaded,
     };
   },
 };

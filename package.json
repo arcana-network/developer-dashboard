@@ -8,7 +8,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
-    "@arcana/auth": "0.0.6",
+    "@arcana/auth": "https://testnet-dev.s3.ap-south-1.amazonaws.com/arcana-auth-dev.tgz",
     "@sentry/tracing": "^6.16.1",
     "@sentry/vue": "^6.16.1",
     "autoprefixer": "^10.3.4",

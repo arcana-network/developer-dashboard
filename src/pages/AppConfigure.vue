@@ -488,7 +488,7 @@ import getEnvApi from "../services/get-env-api";
 import { getAddress } from "../utils/get-address";
 import FullScreenLoader from "../components/FullScreenLoader.vue";
 import { decrypt } from "../utils/cryptoUtils";
-import { getArcanaAuth } from "../services/auth.service";
+import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
   components: {
@@ -517,6 +517,8 @@ export default {
   setup() {
     const router = useRouter();
     const store = useStore();
+    const arcanaAuth = useArcanaAuth();
+
     let liveEnvironment = ref(store.getters.env === "test" ? false : true);
     let isConfigured = computed(() => {
       return store.getters.isAppConfigured;
@@ -568,7 +570,6 @@ export default {
     });
 
     if (!store.getters.keys.privateKey) {
-      const arcanaAuth = getArcanaAuth();
       const encryptedPrivateKey = localStorage.getItem("private-key");
       if (arcanaAuth.isLoggedIn()) {
         const { privateKey, userInfo } = arcanaAuth.getUserInfo();
