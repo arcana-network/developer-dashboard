@@ -676,18 +676,20 @@ export default {
     async function makeTx() {
       const config = { ...store.getters[env.value + "/config"] };
 
-      console.log(
-        "client ids",
-        store.getters[store.getters.env + "/authDetails"]
-      );
+      const authDetails = [
+        ...store.getters[store.getters.env + "/authDetails"],
+      ];
+      const authSignerMakeTxValue = [[], []];
+
+      authDetails.forEach((authDetail) => {
+        authSignerMakeTxValue[0].push(authDetail.verifier);
+        authSignerMakeTxValue[1].push(authDetail.clientId);
+      });
 
       await signerMakeTx({
         ...getTxRequestProps(),
         method: "setClientIds",
-        value: [
-          ["google", "twitter"],
-          ["sample-google-client", "sample-twitter-client"],
-        ],
+        value: authSignerMakeTxValue,
       });
 
       try {
