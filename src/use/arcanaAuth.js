@@ -3,7 +3,6 @@ import { useStore } from "vuex";
 
 const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID;
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK;
-const ARCANA_AUTH_FLOW = import.meta.env.VITE_ARCANA_AUTH_FLOW;
 
 let authInstance = null;
 
@@ -15,7 +14,7 @@ function useArcanaAuth() {
       authInstance = await AuthProvider.init({
         appId: ARCANA_APP_ID,
         network: ARCANA_AUTH_NETWORK,
-        flow: ARCANA_AUTH_FLOW,
+        flow: "redirect",
       });
     }
   }
