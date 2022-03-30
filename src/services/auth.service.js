@@ -4,11 +4,11 @@ import jsonp from "jsonp";
 import getEnvApi from "./get-env-api";
 
 export function getNonce(address) {
-  return axios.get(getEnvApi(false) + "/get-nonce/?address=" + address);
+  return axios.get(getEnvApi() + "/get-nonce/?address=" + address);
 }
 
 export function login({ signature, email, address }) {
-  return axios.post(getEnvApi(false) + "/login/", {
+  return axios.post(getEnvApi() + "/login/", {
     signature,
     email,
     address,
