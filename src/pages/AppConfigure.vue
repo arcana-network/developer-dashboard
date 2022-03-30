@@ -674,62 +674,20 @@ export default {
 
     async function makeTx() {
       const config = { ...store.getters[env.value + "/config"] };
-      const ssoClients = [
-        {
-          type: "google",
-          method: "setGoogleClientId",
-        },
-        {
-          type: "github",
-          method: "setGithubClientId",
-        },
-        {
-          type: "twitter",
-          method: "setTwitterClientId",
-        },
-        {
-          type: "twitch",
-          method: "setTwitchClientId",
-        },
-        {
-          type: "reddit",
-          method: "setRedditClientId",
-        },
-        {
-          type: "discord",
-          method: "setDiscordClientId",
-        },
-      ];
-      for (let ssoClient of ssoClients) {
-        try {
-          const clientId = store.getters[store.getters.env + "/authDetails"]
-            .find((el) => el.verifier === ssoClient.type)
-            ?.clientId?.trim();
 
-          const previousClientId = previousAuthDetails.find(
-            (el) => el.verifier === ssoClient.type
-          )?.clientId;
+      console.log(
+        "client ids",
+        store.getters[store.getters.env + "/authDetails"]
+      );
 
-          if (clientId && previousClientId !== clientId) {
-            loadingMessage.value = `Updating ${ssoClient.type} client id in smart contract...`;
-            console.log(
-              "Making tx for adding " + ssoClient.type + " client id"
-            );
-            const txResponse = await signerMakeTx({
-              ...getTxRequestProps(),
-              method: ssoClient.method,
-              value: [clientId],
-            });
-            console.log(
-              "Tx added for " + ssoClient.type + " client id",
-              txResponse
-            );
-          }
-        } catch (e) {
-          console.error("Tx failed for " + ssoClient.type);
-          console.error(e);
-        }
-      }
+      await signerMakeTx({
+        ...getTxRequestProps(),
+        method: "setClientIds",
+        value: [
+          ["google", "twitter"],
+          ["sample-google-client", "sample-twitter-client"],
+        ],
+      });
 
       try {
         if (
