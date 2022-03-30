@@ -31,7 +31,7 @@
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, SocialLoginType.google)"
+                @click.stop="launchLogin(SocialLoginType.google)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -43,7 +43,7 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, SocialLoginType.github)"
+                @click.stop="launchLogin(SocialLoginType.github)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -60,7 +60,7 @@
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, SocialLoginType.twitch)"
+                @click.stop="launchLogin(SocialLoginType.twitch)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -72,7 +72,7 @@
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(false, SocialLoginType.discord)"
+                @click.stop="launchLogin(SocialLoginType.discord)"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -183,7 +183,7 @@ export default {
     const store = useStore();
     let loadingMessage = ref("");
     let loading = ref(false);
-    const { loginWithSocial, isLoggedIn, fetchUserDetails } = useArcanaAuth();
+    const arcanaAuth = useArcanaAuth();
 
     function navigateToSignup() {
       router.push("/signup");
@@ -197,59 +197,62 @@ export default {
       router.push({ name: "Dashboard" });
     }
 
-    async function launchLogin(isLoggedIn, type) {
+    async function launchLogin(type) {
       try {
         loading.value = true;
-        if (!isLoggedIn) {
-          loadingMessage.value = "Signing In...";
-          await loginWithSocial(type);
-        }
-        loadingMessage.value = "Fetching user info...";
-        const { userInfo, privateKey } = await fetchUserDetails();
-        const wallet = new Wallet(privateKey);
-        const nonce = await getNonce(wallet.address);
         loadingMessage.value = "Signing In...";
-        const signature = await sign(privateKey, nonce.data);
-        const access_token = await login({
-          signature,
-          email: userInfo.id,
-          address: wallet.address,
-        });
-        store.dispatch("updateAccessToken", access_token.data.token);
-        store.dispatch("updateKeys", {
-          privateKey,
-        });
-        store.dispatch("updateWalletAddress", wallet.address);
-        store.dispatch("updateUserInfo", {
-          email: userInfo.id,
-          name: userInfo.name || "",
-        });
-
-        if (nonce.data === 0) {
-          addUserToMailchimp(userInfo.id);
-        }
-
-        loading.value = false;
-
-        if (localStorage.getItem("skipPassword") !== "true") {
-          router.push({
-            name: "Create Password",
-            params: { redirectTo: "Dashboard" },
-          });
-        } else {
-          router.push({
-            name: "Dashboard",
-          });
-        }
+        await arcanaAuth.loginWithSocial(type);
+        await fetchUserDetails();
       } catch (e) {
         loading.value = false;
         console.error(e);
       }
     }
 
+    async function fetchUserDetails() {
+      loading.value = true;
+      loadingMessage.value = "Fetching user info...";
+      const { userInfo, privateKey } = await arcanaAuth.fetchUserDetails();
+      const wallet = new Wallet(privateKey);
+      const nonce = await getNonce(wallet.address);
+      loadingMessage.value = "Signing In...";
+      const signature = await sign(privateKey, nonce.data);
+      const access_token = await login({
+        signature,
+        email: userInfo.id,
+        address: wallet.address,
+      });
+      store.dispatch("updateAccessToken", access_token.data.token);
+      store.dispatch("updateKeys", {
+        privateKey,
+      });
+      store.dispatch("updateWalletAddress", wallet.address);
+      store.dispatch("updateUserInfo", {
+        email: userInfo.id,
+        name: userInfo.name || "",
+      });
+
+      if (nonce.data === 0) {
+        addUserToMailchimp(userInfo.id);
+      }
+
+      loading.value = false;
+
+      if (localStorage.getItem("skipPassword") !== "true") {
+        router.push({
+          name: "Create Password",
+          params: { redirectTo: "Dashboard" },
+        });
+      } else {
+        router.push({
+          name: "Dashboard",
+        });
+      }
+    }
+
     onMounted(async () => {
-      if (isLoggedIn()) {
-        launchLogin(isLoggedIn());
+      if (arcanaAuth.isLoggedIn()) {
+        await fetchUserDetails();
       }
     });
 
