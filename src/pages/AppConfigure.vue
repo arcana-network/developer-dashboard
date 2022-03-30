@@ -483,11 +483,10 @@ import {
   deleteApp as deleteAppApi,
   deleteCred,
 } from "@/services/app-config.service";
-import { signerMakeTx } from "../utils/signer";
-import getEnvApi from "../services/get-env-api";
-import { getAddress } from "../utils/get-address";
-import FullScreenLoader from "../components/FullScreenLoader.vue";
-import { decrypt } from "../utils/cryptoUtils";
+import signerMakeTx from "@/utils/signerMakeTx";
+import { getAddress } from "@/utils/get-address";
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
+import { decrypt } from "@/utils/cryptoUtils";
 import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
@@ -676,6 +675,11 @@ export default {
     async function makeTx() {
       const config = { ...store.getters[env.value + "/config"] };
 
+      if (store.getters.appName !== previousConfig.appName) {
+        loadingMessage.value = `Updating app name in smart contract...`;
+        await signerMakeTx("setAppName", [store.getters.appName]);
+      }
+
       const authDetails = [
         ...store.getters[store.getters.env + "/authDetails"],
       ];
@@ -685,59 +689,21 @@ export default {
         authSignerMakeTxValue[0].push(authDetail.verifier);
         authSignerMakeTxValue[1].push(authDetail.clientId);
       });
+      await signerMakeTx("setClientIds", authSignerMakeTxValue);
 
-      await signerMakeTx({
-        ...getTxRequestProps(),
-        method: "setClientIds",
-        value: authSignerMakeTxValue,
-      });
-
-      try {
-        if (
-          config.storage_limit !== previousConfig.storage_limit ||
-          config.bandwidth_limit !== previousConfig.bandwidth_limit
-        ) {
-          loadingMessage.value = `Updating user limits in smart contract...`;
-          const userLimitTxResponse = await signerMakeTx({
-            ...getTxRequestProps(),
-            method: "setDefaultLimit",
-            value: [config.storage_limit, config.bandwidth_limit],
-          });
-          console.log("Tx added for default limit", userLimitTxResponse);
-        }
-      } catch (e) {
-        console.error("Tx failed for default limit");
-        console.error(e);
-      }
-
-      try {
-        if (store.getters.appName !== previousConfig.appName) {
-          loadingMessage.value = `Updating app name in smart contract...`;
-          const appNameTxResponse = await signerMakeTx({
-            ...getTxRequestProps(),
-            method: "setAppName",
-            value: [store.getters.appName],
-          });
-          console.log("Tx added for app name", appNameTxResponse);
-        }
-      } catch (e) {
-        console.error("Tx failed for app name");
-        console.error(e);
+      if (
+        config.storage_limit !== previousConfig.storage_limit ||
+        config.bandwidth_limit !== previousConfig.bandwidth_limit
+      ) {
+        loadingMessage.value = `Updating user limits in smart contract...`;
+        await signerMakeTx("setDefaultLimit", [
+          config.storage_limit,
+          config.bandwidth_limit,
+        ]);
       }
 
       loading.value = false;
       router.push("/");
-    }
-
-    function getTxRequestProps() {
-      return {
-        privateKey: store.getters.keys.privateKey,
-        appAddress: store.getters.smartContractAddress,
-        rpc: store.getters["test/rpc"],
-        gateway: getEnvApi(),
-        forwarderAddress: store.getters["test/forwarder"],
-        accessToken: store.getters.accessToken,
-      };
     }
 
     function onFooterCancel() {
