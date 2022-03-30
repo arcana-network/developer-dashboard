@@ -9,7 +9,7 @@ const UNLIMITED_BYTE_SIZE = bytes("10 TB");
 const CHAIN_TYPES = ["ethereum", "polygon", "binance"];
 
 export function getConfig() {
-  return axios.get(getEnvApi(false) + "/get-config/");
+  return axios.get(getEnvApi() + "/get-config/");
 }
 
 export function createApp({
