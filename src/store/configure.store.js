@@ -87,6 +87,7 @@ const getters = {
           clientId: authDetail.clientId,
           clientSecret: authDetail.clientSecret,
           redirectUrl: authDetail.redirectUrl,
+          origin: authDetail.origin,
         };
       }),
       storage_limit,
