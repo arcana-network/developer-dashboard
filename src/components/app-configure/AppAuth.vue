@@ -341,7 +341,9 @@ export default {
       origin,
       redirectUrl,
     }) {
-      let tooltip = `${authType} | ${clientId || origin}`;
+      let tooltip = `${authType} | ${
+        authType === "passwordless" ? origin : clientId
+      }`;
       if (clientSecret) {
         tooltip += ` | ${clientSecret}`;
       }
