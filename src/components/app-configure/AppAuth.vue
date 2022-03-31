@@ -37,10 +37,7 @@
             v-model="selectedAuthenticationType"
           />
           <v-text-field
-            v-if="
-              selectedAuthenticationType &&
-              selectedAuthenticationType.idRequired
-            "
+            v-if="selectedAuthenticationType"
             :placeholder="
               selectedAuthenticationType.idName
                 ? 'Enter ' + selectedAuthenticationType.idName
@@ -62,14 +59,6 @@
             "
             v-model="selectedAuthClientSecret"
             @keyup.enter="addAuthentication"
-          />
-          <v-text-field
-            v-if="
-              selectedAuthenticationType &&
-              selectedAuthenticationType.originRequired
-            "
-            placeholder="Enter Origin"
-            v-model="selectedAuthOrigin"
           />
           <v-text-field
             v-if="
@@ -97,7 +86,7 @@
           </div>
         </div>
         <div
-          v-if="selectedAuthenticationType && selectedAuthenticationType.setup"
+          v-if="selectedAuthenticationType"
           class="overflow-x-hidden overflow-ellipsis"
         >
           <span class="body-2" style="line-height: 1.5">
@@ -193,30 +182,25 @@ export default {
       // "Bring Your Own Keys",
       {
         name: "Google",
-        idRequired: true,
         setup: "https://developers.google.com/identity/sign-in/web/sign-in",
       },
       {
         name: "GitHub",
-        idRequired: true,
         secretRequired: true,
         setup:
           "https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app",
       },
       {
         name: "Reddit",
-        idRequired: true,
         setup: "https://github.com/reddit-archive/reddit/wiki/OAuth2",
         additionalSteps: "Select installed app to get proper client id",
       },
       {
         name: "Discord",
-        idRequired: true,
         setup: "https://canary.discord.com/developers/applications",
       },
       {
         name: "Twitter",
-        idRequired: true,
         secretRequired: true,
         redirectUrlRequired: true,
         idName: "API Key",
@@ -225,14 +209,7 @@ export default {
       },
       {
         name: "Twitch",
-        idRequired: true,
         setup: "https://dev.twitch.tv/docs/authentication#registration",
-      },
-      {
-        name: "Passwordless",
-        idRequired: false,
-        originRequired: true,
-        redirectUrlRequired: true,
       },
     ];
     let authenticationDetails = ref([]);
@@ -246,15 +223,12 @@ export default {
     let selectedAuthenticationType = ref("");
     let selectedAuthClientId = ref("");
     let selectedAuthClientSecret = ref("");
-    let selectedAuthOrigin = ref("");
     let selectedAuthRedirectUrl = ref("");
     let errorMessage = ref("");
 
     function addAuthentication() {
       if (
-        (selectedAuthenticationType.value.idRequired
-          ? selectedAuthClientId.value.trim()
-          : true) &&
+        selectedAuthClientId.value.trim() &&
         selectedAuthenticationType.value.name
       ) {
         const type =
@@ -287,9 +261,6 @@ export default {
             clientSecret: selectedAuthenticationType.value.secretRequired
               ? selectedAuthClientSecret.value.trim()
               : undefined,
-            origin: selectedAuthenticationType.value.originRequired
-              ? selectedAuthOrigin.value.trim()
-              : undefined,
           });
           store.dispatch(
             env.value + "/updateAuthDetails",
@@ -301,7 +272,6 @@ export default {
           selectedAuthClientId.value = "";
           selectedAuthClientSecret.value = "";
           selectedAuthenticationType.value = "";
-          selectedAuthOrigin.value = "";
           selectedAuthRedirectUrl.value = "";
         } else {
           selectedAuthClientIdError.value = true;
@@ -332,18 +302,11 @@ export default {
       selectedAuthenticationType.value = "";
       selectedAuthClientId.value = "";
       selectedAuthClientSecret.value = "";
-      selectedAuthOrigin.value = "";
       selectedAuthRedirectUrl.value = "";
     }
 
-    function getAuthTooltip({
-      authType,
-      clientId,
-      clientSecret,
-      redirectUrl,
-      origin,
-    }) {
-      let tooltip = `${authType} | ${clientId || origin}`;
+    function getAuthTooltip({ authType, clientId, clientSecret, redirectUrl }) {
+      let tooltip = `${authType} | ${clientId}`;
       if (clientSecret) {
         tooltip += ` | ${clientSecret}`;
       }
@@ -375,7 +338,6 @@ export default {
       selectedAuthClientIdError,
       selectedAuthClientId,
       selectedAuthClientSecret,
-      selectedAuthOrigin,
       selectedAuthRedirectUrl,
       selectedAuthenticationType,
       errorMessage,
