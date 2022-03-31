@@ -37,7 +37,7 @@
             v-model="selectedAuthenticationType"
           />
           <v-text-field
-            v-if="selectedAuthenticationType"
+            v-if="selectedAuthenticationType?.idRequired"
             :placeholder="
               selectedAuthenticationType.idName
                 ? 'Enter ' + selectedAuthenticationType.idName
@@ -48,10 +48,7 @@
             :message="errorMessage"
           />
           <v-text-field
-            v-if="
-              selectedAuthenticationType &&
-              selectedAuthenticationType.secretRequired
-            "
+            v-if="selectedAuthenticationType?.secretRequired"
             :placeholder="
               selectedAuthenticationType.idSecret
                 ? 'Enter ' + selectedAuthenticationType.idSecret
@@ -61,10 +58,12 @@
             @keyup.enter="addAuthentication"
           />
           <v-text-field
-            v-if="
-              selectedAuthenticationType &&
-              selectedAuthenticationType.redirectUrlRequired
-            "
+            v-if="selectedAuthenticationType?.originRequired"
+            placeholder="Enter Origin"
+            v-model="selectedAuthOrigin"
+          />
+          <v-text-field
+            v-if="selectedAuthenticationType?.redirectUrlRequired"
             placeholder="Enter Redirect Url"
             v-model="selectedAuthRedirectUrl"
           />
@@ -182,25 +181,30 @@ export default {
       // "Bring Your Own Keys",
       {
         name: "Google",
+        idRequired: true,
         setup: "https://developers.google.com/identity/sign-in/web/sign-in",
       },
       {
         name: "GitHub",
+        idRequired: true,
         secretRequired: true,
         setup:
           "https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app",
       },
       {
         name: "Reddit",
+        idRequired: true,
         setup: "https://github.com/reddit-archive/reddit/wiki/OAuth2",
         additionalSteps: "Select installed app to get proper client id",
       },
       {
         name: "Discord",
+        idRequired: true,
         setup: "https://canary.discord.com/developers/applications",
       },
       {
         name: "Twitter",
+        idRequired: true,
         secretRequired: true,
         redirectUrlRequired: true,
         idName: "API Key",
@@ -209,10 +213,13 @@ export default {
       },
       {
         name: "Twitch",
+        idRequired: true,
         setup: "https://dev.twitch.tv/docs/authentication#registration",
       },
       {
         name: "Passwordless",
+        originRequired: true,
+        redirectUrlRequired: true,
       },
     ];
     let authenticationDetails = ref([]);
@@ -226,64 +233,82 @@ export default {
     let selectedAuthenticationType = ref("");
     let selectedAuthClientId = ref("");
     let selectedAuthClientSecret = ref("");
+    let selectedAuthOrigin = ref("");
     let selectedAuthRedirectUrl = ref("");
     let errorMessage = ref("");
 
     function addAuthentication() {
+      const type = selectedAuthenticationType.value.name.toLowerCase();
       if (
-        selectedAuthClientId.value.trim() &&
-        selectedAuthenticationType.value.name
+        authenticationDetails.value.find(
+          (authDetail) => authDetail.type === type.toLowerCase()
+        )
       ) {
-        const type =
-          selectedAuthenticationType.value.name === "Bring Your Own Keys"
-            ? "user-keys"
-            : selectedAuthenticationType.value.name.toLowerCase();
-        if (
-          !authenticationDetails.value.find(
-            (authDetail) => authDetail.type === type.toLowerCase()
-          )
-        ) {
-          if (
-            selectedAuthenticationType.value.secretRequired &&
-            !selectedAuthClientSecret.value.trim()
-          ) {
-            selectedAuthClientIdError.value = true;
-            errorMessage.value = "Enter all details to continue";
-            return;
-          }
-          if (authToRemove.includes(type)) {
-            authToRemove.splice(authToRemove.indexOf(type), 1);
-            store.dispatch(env.value + "/updateAuthToRemove", authToRemove);
-          }
-          authenticationDetails.value.push({
-            type,
-            verifier: type,
-            authType: type,
-            clientId: selectedAuthClientId.value.trim(),
-            redirectUrl: selectedAuthRedirectUrl.value.trim(),
-            clientSecret: selectedAuthenticationType.value.secretRequired
-              ? selectedAuthClientSecret.value.trim()
-              : undefined,
-          });
-          store.dispatch(
-            env.value + "/updateAuthDetails",
-            authenticationDetails.value
-          );
-          if (props.isConfigured && !store.getters.onConfigChange) {
-            store.dispatch("configChangeDetected");
-          }
-          selectedAuthClientId.value = "";
-          selectedAuthClientSecret.value = "";
-          selectedAuthenticationType.value = "";
-          selectedAuthRedirectUrl.value = "";
-        } else {
-          selectedAuthClientIdError.value = true;
-          errorMessage.value = "Login type already added";
-        }
-      } else {
+        selectedAuthClientIdError.value = true;
+        errorMessage.value = "Login type already added";
+        return;
+      }
+
+      const isIdMissing =
+        selectedAuthenticationType.value.idRequired &&
+        !selectedAuthClientId.value.trim();
+      const isSecretMissing =
+        selectedAuthenticationType.value.secretRequired &&
+        !selectedAuthClientSecret.value.trim();
+      const isOriginMissing =
+        selectedAuthenticationType.value.originRequired &&
+        !selectedAuthOrigin.value.trim();
+      const isRedirectUrlMissing =
+        selectedAuthenticationType.value.redirectUrlRequired &&
+        !selectedAuthRedirectUrl.value.trim();
+      if (
+        isIdMissing ||
+        isSecretMissing ||
+        isOriginMissing ||
+        isRedirectUrlMissing
+      ) {
         selectedAuthClientIdError.value = true;
         errorMessage.value = "Enter all details to continue";
+        return;
       }
+
+      if (authToRemove.includes(type)) {
+        authToRemove.splice(authToRemove.indexOf(type), 1);
+        store.dispatch(env.value + "/updateAuthToRemove", authToRemove);
+      }
+
+      authenticationDetails.value.push({
+        type,
+        verifier: type,
+        authType: type,
+        clientId: selectedAuthenticationType.value.idRequired
+          ? selectedAuthClientId.value.trim()
+          : undefined,
+        clientSecret: selectedAuthenticationType.value.secretRequired
+          ? selectedAuthClientSecret.value.trim()
+          : undefined,
+        origin: selectedAuthenticationType.value.originRequired
+          ? selectedAuthOrigin.value.trim()
+          : undefined,
+        redirectUrl: selectedAuthenticationType.value.redirectUrlRequired
+          ? selectedAuthRedirectUrl.value.trim()
+          : undefined,
+      });
+
+      store.dispatch(
+        env.value + "/updateAuthDetails",
+        authenticationDetails.value
+      );
+
+      if (props.isConfigured && !store.getters.onConfigChange) {
+        store.dispatch("configChangeDetected");
+      }
+
+      selectedAuthenticationType.value = "";
+      selectedAuthClientId.value = "";
+      selectedAuthClientSecret.value = "";
+      selectedAuthOrigin.value = "";
+      selectedAuthRedirectUrl.value = "";
     }
 
     function removeAuthentication(index) {
@@ -301,15 +326,22 @@ export default {
 
     //Resetting all reactive variables
     function clearAuthentication() {
-      selectedAuthClientIdError.value = false;
-      selectedAuthenticationType.value = "";
       selectedAuthClientId.value = "";
+      selectedAuthClientIdError.value = false;
       selectedAuthClientSecret.value = "";
+      selectedAuthenticationType.value = "";
+      selectedAuthOrigin.value = "";
       selectedAuthRedirectUrl.value = "";
     }
 
-    function getAuthTooltip({ authType, clientId, clientSecret, redirectUrl }) {
-      let tooltip = `${authType} | ${clientId}`;
+    function getAuthTooltip({
+      authType,
+      clientId,
+      clientSecret,
+      origin,
+      redirectUrl,
+    }) {
+      let tooltip = `${authType} | ${clientId || origin}`;
       if (clientSecret) {
         tooltip += ` | ${clientSecret}`;
       }
@@ -341,6 +373,7 @@ export default {
       selectedAuthClientIdError,
       selectedAuthClientId,
       selectedAuthClientSecret,
+      selectedAuthOrigin,
       selectedAuthRedirectUrl,
       selectedAuthenticationType,
       errorMessage,

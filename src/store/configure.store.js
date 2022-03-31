@@ -86,6 +86,7 @@ const getters = {
           verifier: authDetail.verifier,
           clientId: authDetail.clientId,
           clientSecret: authDetail.clientSecret,
+          origin: authDetail.origin,
           redirectUrl: authDetail.redirectUrl,
         };
       }),
