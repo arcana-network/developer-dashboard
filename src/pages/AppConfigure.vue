@@ -686,8 +686,10 @@ export default {
       const authSignerMakeTxValue = [[], []];
 
       authDetails.forEach((authDetail) => {
-        authSignerMakeTxValue[0].push(authDetail.verifier);
-        authSignerMakeTxValue[1].push(authDetail.clientId);
+        if (authDetail.verifier !== "passwordless") {
+          authSignerMakeTxValue[0].push(authDetail.verifier);
+          authSignerMakeTxValue[1].push(authDetail.clientId);
+        }
       });
       await signerMakeTx("setClientIds", authSignerMakeTxValue);
 
