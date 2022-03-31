@@ -86,7 +86,7 @@
           </div>
         </div>
         <div
-          v-if="selectedAuthenticationType"
+          v-if="selectedAuthenticationType?.setup"
           class="overflow-x-hidden overflow-ellipsis"
         >
           <span class="body-2" style="line-height: 1.5">
@@ -210,6 +210,9 @@ export default {
       {
         name: "Twitch",
         setup: "https://dev.twitch.tv/docs/authentication#registration",
+      },
+      {
+        name: "Passwordless",
       },
     ];
     let authenticationDetails = ref([]);
