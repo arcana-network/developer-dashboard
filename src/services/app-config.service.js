@@ -124,6 +124,7 @@ export async function fetchAndStoreAppConfig() {
             verifier: el.verifier,
             clientId: el.clientId,
             clientSecret: el.clientSecret,
+            origin: el.origin,
             redirectUrl: el.redirectUrl,
           };
         })
