@@ -625,15 +625,7 @@ export default {
               ...store.getters[env.value + "/config"],
             }).then(async (response) => {
               const appAddress = await getAddress(response.data.app?.address);
-
               store.dispatch("updateSmartContractAddress", appAddress);
-              loadingMessage.value = "Generating Address...";
-              await updateApp(response.data.app?.ID, {
-                name: store.getters.appName,
-                address: store.getters.smartContractAddress.replace("0x", ""),
-                ...store.getters[env.value + "/config"],
-              });
-
               loading.value = false;
               router.push("/");
             });
