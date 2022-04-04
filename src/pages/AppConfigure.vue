@@ -650,7 +650,7 @@ export default {
         loadingMessage.value = "Updating app...";
         await updateApp(store.getters.appId, {
           name: store.getters.appName,
-          address: store.getters.smartContractAddress.replace("0x", ""),
+          address: store.getters.smartContractAddress,
           ...config,
         });
         const authToRemove = [...store.getters[env.value + "/authToRemove"]];
