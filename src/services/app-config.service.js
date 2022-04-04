@@ -2,7 +2,6 @@ import axios from "axios";
 import getEnvApi from "./get-env-api";
 import store from "../store";
 import { fetchAllApps, fetchApp } from "./dashboard.service";
-import { getAddress } from "../utils/get-address";
 import bytes from "bytes";
 
 const UNLIMITED_BYTE_SIZE = bytes("10 TB");
@@ -95,7 +94,7 @@ export async function fetchAndStoreAppConfig() {
     store.dispatch("updateAppId", currentApp.ID);
 
     // Get Address
-    const appAddress = await getAddress(currentApp.address);
+    const appAddress = currentApp.address;
     store.dispatch("updateSmartContractAddress", appAddress);
 
     const env = store.getters.env;
