@@ -484,7 +484,6 @@ import {
   deleteCred,
 } from "@/services/app-config.service";
 import signerMakeTx from "@/utils/signerMakeTx";
-import { getAddress } from "@/utils/get-address";
 import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import { decrypt } from "@/utils/cryptoUtils";
 import useArcanaAuth from "@/use/arcanaAuth";
@@ -623,8 +622,8 @@ export default {
             createApp({
               name: store.getters.appName,
               ...store.getters[env.value + "/config"],
-            }).then(async (response) => {
-              const appAddress = await getAddress(response.data.app?.address);
+            }).then((response) => {
+              const appAddress = response.data.app?.address;
               store.dispatch("updateSmartContractAddress", appAddress);
               loading.value = false;
               router.push("/");
