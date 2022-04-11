@@ -68,14 +68,13 @@ section {
 
 <script>
 import { computed, onMounted, ref, onUnmounted } from "@vue/runtime-core";
+import { useRoute, useRouter } from "vue-router";
+import { useStore } from "vuex";
 import ArcanaLogo from "../assets/iconography/arcana-dark-vertical.svg";
-import NotificationBellIcon from "../assets/iconography/notification-dot.svg";
 import AccountUserIcon from "../assets/iconography/account-user.svg";
 import MenuIcon from "../assets/iconography/menu.svg";
 import ArcanaFavicon from "../assets/iconography/arcana-favicon.svg";
 import VHeader from "./lib/VHeader/VHeader.vue";
-import { useRoute, useRouter } from "vue-router";
-import { useStore } from "vuex";
 import CancelIcon from "@/assets/iconography/cancel.svg";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
 
@@ -180,7 +179,6 @@ export default {
     return {
       menuItems,
       ArcanaLogo,
-      NotificationBellIcon,
       selectedItem,
       loggedInUser,
       AccountUserIcon,
