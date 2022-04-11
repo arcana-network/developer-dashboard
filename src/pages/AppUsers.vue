@@ -281,13 +281,15 @@ tbody tr:active {
 </style>
 
 <script>
+import { ref } from "@vue/reactivity";
+import { onBeforeMount } from "@vue/runtime-core";
+import moment from "moment";
+import bytes from "bytes";
 import AppHeader from "../components/AppHeader.vue";
 import VTextField from "../components/lib/VTextField/VTextField.vue";
 import SearchIcon from "../assets/iconography/search.svg";
 import VCard from "../components/lib/VCard/VCard.vue";
 import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
-import { ref } from "@vue/reactivity";
-import { onBeforeMount, onMounted } from "@vue/runtime-core";
 import { createChartView, getInitialUsersChartConfig } from "../utils/chart";
 import {
   fetchAllUsers,
@@ -295,8 +297,6 @@ import {
   fetchMonthlyUsers,
   searchUsers,
 } from "../services/user.service";
-import moment from "moment";
-import bytes from "bytes";
 
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
@@ -307,7 +307,23 @@ export default {
     let userLog = ref({});
     let userTransactions = ref([]);
 
-    onMounted(() => {
+    function fetchUsers() {
+      fetchAllUsers().then((response) => {
+        if (response.data instanceof Array) {
+          users.value = response.data.map((user) => {
+            return {
+              id: user.id,
+              walletAddress: user.address,
+              storage: user.storage,
+              bandwidth: user.bandwidth,
+              actionCount: user.action_count,
+            };
+          });
+        }
+      });
+    }
+
+    function generateMonthlyUsersChart() {
       fetchMonthlyUsers().then((response) => {
         const currentMonth = moment();
         let monthLabels = [];
@@ -353,26 +369,11 @@ export default {
           createChartView(numberOfUsersCtx, { ...config });
         }
       });
-    });
-
-    function fetchUsers() {
-      fetchAllUsers().then((response) => {
-        if (response.data instanceof Array) {
-          users.value = response.data.map((user) => {
-            return {
-              id: user.id,
-              walletAddress: user.address,
-              storage: user.storage,
-              bandwidth: user.bandwidth,
-              actionCount: user.action_count,
-            };
-          });
-        }
-      });
     }
 
     onBeforeMount(() => {
       fetchUsers();
+      generateMonthlyUsersChart();
     });
 
     function fetchUserLogsApi(address, index) {
