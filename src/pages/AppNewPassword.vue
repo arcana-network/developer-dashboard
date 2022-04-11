@@ -2,7 +2,7 @@
   <div>
     <main class="flex">
       <landing-descriptor />
-      <section class="forgot-password-container">
+      <section class="create-password-container">
         <div>
           <h1 style="text-align: center">Create Password</h1>
         </div>
@@ -38,7 +38,7 @@
             <li
               :class="{
                 'success-message':
-                  password.trim() && password === confirmPassword,
+                  password === confirmPassword,
               }"
             >
               Passwords must match
@@ -138,7 +138,7 @@
 </template>
 
 <style scoped>
-.forgot-password-container {
+.create-password-container {
   width: 50%;
   max-width: 520px;
   margin: 16vh auto 0 auto;
