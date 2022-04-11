@@ -39,14 +39,6 @@
             </span>
           </div>
           <div class="flex column details" style="visibility: hidden">
-            <!-- <span class="body-2">Password</span>
-            <span class="sub-heading-3" v-if="!editPersonalDetails"> </span> -->
-            <!-- <v-text-field
-              type="password"
-              v-else
-              v-model="password"
-              no-message
-            /> -->
           </div>
         </v-card>
       </section>
@@ -254,7 +246,6 @@ export default {
     let organisationDetailsResetState = {};
 
     function onUpdateOrganization() {
-      // Validation
       const size = Number(organisationDetails.value.size);
       if (!Number.isFinite(size) || !Number.isSafeInteger(size) || size <= 0) {
         organisationDetails.value.sizeErrorMessage =
@@ -263,7 +254,6 @@ export default {
       }
       organisationDetails.value.sizeErrorMessage = null;
 
-      // API Call
       try {
         updateOrganization({
           name: organisationDetails.value.name,
