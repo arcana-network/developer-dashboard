@@ -8,7 +8,6 @@ export const sentry = {
 
 export const api = {
   testnet: import.meta.env.VITE_TESTNET_API,
-  mainnet: import.meta.env.VITE_MAINNET_API,
 };
 
 export const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID;
