@@ -77,7 +77,6 @@ export default {
   name: "ConfigureAppChainType",
   props: {
     isConfigured: Boolean,
-    store: Object,
   },
   components: { VCard, VButton, VRadioGroup, VStack },
   setup(props) {
