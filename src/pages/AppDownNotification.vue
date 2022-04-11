@@ -35,18 +35,6 @@
           The dashboard is currently undergoing maintenance and will be back
           online soon. Please check back in a little while.
         </h2>
-        <!-- <h4 class="down-description">
-          DISCLAIMER: Use with caution. This is an ALPHA release with all
-          features being experimental. Please do not use important data without
-          back ups.
-        </h4>
-        <h5 class="down-description">
-          The platform is provided in an "as is" basis without any express or
-          implied warranty of any kind including warranties of merchantability
-          or fitness of purpose. In no event will Arcana Networks or its
-          subsidiaries be held responsible for any damages. BY CLICKING
-          "Configure" below, you accept the same.
-        </h5> -->
       </div>
     </v-overlay>
   </main>
@@ -79,7 +67,6 @@ import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
 
 export default {
   name: "AppDownNotification",
-  components: { VOverlay },
-  setup() {},
+  components: { VOverlay }
 };
 </script>
