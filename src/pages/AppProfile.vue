@@ -180,14 +180,14 @@
 
 <script>
 import { ref } from "@vue/reactivity";
+import { useRouter } from "vue-router";
+import { onBeforeMount } from "@vue/runtime-core";
+import { useStore } from "vuex";
 import AppHeader from "@/components/AppHeader.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
-import { useRouter } from "vue-router";
-import { onBeforeMount } from "@vue/runtime-core";
 import { fetchProfile, updateOrganization } from "../services/profile.service";
-import { useStore } from "vuex";
 import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
@@ -198,7 +198,6 @@ export default {
 
     const editPersonalDetails = ref(false);
     const editOrganisationDetails = ref(false);
-    const password = ref("");
     const organisationDetails = ref({
       name: " ",
       size: 0,
@@ -251,7 +250,6 @@ export default {
       logout();
       localStorage.clear();
       store.dispatch("test/resetConfigStore");
-      store.dispatch("live/resetConfigStore");
       store.dispatch("resetAuth");
       store.dispatch("resetStore");
       router.push({ name: "Login" });
@@ -270,7 +268,6 @@ export default {
       editPersonalDetails,
       editOrganisationDetails,
       organisationDetails,
-      password,
       onLogout,
       onUpdateOrganization,
       resetOrganisationDetails,
