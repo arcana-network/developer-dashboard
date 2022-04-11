@@ -73,7 +73,7 @@
       </section>
       <configure-app-name
         :isConfigured="isConfigured"
-        @enter-click="onFooterSave"
+        @enter-click="step = 2"
       />
       <configure-app-region
         v-if="isConfigured || step >= 2"
@@ -98,17 +98,11 @@
       />
     </main>
     <configure-footer
-      v-if="!isConfigured"
-      :saveLabel="step === 5 ? 'SAVE' : 'NEXT'"
+      v-if="!isConfigured || isEdited"
+      :saveLabel="isConfigured || step === 5 ? 'SAVE' : 'NEXT'"
       @save="onFooterSave"
       @cancel="onFooterCancel"
-      :cancelLabel="step === 1 ? 'CANCEL' : 'PREVIOUS'"
-    />
-    <configure-footer
-      v-else
-      :show="isEdited"
-      @save="onFooterSave"
-      @cancel="onFooterCancel"
+      :cancelLabel="isConfigured || step === 1 ? 'CANCEL' : 'PREVIOUS'"
     />
 
     <v-overlay
@@ -443,7 +437,7 @@ input[type="number"] {
 </style>
 
 <script>
-import { computed, watch } from "@vue/runtime-core";
+import { computed } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -469,7 +463,6 @@ import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
-import PauseIcon from "@/assets/iconography/pause-disabled.svg";
 import DeleteIcon from "@/assets/iconography/delete.svg";
 import CloseIcon from "@/assets/iconography/close.svg";
 
@@ -729,7 +722,7 @@ export default {
         handleDelete();
       }
     }
-    
+
     let intervalForTimer;
     function timerInterval() {
       progressTimer.value = progressTimer.value - 100;
@@ -800,13 +793,11 @@ export default {
       proceedDelete,
       timer,
       progressTimer,
-      store,
       onFooterSave,
       onFooterCancel,
       handleDelete,
       startDeleteTimer,
       handleCancelDelete,
-      PauseIcon,
       DeleteIcon,
       showLearnMorePopup,
       selectedSubType,
