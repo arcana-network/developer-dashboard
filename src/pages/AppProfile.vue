@@ -133,38 +133,6 @@
           </div>
         </v-card>
       </section>
-      <section style="margin-top: 3em" v-if="false">
-        <div class="flex" style="justify-content: space-between">
-          <h2>PAYMENT DETAILS</h2>
-        </div>
-        <v-card
-          variant="elevated"
-          class="flex sm-column flex-wrap"
-          style="
-            gap: 1em;
-            margin-top: 1em;
-            padding: 1.5em;
-            justify-content: space-between;
-          "
-        >
-          <div class="flex column details">
-            <span class="body-2">Billing Name</span>
-            <span class="sub-heading-3">John Doe</span>
-          </div>
-          <div class="flex column details">
-            <span class="body-2">Billing Address</span>
-            <span class="sub-heading-3">
-              #101, Indiranagar, Bengaluru-68, Karnataka, India
-            </span>
-          </div>
-          <div class="flex column details">
-            <span class="body-2" style="margin-bottom: 5px">
-              Tax Identification
-            </span>
-            <span class="sub-heading-3"> Ethereum </span>
-          </div>
-        </v-card>
-      </section>
       <div
         class="flex"
         style="justify-content: flex-end; margin-top: 2em; margin-bottom: 2em"
