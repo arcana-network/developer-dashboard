@@ -1,5 +1,4 @@
 import axios from "axios";
-import constants from "../utils/constants";
 import getEnvApi from "./get-env-api";
 import store from "../store";
 
