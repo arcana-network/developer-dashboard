@@ -47,7 +47,7 @@ export function getInitialUsageChartConfig() {
           beginAtZero: true,
           steps: 5,
           ticks: {
-            callback: function (label, index, labels) {
+            callback: function (label) {
               if (label === 0) {
                 return "";
               }
@@ -126,7 +126,7 @@ export function getInitialUsersChartConfig() {
           },
           ticks: {
             precision: 0,
-            callback: function (label, index, labels) {
+            callback: function (label) {
               if (label === 0) {
                 return "";
               }
