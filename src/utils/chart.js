@@ -47,15 +47,13 @@ export function getInitialUsageChartConfig() {
           beginAtZero: true,
           steps: 5,
           ticks: {
-            callback: function (label, index, labels) {
+            callback: function (label) {
               if (label === 0) {
                 return "";
               }
               return label + " MB";
             },
           },
-          // stepValue: 1024,
-          // max: 5120,
           grid: {
             color: "#373737",
             borderDash: [10, 10],
@@ -88,22 +86,6 @@ export function getInitialUsageChartConfig() {
         },
         tooltip: {
           enabled: true,
-          // callbacks: {
-          //   label: function (context) {
-          //     const label = context.dataset.label || "";
-
-          //     if (label) {
-          //       label += ": ";
-          //     }
-          //     if (context.parsed.y !== null) {
-          //       label += new Intl.NumberFormat("en-US", {
-          //         style: "currency",
-          //         currency: "USD",
-          //       }).format(context.parsed.y);
-          //     }
-          //     return label;
-          //   },
-          // },
         },
       },
     },
@@ -144,7 +126,7 @@ export function getInitialUsersChartConfig() {
           },
           ticks: {
             precision: 0,
-            callback: function (label, index, labels) {
+            callback: function (label) {
               if (label === 0) {
                 return "";
               }

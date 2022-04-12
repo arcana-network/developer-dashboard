@@ -156,27 +156,23 @@ h1 {
 
 <script>
 import { useRouter } from "vue-router";
-import LandingDescriptor from "@/components/LandingDescriptor.vue";
-import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
-import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
-import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
-import FullScreenLoader from "../components/FullScreenLoader.vue";
-import { getNonce, login, addUserToMailchimp } from "@/services/auth.service";
-import sign from "@/services/sign";
 import { Wallet } from "ethers";
 import { useStore } from "vuex";
 import { onMounted, ref } from "@vue/runtime-core";
 import { SocialLoginType } from "@arcana/auth";
+import sign from "@/services/sign";
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
+import LandingDescriptor from "@/components/LandingDescriptor.vue";
+import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
+import { getNonce, login, addUserToMailchimp } from "@/services/auth.service";
 import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
   name: "AppLoginV2",
   components: {
+    FullScreenLoader,
     LandingDescriptor,
     VCardButton,
-    VOverlay,
-    VCircularProgress,
-    FullScreenLoader,
   },
   setup() {
     const router = useRouter();
@@ -185,31 +181,19 @@ export default {
     let loading = ref(false);
     const arcanaAuth = useArcanaAuth();
 
-    function navigateToSignup() {
-      router.push("/signup");
-    }
-
-    function goToForgotPassword() {
-      router.push("/password/forgot");
-    }
-
-    function onSignin() {
-      router.push({ name: "Dashboard" });
-    }
-
     async function launchLogin(type) {
       try {
         loading.value = true;
         loadingMessage.value = "Signing In...";
         await arcanaAuth.loginWithSocial(type);
-        await fetchUserDetails();
+        await fetchAndStoreUserDetails();
       } catch (e) {
         loading.value = false;
         console.error(e);
       }
     }
 
-    async function fetchUserDetails() {
+    async function fetchAndStoreUserDetails() {
       loading.value = true;
       loadingMessage.value = "Fetching user info...";
       const { userInfo, privateKey } = await arcanaAuth.fetchUserDetails();
@@ -252,14 +236,11 @@ export default {
 
     onMounted(async () => {
       if (arcanaAuth.isLoggedIn()) {
-        await fetchUserDetails();
+        await fetchAndStoreUserDetails();
       }
     });
 
     return {
-      navigateToSignup,
-      goToForgotPassword,
-      onSignin,
       launchLogin,
       loading,
       loadingMessage,

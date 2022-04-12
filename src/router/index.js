@@ -1,14 +1,14 @@
 import { createWebHistory, createRouter } from "vue-router";
-import store from "../store";
-import { isAppDown } from "../utils/constants";
+import store from "@/store";
+import { isAppDown } from "@/utils/constants";
 
-const AppDashboard = () => import("../pages/AppDashboard.vue");
-const AppConfigure = () => import("../pages/AppConfigure.vue");
-const AppProfile = () => import("../pages/AppProfile.vue");
-const AppNewPassword = () => import("../pages/AppNewPassword.vue");
-const AppUsers = () => import("../pages/AppUsers.vue");
-const AppLoginV2 = () => import("../pages/AppLoginV2.vue");
-const AppDownNotification = () => import("../pages/AppDownNotification.vue");
+const AppDashboard = () => import("@/pages/AppDashboard.vue");
+const AppConfigure = () => import("@/pages/AppConfigure.vue");
+const AppProfile = () => import("@/pages/AppProfile.vue");
+const AppNewPassword = () => import("@/pages/AppNewPassword.vue");
+const AppUsers = () => import("@/pages/AppUsers.vue");
+const AppLogin = () => import("@/pages/AppLogin.vue");
+const AppDownNotification = () => import("@/pages/AppDownNotification.vue");
 
 function toBoolean(val) {
   if (typeof val === "string") {
@@ -59,7 +59,7 @@ const routes = [
   {
     name: "Login",
     path: "/login",
-    component: toBoolean(isAppDown) ? AppDownNotification : AppLoginV2,
+    component: toBoolean(isAppDown) ? AppDownNotification : AppLogin,
   },
 ];
 

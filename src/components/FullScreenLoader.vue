@@ -17,8 +17,9 @@
 </template>
 
 <script>
-import VCircularProgress from "./lib/VCircularProgress/VCircularProgress.vue";
-import VOverlay from "./lib/VOverlay/VOverlay.vue";
+import VCircularProgress from "@/components/lib/VCircularProgress/VCircularProgress.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+
 export default {
   name: "FullScreenLoader",
   components: { VOverlay, VCircularProgress },

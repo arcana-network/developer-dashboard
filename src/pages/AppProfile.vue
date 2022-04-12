@@ -39,14 +39,6 @@
             </span>
           </div>
           <div class="flex column details" style="visibility: hidden">
-            <!-- <span class="body-2">Password</span>
-            <span class="sub-heading-3" v-if="!editPersonalDetails"> </span> -->
-            <!-- <v-text-field
-              type="password"
-              v-else
-              v-model="password"
-              no-message
-            /> -->
           </div>
         </v-card>
       </section>
@@ -141,38 +133,6 @@
           </div>
         </v-card>
       </section>
-      <section style="margin-top: 3em" v-if="false">
-        <div class="flex" style="justify-content: space-between">
-          <h2>PAYMENT DETAILS</h2>
-        </div>
-        <v-card
-          variant="elevated"
-          class="flex sm-column flex-wrap"
-          style="
-            gap: 1em;
-            margin-top: 1em;
-            padding: 1.5em;
-            justify-content: space-between;
-          "
-        >
-          <div class="flex column details">
-            <span class="body-2">Billing Name</span>
-            <span class="sub-heading-3">John Doe</span>
-          </div>
-          <div class="flex column details">
-            <span class="body-2">Billing Address</span>
-            <span class="sub-heading-3">
-              #101, Indiranagar, Bengaluru-68, Karnataka, India
-            </span>
-          </div>
-          <div class="flex column details">
-            <span class="body-2" style="margin-bottom: 5px">
-              Tax Identification
-            </span>
-            <span class="sub-heading-3"> Ethereum </span>
-          </div>
-        </v-card>
-      </section>
       <div
         class="flex"
         style="justify-content: flex-end; margin-top: 2em; margin-bottom: 2em"
@@ -219,15 +179,14 @@
 </style>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { ref, onBeforeMount } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import AppHeader from "@/components/AppHeader.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
-import { useRouter } from "vue-router";
-import { onBeforeMount } from "@vue/runtime-core";
-import { fetchProfile, updateOrganization } from "../services/profile.service";
-import { useStore } from "vuex";
+import { fetchProfile, updateOrganization } from "@/services/profile.service";
 import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
@@ -238,7 +197,6 @@ export default {
 
     const editPersonalDetails = ref(false);
     const editOrganisationDetails = ref(false);
-    const password = ref("");
     const organisationDetails = ref({
       name: " ",
       size: 0,
@@ -254,7 +212,6 @@ export default {
     let organisationDetailsResetState = {};
 
     function onUpdateOrganization() {
-      // Validation
       const size = Number(organisationDetails.value.size);
       if (!Number.isFinite(size) || !Number.isSafeInteger(size) || size <= 0) {
         organisationDetails.value.sizeErrorMessage =
@@ -263,7 +220,6 @@ export default {
       }
       organisationDetails.value.sizeErrorMessage = null;
 
-      // API Call
       try {
         updateOrganization({
           name: organisationDetails.value.name,
@@ -293,7 +249,6 @@ export default {
       logout();
       localStorage.clear();
       store.dispatch("test/resetConfigStore");
-      store.dispatch("live/resetConfigStore");
       store.dispatch("resetAuth");
       store.dispatch("resetStore");
       router.push({ name: "Login" });
@@ -312,7 +267,6 @@ export default {
       editPersonalDetails,
       editOrganisationDetails,
       organisationDetails,
-      password,
       onLogout,
       onUpdateOrganization,
       resetOrganisationDetails,

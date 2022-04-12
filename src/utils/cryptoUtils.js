@@ -108,7 +108,7 @@ export async function decrypt(encryptedText, password) {
   return decoder.decode(decrypted);
 }
 
-window.cryptoUtils = {
+export default {
   encrypt,
   decrypt,
   bufferToString,

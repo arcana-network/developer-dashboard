@@ -37,18 +37,12 @@
           >
             App ID:
           </span>
-          <!-- <v-tooltip
-            :title="appId"
-            tooltip-style="max-width: max-content; left: -250%"
-            class="mobile-remove"
-          > -->
           <div
             class="text-ellipsis body-1 font-500"
             style="color: var(--text-white); max-width: 6em"
           >
             {{ appId }}
           </div>
-          <!-- </v-tooltip> -->
           <v-tooltip
             :title="smartContractTooltip"
             @click.stop="copySmartContractAddress"
@@ -372,67 +366,6 @@
           </div>
         </div>
       </v-card>
-      <!-- <section
-        class="flex column"
-        style="margin-top: 8vh; margin-bottom: 8vh; color: var(--text-white)"
-      >
-        <div
-          class="flex"
-          style="margin-bottom: 4vh; justify-content: space-between"
-        >
-          <div class="flex" style="gap: 1em">
-            <h2>TUTORIALS</h2>
-            <v-tooltip
-              title="Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut"
-            >
-              <img src="@/assets/iconography/info-circle-outline.svg" style="cursor: pointer" />
-            </v-tooltip>
-          </div>
-          <v-button variant="link" label="VIEW ALL" />
-        </div>
-        <v-stack gap="4vw" direction="row" class="overflow-x-auto">
-          <v-card
-            v-for="i in 3"
-            :key="'tutorial' + i"
-            class="flex column tutorial-card"
-            variant="elevated"
-            style="
-              padding: 2em;
-              width: 20vw;
-              min-width: 200px;
-              max-width: 400px;
-              align-items: center;
-            "
-          >
-            <div style="position: relative">
-              <img :src="RectanglePlaceholderIcon" style="width: 100%" />
-              <div
-                class="controls"
-                style="
-                  position: absolute;
-                  top: 50%;
-                  left: 50%;
-                  transform: translate(-50%, -50%);
-                "
-              >
-                <img class="play-pause" src="@/assets/iconography/play.svg" />
-              </div>
-            </div>
-            <span class="sub-heading-3 tutorial-heading">
-              Create a dropbox clone
-            </span>
-            <span class="body-1 tutorial-content">
-              Learn the first steps involved in building your own version of
-              Dropbox using Arcana’s privacy first stack for your own
-            </span>
-            <v-button
-              variant="link"
-              label="READ MORE"
-              style="align-self: flex-start"
-            />
-          </v-card>
-        </v-stack>
-      </section> -->
     </main>
     <main v-else>
       <v-overlay>
@@ -649,37 +582,26 @@ h5.testnet-disclaimer.popup {
 </style>
 
 <script>
-import { fetchAndStoreAppConfig } from "@/services/app-config.service";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 import {
   computed,
   onBeforeMount,
   onMounted,
   ref,
   watch,
-} from "@vue/runtime-core";
-import {
-  createChartView,
-  updateChartView,
-  getInitialUsageChartConfig,
-} from "@/utils/chart";
-import {
-  fetchStats,
-  fetchPeriodicUsage,
-  fetchApp,
-} from "@/services/dashboard.service";
-
-import AppHeader from "@/components/AppHeader.vue";
-import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
+} from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import moment from "moment";
 import bytes from "bytes";
+
+import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
 import CheckIcon from "@/assets/iconography/check.svg";
 import CopyIcon from "@/assets/iconography/copy.svg";
 import copyToClipboard from "@/utils/copyToClipboard";
-import moment from "moment";
 import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
 
-import VButton from "../components/lib/VButton/VButton.vue";
+import AppHeader from "@/components/AppHeader.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
 import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
@@ -689,6 +611,18 @@ import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import VStack from "@/components/lib/VStack/VStack.vue";
 import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+
+import {
+  createChartView,
+  updateChartView,
+  getInitialUsageChartConfig,
+} from "@/utils/chart";
+import { fetchAndStoreAppConfig } from "@/services/app-config.service";
+import {
+  fetchStats,
+  fetchPeriodicUsage,
+  fetchApp,
+} from "@/services/dashboard.service";
 
 export default {
   components: {

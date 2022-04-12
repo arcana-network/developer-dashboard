@@ -123,9 +123,9 @@ input[type="number"] {
 </style>
 
 <script>
-import { reactive, ref } from "@vue/reactivity";
+import { reactive, ref, computed } from "vue";
 import { getRandomId } from "../utils";
-import { computed } from "@vue/runtime-core";
+
 export default {
   name: "VTextField",
   inheritAttrs: false,

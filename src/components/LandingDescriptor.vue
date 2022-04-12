@@ -43,8 +43,9 @@ ul li {
 </style>
 
 <script>
-import VSeperator from "./lib/VSeperator/VSeperator.vue";
-import AppLogo from "../assets/logo.svg";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import AppLogo from "@/assets/logo.svg";
+
 export default {
   name: "LandingDescriptor",
   components: { VSeperator },

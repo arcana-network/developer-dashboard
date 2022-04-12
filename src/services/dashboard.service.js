@@ -1,7 +1,6 @@
 import axios from "axios";
-import constants from "../utils/constants";
 import getEnvApi from "./get-env-api";
-import store from "../store";
+import store from "@/store";
 
 export function fetchAllApps() {
   return axios.get(getEnvApi() + "/user-app/", {

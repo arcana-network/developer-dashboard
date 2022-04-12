@@ -46,6 +46,7 @@
 
 <script>
 import CancelIcon from "@/assets/iconography/close.svg";
+
 export default {
   name: "VChip",
   props: {

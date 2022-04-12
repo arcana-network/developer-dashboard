@@ -1,6 +1,6 @@
 import axios from "axios";
 import getEnvApi from "./get-env-api";
-import store from "../store";
+import store from "@/store";
 import { fetchAllApps, fetchApp } from "./dashboard.service";
 import bytes from "bytes";
 
@@ -93,7 +93,6 @@ export async function fetchAndStoreAppConfig() {
     store.dispatch("updateAppName", currentApp.name);
     store.dispatch("updateAppId", currentApp.ID);
 
-    // Get Address
     const appAddress = currentApp.address;
     store.dispatch("updateSmartContractAddress", appAddress);
 

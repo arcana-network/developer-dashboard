@@ -4,18 +4,19 @@ import VWave from "v-wave";
 import * as Sentry from "@sentry/vue";
 import { Integrations } from "@sentry/tracing";
 
-import App from "./App.vue";
-import router from "./router";
-import store from "./store";
-import { sentry as sentryConfig } from "./utils/constants";
+import App from "@/App.vue";
+import router from "@/router";
+import store from "@/store";
+import { sentry as sentryConfig } from "@/utils/constants";
 
 import "vue3-circle-progress/dist/circle-progress.css";
-import "./components/lib/styles.css";
+import "@/components/lib/styles.css";
 
 function getDSN() {
   if (import.meta.env.PROD) {
     return sentryConfig.dsn;
   }
+  sentryConfig.tracingOrigins = "";
   return null;
 }
 

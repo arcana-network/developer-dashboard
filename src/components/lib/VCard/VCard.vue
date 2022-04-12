@@ -39,8 +39,8 @@
 </style>
 
 <script>
-import { reactive } from "@vue/reactivity";
-import { computed } from "@vue/runtime-core";
+import { reactive, computed } from "vue";
+
 export default {
   name: "VCard",
   props: {

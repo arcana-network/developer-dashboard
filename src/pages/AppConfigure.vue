@@ -44,27 +44,23 @@
           <v-stack direction="row" gap="1em">
             <span
               class="body-1"
-              :style="liveEnvironment ? 'color: var(--text-grey)' : ''"
+              style="color: var(--text-grey)"
             >
               TestNet
             </span>
             <v-switch
               variant="secondary"
-              v-model="liveEnvironment"
               disabled
               style="margin-top: 1px"
             />
             <span
               class="body-1"
-              :style="!liveEnvironment ? 'color: var(--text-grey)' : ''"
+              style="color: var(--text-grey)"
             >
               MainNet
             </span>
           </v-stack>
           <div style="margin-left: auto">
-            <!-- <v-tooltip title="Pause App">
-              <v-icon-button :icon="PauseIcon" class="app-action" disabled />
-            </v-tooltip> -->
             <v-tooltip title="Delete App">
               <v-icon-button
                 :icon="DeleteIcon"
@@ -77,7 +73,7 @@
       </section>
       <configure-app-name
         :isConfigured="isConfigured"
-        @enter-click="onFooterSave"
+        @enter-click="step = 2"
       />
       <configure-app-region
         v-if="isConfigured || step >= 2"
@@ -102,17 +98,11 @@
       />
     </main>
     <configure-footer
-      v-if="!isConfigured"
-      :saveLabel="step === 5 ? 'SAVE' : 'NEXT'"
+      v-if="!isConfigured || isEdited"
+      :saveLabel="isConfigured || step === 5 ? 'SAVE' : 'NEXT'"
       @save="onFooterSave"
       @cancel="onFooterCancel"
-      :cancelLabel="step === 1 ? 'CANCEL' : 'PREVIOUS'"
-    />
-    <configure-footer
-      v-else
-      :show="isEdited"
-      @save="onFooterSave"
-      @cancel="onFooterCancel"
+      :cancelLabel="isConfigured || step === 1 ? 'CANCEL' : 'PREVIOUS'"
     />
 
     <v-overlay
@@ -447,7 +437,7 @@ input[type="number"] {
 </style>
 
 <script>
-import { computed, watch } from "@vue/runtime-core";
+import { computed } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -460,6 +450,7 @@ import ConfigureAppName from "@/components/app-configure/AppName.vue";
 import ConfigureAppRegion from "@/components/app-configure/AppRegion.vue";
 import ConfigureFooter from "@/components/ConfigureFooter.vue";
 import ConfigureUserLimits from "@/components/app-configure/AppUserLimits.vue";
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VChip from "@/components/lib/VChip/VChip.vue";
@@ -473,7 +464,6 @@ import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
-import PauseIcon from "@/assets/iconography/pause-disabled.svg";
 import DeleteIcon from "@/assets/iconography/delete.svg";
 import CloseIcon from "@/assets/iconography/close.svg";
 
@@ -484,7 +474,6 @@ import {
   deleteCred,
 } from "@/services/app-config.service";
 import signerMakeTx from "@/utils/signerMakeTx";
-import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import { decrypt } from "@/utils/cryptoUtils";
 import useArcanaAuth from "@/use/arcanaAuth";
 
@@ -498,6 +487,7 @@ export default {
     ConfigureAppRegion,
     ConfigureFooter,
     ConfigureUserLimits,
+    FullScreenLoader,
     VButton,
     VCard,
     VChip,
@@ -510,14 +500,12 @@ export default {
     VSwitch,
     VTextField,
     VTooltip,
-    FullScreenLoader,
   },
   setup() {
     const router = useRouter();
     const store = useStore();
     const arcanaAuth = useArcanaAuth();
 
-    let liveEnvironment = ref(store.getters.env === "test" ? false : true);
     let isConfigured = computed(() => {
       return store.getters.isAppConfigured;
     });
@@ -544,7 +532,6 @@ export default {
       appName: store.getters.appName,
       ...store.getters["test/config"],
     };
-    let previousAuthDetails = [...store.getters["test/authDetails"]];
 
     const env = computed(() => {
       return store.getters.env;
@@ -555,12 +542,6 @@ export default {
       chainType: store.getters["test/chainType"],
       authDetails: store.getters["test/authDetails"],
       userLimits: store.getters["test/userLimits"],
-    };
-    let liveConfig = {
-      region: store.getters["live/region"],
-      chainType: store.getters["live/chainType"],
-      authDetails: store.getters["live/authDetails"],
-      userLimits: store.getters["live/userLimits"],
     };
 
     const isEdited = computed(() => {
@@ -582,13 +563,6 @@ export default {
         router.push({ name: "Login" });
       }
     }
-
-    watch(
-      () => liveEnvironment.value,
-      () => {
-        store.dispatch("toggleEnv");
-      }
-    );
 
     function backToDashboard() {
       resetSettings();
@@ -720,7 +694,6 @@ export default {
     function resetSettings() {
       store.dispatch("updateAppName", previousConfig.appName);
       updateEnvConfig("test", testConfig);
-      updateEnvConfig("live", liveConfig);
       store.dispatch("configChangeReset");
     }
 
@@ -733,11 +706,10 @@ export default {
     }
 
     function handleDelete() {
-      deleteAppApi().then((response) => {
+      deleteAppApi().then(() => {
         clearInterval(intervalForTimer);
         clearInterval(intervalForDelete);
         store.dispatch("test/resetConfigStore");
-        store.dispatch("live/resetConfigStore");
         store.dispatch("resetStore");
         router.push("/");
       });
@@ -748,9 +720,9 @@ export default {
       timer.value = timer.value - 1;
       if (timer.value === 0) {
         handleDelete();
-        clearInterval(intervalForDelete);
       }
     }
+
     let intervalForTimer;
     function timerInterval() {
       progressTimer.value = progressTimer.value - 100;
@@ -782,7 +754,6 @@ export default {
     function onForgotPassword() {
       localStorage.clear();
       store.dispatch("test/resetConfigStore");
-      store.dispatch("live/resetConfigStore");
       store.dispatch("resetAuth");
       store.dispatch("resetStore");
       router.push({ name: "Login" });
@@ -815,7 +786,6 @@ export default {
 
     return {
       backToDashboard,
-      liveEnvironment,
       step,
       isConfigured,
       isEdited,
@@ -823,13 +793,11 @@ export default {
       proceedDelete,
       timer,
       progressTimer,
-      store,
       onFooterSave,
       onFooterCancel,
       handleDelete,
       startDeleteTimer,
       handleCancelDelete,
-      PauseIcon,
       DeleteIcon,
       showLearnMorePopup,
       selectedSubType,

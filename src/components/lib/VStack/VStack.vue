@@ -5,8 +5,9 @@
 </template>
 
 <script>
-import { computed } from "@vue/runtime-core";
+import { computed } from "vue";
 import { checkFlexGap } from "../utils";
+
 export default {
   name: "VStack",
   props: {

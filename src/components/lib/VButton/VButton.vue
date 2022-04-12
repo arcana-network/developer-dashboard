@@ -52,7 +52,6 @@ button.primary {
 }
 button.primary:hover:not(:disabled) {
   opacity: 0.8;
-  /* box-shadow: inset 0px 25px 47px rgba(0, 52, 101, 0.71); */
 }
 button.primary:disabled {
   background: linear-gradient(to bottom, #4e4e4e, #2b2b2b);
@@ -131,9 +130,9 @@ progress {
 </style>
 
 <script>
-import { reactive } from "@vue/reactivity";
-import { computed } from "@vue/runtime-core";
+import { reactive, computed } from "vue";
 import VCircularProgress from "../VCircularProgress/VCircularProgress.vue";
+
 export default {
   name: "VButton",
   components: { VCircularProgress },
@@ -145,7 +144,7 @@ export default {
     variant: String,
     loading: Boolean,
   },
-  setup(props, { emit, args }) {
+  setup(props, { args }) {
     props = reactive(props);
 
     const classes = computed(() => {
@@ -162,12 +161,9 @@ export default {
       return classNames;
     });
 
-    function handleClick(e) {
-      if (!props.disabled) {
-        if (props.action) {
-          props.action.call();
-        }
-        // return emit("click", e);
+    function handleClick() {
+      if (!props.disabled && props.action) {
+        props.action.call();
       }
     }
 

@@ -76,7 +76,8 @@ progress.error::-moz-progress-bar {
 </style>
 
 <script>
-import { computed } from "@vue/runtime-core";
+import { computed } from "vue";
+
 export default {
   name: "VProgressBar",
   props: {

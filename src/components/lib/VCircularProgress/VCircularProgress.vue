@@ -22,7 +22,6 @@ progress::-webkit-progress-bar {
   background-color: transparent;
 }
 
-/* Indeterminate */
 progress:indeterminate {
   -webkit-mask-image: linear-gradient(transparent 50%, black 50%),
     linear-gradient(to right, transparent 50%, black 50%);
@@ -128,7 +127,8 @@ progress:indeterminate::-ms-fill {
 </style>
 
 <script>
-import { computed, reactive } from "@vue/runtime-core";
+import { computed, reactive } from "vue";
+
 export default {
   name: "VCircularProgress",
   props: {

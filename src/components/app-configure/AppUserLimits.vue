@@ -113,17 +113,24 @@
 </template>
 
 <script>
-import { computed, onMounted, watch } from "@vue/runtime-core";
-import { ref } from "@vue/reactivity";
+import { computed, watch, ref } from "vue";
 import { useStore } from "vuex";
+import bytes from "bytes";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
-import bytes from "bytes";
 
 const MIN_BYTES = bytes("1 MB");
 const MAX_BYTES = bytes("99 GB");
+const EMPTY_VALUE = {
+  value: "",
+  unit: "",
+}
+const INIT_VALUE = {
+  value: 2,
+  unit: "MB",
+}
 
 export default {
   name: "ConfigureUserLimits",
@@ -131,10 +138,10 @@ export default {
     isConfigured: Boolean,
   },
   components: {
+    VButton,
     VCard,
     VDropdown,
     VSwitch,
-    VButton,
   },
   setup(props, { emit }) {
     const store = useStore();
@@ -149,19 +156,10 @@ export default {
     let bandwidthUnlimited = ref(
       store.getters[env.value + "/isBandwidthUnlimited"]
     );
-    let storage = ref({
-      value: 2,
-      unit: "MB",
-    });
-    let bandwidth = ref({
-      value: 2,
-      unit: "MB",
-    });
+    let storage = ref({ ...store.getters[env.value + "/storage"] });
+    let bandwidth = ref({ ...store.getters[env.value + "/bandwidth"] });
     let hasStorageError = ref(false),
       hasBandwidthError = ref(false);
-
-    storage.value = { ...store.getters[env.value + "/storage"] };
-    bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
 
     function onLearnMoreClicked() {
       store.dispatch("showLearnMorePopup", {
@@ -194,14 +192,6 @@ export default {
       const actualValue = bytes(`${value}${unit}`);
       return actualValue >= MIN_BYTES && actualValue <= MAX_BYTES;
     }
-
-    watch(
-      () => env.value,
-      () => {
-        storage.value = { ...store.getters[env.value + "/storage"] };
-        bandwidth.value = { ...store.getters[env.value + "/bandwidth"] };
-      }
-    );
 
     watch(
       () => storage.value,
@@ -247,22 +237,15 @@ export default {
       () => storageUnlimited.value,
       () => {
         if (storageUnlimited.value) {
-          storage.value = {
-            value: "",
-            unit: "",
-          };
+          storage.value = { ...EMPTY_VALUE };
           hasStorageError.value = false;
           store.dispatch(env.value + "/updateStorage", {
-            value: 2,
-            unit: "MB",
+            ...storage.value,
             isUnlimited: true,
           });
         } else {
           if (!storage.value.value) {
-            storage.value = {
-              value: 2,
-              unit: "MB",
-            };
+            storage.value = { ...INIT_VALUE };
           }
           store.dispatch(env.value + "/updateStorage", {
             ...storage.value,
@@ -280,10 +263,7 @@ export default {
       () => bandwidthUnlimited.value,
       () => {
         if (bandwidthUnlimited.value) {
-          bandwidth.value = {
-            value: "",
-            unit: "",
-          };
+          bandwidth.value = { ...EMPTY_VALUE };
           hasBandwidthError.value = false;
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,
@@ -291,10 +271,7 @@ export default {
           });
         } else {
           if (!bandwidth.value.value) {
-            bandwidth.value = {
-              value: 2,
-              unit: "MB",
-            };
+            bandwidth.value = { ...INIT_VALUE };
           }
           store.dispatch(env.value + "/updateBandwidth", {
             ...bandwidth.value,

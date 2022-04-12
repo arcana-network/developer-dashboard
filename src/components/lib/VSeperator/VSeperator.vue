@@ -20,6 +20,5 @@ export default {
     vertical: Boolean,
   },
   name: "VSeperator",
-  setup() {},
 };
 </script>

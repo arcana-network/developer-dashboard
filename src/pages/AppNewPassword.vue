@@ -2,7 +2,7 @@
   <div>
     <main class="flex">
       <landing-descriptor />
-      <section class="forgot-password-container">
+      <section class="create-password-container">
         <div>
           <h1 style="text-align: center">Create Password</h1>
         </div>
@@ -38,7 +38,7 @@
             <li
               :class="{
                 'success-message':
-                  password.trim() && password === confirmPassword,
+                  password && password === confirmPassword,
               }"
             >
               Passwords must match
@@ -138,7 +138,7 @@
 </template>
 
 <style scoped>
-.forgot-password-container {
+.create-password-container {
   width: 50%;
   max-width: 520px;
   margin: 16vh auto 0 auto;
@@ -204,20 +204,19 @@ li.success-message {
 </style>
 
 <script>
-import { ref } from "@vue/reactivity";
-import { computed, onBeforeMount } from "@vue/runtime-core";
+import { ref, computed, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import LandingDescriptor from "@/components/LandingDescriptor.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
 import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import VStack from "@/components/lib/VStack/VStack.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
-import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
-import VCard from "@/components/lib/VCard/VCard.vue";
-import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
-import FullScreenLoader from "@/components/FullScreenLoader.vue";
 
 import CloseIcon from "@/assets/iconography/close.svg";
 
@@ -225,15 +224,15 @@ import { encrypt, bufferToString } from "@/utils/cryptoUtils";
 
 export default {
   components: {
+    FullScreenLoader,
     LandingDescriptor,
     VButton,
-    VIconButton,
-    VStack,
-    VTextField,
     VCard,
+    VIconButton,
     VOverlay,
     VSeperator,
-    FullScreenLoader,
+    VStack,
+    VTextField,
   },
   setup() {
     const store = useStore();
