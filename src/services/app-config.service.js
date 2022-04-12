@@ -93,7 +93,6 @@ export async function fetchAndStoreAppConfig() {
     store.dispatch("updateAppName", currentApp.name);
     store.dispatch("updateAppId", currentApp.ID);
 
-    // Get Address
     const appAddress = currentApp.address;
     store.dispatch("updateSmartContractAddress", appAddress);
 
