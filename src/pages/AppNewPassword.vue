@@ -38,7 +38,7 @@
             <li
               :class="{
                 'success-message':
-                  password === confirmPassword,
+                  password && password === confirmPassword,
               }"
             >
               Passwords must match
