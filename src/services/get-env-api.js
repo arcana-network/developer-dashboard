@@ -1,4 +1,4 @@
-import constants from "../utils/constants";
+import constants from "@/utils/constants";
 
 const CURRENT_API_VERSION = import.meta.env.VITE_CURRENT_API_VERSION || "";
 

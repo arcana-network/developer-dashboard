@@ -1,6 +1,6 @@
 import axios from "axios";
 import getEnvApi from "./get-env-api";
-import store from "../store";
+import store from "@/store";
 import { fetchAllApps, fetchApp } from "./dashboard.service";
 import bytes from "bytes";
 
