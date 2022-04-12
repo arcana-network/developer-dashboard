@@ -57,7 +57,8 @@ footer.show {
 </style>
 
 <script>
-import VButton from "./lib/VButton/VButton.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
+
 export default {
   components: { VButton },
   props: {

@@ -67,16 +67,16 @@ section {
 </style>
 
 <script>
-import { computed, onMounted, ref, onUnmounted } from "@vue/runtime-core";
+import { computed, onMounted, ref, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
-import ArcanaLogo from "../assets/iconography/arcana-dark-vertical.svg";
-import AccountUserIcon from "../assets/iconography/account-user.svg";
-import MenuIcon from "../assets/iconography/menu.svg";
-import ArcanaFavicon from "../assets/iconography/arcana-favicon.svg";
-import VHeader from "./lib/VHeader/VHeader.vue";
+import AccountUserIcon from "@/assets/iconography/account-user.svg";
+import ArcanaFavicon from "@/assets/iconography/arcana-favicon.svg";
+import ArcanaLogo from "@/assets/iconography/arcana-dark-vertical.svg";
 import CancelIcon from "@/assets/iconography/cancel.svg";
+import MenuIcon from "@/assets/iconography/menu.svg";
 import CloseIcon from "@/components/icons/CloseIcon.vue";
+import VHeader from "@/components/lib/VHeader/VHeader.vue";
 
 export default {
   name: "AppHeader",
