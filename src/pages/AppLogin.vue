@@ -161,18 +161,18 @@ import { useStore } from "vuex";
 import { onMounted, ref } from "@vue/runtime-core";
 import { SocialLoginType } from "@arcana/auth";
 import sign from "@/services/sign";
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import LandingDescriptor from "@/components/LandingDescriptor.vue";
 import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
-import FullScreenLoader from "../components/FullScreenLoader.vue";
 import { getNonce, login, addUserToMailchimp } from "@/services/auth.service";
 import useArcanaAuth from "@/use/arcanaAuth";
 
 export default {
   name: "AppLoginV2",
   components: {
+    FullScreenLoader,
     LandingDescriptor,
     VCardButton,
-    FullScreenLoader,
   },
   setup() {
     const router = useRouter();

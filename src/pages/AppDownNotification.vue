@@ -63,7 +63,7 @@ h5.down-description {
 </style>
 
 <script>
-import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
 
 export default {
   name: "AppDownNotification",

@@ -450,6 +450,7 @@ import ConfigureAppName from "@/components/app-configure/AppName.vue";
 import ConfigureAppRegion from "@/components/app-configure/AppRegion.vue";
 import ConfigureFooter from "@/components/ConfigureFooter.vue";
 import ConfigureUserLimits from "@/components/app-configure/AppUserLimits.vue";
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VChip from "@/components/lib/VChip/VChip.vue";
@@ -473,7 +474,6 @@ import {
   deleteCred,
 } from "@/services/app-config.service";
 import signerMakeTx from "@/utils/signerMakeTx";
-import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import { decrypt } from "@/utils/cryptoUtils";
 import useArcanaAuth from "@/use/arcanaAuth";
 
@@ -487,6 +487,7 @@ export default {
     ConfigureAppRegion,
     ConfigureFooter,
     ConfigureUserLimits,
+    FullScreenLoader,
     VButton,
     VCard,
     VChip,
@@ -499,7 +500,6 @@ export default {
     VSwitch,
     VTextField,
     VTooltip,
-    FullScreenLoader,
   },
   setup() {
     const router = useRouter();

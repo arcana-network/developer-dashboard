@@ -582,37 +582,26 @@ h5.testnet-disclaimer.popup {
 </style>
 
 <script>
-import { fetchAndStoreAppConfig } from "@/services/app-config.service";
-import { useRouter } from "vue-router";
-import { useStore } from "vuex";
 import {
   computed,
   onBeforeMount,
   onMounted,
   ref,
   watch,
-} from "@vue/runtime-core";
-import {
-  createChartView,
-  updateChartView,
-  getInitialUsageChartConfig,
-} from "@/utils/chart";
-import {
-  fetchStats,
-  fetchPeriodicUsage,
-  fetchApp,
-} from "@/services/dashboard.service";
-
-import AppHeader from "@/components/AppHeader.vue";
-import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
+} from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
+import moment from "moment";
 import bytes from "bytes";
+
+import ArrowRightIcon from "@/assets/iconography/arrow-right.svg";
 import CheckIcon from "@/assets/iconography/check.svg";
 import CopyIcon from "@/assets/iconography/copy.svg";
 import copyToClipboard from "@/utils/copyToClipboard";
-import moment from "moment";
 import RectanglePlaceholderIcon from "@/assets/iconography/Rectangle-placeholder.svg";
 
-import VButton from "../components/lib/VButton/VButton.vue";
+import AppHeader from "@/components/AppHeader.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
 import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
@@ -622,6 +611,18 @@ import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import VStack from "@/components/lib/VStack/VStack.vue";
 import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+
+import {
+  createChartView,
+  updateChartView,
+  getInitialUsageChartConfig,
+} from "@/utils/chart";
+import { fetchAndStoreAppConfig } from "@/services/app-config.service";
+import {
+  fetchStats,
+  fetchPeriodicUsage,
+  fetchApp,
+} from "@/services/dashboard.service";
 
 export default {
   components: {

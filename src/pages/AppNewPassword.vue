@@ -204,20 +204,19 @@ li.success-message {
 </style>
 
 <script>
-import { ref } from "@vue/reactivity";
-import { computed, onBeforeMount } from "@vue/runtime-core";
+import { ref, computed, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 
+import FullScreenLoader from "@/components/FullScreenLoader.vue";
 import LandingDescriptor from "@/components/LandingDescriptor.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
 import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import VStack from "@/components/lib/VStack/VStack.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
-import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
-import VCard from "@/components/lib/VCard/VCard.vue";
-import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
-import FullScreenLoader from "@/components/FullScreenLoader.vue";
 
 import CloseIcon from "@/assets/iconography/close.svg";
 
@@ -225,15 +224,15 @@ import { encrypt, bufferToString } from "@/utils/cryptoUtils";
 
 export default {
   components: {
+    FullScreenLoader,
     LandingDescriptor,
     VButton,
-    VIconButton,
-    VStack,
-    VTextField,
     VCard,
+    VIconButton,
     VOverlay,
     VSeperator,
-    FullScreenLoader,
+    VStack,
+    VTextField,
   },
   setup() {
     const store = useStore();

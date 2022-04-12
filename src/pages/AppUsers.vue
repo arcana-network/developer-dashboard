@@ -281,22 +281,21 @@ tbody tr:active {
 </style>
 
 <script>
-import { ref } from "@vue/reactivity";
-import { onBeforeMount } from "@vue/runtime-core";
+import { ref, onBeforeMount } from "vue";
 import moment from "moment";
 import bytes from "bytes";
-import AppHeader from "../components/AppHeader.vue";
-import VTextField from "../components/lib/VTextField/VTextField.vue";
-import SearchIcon from "../assets/iconography/search.svg";
-import VCard from "../components/lib/VCard/VCard.vue";
-import VOverlay from "../components/lib/VOverlay/VOverlay.vue";
-import { createChartView, getInitialUsersChartConfig } from "../utils/chart";
+import AppHeader from "@/components/AppHeader.vue";
+import SearchIcon from "@/assets/iconography/search.svg";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
+import { createChartView, getInitialUsersChartConfig } from "@/utils/chart";
 import {
   fetchAllUsers,
   fetchAllUserTransactions,
   fetchMonthlyUsers,
   searchUsers,
-} from "../services/user.service";
+} from "@/services/user.service";
 
 export default {
   components: { AppHeader, VTextField, VCard, VOverlay },
