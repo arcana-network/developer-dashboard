@@ -113,14 +113,13 @@
 </template>
 
 <script>
-import { computed, watch } from "vue";
-import { ref } from "@vue/reactivity";
+import { computed, watch, ref } from "vue";
 import { useStore } from "vuex";
+import bytes from "bytes";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
-import bytes from "bytes";
 
 const MIN_BYTES = bytes("1 MB");
 const MAX_BYTES = bytes("99 GB");
@@ -139,10 +138,10 @@ export default {
     isConfigured: Boolean,
   },
   components: {
+    VButton,
     VCard,
     VDropdown,
     VSwitch,
-    VButton,
   },
   setup(props, { emit }) {
     const store = useStore();

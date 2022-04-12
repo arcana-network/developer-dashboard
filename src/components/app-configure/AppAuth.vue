@@ -146,17 +146,17 @@
 <script>
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
-import VTextField from "@/components/lib/VTextField/VTextField.vue";
-import VCard from "@/components/lib/VCard/VCard.vue";
-import VButton from "@/components/lib/VButton/VButton.vue";
-import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
-import VChip from "@/components/lib/VChip/VChip.vue";
-import PlusIcon from "@/assets/iconography/plus.svg";
 import CancelIcon from "@/assets/iconography/close.svg";
 import CheckIcon from "@/assets/iconography/check.svg";
-import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
-import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import PlusIcon from "@/assets/iconography/plus.svg";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
 import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
+import VChip from "@/components/lib/VChip/VChip.vue";
+import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 export default {
   name: "ConfigureAppAuth",
@@ -164,14 +164,14 @@ export default {
     isConfigured: Boolean,
   },
   components: {
-    VCard,
-    VChip,
     VButton,
+    VCard,
+    VCardButton,
+    VChip,
     VDropdown,
+    VIconButton,
     VTextField,
     VTooltip,
-    VIconButton,
-    VCardButton,
   },
   setup(props) {
     const store = useStore();

@@ -118,13 +118,13 @@ h4 {
 </style>
 
 <script>
-import VCard from "@/components/lib/VCard/VCard.vue";
-import VButton from "@/components/lib/VButton/VButton.vue";
-import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
-import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
 import { watch, ref, computed } from "vue";
-import VStack from "@/components/lib/VStack/VStack.vue";
 import { useStore } from "vuex";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 export default {

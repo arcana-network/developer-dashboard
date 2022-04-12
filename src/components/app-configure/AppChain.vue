@@ -69,8 +69,8 @@ import { useStore } from "vuex";
 
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
-import VStack from "@/components/lib/VStack/VStack.vue";
 import VRadioGroup from "@/components/lib/VRadioGroup/VRadioGroup.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
 import { chains } from "@/utils/constants";
 
 export default {

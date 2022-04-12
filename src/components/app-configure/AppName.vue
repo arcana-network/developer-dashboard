@@ -54,10 +54,10 @@ h4 {
 <script>
 import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
-import VTextField from "@/components/lib/VTextField/VTextField.vue";
-import VCard from "@/components/lib/VCard/VCard.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
 import VStack from "@/components/lib/VStack/VStack.vue";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
 
 export default {
   name: "ConfigureAppName",
