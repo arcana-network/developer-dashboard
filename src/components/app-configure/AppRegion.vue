@@ -118,14 +118,14 @@ h4 {
 </style>
 
 <script>
-import VCard from "../lib/VCard/VCard.vue";
-import VButton from "../lib/VButton/VButton.vue";
-import VSwitch from "../lib/VSwitch/VSwitch.vue";
-import VSeperator from "../lib/VSeperator/VSeperator.vue";
-import { watch, ref, computed } from "@vue/runtime-core";
-import VStack from "../lib/VStack/VStack.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
+import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
+import { watch, ref, computed } from "vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
 import { useStore } from "vuex";
-import VTooltip from "../lib/VTooltip/VTooltip.vue";
+import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
 
 export default {
   name: "ConfigureAppRegion",
@@ -150,16 +150,8 @@ export default {
     }
 
     watch(
-      () => env.value,
-      () => {
-        region.value = { ...store.getters[env.value + "/region"] };
-      }
-    );
-
-    watch(
       () => region.value,
       () => {
-        // Make changes depending on previous state
         const previousRegionCopy = { ...store.getters[env.value + "/region"] };
         Object.keys(region.value).forEach((key) => {
           if (key !== "any") {

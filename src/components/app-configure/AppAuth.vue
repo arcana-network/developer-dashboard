@@ -144,20 +144,19 @@
 </template>
 
 <script>
-import { ref } from "@vue/reactivity";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import VCard from "@/components/lib/VCard/VCard.vue";
 import VButton from "@/components/lib/VButton/VButton.vue";
 import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VChip from "@/components/lib/VChip/VChip.vue";
-import { computed, watch } from "@vue/runtime-core";
-import { useStore } from "vuex";
 import PlusIcon from "@/assets/iconography/plus.svg";
 import CancelIcon from "@/assets/iconography/close.svg";
 import CheckIcon from "@/assets/iconography/check.svg";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
-import VIconButton from "../lib/VIconButton/VIconButton.vue";
-import VCardButton from "../lib/VCardButton/VCardButton.vue";
+import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
+import VCardButton from "@/components/lib/VCardButton/VCardButton.vue";
 
 export default {
   name: "ConfigureAppAuth",
@@ -178,7 +177,6 @@ export default {
     const store = useStore();
     let authToRemove = [];
     const authenticationTypes = [
-      // "Bring Your Own Keys",
       {
         name: "Google",
         idRequired: true,
@@ -222,13 +220,13 @@ export default {
         redirectUrlRequired: true,
       },
     ];
-    let authenticationDetails = ref([]);
+
     const env = computed(() => {
       return store.getters.env;
     });
-    authenticationDetails.value = [
-      ...store.getters[env.value + "/authDetails"],
-    ];
+
+    let authenticationDetails = ref([...store.getters[env.value + "/authDetails"]]);
+
     let selectedAuthClientIdError = ref(false);
     let selectedAuthenticationType = ref("");
     let selectedAuthClientId = ref("");
@@ -304,11 +302,7 @@ export default {
         store.dispatch("configChangeDetected");
       }
 
-      selectedAuthenticationType.value = "";
-      selectedAuthClientId.value = "";
-      selectedAuthClientSecret.value = "";
-      selectedAuthOrigin.value = "";
-      selectedAuthRedirectUrl.value = "";
+      clearAuthentication();
     }
 
     function removeAuthentication(index) {
@@ -324,7 +318,6 @@ export default {
       }
     }
 
-    //Resetting all reactive variables
     function clearAuthentication() {
       selectedAuthClientId.value = "";
       selectedAuthClientIdError.value = false;
@@ -360,13 +353,6 @@ export default {
           "Choose how your users signup/login to your app. Options for Signup/Login include popular oAuth mechanisms and once the uses any mechanism to enter your app, they will be assigned a public-private keypair which is then used as the basis for signing transactions as well as encrypting/decrypting data being uploaded/downloaded (both managed by the SDK). In the near future, there will be options for users to bring their own keys and/or use from a variety of wallet options.",
       });
     }
-
-    watch(
-      () => env.value,
-      () => {
-        authenticationDetails.value = store.getters[env.value + "/authDetails"];
-      }
-    );
 
     return {
       authenticationTypes,

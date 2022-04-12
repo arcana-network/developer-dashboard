@@ -52,12 +52,12 @@ h4 {
 </style>
 
 <script>
-import { computed, ref, watch } from "@vue/runtime-core";
-import VTextField from "../lib/VTextField/VTextField.vue";
-import VCard from "../lib/VCard/VCard.vue";
-import VButton from "../lib/VButton/VButton.vue";
-import VStack from "../lib/VStack/VStack.vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
+import VTextField from "@/components/lib/VTextField/VTextField.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
 
 export default {
   name: "ConfigureAppName",

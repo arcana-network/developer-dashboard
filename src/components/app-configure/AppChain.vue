@@ -64,14 +64,14 @@ h4 {
 </style>
 
 <script>
-import { computed } from "@vue/runtime-core";
+import { computed } from "vue";
 import { useStore } from "vuex";
 
-import VButton from "../lib/VButton/VButton.vue";
-import VCard from "../lib/VCard/VCard.vue";
-import VStack from "../lib/VStack/VStack.vue";
-import VRadioGroup from "../lib/VRadioGroup/VRadioGroup.vue";
-import { chains } from "../../utils/constants";
+import VButton from "@/components/lib/VButton/VButton.vue";
+import VCard from "@/components/lib/VCard/VCard.vue";
+import VStack from "@/components/lib/VStack/VStack.vue";
+import VRadioGroup from "@/components/lib/VRadioGroup/VRadioGroup.vue";
+import { chains } from "@/utils/constants";
 
 export default {
   name: "ConfigureAppChainType",
