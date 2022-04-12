@@ -102,7 +102,8 @@
 </style>
 
 <script>
-import { computed, reactive, ref, watch } from "@vue/runtime-core";
+import { computed, reactive, ref, watch } from "vue";
+
 export default {
   name: "VSwitch",
   props: {

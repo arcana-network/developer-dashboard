@@ -230,7 +230,8 @@ header section {
 </style>
 
 <script>
-import { computed, onMounted, onUnmounted, ref } from "@vue/runtime-core";
+import { computed, ref } from "vue";
+
 export default {
   name: "VHeader",
   props: {

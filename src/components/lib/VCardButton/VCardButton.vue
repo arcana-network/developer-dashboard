@@ -38,6 +38,5 @@ export default {
     active: Boolean,
     disabled: Boolean,
   },
-  setup() {},
 };
 </script>

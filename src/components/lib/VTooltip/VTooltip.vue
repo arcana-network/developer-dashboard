@@ -52,7 +52,8 @@ span.tooltip {
 </style>
 
 <script>
-import { computed, reactive } from "@vue/runtime-core";
+import { computed, reactive } from "vue";
+
 export default {
   name: "VTooltip",
   inheritAttrs: false,
