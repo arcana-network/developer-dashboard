@@ -18,6 +18,7 @@ export function createApp({
   bandwidth_limit,
   storage_limit,
   cred,
+  aggregate_login
 }) {
   return axios.post(
     getEnvApi() + "/create-app/",
@@ -28,6 +29,7 @@ export function createApp({
       bandwidth_limit,
       storage_limit,
       cred,
+      aggregate_login
     },
     {
       headers: {
@@ -99,6 +101,9 @@ export async function fetchAndStoreAppConfig() {
     const env = store.getters.env;
     const chainType = CHAIN_TYPES[currentApp.chain];
     store.dispatch(env + "/updateChainType", chainType);
+
+    const hasAggregateLogin = currentApp.aggregate_login;
+    store.dispatch(env + "/updateAggregateLogin", hasAggregateLogin);
 
     calculateAndStoreLimits({
       userLimit: currentApp.storage_limit,
