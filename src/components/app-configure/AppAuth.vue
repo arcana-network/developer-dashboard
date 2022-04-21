@@ -171,7 +171,7 @@ import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
-import VSwitch from "../lib/VSwitch/VSwitch.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 
 export default {
   name: "ConfigureAppAuth",
@@ -250,7 +250,7 @@ export default {
     let selectedAuthOrigin = ref("");
     let selectedAuthRedirectUrl = ref("");
     let errorMessage = ref("");
-    let hasAggregateLogin = ref(store.getters["test/hasAggregateLogin"]);
+    let hasAggregateLogin = computed(() => store.getters["test/hasAggregateLogin"]);
 
     function addAuthentication() {
       const type = selectedAuthenticationType.value.name.toLowerCase();
@@ -372,7 +372,6 @@ export default {
     }
 
     function updateAggregateLogin(ev) {
-      hasAggregateLogin.value = ev.value;
       store.dispatch("test/updateAggregateLogin", ev.value);
     }
 
