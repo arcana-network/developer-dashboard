@@ -12,7 +12,7 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import { onBeforeMount, ref } from "@vue/runtime-core";
 import { getConfig } from "@/services/app-config.service";
 import { useStore } from "vuex";

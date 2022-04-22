@@ -1,20 +1,10 @@
 <template>
   <footer :class="{ show }">
     <div class="container flex flex-wrap">
-      <v-button
-        :label="cancelLabel || 'CANCEL'"
-        :disabled="cancelDisabled"
-        variant="secondary"
-        @click.stop="onCancelClick"
-        v-wave
-      />
-      <v-button
-        :label="saveLabel || 'SAVE'"
-        :disabled="saveDisabled"
-        variant="primary"
-        @click.stop="onSaveClick"
-        v-wave
-      />
+      <v-button :label="cancelLabel || 'CANCEL'" :disabled="cancelDisabled" variant="secondary"
+        @click.stop="onCancelClick" v-wave />
+      <v-button :label="saveLabel || 'SAVE'" :disabled="saveDisabled" variant="primary" @click.stop="onSaveClick"
+        v-wave />
     </div>
   </footer>
 </template>
@@ -33,30 +23,35 @@ footer {
   visibility: hidden;
   transition: opacity 0.3s;
 }
+
 footer div {
   gap: 2em;
   justify-content: flex-end;
 }
+
 footer.show {
   opacity: 1;
   visibility: visible;
 }
+
 @media only screen and (max-width: 767px) {
   footer {
     padding-bottom: 0.5em;
   }
+
   footer div {
     gap: 0.5em;
     justify-content: center;
     flex-wrap: wrap-reverse;
   }
+
   .container {
     margin-bottom: 1vh;
   }
 }
 </style>
 
-<script>
+<script lang="ts">
 import VButton from "@/components/lib/VButton/VButton.vue";
 
 export default {

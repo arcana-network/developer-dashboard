@@ -2,116 +2,53 @@
   <div>
     <app-header v-if="isConfigured" />
     <header v-else class="first-time-configure-header">
-      <div
-        class="container flex justify-space-between"
-        style="align-items: center"
-      >
+      <div class="container flex justify-space-between" style="align-items: center">
         <h1>CONFIGURE</h1>
         <div class="position-relative">
-          <circle-progress
-            :percent="(step / 5) * 100"
-            :size="60"
-            :border-width="4"
-            :border-bg-width="4"
-            fill-color="#13A3FD"
-            empty-color="transparent"
-          >
+          <circle-progress :percent="(step / 5) * 100" :size="60" :border-width="4" :border-bg-width="4"
+            fill-color="#13A3FD" empty-color="transparent">
           </circle-progress>
           <h4 class="position-absolute step-counter">{{ step }}/5</h4>
         </div>
       </div>
     </header>
     <main class="container" :style="!isConfigured ? 'margin-bottom: 10em' : ''">
-      <section
-        class="flex flex-wrap"
-        style="align-items: center"
-        v-if="isConfigured"
-      >
-        <img
-          src="@/assets/iconography/back.svg"
-          style="margin-right: 2em"
-          class="cursor-pointer"
-          alt="go back"
-          @click.stop="backToDashboard"
-        />
+      <section class="flex flex-wrap" style="align-items: center" v-if="isConfigured">
+        <img src="@/assets/iconography/back.svg" style="margin-right: 2em" class="cursor-pointer" alt="go back"
+          @click.stop="backToDashboard" />
         <h1>CONFIGURE</h1>
-        <v-stack
-          direction="row"
-          gap="1.2em"
-          align="center"
-          class="configure-options"
-        >
+        <v-stack direction="row" gap="1.2em" align="center" class="configure-options">
           <v-stack direction="row" gap="1em">
-            <span
-              class="body-1"
-              style="color: var(--text-grey)"
-            >
+            <span class="body-1" style="color: var(--text-grey)">
               TestNet
             </span>
-            <v-switch
-              variant="secondary"
-              disabled
-              style="margin-top: 1px"
-            />
-            <span
-              class="body-1"
-              style="color: var(--text-grey)"
-            >
+            <v-switch variant="secondary" disabled style="margin-top: 1px" />
+            <span class="body-1" style="color: var(--text-grey)">
               MainNet
             </span>
           </v-stack>
           <div style="margin-left: auto">
             <v-tooltip title="Delete App">
-              <v-icon-button
-                :icon="DeleteIcon"
-                class="app-action"
-                @click="deleteApp = true"
-              />
+              <v-icon-button :icon="DeleteIcon" class="app-action" @click="deleteApp = true" />
             </v-tooltip>
           </div>
         </v-stack>
       </section>
-      <configure-app-name
-        :isConfigured="isConfigured"
-        @enter-click="step = 2"
-      />
-      <configure-app-region
-        v-if="isConfigured || step >= 2"
-        :style="step === 2 ? 'margin-bottom: 2em' : ''"
-        :isConfigured="isConfigured"
-      />
-      <configure-app-chain-type
-        v-if="isConfigured || step >= 3"
-        :style="step === 3 ? 'margin-bottom: 2em' : ''"
-        :isConfigured="isConfigured"
-      />
-      <configure-app-auth
-        v-if="isConfigured || step >= 4"
-        :style="step === 4 ? 'margin-bottom: 2em' : ''"
-        :isConfigured="isConfigured"
-      />
-      <configure-user-limits
-        v-if="isConfigured || step >= 5"
-        style="margin-bottom: 8em"
-        :isConfigured="isConfigured"
-        @value-change="onUserLimitValueChange"
-      />
+      <configure-app-name :isConfigured="isConfigured" @enter-click="step = 2" />
+      <configure-app-region v-if="isConfigured || step >= 2" :style="step === 2 ? 'margin-bottom: 2em' : ''"
+        :isConfigured="isConfigured" />
+      <configure-app-chain-type v-if="isConfigured || step >= 3" :style="step === 3 ? 'margin-bottom: 2em' : ''"
+        :isConfigured="isConfigured" />
+      <configure-app-auth v-if="isConfigured || step >= 4" :style="step === 4 ? 'margin-bottom: 2em' : ''"
+        :isConfigured="isConfigured" />
+      <configure-user-limits v-if="isConfigured || step >= 5" style="margin-bottom: 8em" :isConfigured="isConfigured"
+        @value-change="onUserLimitValueChange" />
     </main>
-    <configure-footer
-      v-if="!isConfigured || isEdited"
-      :saveLabel="isConfigured || step === 5 ? 'SAVE' : 'NEXT'"
-      @save="onFooterSave"
-      @cancel="onFooterCancel"
-      :cancelLabel="isConfigured || step === 1 ? 'CANCEL' : 'PREVIOUS'"
-    />
+    <configure-footer v-if="!isConfigured || isEdited" :saveLabel="isConfigured || step === 5 ? 'SAVE' : 'NEXT'"
+      @save="onFooterSave" @cancel="onFooterCancel" :cancelLabel="isConfigured || step === 1 ? 'CANCEL' : 'PREVIOUS'" />
 
-    <v-overlay
-      v-if="showLearnMorePopup"
-      style="align-items: center; justify-content: center; display: flex"
-    >
-      <v-card
-        variant="popup"
-        style="
+    <v-overlay v-if="showLearnMorePopup" style="align-items: center; justify-content: center; display: flex">
+      <v-card variant="popup" style="
           padding: 4em 2em;
           min-width: 200px;
           max-width: 700px;
@@ -119,8 +56,7 @@
           flex-direction: column;
           gap: 1vh;
           position: relative;
-        "
-      >
+        ">
         <header class="sub-heading-2" style="flex-grow: 1; display: flex">
           {{ selectedSubType.header }}
         </header>
@@ -128,164 +64,91 @@
         <main class="body-1" style="font-size: 1.125em; line-height: 1.6em">
           {{ selectedSubType.description }}
         </main>
-        <v-icon-button
-          :icon="CloseIcon"
-          class="close-learn-more"
-          @click.stop="hideLearnMorePopup"
-        >
+        <v-icon-button :icon="CloseIcon" class="close-learn-more" @click.stop="hideLearnMorePopup">
         </v-icon-button>
       </v-card>
     </v-overlay>
 
-    <v-overlay
-      v-if="deleteApp"
-      style="align-items: center; justify-content: center; display: flex"
-    >
-      <v-card
-        variant="popup"
-        style="
+    <v-overlay v-if="deleteApp" style="align-items: center; justify-content: center; display: flex">
+      <v-card variant="popup" style="
           padding: 4em 2em;
           min-width: 200px;
           max-width: 560px;
           width: 72%;
           flex-direction: column;
           gap: 1vh;
-        "
-      >
-        <header
-          class="sub-heading-1"
-          style="justify-content: center; flex-grow: 1; display: flex"
-        >
+        ">
+        <header class="sub-heading-1" style="justify-content: center; flex-grow: 1; display: flex">
           Delete app
         </header>
         <v-seperator style="width: 100%" />
-        <main
-          class="body-3"
-          style="
+        <main class="body-3" style="
             padding: 2vw;
             font-size: 0.9em;
             line-height: 1.6em;
             text-align: center;
-          "
-        >
+          ">
           Deleting the app will remove all the assets that have been uploaded by
           your application and it’s users, remove public and private keys
           assigned to users and any access controls that may have been set.
           <br /><br />
           Please press ‘Delete’ to confirm this action.
         </main>
-        <footer
-          class="flex sm-column"
-          style="
+        <footer class="flex sm-column" style="
             gap: 2vh;
             align-items: center;
             flex-grow: 1;
             justify-content: center;
-          "
-        >
-          <v-button
-            variant="secondary"
-            label="CANCEL"
-            v-wave
-            style="border: 3px solid #28c6fa"
-            @click.stop="deleteApp = false"
-          />
-          <v-button
-            variant="primary"
-            label="DELETE"
-            v-wave
-            :action="startDeleteTimer"
-          />
+          ">
+          <v-button variant="secondary" label="CANCEL" v-wave style="border: 3px solid #28c6fa"
+            @click.stop="deleteApp = false" />
+          <v-button variant="primary" label="DELETE" v-wave :action="startDeleteTimer" />
         </footer>
       </v-card>
     </v-overlay>
 
-    <v-overlay
-      v-if="proceedDelete"
-      style="align-items: center; justify-content: center; display: flex"
-    >
-      <v-card
-        variant="popup"
-        style="
+    <v-overlay v-if="proceedDelete" style="align-items: center; justify-content: center; display: flex">
+      <v-card variant="popup" style="
           padding: 4vh 2em;
           min-width: 200px;
           max-width: 560px;
           width: 72%;
           flex-direction: column;
           gap: 1vh;
-        "
-      >
-        <header
-          class="sub-heading-1"
-          style="justify-content: center; flex-grow: 1; display: flex"
-        >
+        ">
+        <header class="sub-heading-1" style="justify-content: center; flex-grow: 1; display: flex">
           Deleting App...
         </header>
         <div class="flex outer-clock">
-          <circle-progress
-            :percent="(progressTimer / 60000) * 100"
-            :border-width="5"
-            :border-bg-width="5"
-            fill-color="#13A3FD"
-            empty-color="transparent"
-            :size="200"
-          />
+          <circle-progress :percent="(progressTimer / 60000) * 100" :border-width="5" :border-bg-width="5"
+            fill-color="#13A3FD" empty-color="transparent" :size="200" />
           <div class="flex inner-clock">
             <span class="sub-heading-2">
               00:{{ timer.toString().padStart(2, "0") }}
             </span>
           </div>
         </div>
-        <footer
-          class="flex sm-column"
-          style="
+        <footer class="flex sm-column" style="
             gap: 2vh;
             align-items: center;
             flex-grow: 1;
             justify-content: center;
-          "
-        >
-          <v-button
-            variant="secondary"
-            label="CANCEL"
-            v-wave
-            style="border: 3px solid #28c6fa"
-            @click.stop="handleCancelDelete"
-          />
-          <v-button
-            variant="primary"
-            label="CONFIRM"
-            v-wave
-            @click.stop="handleDelete"
-          />
+          ">
+          <v-button variant="secondary" label="CANCEL" v-wave style="border: 3px solid #28c6fa"
+            @click.stop="handleCancelDelete" />
+          <v-button variant="primary" label="CONFIRM" v-wave @click.stop="handleDelete" />
         </footer>
       </v-card>
     </v-overlay>
 
-    <v-overlay
-      v-if="!isPrivateKeyDecrypted"
-      style="align-items: center; justify-content: center; display: flex"
-    >
+    <v-overlay v-if="!isPrivateKeyDecrypted" style="align-items: center; justify-content: center; display: flex">
       <v-card variant="popup" class="popup-card">
         <h4>Enter Password to decrypt private key</h4>
-        <v-text-field
-          label="Enter password"
-          type="password"
-          placeholder="Enter Here"
-          name="password"
-          id="password"
-          v-model="password"
-          style="width: 100%"
-          :message-type="passwordMessageType"
-          :message="passwordMessage"
-        />
+        <v-text-field label="Enter password" type="password" placeholder="Enter Here" name="password" id="password"
+          v-model="password" style="width: 100%" :message-type="passwordMessageType" :message="passwordMessage" />
         <v-button label="Confirm" :action="onConfirmPassword" />
-        <v-button
-          variant="link"
-          label="Forgot Password?"
-          style="margin-top: 1em; align-self: center"
-          :action="onForgotPassword"
-        />
+        <v-button variant="link" label="Forgot Password?" style="margin-top: 1em; align-self: center"
+          :action="onForgotPassword" />
       </v-card>
     </v-overlay>
 
@@ -353,11 +216,9 @@
   position: absolute;
   width: 94%;
   height: 94%;
-  background: linear-gradient(
-    45.51deg,
-    #000000 -78.45%,
-    rgba(31, 31, 31, 0.29) 88.21%
-  );
+  background: linear-gradient(45.51deg,
+      #000000 -78.45%,
+      rgba(31, 31, 31, 0.29) 88.21%);
   border-radius: 50%;
   box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.18),
     10px 10px 17px -4px rgba(10, 10, 10, 0.5),
@@ -395,21 +256,26 @@ input {
   width: 2em;
   flex-grow: 1;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
 .usage .custom-select__trigger {
   padding: 20px;
 }
+
 @media only screen and (max-width: 767px) {
   h1 {
     font-size: 2em;
   }
+
   .configure-options {
     margin-top: 1em;
     margin-left: 0;
@@ -431,12 +297,13 @@ input[type="number"] {
   width: 22vw;
   min-width: 280px;
 }
+
 .app-section-description .body-1 {
   color: var(--text-grey);
 }
 </style>
 
-<script>
+<script lang="ts">
 import { computed } from "@vue/runtime-core";
 import { ref } from "@vue/reactivity";
 import { useRouter } from "vue-router";

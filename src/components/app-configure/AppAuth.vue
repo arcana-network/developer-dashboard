@@ -1,114 +1,63 @@
 <template>
-  <v-card
-    style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em"
-    class="column"
-    :id="'configure-step-' + 4"
-  >
+  <v-card style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em" class="column" :id="'configure-step-' + 4">
     <h4 style="width: 100%; display: block">CHOOSE LOGIN TYPE</h4>
     <div class="flex sm-column" style="gap: 4vw">
-      <div
-        class="flex column"
-        style="
+      <div class="flex column" style="
           gap: 1.2em;
           align-items: flex-start;
           width: 22vw;
           min-width: 280px;
-        "
-      >
+        ">
         <span class="body-1" style="color: var(--text-grey)">
           Your users can bring their own public and private keys or be assigned
           a pair of them upon registration through our trustless Distributed Key
           Generation system. These are ECDSA keys on the secp256k1 curve which
           work with any EVM compatible chains.
         </span>
-        <v-button
-          variant="link"
-          label="LEARN MORE"
-          :action="onLearnMoreClicked"
-        />
+        <v-button variant="link" label="LEARN MORE" :action="onLearnMoreClicked" />
       </div>
       <div class="flex column">
         <div class="flex input-group">
-          <v-dropdown
-            :options="authenticationTypes"
-            displayField="name"
-            placeholder="Auth Type"
-            style="min-width: 160px"
-            v-model="selectedAuthenticationType"
-          />
-          <v-text-field
-            v-if="selectedAuthenticationType?.idRequired"
-            :placeholder="
-              selectedAuthenticationType.idName
-                ? 'Enter ' + selectedAuthenticationType.idName
-                : 'Enter Client ID'
-            "
-            v-model="selectedAuthClientId"
-            :messageType="selectedAuthClientIdError ? 'error' : ''"
-            :message="errorMessage"
-          />
-          <v-text-field
-            v-if="selectedAuthenticationType?.secretRequired"
-            :placeholder="
-              selectedAuthenticationType.idSecret
-                ? 'Enter ' + selectedAuthenticationType.idSecret
-                : 'Enter Client Secret'
-            "
-            v-model="selectedAuthClientSecret"
-            @keyup.enter="addAuthentication"
-          />
-          <v-text-field
-            v-if="selectedAuthenticationType?.originRequired"
-            placeholder="Enter Origin"
-            v-model="selectedAuthOrigin"
-          />
-          <v-text-field
-            v-if="selectedAuthenticationType?.redirectUrlRequired"
-            placeholder="Enter Redirect Url"
-            v-model="selectedAuthRedirectUrl"
-          />
+          <v-dropdown :options="authenticationTypes" displayField="name" placeholder="Auth Type"
+            style="min-width: 160px" v-model="selectedAuthenticationType" />
+          <v-text-field v-if="selectedAuthenticationType?.idRequired" :placeholder="
+            selectedAuthenticationType.idName
+              ? 'Enter ' + selectedAuthenticationType.idName
+              : 'Enter Client ID'
+          " v-model="selectedAuthClientId" :messageType="selectedAuthClientIdError ? 'error' : ''"
+            :message="errorMessage" />
+          <v-text-field v-if="selectedAuthenticationType?.secretRequired" :placeholder="
+            selectedAuthenticationType.idSecret
+              ? 'Enter ' + selectedAuthenticationType.idSecret
+              : 'Enter Client Secret'
+          " v-model="selectedAuthClientSecret" @keyup.enter="addAuthentication" />
+          <v-text-field v-if="selectedAuthenticationType?.originRequired" placeholder="Enter Origin"
+            v-model="selectedAuthOrigin" />
+          <v-text-field v-if="selectedAuthenticationType?.redirectUrlRequired" placeholder="Enter Redirect Url"
+            v-model="selectedAuthRedirectUrl" />
           <div v-if="selectedAuthenticationType" style="margin-top: 1em">
             <v-tooltip title="Add">
-              <v-icon-button
-                :icon="CheckIcon"
-                style="margin-left: 1em"
-                @click.stop="addAuthentication"
-              />
+              <v-icon-button :icon="CheckIcon" style="margin-left: 1em" @click.stop="addAuthentication" />
             </v-tooltip>
             <v-tooltip title="Clear">
-              <v-icon-button
-                :icon="CancelIcon"
-                style="margin-left: 1em"
-                @click.stop="clearAuthentication"
-              />
+              <v-icon-button :icon="CancelIcon" style="margin-left: 1em" @click.stop="clearAuthentication" />
             </v-tooltip>
           </div>
         </div>
-        <div
-          v-if="selectedAuthenticationType?.setup"
-          class="overflow-x-hidden overflow-ellipsis"
-        >
+        <div v-if="selectedAuthenticationType?.setup" class="overflow-x-hidden overflow-ellipsis">
           <span class="body-2" style="line-height: 1.5">
             To get the required credentials visit
             <br />
-            <a
-              :href="selectedAuthenticationType.setup"
-              target="__blank"
-              class="auth-link"
-              style="
+            <a :href="selectedAuthenticationType.setup" target="__blank" class="auth-link" style="
                 font-weight: 400;
                 letter-spacing: 0.5px;
                 font-size: 1em;
                 overflow-wrap: break-word;
-              "
-            >
+              ">
               {{ selectedAuthenticationType.setup }}
             </a>
           </span>
-          <div
-            v-if="selectedAuthenticationType?.additionalSteps"
-            style="margin-top: 0.5em"
-          >
+          <div v-if="selectedAuthenticationType?.additionalSteps" style="margin-top: 0.5em">
             <span class="body-2">
               <strong>Note: </strong>
               {{ selectedAuthenticationType.additionalSteps }}
@@ -116,22 +65,14 @@
           </div>
         </div>
         <div class="flex flex-wrap" style="gap: 2em; margin-top: 1em">
-          <v-tooltip
-            v-for="(authDetail, index) in authenticationDetails"
-            :key="authDetail"
-            :title="getAuthTooltip(authDetail)"
-            tooltip-style=" word-wrap: break-word;"
-          >
-            <v-chip
-              :cancellable="true"
-              @cancel="removeAuthentication(index)"
-              style="
+          <v-tooltip v-for="(authDetail, index) in authenticationDetails" :key="authDetail"
+            :title="getAuthTooltip(authDetail)" tooltip-style=" word-wrap: break-word;">
+            <v-chip :cancellable="true" @cancel="removeAuthentication(index)" style="
                 max-width: 240px;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-              "
-            >
+              ">
               <span class="body-1">
                 {{ getAuthTooltip(authDetail) }}
               </span>
@@ -143,7 +84,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
 import CancelIcon from "@/assets/iconography/close.svg";
@@ -334,9 +275,8 @@ export default {
       origin,
       redirectUrl,
     }) {
-      let tooltip = `${authType} | ${
-        authType === "passwordless" ? origin : clientId
-      }`;
+      let tooltip = `${authType} | ${authType === "passwordless" ? origin : clientId
+        }`;
       if (clientSecret) {
         tooltip += ` | ${clientSecret}`;
       }
