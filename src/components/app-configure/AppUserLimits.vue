@@ -1,107 +1,53 @@
 <template>
-  <v-card
-    style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em; margin-bottom: 2em"
-    class="column"
-    id="configure-step-5"
-  >
+  <v-card style="margin-top: 2em; padding: 1.5em 2em; gap: 1.2em; margin-bottom: 2em" class="column"
+    id="configure-step-5">
     <h4 style="width: 100%; display: block">SET PER USER LIMIT</h4>
     <div class="flex sm-column" style="gap: 4vw">
-      <div
-        class="flex column"
-        style="
+      <div class="flex column" style="
           gap: 1.2em;
           align-items: flex-start;
           width: 22vw;
           min-width: 280px;
-        "
-      >
+        ">
         <span class="body-1" style="color: var(--text-grey)">
           Your application’s limits will act as the default storage and
           bandwidth limits for each user of your application unless you choose
           to specify it for each user here.
         </span>
-        <v-button
-          variant="link"
-          label="LEARN MORE"
-          :action="onLearnMoreClicked"
-        />
+        <v-button variant="link" label="LEARN MORE" :action="onLearnMoreClicked" />
       </div>
-      <div
-        class="flex sm-column"
-        style="gap: 3em; flex-wrap: wrap; flex-grow: 1"
-      >
+      <div class="flex sm-column" style="gap: 3em; flex-wrap: wrap; flex-grow: 1">
         <div class="flex column" style="gap: 20px">
           <div class="flex sm-column" style="justify-content: space-between">
             <h3>STORAGE</h3>
-            <div
-              class="flex sm-column-gap"
-              style="align-items: center; gap: 1em"
-            >
+            <div class="flex sm-column-gap" style="align-items: center; gap: 1em">
               <span class="body-2">Unlimited</span>
               <v-switch v-model="storageUnlimited" style="margin-top: 2px" />
             </div>
           </div>
-          <div
-            class="text-field flex"
-            style="width: 100%; justify-content: space-between"
-          >
-            <input
-              type="number"
-              id="storage-user-limit"
-              min="1"
-              max="1024"
-              v-model="storage.value"
-              :disabled="storageUnlimited"
-            />
-            <v-dropdown
-              :options="['MB', 'GB']"
-              placeholder="unit"
-              class="usage"
-              style="min-width: 7em"
-              triggerStyle="padding: 18px 20px"
-              v-model="storage.unit"
-              :disabled="storageUnlimited"
-            />
+          <div class="text-field flex" style="width: 100%; justify-content: space-between">
+            <input type="number" id="storage-user-limit" min="1" max="1024" v-model="storage.value"
+              :disabled="storageUnlimited" />
+            <v-dropdown :options="['MB', 'GB']" placeholder="unit" class="usage" style="min-width: 7em"
+              triggerStyle="padding: 18px 20px" v-model="storage.unit" :disabled="storageUnlimited" />
           </div>
           <span class="error-message" :class="{ show: hasStorageError }">
             Value should not be less than 1 MB or more than 99 GB
           </span>
         </div>
         <div class="flex column" style="gap: 20px">
-          <div
-            class="flex sm-column sm-column-gap"
-            style="justify-content: space-between"
-          >
+          <div class="flex sm-column sm-column-gap" style="justify-content: space-between">
             <h3>BANDWIDTH</h3>
-            <div
-              class="flex sm-column-gap"
-              style="align-items: center; gap: 1em"
-            >
+            <div class="flex sm-column-gap" style="align-items: center; gap: 1em">
               <span class="body-2">Unlimited</span>
               <v-switch v-model="bandwidthUnlimited" style="margin-top: 2px" />
             </div>
           </div>
-          <div
-            class="text-field flex"
-            style="width: 100%; justify-content: space-between"
-          >
-            <input
-              type="number"
-              id="bandwidth-user-limit"
-              min="1"
-              max="1024"
-              v-model="bandwidth.value"
-              :disabled="bandwidthUnlimited"
-            />
-            <v-dropdown
-              :options="['MB', 'GB']"
-              placeholder="unit"
-              class="usage"
-              style="min-width: 7em"
-              triggerStyle="padding: 18px 20px"
-              v-model="bandwidth.unit"
-              :disabled="bandwidthUnlimited"
-            />
+          <div class="text-field flex" style="width: 100%; justify-content: space-between">
+            <input type="number" id="bandwidth-user-limit" min="1" max="1024" v-model="bandwidth.value"
+              :disabled="bandwidthUnlimited" />
+            <v-dropdown :options="['MB', 'GB']" placeholder="unit" class="usage" style="min-width: 7em"
+              triggerStyle="padding: 18px 20px" v-model="bandwidth.unit" :disabled="bandwidthUnlimited" />
           </div>
           <span class="error-message" :class="{ show: hasBandwidthError }">
             Value should not be less than 1 MB or more than 99 GB
@@ -112,7 +58,7 @@
   </v-card>
 </template>
 
-<script>
+<script lang="ts">
 import { computed, watch, ref } from "vue";
 import { useStore } from "vuex";
 import bytes from "bytes";
@@ -320,17 +266,21 @@ input {
   padding: 15px 20px;
   width: 8em;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
 .usage .custom-select__trigger {
   padding: 20px;
 }
+
 .error-message {
   font-family: var(--font-body);
   font-weight: 400;
@@ -341,6 +291,7 @@ input[type="number"] {
   color: #ee193f;
   max-width: 18em;
 }
+
 .error-message.show {
   visibility: visible;
 }

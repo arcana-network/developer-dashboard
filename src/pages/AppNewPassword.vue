@@ -7,22 +7,10 @@
           <h1 style="text-align: center">Create Password</h1>
         </div>
         <form style="margin-top: 2vh" class="flex column">
-          <v-text-field
-            label="New Password"
-            type="password"
-            placeholder="Enter Here"
-            name="password"
-            id="password"
-            v-model="password"
-          />
-          <v-text-field
-            label="Confirm New Password"
-            type="password"
-            placeholder="Enter Here"
-            name="confirm-password"
-            id="confirm-password"
-            v-model="confirmPassword"
-          />
+          <v-text-field label="New Password" type="password" placeholder="Enter Here" name="password" id="password"
+            v-model="password" />
+          <v-text-field label="Confirm New Password" type="password" placeholder="Enter Here" name="confirm-password"
+            id="confirm-password" v-model="confirmPassword" />
           <ul class="flex body-3 password-strength-list">
             <li :class="{ 'success-message': passwordValidCases.minChar }">
               Must be at least 6 characters
@@ -35,47 +23,27 @@
             <li :class="{ 'success-message': passwordValidCases.noSpaces }">
               Must not contain space
             </li>
-            <li
-              :class="{
-                'success-message':
-                  password && password === confirmPassword,
-              }"
-            >
+            <li :class="{
+              'success-message':
+                password && password === confirmPassword,
+            }">
               Passwords must match
             </li>
           </ul>
-          <v-button
-            variant="link"
-            label="Why create a password?"
-            style="margin-top: 3vh; align-self: center"
-            @click.stop="showPasswordDescriptionPopup = true"
-          />
-          <v-button
-            label="SAVE PASSWORD"
-            style="margin: 3vh 1% 0 1%"
-            type="button"
-            :disabled="!isValidPassword"
-            :action="savePassword"
-          />
+          <v-button variant="link" label="Why create a password?" style="margin-top: 3vh; align-self: center"
+            @click.stop="showPasswordDescriptionPopup = true" />
+          <v-button label="SAVE PASSWORD" style="margin: 3vh 1% 0 1%" type="button" :disabled="!isValidPassword"
+            :action="savePassword" />
         </form>
         <v-stack direction="column" align="center" style="margin-top: 3vh">
           <h3>OR</h3>
-          <v-button
-            variant="link"
-            label="SKIP THIS STEP"
-            style="margin-top: 1rem"
-            @click.stop="skipPasswordCreation"
-          />
+          <v-button variant="link" label="SKIP THIS STEP" style="margin-top: 1rem" @click.stop="skipPasswordCreation" />
         </v-stack>
       </section>
 
-      <v-overlay
-        v-if="showPasswordDescriptionPopup"
-        style="align-items: center; justify-content: center; display: flex"
-      >
-        <v-card
-          variant="popup"
-          style="
+      <v-overlay v-if="showPasswordDescriptionPopup"
+        style="align-items: center; justify-content: center; display: flex">
+        <v-card variant="popup" style="
             padding: 4em 2em;
             min-width: 200px;
             max-width: 560px;
@@ -83,19 +51,12 @@
             flex-direction: column;
             gap: 1vh;
             position: relative;
-          "
-        >
-          <header
-            class="sub-heading-2"
-            style="justify-content: center; flex-grow: 1; display: flex"
-          >
+          ">
+          <header class="sub-heading-2" style="justify-content: center; flex-grow: 1; display: flex">
             Why create a password?
           </header>
           <v-seperator style="width: 100%" />
-          <main
-            class="body-1"
-            style="padding: 1vw; font-size: 0.9em; line-height: 1.6em"
-          >
+          <main class="body-1" style="padding: 1vw; font-size: 0.9em; line-height: 1.6em">
             <ul class="password-description-list">
               <li>
                 This developer dashboard is a web app that also consumes the
@@ -105,11 +66,7 @@
                 SDK uses popular oAuth mechanisms to assign and fetch an
                 available private key from our DKG scheme.
                 <br />
-                <v-button
-                  variant="link"
-                  label="Learn about our DKG"
-                  @click.stop="openDKGDocs"
-                />
+                <v-button variant="link" label="Learn about our DKG" @click.stop="openDKGDocs" />
               </li>
               <li>
                 The private key is only held in the app's memory and is wiped
@@ -124,11 +81,8 @@
               </li>
             </ul>
           </main>
-          <v-icon-button
-            :icon="CloseIcon"
-            class="close-popup-button"
-            @click.stop="showPasswordDescriptionPopup = false"
-          >
+          <v-icon-button :icon="CloseIcon" class="close-popup-button"
+            @click.stop="showPasswordDescriptionPopup = false">
           </v-icon-button>
         </v-card>
       </v-overlay>
@@ -187,9 +141,11 @@ li.success-message {
     min-width: 340px;
     margin: 8vh auto;
   }
+
   ul {
     flex-direction: column;
   }
+
   li {
     width: 100%;
   }
@@ -203,7 +159,7 @@ li.success-message {
 }
 </style>
 
-<script>
+<script lang="ts">
 import { ref, computed, onBeforeMount } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";

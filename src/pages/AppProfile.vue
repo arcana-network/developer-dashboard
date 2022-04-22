@@ -4,28 +4,16 @@
     <main class="container">
       <h1 class="heading">PROFILE DETAILS</h1>
       <section class="personal-details">
-        <div
-          class="flex"
-          style="justify-content: space-between; margin-right: 1.5em"
-        >
+        <div class="flex" style="justify-content: space-between; margin-right: 1.5em">
           <h2>PERSONAL DETAILS</h2>
-          <v-button
-            variant="link"
-            label="Edit"
-            :disabled="true"
-            style="visibility: hidden"
-          />
+          <v-button variant="link" label="Edit" :disabled="true" style="visibility: hidden" />
         </div>
-        <v-card
-          variant="elevated"
-          class="flex sm-column flex-wrap"
-          style="
+        <v-card variant="elevated" class="flex sm-column flex-wrap" style="
             gap: 1em;
             margin-top: 1em;
             padding: 1.5em;
             justify-content: space-between;
-          "
-        >
+          ">
           <div class="flex column details">
             <span class="body-2">Name</span>
             <span class="sub-heading-3 overflow-ellipsis" :title="name">
@@ -43,88 +31,48 @@
         </v-card>
       </section>
       <section style="margin-top: 3em">
-        <div
-          class="flex"
-          style="justify-content: space-between; margin-right: 1.5em"
-        >
+        <div class="flex" style="justify-content: space-between; margin-right: 1.5em">
           <h2>ORGANISATION DETAILS</h2>
-          <v-button
-            variant="link"
-            label="Edit"
-            :disabled="false"
-            @click="editOrganisationDetails = true"
-            v-if="!editOrganisationDetails"
-          />
+          <v-button variant="link" label="Edit" :disabled="false" @click="editOrganisationDetails = true"
+            v-if="!editOrganisationDetails" />
           <div v-else class="flex" style="gap: 1.5em">
-            <v-button
-              variant="link"
-              label="Cancel"
-              :disabled="false"
-              @click="resetOrganisationDetails"
-              style="color: #8d8d8d"
-            />
-            <v-button
-              variant="link"
-              label="Save"
-              :disabled="false"
-              @click="onUpdateOrganization"
-            />
+            <v-button variant="link" label="Cancel" :disabled="false" @click="resetOrganisationDetails"
+              style="color: #8d8d8d" />
+            <v-button variant="link" label="Save" :disabled="false" @click="onUpdateOrganization" />
           </div>
         </div>
-        <v-card
-          variant="elevated"
-          class="flex sm-column flex-wrap"
-          style="
+        <v-card variant="elevated" class="flex sm-column flex-wrap" style="
             gap: 1em;
             margin-top: 1em;
             padding: 1.5em;
             justify-content: space-between;
-          "
-        >
+          ">
           <div class="flex column flex-grow">
             <div class="flex flex-wrap justify-space-between">
               <div class="flex column details">
                 <span class="body-2">Organisation Name</span>
-                <span
-                  class="sub-heading-3 overflow-ellipsis"
-                  :title="organisationDetails.name"
-                  v-if="!editOrganisationDetails"
-                >
+                <span class="sub-heading-3 overflow-ellipsis" :title="organisationDetails.name"
+                  v-if="!editOrganisationDetails">
                   {{ organisationDetails.name }}
                 </span>
                 <v-text-field v-else v-model="organisationDetails.name" />
               </div>
               <div class="flex column details">
                 <span class="body-2">Organization Size</span>
-                <span
-                  class="body-3"
-                  style="text-transform: uppercase; letter-spacing: 0.1em"
-                  v-if="organisationDetails.sizeErrorMessage"
-                >
+                <span class="body-3" style="text-transform: uppercase; letter-spacing: 0.1em"
+                  v-if="organisationDetails.sizeErrorMessage">
                   {{ organisationDetails.sizeErrorMessage }}
                 </span>
-                <span
-                  class="sub-heading-3 overflow-ellipsis"
-                  :title="organisationDetails.size"
-                  v-if="!editOrganisationDetails"
-                >
+                <span class="sub-heading-3 overflow-ellipsis" :title="organisationDetails.size"
+                  v-if="!editOrganisationDetails">
                   {{ organisationDetails.size }}
                 </span>
-                <v-text-field
-                  type="number"
-                  min="1"
-                  step="1"
-                  v-else
-                  v-model="organisationDetails.size"
-                />
+                <v-text-field type="number" min="1" step="1" v-else v-model="organisationDetails.size" />
               </div>
               <div class="flex column details">
                 <span class="body-2">Country</span>
-                <span
-                  class="sub-heading-3 overflow-ellipsis"
-                  :title="organisationDetails.country"
-                  v-if="!editOrganisationDetails"
-                >
+                <span class="sub-heading-3 overflow-ellipsis" :title="organisationDetails.country"
+                  v-if="!editOrganisationDetails">
                   {{ organisationDetails.country }}
                 </span>
                 <v-text-field v-else v-model="organisationDetails.country" />
@@ -133,16 +81,8 @@
           </div>
         </v-card>
       </section>
-      <div
-        class="flex"
-        style="justify-content: flex-end; margin-top: 2em; margin-bottom: 2em"
-      >
-        <v-button
-          variant="secondary"
-          label="LOGOUT"
-          v-wave="{ color: 'rgb(40, 198, 250)' }"
-          @click.stop="onLogout"
-        />
+      <div class="flex" style="justify-content: flex-end; margin-top: 2em; margin-bottom: 2em">
+        <v-button variant="secondary" label="LOGOUT" v-wave="{ color: 'rgb(40, 198, 250)' }" @click.stop="onLogout" />
       </div>
     </main>
   </div>
@@ -154,9 +94,11 @@
   width: 280px;
   margin-top: 1em;
 }
+
 .heading {
   margin-top: 1.2em;
 }
+
 .personal-details {
   margin-top: 4em;
 }
@@ -172,13 +114,14 @@
     margin-top: 0.9em;
     font-size: 1.8em;
   }
+
   .personal-details {
     margin-top: 2em;
   }
 }
 </style>
 
-<script>
+<script lang="ts">
 import { ref, onBeforeMount } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";

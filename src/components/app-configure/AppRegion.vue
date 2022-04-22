@@ -2,50 +2,23 @@
   <v-card class="region-container" :id="'configure-step-' + 2">
     <v-stack direction="column" gap="1.2em" class="flex-grow">
       <h4>CHOOSE REGION</h4>
-      <v-stack
-        direction="row"
-        :wrap="true"
-        gap="4vw"
-        smDirection="column"
-        smGap="4vw"
-      >
-        <v-stack
-          direction="column"
-          gap="1.2em"
-          align="start"
-          class="app-section-description"
-        >
+      <v-stack direction="row" :wrap="true" gap="4vw" smDirection="column" smGap="4vw">
+        <v-stack direction="column" gap="1.2em" align="start" class="app-section-description">
           <span class="body-1">
             All assets stored by your application will be distributed across
             several storage nodes located at various physical locations across
             the world. Turn on specific regions only if your application needs
             these assets to be stored in storage nodes within a region.
           </span>
-          <v-button
-            variant="link"
-            label="LEARN MORE"
-            :action="onLearnMoreClicked"
-          />
+          <v-button variant="link" label="LEARN MORE" :action="onLearnMoreClicked" />
         </v-stack>
         <v-stack direction="column" gap="2em" class="flex-grow">
-          <v-card
-            variant="depressed"
-            class="flex justify-space-between region-anywhere-container"
-          >
+          <v-card variant="depressed" class="flex justify-space-between region-anywhere-container">
             <span class="body-1">Anywhere</span>
             <v-switch v-model="region.any" disabled />
           </v-card>
-          <v-card
-            variant="depressed"
-            class="flex sm-column justify-space-between"
-            style="padding: 1.2em"
-          >
-            <v-stack
-              direction="column"
-              :wrap="true"
-              gap="1em"
-              class="flex-grow"
-            >
+          <v-card variant="depressed" class="flex sm-column justify-space-between" style="padding: 1.2em">
+            <v-stack direction="column" :wrap="true" gap="1em" class="flex-grow">
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Asia</span>
                 <v-tooltip title="Coming Soon">
@@ -65,16 +38,8 @@
                 </v-tooltip>
               </div>
             </v-stack>
-            <v-seperator
-              :vertical="true"
-              style="margin: 0 2em"
-              class="mobile-remove"
-            />
-            <v-stack
-              direction="column"
-              gap="1em"
-              class="sm-column-gap flex-grow"
-            >
+            <v-seperator :vertical="true" style="margin: 0 2em" class="mobile-remove" />
+            <v-stack direction="column" gap="1em" class="sm-column-gap flex-grow">
               <div class="flex justify-space-between width-100">
                 <span class="body-1">Europe</span>
                 <v-tooltip title="Coming Soon">
@@ -106,10 +71,12 @@
   margin-top: 1.2em;
   padding: 1.5em 2em;
 }
+
 h4 {
   width: 100%;
   display: block;
 }
+
 .region-anywhere-container {
   padding: 1.2em;
   width: calc(50% - 5em);
@@ -117,7 +84,7 @@ h4 {
 }
 </style>
 
-<script>
+<script lang="ts">
 import { watch, ref, computed } from "vue";
 import { useStore } from "vuex";
 import VButton from "@/components/lib/VButton/VButton.vue";

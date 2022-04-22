@@ -10,17 +10,9 @@
         <CloseIcon color="#FFFFFF" />
       </span>
     </div>
-    <v-header
-      :logoSrc="ArcanaLogo"
-      logoAlt="Arcana Logo"
-      :loggedInUser="loggedInUser"
-      :menuItems="menuItems"
-      :selectedItem="selectedItem"
-      :mobileMenuIcon="MenuIcon"
-      :mobileLogo="ArcanaFavicon"
-      :mobileAccountIcon="AccountUserIcon"
-      @logo-click="onLogoClick"
-    />
+    <v-header :logoSrc="ArcanaLogo" logoAlt="Arcana Logo" :loggedInUser="loggedInUser" :menuItems="menuItems"
+      :selectedItem="selectedItem" :mobileMenuIcon="MenuIcon" :mobileLogo="ArcanaFavicon"
+      :mobileAccountIcon="AccountUserIcon" @logo-click="onLogoClick" />
   </section>
 </template>
 
@@ -42,31 +34,36 @@ section {
   line-height: 1.5em;
   position: relative;
 }
+
 .banner h4 {
   display: inline-block;
   font-weight: 600;
   text-transform: uppercase;
 }
+
 .banner h5 {
   display: inline-block;
   font-weight: 400;
   margin-left: 1em;
   margin-right: 2em;
 }
+
 .banner.hide {
   display: none;
 }
+
 .banner-close {
   cursor: pointer;
   position: absolute;
   right: 2em;
 }
+
 .hide-header {
   transform: translateY(-100%);
 }
 </style>
 
-<script>
+<script lang="ts">
 import { computed, onMounted, ref, onUnmounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";

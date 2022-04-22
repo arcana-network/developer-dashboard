@@ -6,129 +6,69 @@
         <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
           {{ appName }}
         </h1>
-        <div
-          class="
+        <div class="
             flex
             mobile-remove
             justify-content-center
             flex-center flex-wrap
-          "
-        >
-          <span
-            class="body-1 mobile-remove"
-            style="margin-right: 8px"
-            v-if="liveEnv"
-          >
+          ">
+          <span class="body-1 mobile-remove" style="margin-right: 8px" v-if="liveEnv">
             MainNet
           </span>
           <span class="body-1 mobile-remove" style="margin-right: 8px" v-else>
             TestNet
           </span>
-          <v-switch
-            variant="secondary"
-            style="margin-right: 1em; margin-top: 2px"
-            v-model="liveEnv"
-            class="mobile-remove"
-            disabled
-          />
-          <span
-            style="color: var(--text-grey); margin-right: 5px"
-            class="body-1 mobile-remove"
-          >
+          <v-switch variant="secondary" style="margin-right: 1em; margin-top: 2px" v-model="liveEnv"
+            class="mobile-remove" disabled />
+          <span style="color: var(--text-grey); margin-right: 5px" class="body-1 mobile-remove">
             App ID:
           </span>
-          <div
-            class="text-ellipsis body-1 font-500"
-            style="color: var(--text-white); max-width: 6em"
-          >
+          <div class="text-ellipsis body-1 font-500" style="color: var(--text-white); max-width: 6em">
             {{ appId }}
           </div>
-          <v-tooltip
-            :title="smartContractTooltip"
-            @click.stop="copySmartContractAddress"
-            class="mobile-remove"
-          >
-            <img
-              :src="SmartContractIcon"
-              class="cursor-pointer"
-              alt="Click to copy smart contract address"
-              style="margin-left: 1em; margin-top: 4px"
-            />
+          <v-tooltip :title="smartContractTooltip" @click.stop="copySmartContractAddress" class="mobile-remove">
+            <img :src="SmartContractIcon" class="cursor-pointer" alt="Click to copy smart contract address"
+              style="margin-left: 1em; margin-top: 4px" />
           </v-tooltip>
         </div>
-        <div
-          class="configure-btn cursor-pointer justify-center flex-center"
-          style="display: inline-flex"
-          @click.stop="goToConfigure"
-        >
-          <img
-            src="@/assets/iconography/settings.svg"
-            alt="configure app settings"
-            @click.stop="goToConfigure"
-          />
-          <v-button
-            disabled
-            variant="link"
-            label="Configure"
-            style="
+        <div class="configure-btn cursor-pointer justify-center flex-center" style="display: inline-flex"
+          @click.stop="goToConfigure">
+          <img src="@/assets/iconography/settings.svg" alt="configure app settings" @click.stop="goToConfigure" />
+          <v-button disabled variant="link" label="Configure" style="
               margin-top: 3px;
               margin-left: 0.5em;
               color: var(--primary);
               cursor: pointer;
-            "
-            @click.stop="goToConfigure"
-          />
+            " @click.stop="goToConfigure" />
         </div>
       </section>
-      <div
-        class="
+      <div class="
           flex
           laptop-remove
           smart-contract-copy
           justify-center
           flex-center flex-wrap
-        "
-      >
+        ">
         <span style="color: var(--text-grey); margin-right: 5px" class="body-1">
           Smart Contract Address:
         </span>
         <v-tooltip :title="smartContractAddress" class="">
-          <div
-            style="color: var(--text-white); font-weight: 500; width: 6em"
-            class="body-1 text-ellipsis cursor-pointer"
-          >
+          <div style="color: var(--text-white); font-weight: 500; width: 6em"
+            class="body-1 text-ellipsis cursor-pointer">
             {{ smartContractAddress }}
           </div>
         </v-tooltip>
-        <v-tooltip
-          :title="smartContractTooltip"
-          @click.stop="copySmartContractAddress"
-          class=""
-        >
-          <img
-            :src="SmartContractIcon"
-            alt="Click to copy smart contract address"
-            style="margin-left: 1em; margin-top: 4px"
-            class="cursor-pointer"
-          />
+        <v-tooltip :title="smartContractTooltip" @click.stop="copySmartContractAddress" class="">
+          <img :src="SmartContractIcon" alt="Click to copy smart contract address"
+            style="margin-left: 1em; margin-top: 4px" class="cursor-pointer" />
         </v-tooltip>
       </div>
       <section style="margin-top: 8vh; color: var(--text-white)">
         <h2 style="margin-bottom: 2vh">OVERVIEW</h2>
-        <div
-          class="flex flex-wrap justify-space-between"
-          style="margin-top: 20px; gap: 1em"
-        >
-          <v-card
-            class="flex sm-column overview-card flex-grow"
-            style="gap: 1.5em"
-            variant="elevated"
-          >
+        <div class="flex flex-wrap justify-space-between" style="margin-top: 20px; gap: 1em">
+          <v-card class="flex sm-column overview-card flex-grow" style="gap: 1.5em" variant="elevated">
             <div class="card-icon">
-              <img
-                src="@/assets/iconography/total-users.svg"
-                alt="Total users"
-              />
+              <img src="@/assets/iconography/total-users.svg" alt="Total users" />
             </div>
             <div class="flex flex-grow">
               <div>
@@ -137,24 +77,13 @@
                   {{ totalUsers }}
                 </h2>
               </div>
-              <v-icon-button
-                :icon="ArrowRightIcon"
-                style="margin-left: auto"
-                @click.stop="goToUsers"
-              />
+              <v-icon-button :icon="ArrowRightIcon" style="margin-left: auto" @click.stop="goToUsers" />
             </div>
           </v-card>
-          <v-card
-            class="flex sm-column overview-card flex-grow"
-            style="gap: 1.5em"
-            variant="elevated"
-          >
+          <v-card class="flex sm-column overview-card flex-grow" style="gap: 1.5em" variant="elevated">
             <div class="card-icon">
-              <img
-                src="@/assets/iconography/no-of-files.svg"
-                alt="Number of files"
-                style="margin-left: -2px; margin-top: 1px"
-              />
+              <img src="@/assets/iconography/no-of-files.svg" alt="Number of files"
+                style="margin-left: -2px; margin-top: 1px" />
             </div>
             <div class="flex" style="flex-grow: 1">
               <div>
@@ -163,24 +92,15 @@
                   {{ actions.upload - actions.delete }}
                 </h2>
               </div>
-              <v-icon-button
-                :icon="ArrowRightIcon"
-                style="margin-left: auto; visibility: hidden"
-                @click.stop="goToUsers"
-              />
+              <v-icon-button :icon="ArrowRightIcon" style="margin-left: auto; visibility: hidden"
+                @click.stop="goToUsers" />
             </div>
           </v-card>
-          <v-card
-            class="flex overview-card tablet-remove"
-            variant="elevated"
-            style="opacity: 0.5; cursor: not-allowed; flex-grow: 1; gap: 1.5em"
-          >
+          <v-card class="flex overview-card tablet-remove" variant="elevated"
+            style="opacity: 0.5; cursor: not-allowed; flex-grow: 1; gap: 1.5em">
             <div class="card-icon">
-              <img
-                src="@/assets/iconography/no-of-files.svg"
-                alt="Number of files"
-                style="margin-left: -2px; margin-top: 1px"
-              />
+              <img src="@/assets/iconography/no-of-files.svg" alt="Number of files"
+                style="margin-left: -2px; margin-top: 1px" />
             </div>
             <div>
               <h4 style="font-weight: 400">Estimated Cost</h4>
@@ -189,120 +109,61 @@
           </v-card>
         </div>
       </section>
-      <v-card
-        class="column usage-container"
-        variant="elevated"
-        style="align-items: stretch; margin: 6vh auto"
-      >
+      <v-card class="column usage-container" variant="elevated" style="align-items: stretch; margin: 6vh auto">
         <div class="flex flex-wrap duration" style="margin-bottom: 1em">
-          <v-card-button
-            label="Daily"
-            :active="durationSelected === 'day'"
-            @click.stop="durationSelected = 'day'"
-          />
-          <v-card-button
-            label="Monthly"
-            :active="durationSelected === 'month'"
-            @click.stop="durationSelected = 'month'"
-          />
-          <v-card-button
-            label="Quarterly"
-            :active="durationSelected === 'quarter'"
-            @click.stop="durationSelected = 'quarter'"
-          />
-          <v-card-button
-            label="Yearly"
-            :active="durationSelected === 'year'"
-            @click.stop="durationSelected = 'year'"
-          />
+          <v-card-button label="Daily" :active="durationSelected === 'day'" @click.stop="durationSelected = 'day'" />
+          <v-card-button label="Monthly" :active="durationSelected === 'month'"
+            @click.stop="durationSelected = 'month'" />
+          <v-card-button label="Quarterly" :active="durationSelected === 'quarter'"
+            @click.stop="durationSelected = 'quarter'" />
+          <v-card-button label="Yearly" :active="durationSelected === 'year'" @click.stop="durationSelected = 'year'" />
         </div>
         <section class="flex sm-column">
-          <section
-            class="flex column storage-container"
-            style="flex-grow: 1; gap: 1em"
-          >
+          <section class="flex column storage-container" style="flex-grow: 1; gap: 1em">
             <div class="flex" style="gap: 1em; margin-top: 1.2em">
               <h3>STORAGE</h3>
-              <v-tooltip
-                title="This is an aggregation of the data uploaded/stored by all users of your app"
-              >
-                <img
-                  src="@/assets/iconography/info-circle-outline.svg"
-                  style="cursor: pointer"
-                />
+              <v-tooltip title="This is an aggregation of the data uploaded/stored by all users of your app">
+                <img src="@/assets/iconography/info-circle-outline.svg" style="cursor: pointer" />
               </v-tooltip>
             </div>
-            <div
-              class="flex"
-              style="
+            <div class="flex" style="
                 justify-content: space-between;
                 width: 95%;
                 align-items: flex-end;
-              "
-            >
+              ">
               <h2 style="font-family: var(--font-body); font-size: 2em">
                 {{ storageUsed }} used
               </h2>
-              <span
-                class="body-1"
-                style="color: var(--text-grey); font-weight: 600"
-              >
+              <span class="body-1" style="color: var(--text-grey); font-weight: 600">
                 {{ storageRemaining }} Remaining
               </span>
             </div>
-            <v-progress-bar
-              style="width: 95%"
-              :percentage="storageUsedPercentage || 1"
-            />
-            <div
-              id="storageChartContainer"
-              style="margin-top: 0.65em; min-width: 300px"
-            >
+            <v-progress-bar style="width: 95%" :percentage="storageUsedPercentage || 1" />
+            <div id="storageChartContainer" style="margin-top: 0.65em; min-width: 300px">
               <canvas id="storageChart" width="200"></canvas>
             </div>
           </section>
-          <section
-            class="flex column sm-column-gap"
-            style="flex-grow: 1; gap: 1em"
-          >
+          <section class="flex column sm-column-gap" style="flex-grow: 1; gap: 1em">
             <div class="flex" style="gap: 1em; margin-top: 1.2em">
               <h3>BANDWIDTH</h3>
-              <v-tooltip
-                title="This is an aggregation of data downloaded/egress by all users of your app"
-              >
-                <img
-                  src="@/assets/iconography/info-circle-outline.svg"
-                  style="cursor: pointer"
-                />
+              <v-tooltip title="This is an aggregation of data downloaded/egress by all users of your app">
+                <img src="@/assets/iconography/info-circle-outline.svg" style="cursor: pointer" />
               </v-tooltip>
             </div>
-            <div
-              class="flex"
-              style="
+            <div class="flex" style="
                 justify-content: space-between;
                 width: 95%;
                 align-items: flex-end;
-              "
-            >
+              ">
               <h2 style="font-family: var(--font-body); font-size: 2em">
                 {{ bandwidthUsed }} used
               </h2>
-              <span
-                class="body-1"
-                style="color: var(--text-grey); font-weight: 600"
-              >
+              <span class="body-1" style="color: var(--text-grey); font-weight: 600">
                 {{ bandwidthRemaining }} Remaining
               </span>
             </div>
-            <v-progress-bar
-              style="width: 95%"
-              :percentage="bandwidthUsedPercentage || 1"
-              state="error"
-            />
-            <div
-              id="bandwidthChartContainer"
-              style="margin-top: 0.65em; min-width: 300px"
-            >
+            <v-progress-bar style="width: 95%" :percentage="bandwidthUsedPercentage || 1" state="error" />
+            <div id="bandwidthChartContainer" style="margin-top: 0.65em; min-width: 300px">
               <canvas id="bandwidthChart" width="200"></canvas>
             </div>
           </section>
@@ -311,18 +172,11 @@
         <div class="flex" style="gap: 1em; margin-top: 1.2em">
           <h3>ACTIONS</h3>
           <v-tooltip
-            title="This is an aggregation of all Actions (uploads, downloads, shares, revokes and deletes) by all users of your app"
-          >
-            <img
-              src="@/assets/iconography/info-circle-outline.svg"
-              style="cursor: pointer"
-            />
+            title="This is an aggregation of all Actions (uploads, downloads, shares, revokes and deletes) by all users of your app">
+            <img src="@/assets/iconography/info-circle-outline.svg" style="cursor: pointer" />
           </v-tooltip>
         </div>
-        <div
-          class="flex flex-wrap"
-          style="align-content: stretch; margin-top: 3vh"
-        >
+        <div class="flex flex-wrap" style="align-content: stretch; margin-top: 3vh">
           <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
               <h2>{{ actions.upload }}</h2>
@@ -369,16 +223,13 @@
     </main>
     <main v-else>
       <v-overlay>
-        <div
-          class="flex column"
-          style="
+        <div class="flex column" style="
             width: 100%;
             height: 100%;
             align-items: center;
             justify-content: center;
             color: var(--text-white);
-          "
-        >
+          ">
           <h1 style="color: #13a3fd; letter-spacing: unset; font-weight: 700; font-size: 4em">
             Getting Started!
           </h1>
@@ -386,17 +237,16 @@
             Create and Configure your Application
           </h2>
           <h4 class="testnet-disclaimer popup">
-            <b>Note</b>: Use with caution. This is an Alpha testnet release with all features being experimental. Please do not upload important data without backups or use it in production.
+            <b>Note</b>: Use with caution. This is an Alpha testnet release with all features being experimental. Please
+            do not upload important data without backups or use it in production.
           </h4>
           <h5 class="testnet-disclaimer popup">
-            <b>Disclaimer</b>: The platform is provided in an "as is" basis without any express or implied warranty of any kind including warranties of merchantability or fitness of purpose.
-            In no event will Arcana Networks or its subsidiaries be held responsible for any damages. BY CLICKING "Configure" below, you accept the same.
+            <b>Disclaimer</b>: The platform is provided in an "as is" basis without any express or implied warranty of
+            any kind including warranties of merchantability or fitness of purpose.
+            In no event will Arcana Networks or its subsidiaries be held responsible for any damages. BY CLICKING
+            "Configure" below, you accept the same.
           </h5>
-          <v-button
-            label="CONFIGURE"
-            style="margin-top: 1.2em"
-            :action="goToConfigure"
-          />
+          <v-button label="CONFIGURE" style="margin-top: 1.2em" :action="goToConfigure" />
         </div>
       </v-overlay>
     </main>
@@ -407,6 +257,7 @@
 .container {
   margin-top: 4vh;
 }
+
 .testnet-disclaimer {
   font-family: var(--font-body);
   font-weight: 400;
@@ -414,26 +265,32 @@
   margin-top: 1.1em;
   line-height: 1.5em;
 }
+
 .testnet-disclaimer.popup {
   min-width: 320px;
   max-width: 720px;
   width: 90%;
   text-align: center;
 }
+
 h4.testnet-disclaimer.popup {
   font-weight: 400;
   font-size: 1.25em;
 }
+
 h5.testnet-disclaimer.popup {
   font-weight: 400;
   font-size: 0.875em;
 }
+
 .testnet-disclaimer.banner {
   margin-bottom: 1.5em;
 }
+
 .usage-container {
   padding: 2em;
 }
+
 .card-icon {
   background: linear-gradient(143.36deg, #000000 -4.7%, #000000 115.05%);
   box-shadow: inset -2px -2px 4px rgba(80, 80, 80, 0.1),
@@ -445,6 +302,7 @@ h5.testnet-disclaimer.popup {
   padding: 24px;
   border-radius: 50%;
 }
+
 .overview-card {
   padding: 20px;
   align-items: center;
@@ -452,128 +310,164 @@ h5.testnet-disclaimer.popup {
   max-width: 480px;
   width: 20vw;
 }
+
 .vr-border {
   border-right: unset;
   border-top: unset;
   border-bottom: unset;
 }
+
 .configure-btn {
   transition: tranform 0.4s;
 }
+
 .configure-btn:hover {
   opacity: 0.7;
 }
+
 .configure-btn:active {
   transform: scale(0.98);
 }
+
 .action-container {
   flex-grow: 1;
   flex: 16.5%;
 }
+
 .action {
   margin: 2em;
   text-align: center;
   min-width: 80px;
 }
+
 .action h2 {
   font-size: 3em;
 }
+
 .action span {
   margin-top: 1em;
 }
+
 .play-pause {
   cursor: pointer;
 }
+
 .play-pause:hover {
   opacity: 0.6;
 }
+
 .duration {
   justify-content: flex-end;
 }
+
 .tutorial-heading {
   font-size: 1.5em;
   align-self: flex-start;
 }
+
 .tutorials-pane {
   overflow-x: auto;
 }
+
 @media only screen and (min-width: 1024px) {
   .configure-btn {
     margin-left: 4em;
   }
+
   .storage-container {
     width: 50%;
   }
+
   .tutorial-card {
     gap: 2em;
   }
 }
+
 @media only screen and (max-width: 1080px) {
   .dashboard-heading h1 {
     width: 100%;
     margin-bottom: 1em;
   }
+
   .action-container {
     flex-grow: 1;
     flex: 33%;
   }
 }
+
 @media only screen and (max-width: 1023px) {
   .tablet-margin {
     margin-top: 2vh;
   }
+
   .configure-btn {
     margin-left: auto;
   }
+
   .sub-heading-5 {
     font-size: unset;
   }
+
   .smart-contract-copy {
     visibility: hidden;
   }
+
   .tutorial-heading {
     font-size: 1.1em;
   }
+
   .tutorial-content {
     font-size: 0.86em;
   }
+
   .tutorial-card {
     gap: 1em;
   }
 }
+
 @media only screen and (max-width: 767px) {
   .dashboard-heading h1 {
     width: auto;
     margin-bottom: 0;
   }
+
   .smart-contract-copy {
     visibility: visible;
     margin-top: 1em;
   }
+
   .tutorials-pane section {
     margin-bottom: 2em;
   }
+
   .usage-container {
     padding: 0.65em;
   }
+
   .action {
     margin: 0.6em;
   }
+
   .duration {
     justify-content: center;
   }
+
   .overview-card {
     flex-grow: 1;
   }
+
   .action .body-1 {
     font-size: 1em;
   }
+
   h4 {
     font-size: 0.85em;
   }
+
   .overview-card {
     padding: 18px 8px;
   }
+
   .overview-card .flex {
     width: 90%;
     margin-left: 20px;
@@ -581,7 +475,7 @@ h5.testnet-disclaimer.popup {
 }
 </style>
 
-<script>
+<script lang="ts">
 import {
   computed,
   onBeforeMount,

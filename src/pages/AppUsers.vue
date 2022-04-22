@@ -3,27 +3,13 @@
     <app-header />
     <main class="container" style="margin-top: 4vh">
       <h1>USERS</h1>
-      <div
-        class="flex sm-column"
-        style="margin-top: 4vh; justify-content: space-between; gap: 1em"
-      >
+      <div class="flex sm-column" style="margin-top: 4vh; justify-content: space-between; gap: 1em">
         <h4 style="">USER DETAILS</h4>
-        <v-text-field
-          :icon="SearchIcon"
-          clickable-icon
-          :noMessage="true"
-          placeholder="Enter Wallet Address"
-          v-model="walletAddress"
-          :style="'width: 20em'"
-          @icon-clicked="searchUsersByWalletAddress"
-          @keyup.enter="searchUsersByWalletAddress"
-        />
+        <v-text-field :icon="SearchIcon" clickable-icon :noMessage="true" placeholder="Enter Wallet Address"
+          v-model="walletAddress" :style="'width: 20em'" @icon-clicked="searchUsersByWalletAddress"
+          @keyup.enter="searchUsersByWalletAddress" />
       </div>
-      <v-card
-        variant="raised"
-        class="flex column users-table-card"
-        style="margin-top: 4vh"
-      >
+      <v-card variant="raised" class="flex column users-table-card" style="margin-top: 4vh">
         <div class="table-container">
           <table class="table-head">
             <thead>
@@ -37,11 +23,8 @@
           </table>
           <table v-if="users.length" style="width: 100%">
             <tbody>
-              <tr
-                v-for="(user, index) in users"
-                :key="user.walletAddress"
-                @click.stop="fetchUserLogsApi(user.walletAddress, index)"
-              >
+              <tr v-for="(user, index) in users" :key="user.walletAddress"
+                @click.stop="fetchUserLogsApi(user.walletAddress, index)">
                 <td>{{ truncate(user.walletAddress) }}</td>
                 <td>{{ convertToBytes(user.storage) }}</td>
                 <td>{{ convertToBytes(user.bandwidth) }}</td>
@@ -59,63 +42,38 @@
         </v-card>
       </div>
     </main>
-    <v-overlay
-      v-if="showDetails"
-      style="align-items: center; justify-content: center; display: flex"
-    >
-      <v-card
-        variant="popup"
-        class="flex column"
-        style="
+    <v-overlay v-if="showDetails" style="align-items: center; justify-content: center; display: flex">
+      <v-card variant="popup" class="flex column" style="
           padding: 2em;
           min-width: 300px;
           max-width: 720px;
           width: 72%;
           gap: 1em;
-        "
-      >
-        <div
-          class="flex"
-          style="justify-content: space-between; margin-bottom: 2em"
-        >
+        ">
+        <div class="flex" style="justify-content: space-between; margin-bottom: 2em">
           <h2 style="padding: 3px 2vh; align-self: center">USER LOG</h2>
-          <span
-            style="
+          <span style="
               padding: 3px;
               cursor: pointer;
               color: #13a3fd;
               font-weight: 600;
               font-size: 1.5em;
-            "
-            class="body-1"
-            @click.stop="showDetails = false"
-            v-wave
-            >X</span
-          >
+            " class="body-1" @click.stop="showDetails = false" v-wave>X</span>
         </div>
-        <div
-          class="flex column"
-          style="padding: 0 2vh; gap: 2vh; margin-bottom: 2vh"
-        >
+        <div class="flex column" style="padding: 0 2vh; gap: 2vh; margin-bottom: 2vh">
           <span class="body-1" style="color: var(--text-grey)">
             Wallet Address
           </span>
-          <span
-            class="sub-heading-3"
-            style="color: var(--text-white); word-wrap: break-word"
-          >
+          <span class="sub-heading-3" style="color: var(--text-white); word-wrap: break-word">
             {{ userLog.walletAddress }}
           </span>
         </div>
-        <div
-          class="flex flex-wrap"
-          style="
+        <div class="flex flex-wrap" style="
             gap: 4vh;
             padding: 0 2vh;
             margin-bottom: 2vh;
             justify-content: space-between;
-          "
-        >
+          ">
           <div class="flex column" style="gap: 1vh">
             <span class="body-1" style="color: var(--text-grey)">
               Public Identifier
@@ -163,10 +121,7 @@
               </table>
               <table style="width: 100%" v-if="userTransactions.length">
                 <tbody>
-                  <tr
-                    v-for="transaction in userTransactions"
-                    :key="transaction"
-                  >
+                  <tr v-for="transaction in userTransactions" :key="transaction">
                     <td>{{ transaction.type }}</td>
                     <td>{{ getDate(transaction.date) }}</td>
                     <td>{{ getTime(transaction.date) }}</td>
@@ -189,38 +144,48 @@
   max-height: 30vh;
   overflow-x: auto;
 }
+
 .log-container {
   max-height: 30vh;
   overflow-y: auto;
   overflow-x: auto;
 }
+
 .body-1 {
   font-size: 0.9em;
 }
+
 .sub-heading-3 {
   font-size: 1.2em;
   margin: 2px;
 }
+
 thead {
   font-family: var(--font-title);
   color: var(--text-white);
 }
+
 tbody {
   font-family: var(--font-body);
   color: var(--text-grey);
 }
+
 .table-head {
   margin: 1em 0 2em;
 }
+
 .log-table-card {
   padding: 1em 1em 1em 2.5em;
 }
+
 .log-table {
   margin: 1em 0 2em;
 }
+
 .users-table-card {
   padding: 2em;
 }
+
 th,
 td {
   min-width: 6.4em;
@@ -229,10 +194,12 @@ td {
   padding: 0.8em;
   margin: 0 0.5em;
 }
+
 tbody tr {
   cursor: pointer;
   border-radius: 5px;
 }
+
 tbody tr:hover {
   color: #13a3fd;
   background: #171717;
@@ -245,29 +212,37 @@ tbody tr:active {
   color: var(--text-white);
   box-shadow: unset;
 }
+
 @media only screen and (max-width: 767px) {
   .table-head {
     margin: 0.5em 0 1em;
   }
+
   .sub-heading-3 {
     font-size: 0.9em;
     margin: 2px;
   }
+
   .log-table-card {
     padding: 0.4em 0.4em 0.4em 1.2em;
   }
+
   .log-table {
     margin: 0.6em 0 0.6em;
   }
+
   .users-table-card {
     padding: 0.8em;
   }
+
   .table-container {
     height: 40vh;
   }
+
   .log-container {
     height: 30vh;
   }
+
   th,
   td {
     min-width: 6.4em;
@@ -280,7 +255,7 @@ tbody tr:active {
 }
 </style>
 
-<script>
+<script lang="ts">
 import { ref, onBeforeMount } from "vue";
 import moment from "moment";
 import bytes from "bytes";
