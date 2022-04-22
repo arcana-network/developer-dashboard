@@ -29,6 +29,7 @@ const state = {
   },
   authDetails: [],
   authToRemove: [],
+  hasAggregateLogin: false,
   forwarderAddress: "",
   rpcUrl: "",
 };
@@ -40,6 +41,7 @@ const getters = {
   storage: (state) => state.userLimits.storage.limit,
   bandwidth: (state) => state.userLimits.bandwidth.limit,
   userLimits: (state) => state.userLimits,
+  hasAggregateLogin: (state) => state.hasAggregateLogin,
   isStorageUnlimited: (state) => state.userLimits.storage.isUnlimited,
   isBandwidthUnlimited: (state) => state.userLimits.bandwidth.isUnlimited,
   authToRemove: (state) => state.authToRemove,
@@ -92,6 +94,7 @@ const getters = {
       }),
       storage_limit,
       bandwidth_limit,
+      aggregate_login: state.hasAggregateLogin,
     };
   },
 };
@@ -181,6 +184,9 @@ const mutations = {
   updateRPCUrl(state, rpcUrl) {
     state.rpcUrl = rpcUrl;
   },
+  updateAggregateLogin(state, hasAggregateLogin) {
+    state.hasAggregateLogin = hasAggregateLogin;
+  }
 };
 
 const actions = {
@@ -219,6 +225,9 @@ const actions = {
   updateRPCUrl({ commit }, rpcUrl) {
     commit("updateRPCUrl", rpcUrl);
   },
+  updateAggregateLogin({commit}, hasAggregateLogin) {
+    commit("updateAggregateLogin", hasAggregateLogin);
+  }
 };
 
 export default {
