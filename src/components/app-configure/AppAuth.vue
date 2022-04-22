@@ -28,7 +28,21 @@
         />
       </div>
       <div class="flex column">
-        <div class="flex input-group">
+        <div class="flex" style="gap: 0.625rem">
+          <span class="body-1" style="color: var(--text-grey); font-family: var(--font-title);">
+            Aggregate Login
+          </span>
+          <v-switch :value="hasAggregateLogin" @checked="updateAggregateLogin" :disabled="isConfigured" style="margin-top: 1px"></v-switch>
+          <v-tooltip
+            title="Aggregate Login (Needs content here)"
+          >
+            <img
+              src="@/assets/iconography/info-circle-outline.svg"
+              style="cursor: pointer"
+            />
+          </v-tooltip>
+        </div>
+        <div class="flex input-group" style="margin-top: 1rem">
           <v-dropdown
             :options="authenticationTypes"
             displayField="name"
@@ -157,6 +171,7 @@ import VDropdown from "@/components/lib/VDropdown/VDropdown.vue";
 import VIconButton from "@/components/lib/VIconButton/VIconButton.vue";
 import VTextField from "@/components/lib/VTextField/VTextField.vue";
 import VTooltip from "@/components/lib/VTooltip/VTooltip.vue";
+import VSwitch from "@/components/lib/VSwitch/VSwitch.vue";
 
 export default {
   name: "ConfigureAppAuth",
@@ -172,7 +187,8 @@ export default {
     VIconButton,
     VTextField,
     VTooltip,
-  },
+    VSwitch
+},
   setup(props) {
     const store = useStore();
     let authToRemove = [];
@@ -234,6 +250,7 @@ export default {
     let selectedAuthOrigin = ref("");
     let selectedAuthRedirectUrl = ref("");
     let errorMessage = ref("");
+    let hasAggregateLogin = computed(() => store.getters["test/hasAggregateLogin"]);
 
     function addAuthentication() {
       const type = selectedAuthenticationType.value.name.toLowerCase();
@@ -354,6 +371,10 @@ export default {
       });
     }
 
+    function updateAggregateLogin(ev) {
+      store.dispatch("test/updateAggregateLogin", ev.value);
+    }
+
     return {
       authenticationTypes,
       PlusIcon,
@@ -372,6 +393,8 @@ export default {
       removeAuthentication,
       getAuthTooltip,
       onLearnMoreClicked,
+      hasAggregateLogin,
+      updateAggregateLogin
     };
   },
 };
@@ -382,7 +405,7 @@ export default {
   color: var(--primary);
 }
 
-.input-group * {
-  box-shadow: unset;
+.input-group {
+  gap: 1rem;
 }
 </style>
