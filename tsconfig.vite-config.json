@@ -4,6 +4,8 @@
     "compilerOptions": {
         "composite": true,
         "types": ["node"],
-        "esModuleInterop": true
+        "esModuleInterop": true,
+        "noImplicitAny": false,
+        "allowJs": true,
     }
 }
