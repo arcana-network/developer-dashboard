@@ -3,9 +3,8 @@
     "include": ["vite.config.*"],
     "compilerOptions": {
         "composite": true,
-        "types": ["node"],
+        "types": ["node", "vite/client"],
         "esModuleInterop": true,
-        "noImplicitAny": false,
-        "allowJs": true,
+        "allowJs": true
     }
 }
