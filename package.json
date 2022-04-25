@@ -6,6 +6,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
+    "lint": "run-s lint:all:*",
     "lint:eslint": "eslint --fix",
     "lint:markdownlint": "markdownlint --fix",
     "lint:prettier": "prettier --write --loglevel warn",
