@@ -35,11 +35,11 @@
     ],
     "import/newline-after-import": "error",
     "import/no-anonymous-default-export": "error",
-    "import/group-exports": "warn",
+    "import/group-exports": "error",
     "vue/component-tags-order": [
       "error",
       {
-        "order": ["template", "script", "style"]
+        "order": ["script", "template", "style"]
       }
     ],
     "vue/no-empty-component-block": "error"
