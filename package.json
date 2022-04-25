@@ -7,7 +7,9 @@
     "build": "vue-tsc --noEmit && vite build",
     "serve": "vite preview",
     "lint:eslint": "eslint --fix",
-    "lint:all:eslint": "npm run lint:eslint -- . --ext .vue,.ts --ignore-path .gitignore"
+    "lint:prettier": "prettier --write --loglevel warn",
+    "lint:all:eslint": "npm run lint:eslint -- . --ext .vue,.ts --ignore-path .gitignore",
+    "lint:all:prettier": "npm run lint:prettier -- \"**/*.{ts,json,css,scss,vue,html,md}\" --ignore-path .gitignore"
   },
   "dependencies": {
     "@arcana/auth": "https://testnet-dev.s3.ap-south-1.amazonaws.com/arcana-auth-dev.tgz",
