@@ -1,91 +1,97 @@
-import { createWebHistory, createRouter } from "vue-router";
-import store from "@/store";
-import { isAppDown } from "@/utils/constants";
+import {
+  createWebHistory,
+  createRouter,
+  type Router,
+  type RouteRecordRaw,
+} from 'vue-router'
 
-const AppDashboard = () => import("@/pages/AppDashboard.vue");
-const AppConfigure = () => import("@/pages/AppConfigure.vue");
-const AppProfile = () => import("@/pages/AppProfile.vue");
-const AppNewPassword = () => import("@/pages/AppNewPassword.vue");
-const AppUsers = () => import("@/pages/AppUsers.vue");
-const AppLogin = () => import("@/pages/AppLogin.vue");
-const AppDownNotification = () => import("@/pages/AppDownNotification.vue");
+import store from '@/store'
+import constants from '@/utils/constants'
 
-function toBoolean(val) {
-  if (typeof val === "string") {
-    if (val === "0" || val === "false") {
-      return false;
+const AppDashboard = () => import('@/pages/AppDashboard.vue')
+const AppConfigure = () => import('@/pages/AppConfigure.vue')
+const AppProfile = () => import('@/pages/AppProfile.vue')
+const AppNewPassword = () => import('@/pages/AppNewPassword.vue')
+const AppUsers = () => import('@/pages/AppUsers.vue')
+const AppLogin = () => import('@/pages/AppLogin.vue')
+const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
+
+function toBoolean(val: string | boolean | number): boolean {
+  if (typeof val === 'string') {
+    if (val === '0' || val === 'false') {
+      return false
     }
   }
-  return !!val;
+  return !!val
 }
 
-const routes = [
+const routes: RouteRecordRaw[] = [
   {
-    name: "Signup",
-    path: "/signup",
-    redirect: "/login",
+    name: 'Signup',
+    path: '/signup',
+    redirect: '/login',
   },
   {
-    name: "Signin",
-    path: "/signin",
-    redirect: "/login",
+    name: 'Signin',
+    path: '/signin',
+    redirect: '/login',
   },
   {
-    name: "Dashboard",
-    path: "/",
+    name: 'Dashboard',
+    path: '/',
     component: AppDashboard,
   },
   {
-    name: "Configure",
-    path: "/configure",
+    name: 'Configure',
+    path: '/configure',
     component: AppConfigure,
   },
   {
-    name: "Users",
-    path: "/users",
+    name: 'Users',
+    path: '/users',
     component: AppUsers,
   },
   {
-    name: "Profile",
-    path: "/profile",
+    name: 'Profile',
+    path: '/profile',
     component: AppProfile,
   },
   {
-    name: "Create Password",
-    path: "/password/create",
+    name: 'Create Password',
+    path: '/password/create',
     component: AppNewPassword,
     props: true,
   },
   {
-    name: "Login",
-    path: "/login",
-    component: toBoolean(isAppDown) ? AppDownNotification : AppLogin,
+    name: 'Login',
+    path: '/login',
+    component: toBoolean(constants.isAppDown) ? AppDownNotification : AppLogin,
   },
-];
+]
 
-const router = createRouter({
+const router: Router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior() {
-    return { top: 0 };
+    return { top: 0 }
   },
-});
+})
 
-const openRoutes = [
-  "SSO Redirect",
-  "Login",
-  "Signup",
-  "Signin",
-  "Create Password",
-];
+const openRoutes: string[] = [
+  'SSO Redirect',
+  'Login',
+  'Signup',
+  'Signin',
+  'Create Password',
+]
 
 router.beforeEach((to, from, next) => {
-  if (!openRoutes.includes(to.name) && !store.getters.accessToken) {
-    router.replace({ name: "Login" });
-  } else if (to.name === "Login" && store.getters.accessToken) {
-    router.push({ name: "Dashboard" });
+  if (!openRoutes.includes(String(to.name)) && !store.getters.accessToken) {
+    router.replace({ name: 'Login' })
+  } else if (to.name === 'Login' && store.getters.accessToken) {
+    router.push({ name: 'Dashboard' })
   }
-  return next();
-});
+  return next()
+})
 
-export default router;
+export default router

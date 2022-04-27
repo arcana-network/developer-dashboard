@@ -1,38 +1,42 @@
-export const sentry = {
+const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
   tracingOrigins: [
-    import.meta.env.VITE_SENTRY_TRACING_ORIGINS.split(","),
+    import.meta.env.VITE_SENTRY_TRACING_ORIGINS.split(','),
     /^\//,
   ],
-};
+}
 
-export const api = {
+const api = {
   testnet: import.meta.env.VITE_TESTNET_API,
-};
+}
 
-export const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID;
+const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID
 
-export const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false;
+const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false
 
-export const chains = [
+const chains = [
   {
-    label: "Ethereum",
-    value: "ethereum",
+    label: 'Ethereum',
+    value: 'ethereum',
   },
   {
-    label: "Polygon",
-    value: "polygon",
+    label: 'Polygon',
+    value: 'polygon',
   },
   {
-    label: "Binance",
-    value: "binance",
+    label: 'Binance',
+    value: 'binance',
   },
-];
+]
 
-export default {
+const constants = {
   sentry,
   api,
   arcanaAppId,
   isAppDown,
   chains,
-};
+}
+
+console.log(import.meta.env)
+
+export default constants
