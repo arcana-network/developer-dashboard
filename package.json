@@ -18,7 +18,6 @@
     "prepare": "husky install",
     "test:e2e": "start-server-and-test preview :5050 'cypress open'",
     "test:e2e:ci": "start-server-and-test preview :5050 'cypress run'",
-    "cypress": "cypress open",
     "test:unit": "vitest",
     "test:unit:ci": "vitest run --coverage",
     "test:unit:file": "vitest related",
