@@ -37,6 +37,4 @@ const constants = {
   chains,
 }
 
-console.log(import.meta.env)
-
 export default constants
