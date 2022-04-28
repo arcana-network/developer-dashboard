@@ -110,7 +110,7 @@ h5 {
 .sub-heading-3 {
   font-size: 1.25em;
   font-weight: 600;
-  line-height: 1.563em;
+  line-height: 1.5;
 }
 
 .sub-heading-4 {
@@ -134,6 +134,14 @@ h5 {
 .body-3 {
   font-size: 0.625em;
   line-height: 1.125em;
+}
+
+label {
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-white);
 }
 
 .mx-auto {
@@ -291,6 +299,16 @@ h5 {
 
 .uppercase {
   text-transform: uppercase;
+}
+
+.link {
+  font-family: var(--font-body);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--primary);
+  text-decoration: underline;
+  size: 1rem;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 767px) {
