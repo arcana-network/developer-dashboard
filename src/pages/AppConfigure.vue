@@ -1,7 +1,8 @@
 <script setup lang="ts">
-// Add configure page
+import FullScreenLoader from '@/components/FullScreenLoader.vue'
 </script>
 
 <template>
-  <div></div>
+  <main></main>
+  <FullScreenLoader />
 </template>
