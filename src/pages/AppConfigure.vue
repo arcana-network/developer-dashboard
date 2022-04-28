@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import FullScreenLoader from '@/components/FullScreenLoader.vue'
+import PasswordlessAuth from '@/components/app-configure/auth/PasswordlessAuth.vue'
 </script>
 
 <template>
-  <main></main>
-  <FullScreenLoader />
+  <div class="container">
+    <main>
+      <PasswordlessAuth />
+    </main>
+  </div>
 </template>
