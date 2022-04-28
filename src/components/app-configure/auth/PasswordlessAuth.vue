@@ -2,11 +2,10 @@
 import { ref, watch, type Ref } from 'vue'
 import { useStore } from 'vuex'
 
-import VButton from '@/components/lib/VButton.vue'
-import VCard from '@/components/lib/VCard.vue'
-import VSeparator from '@/components/lib/VSeperator.vue'
-import VStack from '@/components/lib/VStack.vue'
-import VTextField from '@/components/lib/VTextField.vue'
+import VCard from '@/components/lib/VCard/VCard.vue'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
+import VStack from '@/components/lib/VStack/VStack.vue'
+import VTextField from '@/components/lib/VTextField/VTextField.vue'
 
 const store = useStore()
 const javascriptOrigin: Ref<string> = ref(
@@ -34,28 +33,67 @@ watch(
 
 <template>
   <section name="passwordless-auth">
-    <VCard>
-      <VStack direction="column">
+    <VCard variant="elevated" class="passwordless-auth-card">
+      <VStack direction="column" gap="1.875rem">
         <h3 class="uppercase">Passwordless Auth</h3>
-        <VSeparator />
-        <div>
+        <VSeperator class="separator" />
+        <div class="body-1">
           Provide your users the convenience of using magic links delivered to
           their email addresses that they can click on to authenticate
           themselves instead of using passwords.
-          <VButton variant="link" label="LEARN MORE" />
+          <a class="link uppercase">Learn More</a>
         </div>
-        <VStack direction="row">
+        <VStack
+          direction="row"
+          align="center"
+          sm-direction="column"
+          sm-align="start"
+          gap="1rem"
+        >
           <label for="passwordless-javascript-origin">Javascript Origin</label>
           <VTextField
             id="passwordless-javascript-origin"
             v-model="javascriptOrigin"
+            no-message
+            input-container-class="passwordless-input"
           />
         </VStack>
-        <VStack direction="row">
+        <VStack
+          direction="row"
+          align="center"
+          sm-direction="column"
+          sm-align="start"
+          gap="1rem"
+        >
           <label for="passwordless-redirect-uri">Redirect URI</label>
-          <VTextField id="passwordless-redirect-uri" v-model="redirectUri" />
+          <VTextField
+            id="passwordless-redirect-uri"
+            v-model="redirectUri"
+            no-message
+            input-container-class="passwordless-input"
+          />
         </VStack>
       </VStack>
     </VCard>
   </section>
 </template>
+
+<style scoped>
+.passwordless-auth-card {
+  padding: 1.875rem 1.5rem;
+}
+
+.separator {
+  width: calc(100% + 1.5rem + 1.5rem);
+  margin: auto -1.5rem;
+}
+
+label {
+  width: 12rem;
+}
+
+.passwordless-input {
+  width: 100%;
+  max-width: 32rem;
+}
+</style>
