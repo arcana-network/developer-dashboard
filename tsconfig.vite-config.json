@@ -1,10 +1,10 @@
 {
-    "extends": "@vue/tsconfig/tsconfig.node.json",
-    "include": ["vite.config.*"],
-    "compilerOptions": {
-        "composite": true,
-        "types": ["node", "vite/client"],
-        "esModuleInterop": true,
-        "allowJs": true
-    }
+  "extends": "@vue/tsconfig/tsconfig.node.json",
+  "include": ["vite.config.*"],
+  "compilerOptions": {
+    "composite": true,
+    "types": ["node", "vite/client"],
+    "esModuleInterop": true,
+    "allowJs": true
+  }
 }

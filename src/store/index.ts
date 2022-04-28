@@ -1,20 +1,21 @@
-import { createStore, createLogger } from "vuex";
-import configureStore from "./configure.store";
-import authStore from "./auth.store";
+import { createStore, createLogger } from 'vuex'
 
-const debug = process.env.NODE_ENV !== "production";
+import authStore from '@/store/auth.store'
+import configureStore from '@/store/configure.store'
+
+const debug = process.env.NODE_ENV !== 'production'
 
 const state = {
-  env: "test",
-  appName: "",
+  env: 'test',
+  appName: '',
   appId: null,
   appNameError: false,
   onConfigChange: false,
   isAppConfigured: false,
-  smartContractAddress: "",
+  smartContractAddress: '',
   showLearnMorePopup: false,
   configDetails: {},
-};
+}
 
 const getters = {
   env: (state) => state.env,
@@ -26,82 +27,82 @@ const getters = {
   showLearnMorePopup: (state) => state.showLearnMorePopup,
   configDetails: (state) => state.configDetails,
   appNameError: (state) => state.appNameError,
-};
+}
 
 const mutations = {
   toggleEnv(state) {
-    state.env = state.env === "test" ? "live" : "test";
+    state.env = state.env === 'test' ? 'live' : 'test'
   },
   updateAppName(state, appName) {
-    state.appName = appName;
+    state.appName = appName
   },
   updateAppId(state, appId) {
-    state.appId = appId;
+    state.appId = appId
   },
   configChangeDetected(state) {
-    state.onConfigChange = true;
+    state.onConfigChange = true
   },
   configChangeReset(state) {
-    state.onConfigChange = false;
+    state.onConfigChange = false
   },
   updateAppConfigurationStatus(state, isAppConfigured) {
-    state.isAppConfigured = isAppConfigured;
+    state.isAppConfigured = isAppConfigured
   },
   resetStore(state) {
-    state.appName = "";
-    state.appId = "";
-    state.smartContractAddress = "";
+    state.appName = ''
+    state.appId = ''
+    state.smartContractAddress = ''
   },
   updateSmartContractAddress(state, smartContractAddress) {
-    state.smartContractAddress = smartContractAddress;
+    state.smartContractAddress = smartContractAddress
   },
   showLearnMorePopup(state, configDetails) {
-    state.showLearnMorePopup = true;
-    state.configDetails = configDetails;
+    state.showLearnMorePopup = true
+    state.configDetails = configDetails
   },
   hideLearnMorePopup(state) {
-    state.showLearnMorePopup = false;
+    state.showLearnMorePopup = false
   },
   updateAppNameError(state, isError) {
-    state.appNameError = isError;
+    state.appNameError = isError
   },
-};
+}
 
 const actions = {
   toggleEnv({ commit }) {
-    commit("toggleEnv");
+    commit('toggleEnv')
   },
   updateAppName({ commit }, appName) {
-    commit("updateAppName", appName);
+    commit('updateAppName', appName)
   },
   updateAppId({ commit }, appId) {
-    commit("updateAppId", appId);
+    commit('updateAppId', appId)
   },
   configChangeDetected({ commit }) {
-    commit("configChangeDetected");
+    commit('configChangeDetected')
   },
   configChangeReset({ commit }) {
-    commit("configChangeReset");
+    commit('configChangeReset')
   },
   updateAppConfigurationStatus({ commit }, isAppConfigured) {
-    commit("updateAppConfigurationStatus", isAppConfigured);
+    commit('updateAppConfigurationStatus', isAppConfigured)
   },
   resetStore({ commit }) {
-    commit("resetStore");
+    commit('resetStore')
   },
   updateSmartContractAddress({ commit }, smartContractAddress) {
-    commit("updateSmartContractAddress", smartContractAddress);
+    commit('updateSmartContractAddress', smartContractAddress)
   },
   showLearnMorePopup({ commit }, configDetails) {
-    commit("showLearnMorePopup", configDetails);
+    commit('showLearnMorePopup', configDetails)
   },
   hideLearnMorePopup({ commit }) {
-    commit("hideLearnMorePopup");
+    commit('hideLearnMorePopup')
   },
   updateAppNameError({ commit }, isError) {
-    commit("updateAppNameError", isError);
+    commit('updateAppNameError', isError)
   },
-};
+}
 
 const store = createStore({
   modules: {
@@ -125,6 +126,6 @@ const store = createStore({
   getters,
   strict: debug,
   plugins: debug ? [createLogger()] : [],
-});
+})
 
-export default store;
+export default store

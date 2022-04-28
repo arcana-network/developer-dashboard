@@ -1,3 +1,22 @@
+<script lang="ts" setup>
+defineProps({
+  label: {
+    type: String,
+    default: '',
+  },
+  modelValue: {
+    type: [String, Number, Boolean],
+    required: true,
+  },
+  value: {
+    type: [String, Number, Boolean],
+    required: true,
+  },
+})
+
+const emit = defineEmits(['update:modelValue'])
+</script>
+
 <template>
   <div class="flex flex-center justify-space-between">
     <label class="body-1" :for="value">{{ label }}</label>
@@ -6,60 +25,38 @@
       type="radio"
       :checked="modelValue === value"
       v-bind="$attrs"
-      @change="$emit('update:modelValue', value)"
+      @change="emit('update:modelValue', value)"
     />
   </div>
 </template>
 
 <style scoped>
-input[type="radio"] {
-  -webkit-appearance: none;
-  appearance: none;
-  background: linear-gradient(143.36deg, #c6c6c6 -4.7%, #000000 115.05%);
-  box-shadow: inset -2px -2px 4px rgba(80, 80, 80, 0.1),
-    inset 5px 5px 5px rgba(0, 0, 0, 0.21),
-    inset -10px -26px 33px -28px rgba(255, 255, 255, 0.1),
-    inset -50px 49px 29px 22px rgba(28, 28, 28, 0.84);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  transform: translateX(0);
+input[type='radio'] {
   display: grid;
   place-content: center;
+  width: 20px;
+  height: 20px;
+  background: linear-gradient(143.36deg, #c6c6c6 -4.7%, #000 115.05%);
+  border-radius: 50%;
+  box-shadow: inset -2px -2px 4px rgb(80 80 80 / 10%),
+    inset 5px 5px 5px rgb(0 0 0 / 21%),
+    inset -10px -26px 33px -28px rgb(255 255 255 / 10%),
+    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+  transform: translateX(0);
+  appearance: none;
 }
 
-input[type="radio"]::before {
-  content: "";
+input[type='radio']::before {
   width: 16px;
   height: 16px;
-  border-radius: 50%;
-  transform: scale(0);
-  transition: 120ms transform ease-in-out;
+  content: '';
   background: linear-gradient(220.53deg, #9bf763 0%, #26ab5b 76.95%);
+  border-radius: 50%;
+  transition: 120ms transform ease-in-out;
+  transform: scale(0);
 }
 
-input[type="radio"]:checked::before {
+input[type='radio']:checked::before {
   transform: scale(1);
 }
 </style>
-
-<script>
-export default {
-  name: "VRadio",
-  emits: ["update:modelValue"],
-  props: {
-    label: {
-      type: String,
-      default: "",
-    },
-    modelValue: {
-      type: [String, Number, Boolean],
-      required: true,
-    },
-    value: {
-      type: [String, Number, Boolean],
-      required: true,
-    },
-  },
-};
-</script>

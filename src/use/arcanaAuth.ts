@@ -1,52 +1,52 @@
-import { AuthProvider, SocialLoginType } from "@arcana/auth";
-import { useStore } from "vuex";
+import { AuthProvider, SocialLoginType } from '@arcana/auth'
+import { useStore } from 'vuex'
 
-const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID;
-const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK;
+const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID
+const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
-let authInstance = null;
+let authInstance = null
 
 function useArcanaAuth() {
-  const store = useStore();
+  const store = useStore()
 
   async function init() {
     if (!authInstance) {
       authInstance = await AuthProvider.init({
         appId: ARCANA_APP_ID,
         network: ARCANA_AUTH_NETWORK,
-        flow: "redirect",
-      });
+        flow: 'redirect',
+      })
     }
   }
 
   function isLoggedIn() {
-    return authInstance.isLoggedIn();
+    return authInstance.isLoggedIn()
   }
 
   async function loginWithSocial(type = SocialLoginType.google) {
     if (!isLoggedIn()) {
-      await authInstance.loginWithSocial(type);
+      await authInstance.loginWithSocial(type)
     }
   }
 
   async function fetchUserDetails() {
-    return authInstance.getUserInfo();
+    return authInstance.getUserInfo()
   }
 
   function handleRedirect() {
-    AuthProvider.handleRedirectPage(window.location);
+    AuthProvider.handleRedirectPage(window.location)
   }
 
   async function logout() {
-    await authInstance.logout();
-    store.dispatch("resetStore");
+    await authInstance.logout()
+    store.dispatch('resetStore')
   }
 
   async function getPublicKey(email) {
     return await authInstance.getPublicKey({
       verifier: SocialLoginType.google,
       id: email,
-    });
+    })
   }
 
   return {
@@ -57,7 +57,7 @@ function useArcanaAuth() {
     logout,
     fetchUserDetails,
     getPublicKey,
-  };
+  }
 }
 
-export default useArcanaAuth;
+export default useArcanaAuth

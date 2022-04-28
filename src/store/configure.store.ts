@@ -1,4 +1,4 @@
-import bytes from "bytes";
+import bytes from 'bytes'
 
 const state = {
   region: {
@@ -10,29 +10,29 @@ const state = {
     northAmerica: false,
     southAmerica: false,
   },
-  chainType: "",
+  chainType: '',
   userLimits: {
     storage: {
       isUnlimited: true,
       limit: {
-        value: "",
-        unit: "",
+        value: '',
+        unit: '',
       },
     },
     bandwidth: {
       isUnlimited: true,
       limit: {
-        value: "",
-        unit: "",
+        value: '',
+        unit: '',
       },
     },
   },
   authDetails: [],
   authToRemove: [],
   hasAggregateLogin: false,
-  forwarderAddress: "",
-  rpcUrl: "",
-};
+  forwarderAddress: '',
+  rpcUrl: '',
+}
 
 const getters = {
   region: (state) => state.region,
@@ -48,36 +48,36 @@ const getters = {
   forwarder: (state) => state.forwarderAddress,
   rpc: (state) => state.rpcUrl,
   config: (state) => {
-    let chain;
-    let storage_limit, bandwidth_limit;
+    let chain
+    let storage_limit, bandwidth_limit
     if (state.userLimits.storage.isUnlimited) {
-      storage_limit = bytes("10 TB");
+      storage_limit = bytes('10 TB')
     } else {
       storage_limit = bytes(
         state.userLimits.storage.limit.value +
           state.userLimits.storage.limit.unit
-      );
+      )
     }
     if (state.userLimits.bandwidth.isUnlimited) {
-      bandwidth_limit = bytes("10 TB");
+      bandwidth_limit = bytes('10 TB')
     } else {
       bandwidth_limit = bytes(
         state.userLimits.bandwidth.limit.value +
           state.userLimits.bandwidth.limit.unit
-      );
+      )
     }
     switch (state.chainType) {
-      case "ethereum":
-        chain = 0;
-        break;
-      case "polygon":
-        chain = 1;
-        break;
-      case "binance":
-        chain = 2;
-        break;
+      case 'ethereum':
+        chain = 0
+        break
+      case 'polygon':
+        chain = 1
+        break
+      case 'binance':
+        chain = 2
+        break
       default:
-        chain = 3;
+        chain = 3
     }
 
     return {
@@ -90,14 +90,14 @@ const getters = {
           clientSecret: authDetail.clientSecret,
           origin: authDetail.origin,
           redirectUrl: authDetail.redirectUrl,
-        };
+        }
       }),
       storage_limit,
       bandwidth_limit,
       aggregate_login: state.hasAggregateLogin,
-    };
+    }
   },
-};
+}
 
 const mutations = {
   updateRegion(
@@ -112,31 +112,31 @@ const mutations = {
       europe,
       northAmerica,
       southAmerica,
-    };
+    }
   },
 
   updateChainType(state, chainType) {
-    state.chainType = chainType;
+    state.chainType = chainType
   },
   updateAuthDetails(state, authDetails) {
-    state.authDetails = [...authDetails];
+    state.authDetails = [...authDetails]
   },
-  updateStorage(state, { unit = "MB", value = 2, isUnlimited }) {
+  updateStorage(state, { unit = 'MB', value = 2, isUnlimited }) {
     if (isUnlimited) {
-      state.userLimits.storage.limit = { value, unit };
-      state.userLimits.storage.isUnlimited = true;
+      state.userLimits.storage.limit = { value, unit }
+      state.userLimits.storage.isUnlimited = true
     } else {
-      state.userLimits.storage.limit = { value, unit };
-      state.userLimits.storage.isUnlimited = false;
+      state.userLimits.storage.limit = { value, unit }
+      state.userLimits.storage.isUnlimited = false
     }
   },
-  updateBandwidth(state, { unit = "MB", value = 2, isUnlimited }) {
+  updateBandwidth(state, { unit = 'MB', value = 2, isUnlimited }) {
     if (isUnlimited) {
-      state.userLimits.bandwidth.limit = { value, unit };
-      state.userLimits.bandwidth.isUnlimited = true;
+      state.userLimits.bandwidth.limit = { value, unit }
+      state.userLimits.bandwidth.isUnlimited = true
     } else {
-      state.userLimits.bandwidth.limit = { value, unit };
-      state.userLimits.bandwidth.isUnlimited = false;
+      state.userLimits.bandwidth.limit = { value, unit }
+      state.userLimits.bandwidth.isUnlimited = false
     }
   },
   resetConfigStore(state) {
@@ -148,91 +148,93 @@ const mutations = {
       europe: false,
       northAmerica: false,
       southAmerica: false,
-    };
-    state.chainType = "";
+    }
+    state.chainType = ''
     state.userLimits = {
       storage: {
         isUnlimited: true,
         limit: {
-          value: "",
-          unit: "",
+          value: '',
+          unit: '',
         },
       },
       bandwidth: {
         isUnlimited: true,
         limit: {
-          value: "",
-          unit: "",
+          value: '',
+          unit: '',
         },
       },
-    };
-    state.authDetails = [];
-    state.authToRemove = [];
+    }
+    state.authDetails = []
+    state.authToRemove = []
   },
   updateAuthToRemove(state, authToRemove) {
-    state.authToRemove = authToRemove;
+    state.authToRemove = authToRemove
   },
   clearAuthToRemove(state) {
-    state.authToRemove = [];
+    state.authToRemove = []
   },
   updateUserLimits(state, userLimits) {
-    state.userLimits = userLimits;
+    state.userLimits = userLimits
   },
   updateForwarder(state, forwarderAddress) {
-    state.forwarderAddress = forwarderAddress;
+    state.forwarderAddress = forwarderAddress
   },
   updateRPCUrl(state, rpcUrl) {
-    state.rpcUrl = rpcUrl;
+    state.rpcUrl = rpcUrl
   },
   updateAggregateLogin(state, hasAggregateLogin) {
-    state.hasAggregateLogin = hasAggregateLogin;
-  }
-};
+    state.hasAggregateLogin = hasAggregateLogin
+  },
+}
 
 const actions = {
   updateRegion({ commit }, region) {
-    commit("updateRegion", region);
+    commit('updateRegion', region)
   },
 
   updateChainType({ commit }, chainType) {
-    commit("updateChainType", chainType);
+    commit('updateChainType', chainType)
   },
 
   updateAuthDetails({ commit }, authDetails) {
-    commit("updateAuthDetails", authDetails);
+    commit('updateAuthDetails', authDetails)
   },
   updateUserLimits({ commit }, userLimits) {
-    commit("updateUserLimits", userLimits);
+    commit('updateUserLimits', userLimits)
   },
   updateStorage({ commit }, { unit, value, isUnlimited }) {
-    commit("updateStorage", { value, unit, isUnlimited });
+    commit('updateStorage', { value, unit, isUnlimited })
   },
   updateBandwidth({ commit }, { unit, value, isUnlimited }) {
-    commit("updateBandwidth", { value, unit, isUnlimited });
+    commit('updateBandwidth', { value, unit, isUnlimited })
   },
   resetConfigStore({ commit }) {
-    commit("resetConfigStore");
+    commit('resetConfigStore')
   },
   updateAuthToRemove({ commit }, authToRemove) {
-    commit("updateAuthToRemove", authToRemove);
+    commit('updateAuthToRemove', authToRemove)
   },
   clearAuthToRemove({ commit }) {
-    commit("clearAuthToRemove");
+    commit('clearAuthToRemove')
   },
   updateForwarder({ commit }, forwarderAddress) {
-    commit("updateForwarder", forwarderAddress);
+    commit('updateForwarder', forwarderAddress)
   },
   updateRPCUrl({ commit }, rpcUrl) {
-    commit("updateRPCUrl", rpcUrl);
+    commit('updateRPCUrl', rpcUrl)
   },
-  updateAggregateLogin({commit}, hasAggregateLogin) {
-    commit("updateAggregateLogin", hasAggregateLogin);
-  }
-};
+  updateAggregateLogin({ commit }, hasAggregateLogin) {
+    commit('updateAggregateLogin', hasAggregateLogin)
+  },
+}
 
-export default {
+const configureStore = {
   state: () => ({ ...state }),
   getters,
   mutations,
   actions,
-};
+}
+
+export default configureStore

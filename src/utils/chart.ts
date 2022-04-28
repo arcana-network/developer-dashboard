@@ -1,32 +1,32 @@
-import { Chart, registerables } from "chart.js";
+import { Chart, registerables } from 'chart.js'
 
-Chart.register(...registerables);
+Chart.register(...registerables)
 
 const monthLabels = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
 
-export function getInitialUsageChartConfig() {
+function getInitialUsageChartConfig() {
   return {
-    type: "line",
+    type: 'line',
     data: {
       labels: monthLabels,
       datasets: [
         {
-          label: "Storage used in MB",
+          label: 'Storage used in MB',
           data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          borderColor: "white",
+          borderColor: 'white',
           borderWidth: 4,
           lineTension: 0.2,
         },
@@ -36,7 +36,7 @@ export function getInitialUsageChartConfig() {
       animations: {
         tension: {
           duration: 1000,
-          easing: "linear",
+          easing: 'linear',
           from: 0.1,
           to: 0.2,
           loop: false,
@@ -47,15 +47,15 @@ export function getInitialUsageChartConfig() {
           beginAtZero: true,
           steps: 5,
           ticks: {
-            callback: function (label) {
+            callback: function (label: any) {
               if (label === 0) {
-                return "";
+                return ''
               }
-              return label + " MB";
+              return label + ' MB'
             },
           },
           grid: {
-            color: "#373737",
+            color: '#373737',
             borderDash: [10, 10],
           },
           title: {
@@ -65,7 +65,7 @@ export function getInitialUsageChartConfig() {
               weight: 600,
             },
           },
-          position: "right",
+          position: 'right',
         },
         x: {
           grid: {
@@ -89,19 +89,19 @@ export function getInitialUsageChartConfig() {
         },
       },
     },
-  };
+  }
 }
 
-export function getInitialUsersChartConfig() {
+function getInitialUsersChartConfig() {
   return {
-    type: "line",
+    type: 'line',
     data: {
       labels: monthLabels,
       datasets: [
         {
-          label: "No of users",
+          label: 'No of users',
           data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          borderColor: "white",
+          borderColor: 'white',
           borderWidth: 4,
           lineTension: 0.4,
         },
@@ -111,7 +111,7 @@ export function getInitialUsersChartConfig() {
       animations: {
         tension: {
           duration: 1000,
-          easing: "linear",
+          easing: 'linear',
           from: 0.1,
           to: 0.2,
           loop: false,
@@ -121,16 +121,16 @@ export function getInitialUsersChartConfig() {
         y: {
           beginAtZero: true,
           grid: {
-            color: "#373737",
+            color: '#373737',
             borderDash: [15, 15],
           },
           ticks: {
             precision: 0,
-            callback: function (label) {
+            callback: function (label: any) {
               if (label === 0) {
-                return "";
+                return ''
               }
-              return label;
+              return label
             },
           },
           title: {
@@ -140,7 +140,7 @@ export function getInitialUsersChartConfig() {
               weight: 600,
             },
           },
-          position: "right",
+          position: 'right',
         },
         x: {
           grid: {
@@ -162,17 +162,26 @@ export function getInitialUsersChartConfig() {
         tooltip: {},
       },
     },
-  };
-}
-
-export function createChartView(ctx, config) {
-  return new Chart(ctx, config);
-}
-
-export function updateChartView(chart, labels, datasets) {
-  if (chart) {
-    chart.data.labels = labels;
-    chart.data.datasets = datasets;
-    chart.update();
   }
 }
+
+function createChartView(ctx, config) {
+  return new Chart(ctx, config)
+}
+
+function updateChartView(chart: Chart, labels: string[], datasets: any[]) {
+  if (chart) {
+    chart.data.labels = labels
+    chart.data.datasets = datasets
+    chart.update()
+  }
+}
+
+const chartUtils = {
+  getInitialUsageChartConfig,
+  getInitialUsersChartConfig,
+  createChartView,
+  updateChartView,
+}
+
+export default chartUtils

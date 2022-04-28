@@ -1,5 +1,13 @@
+<script lang="ts" setup>
+import { useAttrs } from 'vue'
+
+defineProps({ icon: String })
+
+const attrs = useAttrs()
+</script>
+
 <template>
-  <button class="icon-button" v-bind="args">
+  <button class="icon-button" v-bind="attrs">
     <img :src="icon" />
   </button>
 </template>
@@ -7,43 +15,34 @@
 <style scoped>
 .icon-button {
   padding: 0;
+  cursor: pointer;
   background: transparent;
   border: none;
-  box-shadow: unset;
   border-radius: 10px;
-  cursor: pointer;
+  box-shadow: unset;
 }
-.icon-button:not(:disabled):hover {
-  background: linear-gradient(
-    44.81deg,
-    #000000 -147.88%,
-    rgba(31, 31, 31, 0.29) 105.51%
-  );
-  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.18),
-    10px 10px 17px -4px rgba(10, 10, 10, 0.5),
-    -8px -8px 20px -2px rgba(255, 255, 255, 0.06),
-    inset 44px 25px 7px 8px rgba(32, 32, 32, 0.4);
-}
-.icon-button:not(:disabled):active {
-  background: linear-gradient(143.36deg, #000000 -4.7%, #000000 115.05%);
-  box-shadow: inset -2px -2px 4px rgba(80, 80, 80, 0.1),
-    inset 5px 5px 5px rgba(0, 0, 0, 0.21),
-    inset -10px -26px 33px -28px rgba(255, 255, 255, 0.1),
-    inset -50px 49px 29px 22px rgba(28, 28, 28, 0.84);
-}
+
 .icon-button:disabled {
   cursor: not-allowed;
 }
-</style>
 
-<script>
-export default {
-  props: { icon: String },
-  name: "VIconButton",
-  setup(props, { args }) {
-    return {
-      args,
-    };
-  },
-};
-</script>
+.icon-button:not(:disabled):hover {
+  background: linear-gradient(
+    44.81deg,
+    #000 -147.88%,
+    rgb(31 31 31 / 29%) 105.51%
+  );
+  box-shadow: 5px 5px 10px rgb(0 0 0 / 18%),
+    10px 10px 17px -4px rgb(10 10 10 / 50%),
+    -8px -8px 20px -2px rgb(255 255 255 / 6%),
+    inset 44px 25px 7px 8px rgb(32 32 32 / 40%);
+}
+
+.icon-button:not(:disabled):active {
+  background: linear-gradient(143.36deg, #000 -4.7%, #000 115.05%);
+  box-shadow: inset -2px -2px 4px rgb(80 80 80 / 10%),
+    inset 5px 5px 5px rgb(0 0 0 / 21%),
+    inset -10px -26px 33px -28px rgb(255 255 255 / 10%),
+    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+}
+</style>

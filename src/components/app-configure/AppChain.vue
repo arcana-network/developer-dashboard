@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
@@ -6,50 +6,35 @@ import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VRadioGroup from '@/components/lib/VRadioGroup/VRadioGroup.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import constants from '@/utils/constants'
 
-const ConfigureChainType = {
-  name: 'ConfigureAppChainType',
-  components: { VCard, VButton, VRadioGroup, VStack },
-  props: {
-    isConfigured: Boolean,
-  },
-  setup(props: any) {
-    const store = useStore()
+const props = defineProps({
+  isConfigured: Boolean,
+})
 
-    const env = computed(() => {
-      return store.getters.env
-    })
+const store = useStore()
 
-    let selectedChain = computed(() => {
-      return store.getters[env.value + '/chainType']
-    })
+const env = computed(() => {
+  return store.getters.env
+})
 
-    function onLearnMoreClicked() {
-      store.dispatch('showLearnMorePopup', {
-        header: 'CHAIN TYPE',
-        description:
-          'Where are you currently building your DApp? This is optional for now but will give us good insights into which bridges/integrations we should prioritise here at Arcana.',
-      })
-    }
+let selectedChain = computed(() => {
+  return store.getters[env.value + '/chainType']
+})
 
-    function changeChainType(selectedChain: string) {
-      store.dispatch(env.value + '/updateChainType', selectedChain)
-      if (props.isConfigured && !store.getters.onConfigChange) {
-        store.dispatch('configChangeDetected')
-      }
-    }
-
-    return {
-      chains: constants.chains,
-      selectedChain,
-      changeChainType,
-      onLearnMoreClicked,
-    }
-  },
+function onLearnMoreClicked() {
+  store.dispatch('showLearnMorePopup', {
+    header: 'CHAIN TYPE',
+    description:
+      'Where are you currently building your DApp? This is optional for now but will give us good insights into which bridges/integrations we should prioritise here at Arcana.',
+  })
 }
 
-export default ConfigureChainType
+function changeChainType(selectedChain: string) {
+  store.dispatch(env.value + '/updateChainType', selectedChain)
+  if (props.isConfigured && !store.getters.onConfigChange) {
+    store.dispatch('configChangeDetected')
+  }
+}
 </script>
 
 <template>

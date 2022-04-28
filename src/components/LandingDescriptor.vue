@@ -1,24 +1,36 @@
+<script lang="ts" setup>
+import AppLogo from '@/assets/logo.svg'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
+</script>
+
 <template>
-  <div class="mobile-remove tablet-remove" style="
+  <div
+    class="mobile-remove tablet-remove"
+    style="
       width: 40%;
-      max-width: 488px;
       min-width: 400px;
+      max-width: 488px;
       margin-top: 8vh;
       margin-left: 4vw;
-    ">
+    "
+  >
     <img :src="AppLogo" style="height: 72px" alt="Arcana Logo" />
     <h1 style="margin-top: 4vh; margin-right: 4vw">
       Make your dApps secure from the ground up!
     </h1>
     <img src="@/assets/sidebar-illustration.png" style="margin: 6vh auto 0" />
   </div>
-  <v-seperator :vertical="true" style="height: 99.4vh; position: sticky; top: 0" class="mobile-remove tablet-remove" />
+  <v-seperator
+    :vertical="true"
+    style="position: sticky; top: 0; height: 99.4vh"
+    class="mobile-remove tablet-remove"
+  />
 </template>
 
 <style scoped>
 h1 {
-  letter-spacing: unset;
   font-weight: 700;
+  letter-spacing: unset;
 }
 
 .body-3 {
@@ -28,27 +40,12 @@ h1 {
 }
 
 ul {
-  list-style-type: "-  ";
   padding: 0;
   margin-right: 2em;
+  list-style-type: '-  ';
 }
 
 ul li {
   margin: 4px;
 }
 </style>
-
-<script lang="ts">
-import VSeperator from "@/components/lib/VSeperator/VSeperator.vue";
-import AppLogo from "@/assets/logo.svg";
-
-export default {
-  name: "LandingDescriptor",
-  components: { VSeperator },
-  setup() {
-    return {
-      AppLogo,
-    };
-  },
-};
-</script>
