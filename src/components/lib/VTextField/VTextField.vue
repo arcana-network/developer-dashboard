@@ -26,7 +26,7 @@ const props = defineProps({
   },
   id: {
     type: String,
-    default: '',
+    default: utils.getRandomId(),
   },
   validation: {
     type: Function,
@@ -38,7 +38,7 @@ const props = defineProps({
   },
   type: {
     type: String,
-    default: '',
+    default: 'text',
   },
   messageType: {
     type: String,
@@ -76,7 +76,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'icon-clicked'])
 const attrs = useAttrs()
-let componentId = props.id?.trim() ?? utils.getRandomId()
+let componentId = props.id?.trim()
 
 let inputType = computed(() => {
   return props.type?.trim().toLowerCase()
@@ -188,7 +188,7 @@ input {
 }
 
 input::placeholder {
-  margin: 10px 20px;
+  margin: 10px 20px 10px 0;
   font-family: var(--font-body);
   font-size: 1.1em;
   line-height: 1.5em;
