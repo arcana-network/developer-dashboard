@@ -33,4 +33,3 @@ Preview the generated site before deploying.
 ```bash
 npm run serve
 ```
-

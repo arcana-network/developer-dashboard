@@ -1,49 +1,59 @@
-import axios from "axios";
-import getEnvApi from "./get-env-api";
-import store from "@/store";
+import axios from 'axios'
 
-export function fetchAllUsers() {
-  return axios.get(getEnvApi() + "/user-details/?id=" + store.getters.appId, {
+import getEnvApi from '@/services/get-env-api'
+import store from '@/store'
+
+function fetchAllUsers() {
+  return axios.get(getEnvApi() + '/user-details/?id=' + store.getters.appId, {
     headers: {
-      Authorization: "Bearer " + store.getters.accessToken,
+      Authorization: 'Bearer ' + store.getters.accessToken,
     },
-  });
+  })
 }
 
-export function searchUsers(address) {
+function searchUsers(address) {
   return axios.get(
     getEnvApi() +
-      "/user-transactions/?id=" +
+      '/user-transactions/?id=' +
       store.getters.appId +
-      "&address=" +
+      '&address=' +
       address,
     {
       headers: {
-        Authorization: "Bearer " + store.getters.accessToken,
+        Authorization: 'Bearer ' + store.getters.accessToken,
       },
     }
-  );
+  )
 }
 
-export function fetchAllUserTransactions(userAddress) {
+function fetchAllUserTransactions(userAddress) {
   return axios.get(
     getEnvApi() +
-      "/user-transactions/?id=" +
+      '/user-transactions/?id=' +
       store.getters.appId +
-      "&address=" +
+      '&address=' +
       userAddress,
     {
       headers: {
-        Authorization: "Bearer " + store.getters.accessToken,
+        Authorization: 'Bearer ' + store.getters.accessToken,
       },
     }
-  );
+  )
 }
 
-export function fetchMonthlyUsers() {
-  return axios.get(getEnvApi() + "/no-of-users/?id=" + store.getters.appId, {
+function fetchMonthlyUsers() {
+  return axios.get(getEnvApi() + '/no-of-users/?id=' + store.getters.appId, {
     headers: {
-      Authorization: "Bearer " + store.getters.accessToken,
+      Authorization: 'Bearer ' + store.getters.accessToken,
     },
-  });
+  })
 }
+
+const userService = {
+  fetchAllUsers,
+  searchUsers,
+  fetchAllUserTransactions,
+  fetchMonthlyUsers,
+}
+
+export default userService

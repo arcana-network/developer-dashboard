@@ -1,30 +1,41 @@
+<script lang="ts" setup>
+import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+</script>
+
 <template>
   <main>
     <v-overlay>
-      <div class="flex column" style="
-          width: 100%;
-          height: 100%;
+      <div
+        class="flex column"
+        style="
           align-items: center;
           justify-content: center;
+          width: 100%;
+          height: 100%;
           color: var(--text-white);
-        ">
-        <h1 style="
-            color: #13a3fd;
-            letter-spacing: unset;
-            font-weight: 700;
-            text-align: center;
+        "
+      >
+        <h1
+          style="
             padding: 0 1em;
-          ">
+            font-weight: 700;
+            color: #13a3fd;
+            text-align: center;
+            letter-spacing: unset;
+          "
+        >
           Under Maintenance
         </h1>
-        <h2 style="
-            font-weight: 500;
-            text-align: center;
+        <h2
+          style="
+            max-width: 720px;
             padding: 0 1em;
             margin: 1.25em auto 0;
-            max-width: 720px;
+            font-weight: 500;
             line-height: 1.5em;
-          ">
+            text-align: center;
+          "
+        >
           The dashboard is currently undergoing maintenance and will be back
           online soon. Please check back in a little while.
         </h2>
@@ -35,32 +46,23 @@
 
 <style scoped>
 .down-description {
-  font-family: var(--font-body);
-  font-weight: 400;
-  margin-top: 1.1em;
-  line-height: 1.5em;
+  width: 90%;
   min-width: 320px;
   max-width: 720px;
-  width: 90%;
+  margin-top: 1.1em;
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.5em;
   text-align: center;
 }
 
 h4.down-description {
-  font-weight: 600;
   font-size: 1.125em;
+  font-weight: 600;
 }
 
 h5.down-description {
-  font-weight: 400;
   font-size: 0.85em;
+  font-weight: 400;
 }
 </style>
-
-<script lang="ts">
-import VOverlay from "@/components/lib/VOverlay/VOverlay.vue";
-
-export default {
-  name: "AppDownNotification",
-  components: { VOverlay }
-};
-</script>

@@ -1,3 +1,98 @@
+<script lang="ts" setup>
+import { computed, useAttrs } from 'vue'
+
+import utils from '@/components/lib/utils'
+
+const props = defineProps({
+  labelStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  messageStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  placeholderStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  label: {
+    type: String,
+    default: '',
+  },
+  message: {
+    type: String,
+    default: '',
+  },
+  id: {
+    type: String,
+    default: utils.getRandomId(),
+  },
+  validation: {
+    type: Function,
+    default: void 0,
+  },
+  modelValue: {
+    type: [String, Number],
+    default: '',
+  },
+  type: {
+    type: String,
+    default: 'text',
+  },
+  messageType: {
+    type: String,
+    default: '',
+  },
+  placeholder: {
+    type: String,
+    default: '',
+  },
+  strong: {
+    type: Boolean,
+    default: false,
+  },
+  icon: {
+    type: [String, Object],
+    default: '',
+  },
+  clickableIcon: {
+    type: Boolean,
+    default: false,
+  },
+  inputStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  noMessage: {
+    type: Boolean,
+    default: false,
+  },
+  style: {
+    type: [String, Object, Array],
+    default: '',
+  },
+})
+
+const emit = defineEmits(['update:modelValue', 'icon-clicked'])
+const attrs = useAttrs()
+let componentId = props.id?.trim()
+
+let inputType = computed(() => {
+  return props.type?.trim().toLowerCase()
+})
+
+function onInput(ev) {
+  emit('update:modelValue', ev.target?.value)
+}
+
+function onIconClicked(ev) {
+  if (props.clickableIcon) {
+    emit('icon-clicked', ev)
+  }
+}
+</script>
+
 <template>
   <div class="form-group" aria-label="Form group" :style="style">
     <label v-if="label" :style="[labelStyle]" :for="componentId">
@@ -5,14 +100,14 @@
     </label>
     <div class="text-field" :class="{ icon: !!icon }">
       <input
-        :type="inputType"
         :id="componentId"
+        :type="inputType"
         :value="modelValue"
-        @input="onInput"
         v-bind="attrs"
         :placeholder="placeholder"
         :class="{ strong }"
         :style="inputStyle"
+        @input="onInput"
       />
       <img
         v-if="icon"
@@ -24,8 +119,8 @@
         @click.stop="onIconClicked"
       />
     </div>
-    <span class="message" :class="messageType" v-if="!noMessage">
-      {{ message || "Some message" }}
+    <span v-if="!noMessage" class="message" :class="messageType">
+      {{ message || 'Some message' }}
     </span>
   </div>
 </template>
@@ -35,153 +130,100 @@ div.form-group {
   display: inline-flex;
   flex-direction: column;
 }
+
 label {
-  font-family: var(--font-body);
-  color: var(--text-grey);
-  font-weight: 400;
-  font-size: 1.125em;
-  line-height: 1.5em;
   margin: 10px 20px;
-}
-div.text-field {
-  background: linear-gradient(141.48deg, #1a1a1a -4.56%, #151515 135.63%);
-  box-shadow: inset -2px -2px 4px rgba(57, 57, 57, 0.44),
-    inset 5px 5px 10px rgba(11, 11, 11, 0.5);
-  border-radius: 10px;
-  display: flex;
-}
-.message {
   font-family: var(--font-body);
+  font-size: 1.125em;
   font-weight: 400;
-  visibility: hidden;
-  font-size: 0.94em;
   line-height: 1.5em;
+  color: var(--text-grey);
+}
+
+div.text-field {
+  display: flex;
+  background: linear-gradient(141.48deg, #1a1a1a -4.56%, #151515 135.63%);
+  border-radius: 10px;
+  box-shadow: inset -2px -2px 4px rgb(57 57 57 / 44%),
+    inset 5px 5px 10px rgb(11 11 11 / 50%);
+}
+
+.message {
   margin: 5px 20px;
+  font-family: var(--font-body);
+  font-size: 0.94em;
+  font-weight: 400;
+  line-height: 1.5em;
+  visibility: hidden;
 }
+
 .message.success {
-  visibility: visible;
   color: #8fff00;
-}
-.message.error {
   visibility: visible;
-  color: #ee193f;
 }
+
+.message.error {
+  color: #ee193f;
+  visibility: visible;
+}
+
 .loading-state {
   color: transparent;
 }
+
 input {
-  border: none;
-  box-shadow: none;
-  background: transparent;
-  outline: none;
-  --webkit-outline: none;
-  color: var(--text-white);
-  font-family: var(--font-body);
-  font-size: 1.1em;
-  line-height: 1.5em;
-  margin: 15px 20px;
-  padding: 0;
   width: 100%;
-}
-div.text-field.icon input {
-  width: calc(100% - 80px);
-}
-input::placeholder,
-input::-webkit-input-placeholder,
-input::-moz-placeholder,
-input:-ms-input-placeholder,
-input:-moz-placeholder {
-  color: var(--text-grey);
+  padding: 0;
+  margin: 15px 20px;
   font-family: var(--font-body);
   font-size: 1.1em;
   line-height: 1.5em;
-  margin: 10px 20px;
+  color: var(--text-white);
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+
+  --webkit-outline: none;
 }
-input.strong {
-  font-size: 1.4em;
-  line-height: 1.65em;
-  font-weight: 600;
-  margin: 5px 20px;
+
+input::placeholder {
+  margin: 10px 20px 10px 0;
+  font-family: var(--font-body);
+  font-size: 1.1em;
+  line-height: 1.5em;
+  color: var(--text-grey);
 }
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0px 1000px #181818 inset;
+  box-shadow: 0 0 0 1000px #181818 inset;
   -webkit-text-fill-color: var(--text-white);
 }
+
+div.text-field.icon input {
+  width: calc(100% - 80px);
+}
+
+input.strong {
+  margin: 5px 20px;
+  font-size: 1.4em;
+  font-weight: 600;
+  line-height: 1.65em;
+}
+
 img.icon-clickable {
   cursor: pointer;
 }
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
-input[type="number"] {
-  -moz-appearance: textfield;
+
+input[type='number'] {
+  appearance: textfield;
 }
 </style>
-
-<script>
-import { reactive, ref, computed } from "vue";
-import { getRandomId } from "../utils";
-
-export default {
-  name: "VTextField",
-  inheritAttrs: false,
-  props: {
-    labelStyle: [String, Object],
-    messageStyle: [String, Object],
-    placeholderStyle: [String, Object],
-    label: String,
-    message: String,
-    id: String,
-    validation: Function,
-    modelValue: [String, Number],
-    type: String,
-    messageType: String,
-    placeholder: String,
-    strong: Boolean,
-    icon: [String, Object],
-    clickableIcon: Boolean,
-    inputStyle: [String, Object],
-    noMessage: Boolean,
-    style: [String, Object, Array],
-  },
-  setup(props, { emit, attrs }) {
-    props = reactive(props);
-    let componentId = props.id?.trim() ?? getRandomId();
-    let iconClicked = ref(false);
-
-    let inputType = computed(() => {
-      return props.type?.trim().toLowerCase();
-    });
-
-    function validate(ev) {
-      if ("validation" in props && "call" in props.validation) {
-        props.validation.call(ev.target?.value);
-      }
-    }
-
-    function onInput(ev) {
-      emit("update:modelValue", ev.target?.value);
-    }
-
-    function onIconClicked(ev) {
-      if (props.clickableIcon) {
-        emit("icon-clicked", ev);
-      }
-    }
-
-    return {
-      componentId,
-      validate,
-      onInput,
-      attrs,
-      inputType,
-      onIconClicked,
-      iconClicked,
-    };
-  },
-};
-</script>

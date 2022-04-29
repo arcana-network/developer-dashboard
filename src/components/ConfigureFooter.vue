@@ -1,10 +1,57 @@
+<script lang="ts" setup>
+import VButton from '@/components/lib/VButton/VButton.vue'
+
+defineProps({
+  show: {
+    type: Boolean,
+    default: true,
+  },
+  saveLabel: {
+    type: String,
+    default: 'SAVE',
+  },
+  cancelLabel: {
+    type: String,
+    default: 'CANCEL',
+  },
+  saveDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  cancelDisabled: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits(['cancel', 'save'])
+
+function onCancelClick() {
+  emit('cancel')
+}
+
+function onSaveClick() {
+  emit('save')
+}
+</script>
+
 <template>
   <footer :class="{ show }">
     <div class="container flex flex-wrap">
-      <v-button :label="cancelLabel || 'CANCEL'" :disabled="cancelDisabled" variant="secondary"
-        @click.stop="onCancelClick" v-wave />
-      <v-button :label="saveLabel || 'SAVE'" :disabled="saveDisabled" variant="primary" @click.stop="onSaveClick"
-        v-wave />
+      <v-button
+        v-wave
+        :label="cancelLabel"
+        :disabled="cancelDisabled"
+        variant="secondary"
+        @click.stop="onCancelClick"
+      />
+      <v-button
+        v-wave
+        :label="saveLabel"
+        :disabled="saveDisabled"
+        variant="primary"
+        @click.stop="onSaveClick"
+      />
     </div>
   </footer>
 </template>
@@ -12,15 +59,15 @@
 <style scoped>
 footer {
   position: fixed;
+  right: 0;
   bottom: 0;
   left: 0;
-  right: 0;
-  background: rgba(29, 29, 29, 0.95);
-  padding: 1.5em 0;
-  display: flex;
   z-index: 100;
-  opacity: 0;
+  display: flex;
+  padding: 1.5em 0;
   visibility: hidden;
+  background: rgb(29 29 29 / 95%);
+  opacity: 0;
   transition: opacity 0.3s;
 }
 
@@ -30,8 +77,8 @@ footer div {
 }
 
 footer.show {
-  opacity: 1;
   visibility: visible;
+  opacity: 1;
 }
 
 @media only screen and (max-width: 767px) {
@@ -40,9 +87,9 @@ footer.show {
   }
 
   footer div {
+    flex-wrap: wrap-reverse;
     gap: 0.5em;
     justify-content: center;
-    flex-wrap: wrap-reverse;
   }
 
   .container {
@@ -50,33 +97,3 @@ footer.show {
   }
 }
 </style>
-
-<script lang="ts">
-import VButton from "@/components/lib/VButton/VButton.vue";
-
-export default {
-  components: { VButton },
-  props: {
-    show: {
-      type: Boolean,
-      default: true,
-    },
-    saveLabel: String,
-    cancelLabel: String,
-    saveDisabled: Boolean,
-    cancelDisabled: Boolean,
-  },
-  name: "ConfigureFooter",
-  setup(props, { emit }) {
-    function onCancelClick() {
-      emit("cancel");
-    }
-
-    function onSaveClick() {
-      emit("save");
-    }
-
-    return { onCancelClick, onSaveClick };
-  },
-};
-</script>
