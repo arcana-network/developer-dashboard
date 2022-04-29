@@ -5,7 +5,12 @@ interface ICaches {
   }
 }
 
-let caches: ICaches
+const caches: ICaches = {
+  isFlexGapSupported: {
+    memoized: false,
+    value: false,
+  },
+}
 
 function getRandomId() {
   const uint32 = window.crypto.getRandomValues(new Uint32Array(1))[0]

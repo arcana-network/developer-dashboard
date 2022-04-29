@@ -1,20 +1,27 @@
 <script lang="ts" setup>
+import { useAttrs } from 'vue'
+
 defineProps({
   label: {
     type: String,
     default: '',
   },
   modelValue: {
-    type: [String, Number, Boolean],
     required: true,
+    validator: (value: any) =>
+      [undefined, null].includes(value) ||
+      ['string', 'number', 'boolean'].includes(typeof value),
   },
   value: {
-    type: [String, Number, Boolean],
     required: true,
+    validator: (value: any) =>
+      [undefined, null].includes(value) ||
+      ['string', 'number', 'boolean'].includes(typeof value),
   },
 })
 
 const emit = defineEmits(['update:modelValue'])
+const attrs = useAttrs()
 </script>
 
 <template>
@@ -24,7 +31,7 @@ const emit = defineEmits(['update:modelValue'])
       :id="value"
       type="radio"
       :checked="modelValue === value"
-      v-bind="$attrs"
+      v-bind="attrs"
       @change="emit('update:modelValue', value)"
     />
   </div>

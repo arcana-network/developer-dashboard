@@ -11,8 +11,10 @@ defineProps({
     required: true,
   },
   modelValue: {
-    type: [String, Number, Boolean],
     required: true,
+    validator: (value: any) =>
+      [undefined, null].includes(value) ||
+      ['string', 'number', 'boolean'].includes(typeof value),
   },
 })
 

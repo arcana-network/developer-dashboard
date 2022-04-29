@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { useAttrs } from 'vue'
 
-const props = defineProps({
+defineProps({
   title: String,
   delay: String,
   tooltipStyle: [String, Object],
 })
+
+const attrs = useAttrs()
 
 const positionClass = {
   bottom: false,

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, useAttrs, watch } from 'vue'
 
 const props = defineProps({
   modelValue: {
@@ -13,6 +13,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['update:modelValue', 'checked'])
+
+const attrs = useAttrs()
 
 let switchValue = ref(!!props.value)
 

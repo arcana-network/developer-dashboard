@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
 import { useStore } from 'vuex'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VRadioGroup from '@/components/lib/VRadioGroup/VRadioGroup.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import constants from '@/utils/constants'
 
 const props = defineProps({
   isConfigured: Boolean,
@@ -17,9 +18,7 @@ const env = computed(() => {
   return store.getters.env
 })
 
-let selectedChain = computed(() => {
-  return store.getters[env.value + '/chainType']
-})
+let selectedChain = ref(store.getters[env.value + '/chainType'])
 
 function onLearnMoreClicked() {
   store.dispatch('showLearnMorePopup', {
@@ -75,7 +74,7 @@ function changeChainType(selectedChain: string) {
             >
               <v-radio-group
                 v-model="selectedChain"
-                :options="chains"
+                :options="constants.chains"
                 name="ChainSelection"
                 @update:modelValue="changeChainType"
               />
