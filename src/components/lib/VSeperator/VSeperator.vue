@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 defineProps({
-  vertical: Boolean,
+  vertical: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 

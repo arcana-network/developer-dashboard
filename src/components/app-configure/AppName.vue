@@ -7,7 +7,10 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 
 const props = defineProps({
-  isConfigured: Boolean,
+  isConfigured: {
+    type: Boolean,
+    required: true,
+  },
 })
 
 const emit = defineEmits(['enter-click'])

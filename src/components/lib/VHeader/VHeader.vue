@@ -2,19 +2,58 @@
 import { computed, ref } from 'vue'
 
 const props = defineProps({
-  logoSrc: String,
-  logoAlt: String,
-  menuItems: Array,
-  loggedInUser: Object,
-  notificationIcon: [Object, String],
-  hasNotifications: Boolean,
-  height: Number,
-  width: Number,
-  logoStyle: [String, Object],
-  selectedItem: String,
-  mobileMenuIcon: [Object, String],
-  mobileAccountIcon: [Object, String],
-  mobileLogo: [Object, String],
+  logoSrc: {
+    type: String,
+    default: '',
+  },
+  logoAlt: {
+    type: String,
+    default: '',
+  },
+  menuItems: {
+    type: Array,
+    default: null,
+  },
+  loggedInUser: {
+    type: Object,
+    default: null,
+  },
+  notificationIcon: {
+    type: [Object, String],
+    default: '',
+  },
+  hasNotifications: {
+    type: Boolean,
+    default: false,
+  },
+  height: {
+    type: Number,
+    default: 0,
+  },
+  width: {
+    type: Number,
+    default: 0,
+  },
+  logoStyle: {
+    type: [Object, String],
+    default: '',
+  },
+  selectedItem: {
+    type: String,
+    default: '',
+  },
+  mobileMenuIcon: {
+    type: [Object, String],
+    default: '',
+  },
+  mobileAccountIcon: {
+    type: [Object, String],
+    default: '',
+  },
+  mobileLogo: {
+    type: [Object, String],
+    default: '',
+  },
 })
 
 const emit = defineEmits(['header-menu-item-click', 'user-click', 'logo-click'])
@@ -57,7 +96,11 @@ function onLogoClick() {
         class="logo laptop-remove"
         @click="showMenu = !showMenu"
       >
-        <img style="margin-top: 10px" :src="mobileMenuIcon" />
+        <img
+          style="margin-top: 10px"
+          :src="mobileMenuIcon"
+          :alt="logoAltText"
+        />
       </div>
       <div
         v-if="logoSrc"
@@ -69,7 +112,7 @@ function onLogoClick() {
         class="logo"
         @click.stop="onLogoClick"
       >
-        <img class="tablet-remove" :src="logoSrc" :alt="logoAlt" />
+        <img class="tablet-remove" :src="logoSrc" :alt="logoAltText" />
         <img
           class="laptop-remove"
           :src="mobileLogo"

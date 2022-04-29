@@ -4,12 +4,24 @@ import { computed, ref, useAttrs, watch } from 'vue'
 const props = defineProps({
   modelValue: {
     type: Boolean,
-    default: null,
+    default: false,
   },
-  value: Boolean,
-  size: String,
-  variant: String,
-  disabled: Boolean,
+  value: {
+    type: Boolean,
+    default: false,
+  },
+  size: {
+    type: String,
+    default: '',
+  },
+  variant: {
+    type: String,
+    default: '',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'checked'])

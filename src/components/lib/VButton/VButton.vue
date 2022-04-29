@@ -4,12 +4,32 @@ import { computed, useAttrs } from 'vue'
 import VCircularProgress from '@/components/lib/VCircularProgress/VCircularProgress.vue'
 
 const props = defineProps({
-  label: String,
-  action: Function,
-  buttonStyle: [Object, String],
-  disabled: Boolean,
-  variant: String,
-  loading: Boolean,
+  label: {
+    type: String,
+    default: '',
+  },
+  action: {
+    type: Function,
+    default: void 0,
+  },
+  buttonStyle: {
+    type: [Object, String],
+    default: '',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  variant: {
+    type: String,
+    default: 'primary',
+    validator: (value: string) =>
+      ['primary', 'secondary', 'link'].includes(value),
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const attrs = useAttrs()

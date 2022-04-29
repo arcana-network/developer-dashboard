@@ -2,12 +2,30 @@
 import { ref, onBeforeUnmount, onMounted, watch } from 'vue'
 
 const props = defineProps({
-  options: Array,
-  displayField: String,
-  modelValue: [String, Object],
-  placeholder: String,
-  disabled: Boolean,
-  triggerStyle: [String, Object, Array],
+  options: {
+    type: Array,
+    default: null,
+  },
+  displayField: {
+    type: String,
+    default: '',
+  },
+  modelValue: {
+    type: [String, Object],
+    default: '',
+  },
+  placeholder: {
+    type: String,
+    default: '',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  triggerStyle: {
+    type: [String, Object, Array],
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])

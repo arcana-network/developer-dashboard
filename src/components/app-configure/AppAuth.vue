@@ -14,11 +14,14 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 
 const props = defineProps({
-  isConfigured: Boolean,
+  isConfigured: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const store = useStore()
-let authToRemove = []
+let authToRemove: any[] = []
 const authenticationTypes = [
   {
     name: 'Google',

@@ -4,60 +4,63 @@ import { computed } from 'vue'
 import utils from '@/components/lib/utils'
 
 const props = defineProps({
-  gap: String,
+  gap: { type: String },
   direction: {
     type: String,
-    validator: (value) => ['row', 'column'].indexOf(value) !== -1,
+    validator: (value: string) => ['row', 'column'].includes(value),
+    default: 'row',
   },
   justify: {
     type: String,
-    validator: (value) =>
-      ['space-between', 'space-around', 'space-evenly', 'center'].indexOf(
+    validator: (value: string) =>
+      ['space-between', 'space-around', 'space-evenly', 'center'].includes(
         value
-      ) !== -1,
+      ),
   },
   align: {
     type: String,
-    validator: (value) =>
-      ['start', 'end', 'stretch', 'center'].indexOf(value) !== -1,
+    validator: (value: string) =>
+      ['start', 'end', 'stretch', 'center'].includes(value),
   },
-  wrap: Boolean,
-  smGap: String,
+  wrap: { type: Boolean },
+  smGap: { type: String },
   smDirection: {
     type: String,
-    validator: (value) => ['row', 'column'].indexOf(value) !== -1,
+    validator: (value: string) => ['row', 'column'].includes(value),
+    default: 'row',
   },
   smJustify: {
     type: String,
-    validator: (value) =>
-      ['space-between', 'space-around', 'space-evenly', 'center'].indexOf(
+    validator: (value: string) =>
+      ['space-between', 'space-around', 'space-evenly', 'center'].includes(
         value
-      ) !== -1,
+      ),
   },
   smAlign: {
     type: String,
-    validator: (value) =>
-      ['start', 'end', 'stretch', 'center'].indexOf(value) !== -1,
+    validator: (value: string) =>
+      ['start', 'end', 'stretch', 'center'].includes(value),
   },
-  smWrap: Boolean,
-  mdGap: String,
+  smWrap: { type: Boolean },
+  mdGap: { type: String },
   mdDirection: {
     type: String,
-    validator: (value) => ['row', 'column'].indexOf(value) !== -1,
+    validator: (value: string) => ['row', 'column'].includes(value),
+    default: 'row',
   },
   mdJustify: {
     type: String,
-    validator: (value) =>
-      ['space-between', 'space-around', 'space-evenly', 'center'].indexOf(
+    validator: (value: string) =>
+      ['space-between', 'space-around', 'space-evenly', 'center'].includes(
         value
-      ) !== -1,
+      ),
   },
   mdAlign: {
     type: String,
-    validator: (value) =>
-      ['start', 'end', 'stretch', 'center'].indexOf(value) !== -1,
+    validator: (value: string) =>
+      ['start', 'end', 'stretch', 'center'].includes(value),
   },
-  mdWrap: Boolean,
+  mdWrap: { type: Boolean },
 })
 
 const isFlexGapSupported = utils.checkFlexGap()

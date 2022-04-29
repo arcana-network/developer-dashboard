@@ -2,9 +2,20 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  variant: String,
-  cardClass: [String, Object],
-  cardStyle: [String, Object],
+  variant: {
+    type: String,
+    default: 'elevated',
+    validator: (value: string) =>
+      ['elevated', 'depressed', 'popup'].includes(value),
+  },
+  cardClass: {
+    type: [String, Object],
+    default: '',
+  },
+  cardStyle: {
+    type: [String, Object],
+    default: '',
+  },
 })
 
 const classes = computed(() => {

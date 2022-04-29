@@ -2,8 +2,14 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  color: String,
-  size: String,
+  color: {
+    type: String,
+    default: '',
+  },
+  size: {
+    type: String,
+    default: '',
+  },
 })
 
 const styles = computed(() => {

@@ -9,7 +9,10 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import constants from '@/utils/constants'
 
 const props = defineProps({
-  isConfigured: Boolean,
+  isConfigured: {
+    type: Boolean,
+    required: true,
+  },
 })
 
 const store = useStore()
@@ -76,7 +79,7 @@ function changeChainType(selectedChain: string) {
                 v-model="selectedChain"
                 :options="constants.chains"
                 name="ChainSelection"
-                @update:modelValue="changeChainType"
+                @update:model-value="changeChainType"
               />
             </v-stack>
           </v-card>

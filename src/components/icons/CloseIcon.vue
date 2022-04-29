@@ -1,14 +1,10 @@
-<script lang="ts">
-const CloseIcon = {
-  props: {
-    color: {
-      type: String,
-      default: '#13A3FD',
-    },
+<script lang="ts" setup>
+defineProps({
+  color: {
+    type: String,
+    default: '#13A3FD',
   },
-}
-
-export default CloseIcon
+})
 </script>
 
 <template>

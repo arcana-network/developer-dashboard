@@ -10,7 +10,10 @@ import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 
 const props = defineProps({
-  isConfigured: Boolean,
+  isConfigured: {
+    type: Boolean,
+    required: true,
+  },
 })
 
 const store = useStore()

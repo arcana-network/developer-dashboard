@@ -2,9 +2,18 @@
 import { useAttrs } from 'vue'
 
 defineProps({
-  title: String,
-  delay: String,
-  tooltipStyle: [String, Object],
+  title: {
+    type: String,
+    default: '',
+  },
+  delay: {
+    type: String,
+    default: '',
+  },
+  tooltipStyle: {
+    type: [String, Object],
+    default: '',
+  },
 })
 
 const attrs = useAttrs()

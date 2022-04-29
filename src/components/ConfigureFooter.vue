@@ -6,10 +6,22 @@ defineProps({
     type: Boolean,
     default: true,
   },
-  saveLabel: String,
-  cancelLabel: String,
-  saveDisabled: Boolean,
-  cancelDisabled: Boolean,
+  saveLabel: {
+    type: String,
+    default: 'SAVE',
+  },
+  cancelLabel: {
+    type: String,
+    default: 'CANCEL',
+  },
+  saveDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  cancelDisabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['cancel', 'save'])
@@ -28,14 +40,14 @@ function onSaveClick() {
     <div class="container flex flex-wrap">
       <v-button
         v-wave
-        :label="cancelLabel || 'CANCEL'"
+        :label="cancelLabel"
         :disabled="cancelDisabled"
         variant="secondary"
         @click.stop="onCancelClick"
       />
       <v-button
         v-wave
-        :label="saveLabel || 'SAVE'"
+        :label="saveLabel"
         :disabled="saveDisabled"
         variant="primary"
         @click.stop="onSaveClick"

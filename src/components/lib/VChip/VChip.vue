@@ -2,7 +2,10 @@
 import CancelIcon from '@/assets/iconography/close.svg'
 
 defineProps({
-  cancellable: Boolean,
+  cancellable: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['cancel'])

@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 defineProps({
-  style: [Object, Array, String],
+  style: {
+    type: [Object, Array, String],
+    default: '',
+  },
 })
 </script>
 

@@ -1,7 +1,12 @@
 <script lang="ts" setup>
 import { useAttrs } from 'vue'
 
-defineProps({ icon: String })
+defineProps({
+  icon: {
+    type: String,
+    default: '',
+  },
+})
 
 const attrs = useAttrs()
 </script>

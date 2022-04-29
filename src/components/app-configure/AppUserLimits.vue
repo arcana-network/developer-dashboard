@@ -20,7 +20,10 @@ const INIT_VALUE = {
 }
 
 const props = defineProps({
-  isConfigured: Boolean,
+  isConfigured: {
+    type: Boolean,
+    required: true,
+  },
 })
 
 const emit = defineEmits(['value-change'])

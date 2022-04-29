@@ -9,6 +9,7 @@ defineProps({
   name: {
     type: String,
     required: true,
+    default: '',
   },
   modelValue: {
     required: true,
@@ -29,6 +30,6 @@ const emit = defineEmits(['update:modelValue'])
     :label="option.label"
     :name="name"
     :model-value="modelValue"
-    @update:modelValue="emit('update:modelValue', $event)"
+    @update:model-value="emit('update:modelValue', $event)"
   />
 </template>

@@ -1,42 +1,86 @@
 <script lang="ts" setup>
-import { ref, computed, useAttrs } from 'vue'
+import { computed, useAttrs } from 'vue'
 
 import utils from '@/components/lib/utils'
 
 const props = defineProps({
-  labelStyle: [String, Object],
-  messageStyle: [String, Object],
-  placeholderStyle: [String, Object],
-  label: String,
-  message: String,
-  id: String,
-  validation: Function,
-  modelValue: [String, Number],
-  type: String,
-  messageType: String,
-  placeholder: String,
-  strong: Boolean,
-  icon: [String, Object],
-  clickableIcon: Boolean,
-  inputStyle: [String, Object],
-  noMessage: Boolean,
-  style: [String, Object, Array],
+  labelStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  messageStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  placeholderStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  label: {
+    type: String,
+    default: '',
+  },
+  message: {
+    type: String,
+    default: '',
+  },
+  id: {
+    type: String,
+    default: '',
+  },
+  validation: {
+    type: Function,
+    default: void 0,
+  },
+  modelValue: {
+    type: [String, Number],
+    default: '',
+  },
+  type: {
+    type: String,
+    default: '',
+  },
+  messageType: {
+    type: String,
+    default: '',
+  },
+  placeholder: {
+    type: String,
+    default: '',
+  },
+  strong: {
+    type: Boolean,
+    default: false,
+  },
+  icon: {
+    type: [String, Object],
+    default: '',
+  },
+  clickableIcon: {
+    type: Boolean,
+    default: false,
+  },
+  inputStyle: {
+    type: [String, Object],
+    default: '',
+  },
+  noMessage: {
+    type: Boolean,
+    default: false,
+  },
+  style: {
+    type: [String, Object, Array],
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'icon-clicked'])
 const attrs = useAttrs()
 let componentId = props.id?.trim() ?? utils.getRandomId()
-let iconClicked = ref(false)
 
 let inputType = computed(() => {
   return props.type?.trim().toLowerCase()
 })
-
-function validate(ev) {
-  if ('validation' in props && 'call' in props.validation) {
-    props.validation.call(ev.target?.value)
-  }
-}
 
 function onInput(ev) {
   emit('update:modelValue', ev.target?.value)

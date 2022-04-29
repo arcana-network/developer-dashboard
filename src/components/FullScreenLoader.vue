@@ -3,7 +3,10 @@ import VCircularProgress from '@/components/lib/VCircularProgress/VCircularProgr
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 
 defineProps({
-  message: String,
+  message: {
+    type: String,
+    default: '',
+  },
 })
 </script>
 

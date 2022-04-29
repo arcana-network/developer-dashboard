@@ -2,8 +2,17 @@
 import { computed } from 'vue'
 
 const props = defineProps({
-  state: String,
-  percentage: Number,
+  state: {
+    type: String,
+    default: 'success',
+    validator: (value: string) =>
+      ['', 'success', 'warn', 'error'].includes(value),
+  },
+  percentage: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
 })
 
 const value = computed(() => {

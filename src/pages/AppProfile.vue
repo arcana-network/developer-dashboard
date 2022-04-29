@@ -43,7 +43,7 @@ function onUpdateOrganization() {
         size,
         country: organisationDetails.value.country,
       })
-      .then((response) => {
+      .then(() => {
         editOrganisationDetails.value = false
         organisationDetailsResetState = { ...organisationDetails.value }
       })

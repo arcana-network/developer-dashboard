@@ -1,8 +1,17 @@
 <script lang="ts" setup>
 defineProps({
-  label: String,
-  active: Boolean,
-  disabled: Boolean,
+  label: {
+    type: String,
+    default: '',
+  },
+  active: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 </script>
 

@@ -11,7 +11,10 @@ import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VHeader from '@/components/lib/VHeader/VHeader.vue'
 
 defineProps({
-  hideBanner: Boolean,
+  hideBanner: {
+    type: Boolean,
+    default: true,
+  },
 })
 
 const route = useRoute()
@@ -90,7 +93,7 @@ onUnmounted(() => {
   document.querySelector('#app')?.removeEventListener('scroll', handleScroll)
 })
 
-function handleScroll(ev) {
+function handleScroll(ev: any) {
   const scrollTop = ev.target.scrollTop
   if (!hideHeader.value && scrollTop > lastScrollTop + scrollDelta) {
     hideHeader.value = true
