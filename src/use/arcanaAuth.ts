@@ -4,7 +4,7 @@ import { useStore } from 'vuex'
 const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
-let authInstance = null
+let authInstance: AuthProvider
 
 function useArcanaAuth() {
   const store = useStore()
@@ -15,6 +15,7 @@ function useArcanaAuth() {
         appId: ARCANA_APP_ID,
         network: ARCANA_AUTH_NETWORK,
         flow: 'redirect',
+        redirectUri: `${window.location.origin}/login`,
       })
     }
   }
