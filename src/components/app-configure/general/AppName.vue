@@ -1,6 +1,16 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+import { useStore } from 'vuex'
+
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+
+const store = useStore()
+const appName = computed(() => store.getters.appName)
+
+function onAppNameChange(appName: string) {
+  store.commit('updateAppName', appName)
+}
 </script>
 
 <template>
@@ -11,7 +21,11 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
         >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Lorem ipsum
         dolor sit amet, consectetuer adipiscing elit.</template
       >
-      <VTextField class="app-name-input" />
+      <VTextField
+        :value="appName"
+        class="app-name-input"
+        @change="onAppNameChange"
+      />
     </SettingCard>
   </section>
 </template>
