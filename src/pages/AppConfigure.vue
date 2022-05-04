@@ -2,6 +2,8 @@
 import { ref, type Ref } from 'vue'
 
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
+import GeneralSettings from '@/components/app-configure/general/GeneralSettings.vue'
+import VStack from '@/components/lib/VStack/VStack.vue'
 import type { ConfigureTab } from '@/utils/constants'
 
 const currentTab: Ref<ConfigureTab> = ref('general')
@@ -13,8 +15,11 @@ function switchTab(tab: ConfigureTab) {
 
 <template>
   <div class="container">
-    <main>
+    <VStack gap="2rem">
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
-    </main>
+      <main>
+        <GeneralSettings v-if="currentTab === 'general'" />
+      </main>
+    </VStack>
   </div>
 </template>
