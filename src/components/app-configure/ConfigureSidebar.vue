@@ -2,43 +2,17 @@
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import constants from '@/utils/constants'
+import { CONFIGURE_TABS, type ConfigureTab } from '@/utils/constants'
 
-defineProps({
-  currentTab: {
-    type: String,
-    validator: (value: string) =>
-      ['general', 'auth', 'store', 'access', 'wallet'].includes(value),
-    default: 'general',
-  },
+interface ConfigureProps {
+  currentTab?: ConfigureTab
+}
+
+withDefaults(defineProps<ConfigureProps>(), {
+  currentTab: 'general',
 })
 
 const emit = defineEmits(['switch-tab'])
-
-const configureTabs = constants.configureTabs
-
-const tabs = [
-  {
-    name: 'General',
-    value: configureTabs.general,
-  },
-  {
-    name: 'Auth',
-    value: configureTabs.auth,
-  },
-  {
-    name: 'Store',
-    value: configureTabs.store,
-  },
-  {
-    name: 'Access',
-    value: configureTabs.access,
-  },
-  {
-    name: 'Wallet',
-    value: configureTabs.wallet,
-  },
-]
 </script>
 
 <template>
@@ -46,11 +20,11 @@ const tabs = [
     <VCard class="configure-sidebar-card">
       <VStack direction="column" gap="2rem" class="configure-tabs flex-grow">
         <VCardButton
-          v-for="tab in tabs"
-          :key="`configure-sidebar-tab-${tab.value}`"
-          :active="currentTab === tab.value"
-          @click.stop="emit('switch-tab', tab.value)"
-          >{{ tab.name }}
+          v-for="tab in CONFIGURE_TABS"
+          :key="`configure-sidebar-tab-${tab.type}`"
+          :active="currentTab === tab.type"
+          @click.stop="emit('switch-tab', tab.type)"
+          >{{ tab.label }}
         </VCardButton>
       </VStack>
     </VCard>

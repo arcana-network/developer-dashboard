@@ -1,14 +1,12 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
-import constants from '@/utils/constants'
+import type { ConfigureTab } from '@/utils/constants'
 
-const configureTabs = constants.configureTabs
+const currentTab: Ref<ConfigureTab> = ref('general')
 
-const currentTab = ref(configureTabs.general)
-
-function switchTab(tab) {
+function switchTab(tab: ConfigureTab) {
   currentTab.value = tab
 }
 </script>

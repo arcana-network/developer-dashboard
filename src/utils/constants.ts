@@ -29,13 +29,15 @@ const chains = [
   },
 ]
 
-enum configureTabs {
-  general = 'general',
-  auth = 'auth',
-  store = 'store',
-  access = 'access',
-  wallet = 'wallet',
-}
+type ConfigureTab = 'general' | 'auth' | 'store' | 'access' | 'wallet'
+
+const CONFIGURE_TABS = [
+  { type: 'general', label: 'General' },
+  { type: 'auth', label: 'Auth' },
+  { type: 'store', label: 'Store' },
+  { type: 'access', label: 'Access' },
+  { type: 'wallet', label: 'Wallet' },
+]
 
 const constants = {
   sentry,
@@ -43,7 +45,17 @@ const constants = {
   arcanaAppId,
   isAppDown,
   chains,
-  configureTabs,
+  CONFIGURE_TABS,
+}
+
+export {
+  sentry,
+  api,
+  arcanaAppId,
+  isAppDown,
+  chains,
+  CONFIGURE_TABS,
+  type ConfigureTab,
 }
 
 export default constants
