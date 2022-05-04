@@ -5,20 +5,31 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 </script>
 
 <template>
-  <VCard variant="elevated" class="setting-card">
-    <VStack direction="column">
+  <VCard variant="elevated" class="settings-card">
+    <VStack direction="column" gap="2rem" class="flex-grow">
       <h3 class="text-uppercase">
         <slot name="title" />
       </h3>
-      <VSeperator />
-      <slot name="description"></slot>
+      <VSeperator class="settings-card-separator" />
+      <div class="body-1 settings-card-description">
+        <slot name="description" />
+      </div>
       <slot />
     </VStack>
   </VCard>
 </template>
 
 <style scoped>
-.setting-card {
+.settings-card {
   padding: 2rem 1.5rem;
+}
+
+.settings-card-separator {
+  width: calc(100% + 3rem);
+  margin: 0 -1.5rem;
+}
+
+.settings-card-description {
+  max-width: 56rem;
 }
 </style>

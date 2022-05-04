@@ -174,10 +174,10 @@ div.text-field {
 input {
   width: 100%;
   padding: 0;
-  margin: 15px 20px;
+  margin: 1.25rem 2rem;
   font-family: var(--font-body);
-  font-size: 1.1em;
-  line-height: 1.5em;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-white);
   background: transparent;
   border: none;

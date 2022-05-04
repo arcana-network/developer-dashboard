@@ -11,7 +11,13 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
         >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Lorem ipsum
         dolor sit amet, consectetuer adipiscing elit.</template
       >
-      <VTextField />
+      <VTextField class="app-name-input" />
     </SettingCard>
   </section>
 </template>
+
+<style scoped>
+.app-name-input {
+  max-width: 24rem;
+}
+</style>

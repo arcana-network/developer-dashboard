@@ -33,7 +33,7 @@ const emit = defineEmits(['switch-tab'])
 
 <style>
 .configure-sidebar {
-  max-width: 12rem;
+  width: 12rem;
   height: 100vh;
 }
 

@@ -23,3 +23,9 @@ function switchTab(tab: ConfigureTab) {
     </VStack>
   </div>
 </template>
+
+<style scoped>
+main {
+  flex-grow: 1;
+}
+</style>
