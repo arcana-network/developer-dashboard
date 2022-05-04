@@ -58,7 +58,7 @@ const classes = computed(() => {
     rgb(26 26 26 / 86.3%) 31.41%,
     rgb(32 32 32 / 49%) 100%
   );
-  border-radius: 10px;
+  border-radius: 20px;
 }
 
 .card.elevated {
