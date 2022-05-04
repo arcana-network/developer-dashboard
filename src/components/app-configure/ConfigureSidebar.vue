@@ -15,7 +15,30 @@ defineProps({
 
 const emit = defineEmits(['switch-tab'])
 
-const tabs = constants.configureTabs
+const configureTabs = constants.configureTabs
+
+const tabs = [
+  {
+    name: 'General',
+    value: configureTabs.general,
+  },
+  {
+    name: 'Auth',
+    value: configureTabs.auth,
+  },
+  {
+    name: 'Store',
+    value: configureTabs.store,
+  },
+  {
+    name: 'Access',
+    value: configureTabs.access,
+  },
+  {
+    name: 'Wallet',
+    value: configureTabs.wallet,
+  },
+]
 </script>
 
 <template>
@@ -23,29 +46,11 @@ const tabs = constants.configureTabs
     <VCard class="configure-sidebar-card">
       <VStack direction="column" gap="2rem" class="configure-tabs flex-grow">
         <VCardButton
-          :active="currentTab === tabs.general"
-          @click.stop="emit('switch-tab', tabs.general)"
-          >General
-        </VCardButton>
-        <VCardButton
-          :active="currentTab === tabs.auth"
-          @click.stop="emit('switch-tab', tabs.auth)"
-          >Auth</VCardButton
-        >
-        <VCardButton
-          :active="currentTab === tabs.store"
-          @click.stop="emit('switch-tab', tabs.store)"
-          >Store
-        </VCardButton>
-        <VCardButton
-          :active="currentTab === tabs.access"
-          @click.stop="emit('switch-tab', tabs.access)"
-          >Access
-        </VCardButton>
-        <VCardButton
-          :active="currentTab === tabs.wallet"
-          @click.stop="emit('switch-tab', tabs.wallet)"
-          >Wallet
+          v-for="tab in tabs"
+          :key="`configure-sidebar-tab-${tab.value}`"
+          :active="currentTab === tab.value"
+          @click.stop="emit('switch-tab', tab.value)"
+          >{{ tab.name }}
         </VCardButton>
       </VStack>
     </VCard>
