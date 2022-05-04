@@ -29,12 +29,21 @@ const chains = [
   },
 ]
 
+enum configureTabs {
+  general = 'general',
+  auth = 'auth',
+  store = 'store',
+  access = 'access',
+  wallet = 'wallet',
+}
+
 const constants = {
   sentry,
   api,
   arcanaAppId,
   isAppDown,
   chains,
+  configureTabs,
 }
 
 export default constants
