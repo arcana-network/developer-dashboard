@@ -11,7 +11,9 @@ import VStack from '@/components/lib/VStack/VStack.vue'
         <slot name="title" />
       </h3>
       <VSeperator class="settings-card-separator" />
-      <slot name="description" class="body-1" />
+      <div class="body-1">
+        <slot name="description" />
+      </div>
       <slot />
     </VStack>
   </VCard>
