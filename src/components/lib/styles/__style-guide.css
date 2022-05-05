@@ -49,6 +49,10 @@ body {
   background-color: var(--dark-theme-bg);
 }
 
+main {
+  flex-grow: 1;
+}
+
 h1,
 h2,
 h3,
