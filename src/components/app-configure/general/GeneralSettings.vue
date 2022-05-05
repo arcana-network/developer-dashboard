@@ -4,7 +4,9 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 </script>
 
 <template>
-  <VStack direction="column">
-    <AppName />
-  </VStack>
+  <main>
+    <VStack direction="column">
+      <AppName />
+    </VStack>
+  </main>
 </template>

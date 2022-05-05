@@ -22,9 +22,10 @@ function onAppNameChange(appName: string) {
         dolor sit amet, consectetuer adipiscing elit.</template
       >
       <VTextField
-        :value="appName"
+        :model-value="appName"
         class="app-name-input"
-        @change="onAppNameChange"
+        no-message
+        @update:model-value="onAppNameChange"
       />
     </SettingCard>
   </section>
