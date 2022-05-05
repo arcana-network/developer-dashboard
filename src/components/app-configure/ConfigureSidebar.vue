@@ -22,6 +22,7 @@ const emit = defineEmits(['switch-tab'])
         <VCardButton
           v-for="tab in CONFIGURE_TABS"
           :key="`configure-sidebar-tab-${tab.type}`"
+          :class="{ strong: currentTab === tab.type }"
           :active="currentTab === tab.type"
           @click.stop="emit('switch-tab', tab.type)"
           >{{ tab.label }}
@@ -31,7 +32,7 @@ const emit = defineEmits(['switch-tab'])
   </aside>
 </template>
 
-<style>
+<style scoped>
 .configure-sidebar {
   width: 12rem;
   height: 100vh;
@@ -45,5 +46,9 @@ const emit = defineEmits(['switch-tab'])
 .configure-tabs > * {
   width: 100%;
   text-align: left;
+}
+
+.strong {
+  font-weight: 600 !important;
 }
 </style>
