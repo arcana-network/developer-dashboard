@@ -140,8 +140,7 @@ h5 {
   line-height: 1.125em;
 }
 
-a,
-.link {
+a {
   font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 700;
