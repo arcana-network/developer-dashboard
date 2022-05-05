@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
@@ -9,11 +9,12 @@ import cryptoUtils from '@/utils/cryptoUtils'
 
 const store = useStore()
 const arcanaAuth = useArcanaAuth()
-const loading = ref(false)
-const loadingMessage = ref('')
+const showLoader = computed(() => store.getters.showLoader)
+const loadingMessage = computed(() => store.getters.loadingMessage)
 const isAuthLoaded = ref(false)
 
 onBeforeMount(async () => {
+  store.commit('showLoader', 'Fetching app configuration...')
   const encodedAccessToken = localStorage.getItem('access-token')
   const userInfo = localStorage.getItem('user-info')
   if (encodedAccessToken && userInfo) {
@@ -25,7 +26,7 @@ onBeforeMount(async () => {
   }
 
   await arcanaAuth.init()
-
+  isAuthLoaded.value = true
   if (!store.getters['test/forwarder'] || !store.getters['test/rpc']) {
     const configResponse = await appConfigService.getConfig()
     const config = configResponse.data
@@ -34,13 +35,9 @@ onBeforeMount(async () => {
   }
 
   if (!store.getters.appName && store.getters.accessToken) {
-    loading.value = true
-    loadingMessage.value = 'Fetching app configuration...'
     await appConfigService.fetchAndStoreAppConfig()
-    loading.value = false
   }
-
-  isAuthLoaded.value = true
+  store.commit('hideLoader')
 })
 </script>
 
@@ -51,8 +48,8 @@ onBeforeMount(async () => {
         <component :is="Component" />
       </transition>
     </router-view>
-    <full-screen-loader
-      v-if="loading || !isAuthLoaded"
+    <FullScreenLoader
+      v-if="showLoader || !isAuthLoaded"
       :message="loadingMessage"
     />
   </div>
