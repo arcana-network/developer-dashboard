@@ -1,22 +1,21 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 
 import ConfirmDeletePopup from '@/components/app-configure/general/ConfirmDeletePopup.vue'
 import DeleteTimerPopup from '@/components/app-configure/general/DeleteTimerPopup.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import appConfigService from '@/services/app-config.service'
 
 const router = useRouter()
+const store = useStore()
 
 const showDeletePopup = ref(false)
 const showDeleteTimerPopup = ref(false)
-const isLoading = ref(false)
-const loadingMessage = ref('')
 
 function handleProceedDeletion() {
   showDeleteTimerPopup.value = true
@@ -25,10 +24,9 @@ function handleProceedDeletion() {
 
 async function handleAppDeletion() {
   showDeleteTimerPopup.value = false
-  isLoading.value = true
-  loadingMessage.value = 'Deleting App...'
+  store.commit('showLoader', 'Deleting App...')
   await appConfigService.deleteApp()
-  isLoading.value = false
+  store.commit('hideLoader')
   router.push('/')
 }
 </script>
@@ -63,7 +61,6 @@ async function handleAppDeletion() {
       </VCard>
     </VOverlay>
   </section>
-  <FullScreenLoader v-if="isLoading" :message="loadingMessage" />
 </template>
 
 <style scoped>

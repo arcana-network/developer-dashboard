@@ -9,11 +9,15 @@ const debug = process.env.NODE_ENV !== 'production'
 const state = {
   env: 'test',
   smartContractAddress: '',
+  showLoader: false,
+  loadingMessage: '',
 }
 
 const getters = {
   env: (state) => state.env,
   smartContractAddress: (state) => state.smartContractAddress,
+  showLoader: (state) => state.showLoader,
+  loadingMessage: (state) => state.loadingMessage,
 }
 
 const mutations = {
@@ -25,6 +29,13 @@ const mutations = {
   },
   updateSmartContractAddress(state, smartContractAddress) {
     state.smartContractAddress = smartContractAddress
+  },
+  showLoader(state, loadingMessage) {
+    state.showLoader = true
+    state.loadingMessage = loadingMessage
+  },
+  hideLoader(state) {
+    state.showLoader = false
   },
 }
 
