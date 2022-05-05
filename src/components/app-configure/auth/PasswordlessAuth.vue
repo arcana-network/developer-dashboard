@@ -44,6 +44,7 @@ function handleRedirectUriUpdate(value: string) {
           id="passwordless-javascript-origin"
           :model-value="javascriptOrigin"
           class="passwordless-input"
+          no-message
           @update:model-value="handleJavascriptOriginUpdate"
         />
       </VStack>
@@ -59,6 +60,7 @@ function handleRedirectUriUpdate(value: string) {
           id="passwordless-redirect-uri"
           :model-value="redirectUri"
           class="passwordless-input"
+          no-message
           @update:model-value="handleRedirectUriUpdate"
         />
       </VStack>
@@ -74,11 +76,5 @@ label {
 .passwordless-input {
   width: 100%;
   max-width: 40rem;
-}
-
-@media screen and (min-width: 769px) {
-  label {
-    margin-bottom: 2rem;
-  }
 }
 </style>
