@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -11,21 +11,14 @@ const javascriptOrigin: Ref<string> = ref(
   store.getters.passwordlessAuth.javascriptOrigin
 )
 const redirectUri: Ref<string> = ref(store.getters.passwordlessAuth.redirectUri)
-watch(
-  () => javascriptOrigin.value,
-  () => {
-    store.commit(
-      'updatePasswordlessAuthJavascriptOrigin',
-      javascriptOrigin.value
-    )
-  }
-)
-watch(
-  () => redirectUri.value,
-  () => {
-    store.commit('updatePasswordlessAuthRedirectUri', redirectUri.value)
-  }
-)
+
+function handleJavascriptOriginUpdate(value: string) {
+  store.commit('updatePasswordlessAuthJavascriptOrigin', value)
+}
+
+function handleRedirectUriUpdate(value: string) {
+  store.commit('updatePasswordlessAuthRedirectUri', value)
+}
 </script>
 
 <template>
@@ -47,9 +40,9 @@ watch(
         <label for="passwordless-javascript-origin">Javascript Origin</label>
         <VTextField
           id="passwordless-javascript-origin"
-          v-model="javascriptOrigin"
-          no-message
+          :model-value="javascriptOrigin"
           input-container-class="passwordless-input"
+          @update:model-value="handleJavascriptOriginUpdate"
         />
       </VStack>
       <VStack
@@ -62,9 +55,9 @@ watch(
         <label for="passwordless-redirect-uri">Redirect URI</label>
         <VTextField
           id="passwordless-redirect-uri"
-          v-model="redirectUri"
-          no-message
+          :model-value="redirectUri"
           input-container-class="passwordless-input"
+          @update:model-value="handleRedirectUriUpdate"
         />
       </VStack>
     </SettingCard>
