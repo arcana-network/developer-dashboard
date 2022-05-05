@@ -11,9 +11,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
         <slot name="title" />
       </h3>
       <VSeperator class="settings-card-separator" />
-      <div class="body-1 settings-card-description">
-        <slot name="description" />
-      </div>
+      <slot name="body-1 description" />
       <slot />
     </VStack>
   </VCard>
@@ -27,9 +25,5 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 .settings-card-separator {
   width: calc(100% + 3rem);
   margin: 0 -1.5rem;
-}
-
-.settings-card-description {
-  max-width: 56rem;
 }
 </style>
