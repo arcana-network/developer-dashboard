@@ -18,6 +18,8 @@ const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 
 const GeneralSettings = () =>
   import('@/components/app-configure/general/GeneralSettings.vue')
+const AuthSettings = () =>
+  import('@/components/app-configure/auth/AuthSettings.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -61,7 +63,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'AuthSettings',
         path: 'auth',
-        component: GeneralSettings,
+        component: AuthSettings,
       },
       {
         name: 'StoreSettings',
