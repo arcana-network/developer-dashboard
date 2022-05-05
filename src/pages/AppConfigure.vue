@@ -14,14 +14,10 @@ function switchTab(tab: ConfigureTab) {
 </script>
 
 <template>
-  <div class="container">
-    <VStack gap="2rem">
-      <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
-      <main>
-        <GeneralSettings v-if="currentTab === 'general'" />
-      </main>
-    </VStack>
-  </div>
+  <VStack gap="2rem" class="container">
+    <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
+    <GeneralSettings v-if="currentTab === 'general'" />
+  </VStack>
 </template>
 
 <style scoped>
