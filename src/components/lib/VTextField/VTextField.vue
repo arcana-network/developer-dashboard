@@ -36,10 +36,6 @@ const props = defineProps({
     type: [String, Number],
     default: '',
   },
-  value: {
-    type: [String, Number],
-    default: '',
-  },
   type: {
     type: String,
     default: 'text',
@@ -78,7 +74,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['update:modelValue', 'icon-clicked', 'change'])
+const emit = defineEmits(['update:modelValue', 'icon-clicked'])
 const attrs = useAttrs()
 let componentId = props.id?.trim()
 
@@ -88,7 +84,6 @@ let inputType = computed(() => {
 
 function onInput(ev) {
   emit('update:modelValue', ev.target?.value)
-  emit('change', ev.target?.value)
 }
 
 function onIconClicked(ev) {
@@ -107,7 +102,7 @@ function onIconClicked(ev) {
       <input
         :id="componentId"
         :type="inputType"
-        :value="modelValue || value"
+        :value="modelValue"
         v-bind="attrs"
         :placeholder="placeholder"
         :class="{ strong }"
