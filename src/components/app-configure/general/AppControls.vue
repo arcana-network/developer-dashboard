@@ -18,12 +18,12 @@ const showDeleteTimerPopup = ref(false)
 const isLoading = ref(false)
 const loadingMessage = ref('')
 
-function proceedDelete() {
+function handleProceedDeletion() {
   showDeleteTimerPopup.value = true
   showDeletePopup.value = false
 }
 
-async function deleteApp() {
+async function handleAppDeletion() {
   showDeleteTimerPopup.value = false
   isLoading.value = true
   loadingMessage.value = 'Deleting App...'
@@ -53,12 +53,12 @@ async function deleteApp() {
         <ConfirmDeletePopup
           v-if="showDeletePopup"
           @cancel="showDeletePopup = false"
-          @proceed="proceedDelete"
+          @proceed="handleProceedDeletion"
         />
         <DeleteTimerPopup
           v-if="showDeleteTimerPopup"
           @cancel="showDeleteTimerPopup = false"
-          @delete="deleteApp"
+          @delete="handleAppDeletion"
         />
       </VCard>
     </VOverlay>

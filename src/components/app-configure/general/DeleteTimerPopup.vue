@@ -23,7 +23,7 @@ const progressInterval = setInterval(() => {
   timerProgress = timerProgress - 10
   timerProgressPercentage.value = (timerProgress / 60000) * 100
   if (timerProgress === 0) {
-    proceedDelete()
+    handleProceedDeletion()
   }
 }, 10)
 
@@ -32,12 +32,12 @@ function clearTimer() {
   clearInterval(progressInterval)
 }
 
-function handleCancelDelete() {
+function handleCancelDeletion() {
   clearTimer()
   emit('cancel')
 }
 
-function proceedDelete() {
+function handleProceedDeletion() {
   clearTimer()
   emit('delete')
 }
@@ -63,13 +63,13 @@ function proceedDelete() {
       v-wave
       variant="secondary"
       label="CANCEL"
-      @click.stop="handleCancelDelete"
+      @click.stop="handleCancelDeletion"
     />
     <VButton
       v-wave
       variant="primary"
       label="CONFIRM"
-      @click.stop="proceedDelete"
+      @click.stop="handleProceedDeletion"
     />
   </footer>
 </template>
