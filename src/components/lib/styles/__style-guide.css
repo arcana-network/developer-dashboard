@@ -140,6 +140,18 @@ h5 {
   line-height: 1.125em;
 }
 
+a,
+.link {
+  font-family: var(--font-body);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  size: 1rem;
+}
+
 .mx-auto {
   margin: 0 auto;
 }
