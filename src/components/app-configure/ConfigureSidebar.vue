@@ -2,10 +2,10 @@
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { CONFIGURE_TABS, type ConfigureTab } from '@/utils/constants'
+import { CONFIGURE_TABS, type ConfigureTabType } from '@/utils/constants'
 
 interface ConfigureProps {
-  currentTab?: ConfigureTab
+  currentTab?: ConfigureTabType
 }
 
 withDefaults(defineProps<ConfigureProps>(), {
@@ -22,8 +22,9 @@ const emit = defineEmits(['switch-tab'])
         <VCardButton
           v-for="tab in CONFIGURE_TABS"
           :key="`configure-sidebar-tab-${tab.type}`"
+          :class="{ strong: currentTab === tab.type }"
           :active="currentTab === tab.type"
-          @click.stop="emit('switch-tab', tab.type)"
+          @click.stop="emit('switch-tab', tab)"
           >{{ tab.label }}
         </VCardButton>
       </VStack>
@@ -31,9 +32,9 @@ const emit = defineEmits(['switch-tab'])
   </aside>
 </template>
 
-<style>
+<style scoped>
 .configure-sidebar {
-  max-width: 12rem;
+  width: 12rem;
   height: 100vh;
 }
 
@@ -45,5 +46,9 @@ const emit = defineEmits(['switch-tab'])
 .configure-tabs > * {
   width: 100%;
   text-align: left;
+}
+
+.strong {
+  font-weight: 600 !important;
 }
 </style>

@@ -49,6 +49,10 @@ body {
   background-color: var(--dark-theme-bg);
 }
 
+main {
+  flex-grow: 1;
+}
+
 h1,
 h2,
 h3,
@@ -288,6 +292,11 @@ h5 {
 .width-100 {
   width: 100%;
 }
+
+.text-uppercase {
+  text-transform: uppercase;
+}
+
 @media only screen and (max-width: 767px) {
   .mobile-hide {
     visibility: hidden !important;

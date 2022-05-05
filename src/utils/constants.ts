@@ -29,9 +29,14 @@ const chains = [
   },
 ]
 
-type ConfigureTab = 'general' | 'auth' | 'store' | 'access' | 'wallet'
+type ConfigureTabType = 'general' | 'auth' | 'store' | 'access' | 'wallet'
 
-const CONFIGURE_TABS = [
+type ConfigureTab = {
+  type: ConfigureTabType
+  label: string
+}
+
+const CONFIGURE_TABS: ConfigureTab[] = [
   { type: 'general', label: 'General' },
   { type: 'auth', label: 'Auth' },
   { type: 'store', label: 'Store' },
@@ -56,6 +61,7 @@ export {
   chains,
   CONFIGURE_TABS,
   type ConfigureTab,
+  type ConfigureTabType,
 }
 
 export default constants
