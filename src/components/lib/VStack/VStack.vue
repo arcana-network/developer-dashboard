@@ -27,7 +27,6 @@ const props = defineProps({
   smDirection: {
     type: String,
     validator: (value: string) => ['row', 'column'].includes(value),
-    default: 'row',
   },
   smJustify: {
     type: String,
@@ -46,7 +45,6 @@ const props = defineProps({
   mdDirection: {
     type: String,
     validator: (value: string) => ['row', 'column'].includes(value),
-    default: 'row',
   },
   mdJustify: {
     type: String,
