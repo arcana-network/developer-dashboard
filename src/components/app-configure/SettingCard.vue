@@ -24,6 +24,10 @@ import VStack from '@/components/lib/VStack/VStack.vue'
   padding: 2rem 1.5rem;
 }
 
+.settings-card > * {
+  z-index: 1;
+}
+
 .settings-card-separator {
   width: calc(100% + 3rem);
   margin: 0 -1.5rem;
