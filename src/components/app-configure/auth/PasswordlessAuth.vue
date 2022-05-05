@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue'
+import { computed, type ComputedRef } from 'vue'
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -7,10 +7,12 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 
 const store = useStore()
-const javascriptOrigin: Ref<string> = ref(
-  store.getters.passwordlessAuth.javascriptOrigin
+const javascriptOrigin: ComputedRef<string> = computed(
+  () => store.getters.passwordlessAuth.javascriptOrigin
 )
-const redirectUri: Ref<string> = ref(store.getters.passwordlessAuth.redirectUri)
+const redirectUri: ComputedRef<string> = computed(
+  () => store.getters.passwordlessAuth.redirectUri
+)
 
 function handleJavascriptOriginUpdate(value: string) {
   store.commit('updatePasswordlessAuthJavascriptOrigin', value)
@@ -41,7 +43,7 @@ function handleRedirectUriUpdate(value: string) {
         <VTextField
           id="passwordless-javascript-origin"
           :model-value="javascriptOrigin"
-          input-container-class="passwordless-input"
+          class="passwordless-input"
           @update:model-value="handleJavascriptOriginUpdate"
         />
       </VStack>
@@ -56,7 +58,7 @@ function handleRedirectUriUpdate(value: string) {
         <VTextField
           id="passwordless-redirect-uri"
           :model-value="redirectUri"
-          input-container-class="passwordless-input"
+          class="passwordless-input"
           @update:model-value="handleRedirectUriUpdate"
         />
       </VStack>
@@ -66,11 +68,17 @@ function handleRedirectUriUpdate(value: string) {
 
 <style scoped>
 label {
-  width: 12rem;
+  width: 10rem;
 }
 
 .passwordless-input {
   width: 100%;
-  max-width: 32rem;
+  max-width: 40rem;
+}
+
+@media screen and (min-width: 769px) {
+  label {
+    margin-bottom: 2rem;
+  }
 }
 </style>
