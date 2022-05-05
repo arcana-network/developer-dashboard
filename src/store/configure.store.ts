@@ -1,21 +1,17 @@
-const state = {
+type ConfigureState = {
+  appName: string
+}
+
+const state: ConfigureState = {
   appName: '',
-  appId: null,
-  appNameError: false,
-  onConfigChange: false,
-  isAppConfigured: false,
 }
 
 const getters = {
-  appName: (state) => state.appName,
-  appId: (state) => state.appId,
-  onConfigChange: (state) => state.onConfigChange,
-  isAppConfigured: (state) => state.isAppConfigured,
-  appNameError: (state) => state.appNameError,
+  appName: (state: ConfigureState) => state.appName,
 }
 
 const mutations = {
-  updateAppName(state, appName: string) {
+  updateAppName(state: ConfigureState, appName: string) {
     state.appName = appName
   },
 }
