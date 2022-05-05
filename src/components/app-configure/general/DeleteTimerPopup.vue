@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import Vue3CircleProgress from 'vue3-circle-progress'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -11,16 +11,20 @@ let timerProgress = 59000
 const initialProgressPercentage = (timerProgress / 60000) * 100
 const timerProgressPercentage = ref(initialProgressPercentage)
 
+const timerDisplay = computed(() => {
+  return `00:${timer.value.toString().padStart(2, '0')}`
+})
+
 const timerInterval = setInterval(() => {
   --timer.value
-  if (timer.value === 0) {
-    proceedDelete()
-  }
 }, 1000)
 
 const progressInterval = setInterval(() => {
   timerProgress = timerProgress - 10
   timerProgressPercentage.value = (timerProgress / 60000) * 100
+  if (timerProgress === 0) {
+    proceedDelete()
+  }
 }, 10)
 
 function clearTimer() {
@@ -51,9 +55,7 @@ function proceedDelete() {
       :size="200"
     />
     <div class="flex inner-clock">
-      <span class="sub-heading-2">
-        00:{{ timer.toString().padStart(2, '0') }}
-      </span>
+      <span class="sub-heading-2">{{ timerDisplay }}</span>
     </div>
   </div>
   <footer class="flex sm-column flex-grow">
