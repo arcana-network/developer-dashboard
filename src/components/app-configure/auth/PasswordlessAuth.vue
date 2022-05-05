@@ -39,7 +39,7 @@ function handleRedirectUriUpdate(value: string) {
         sm-align="start"
         gap="1rem"
       >
-        <label for="passwordless-javascript-origin">Javascript Origin</label>
+        <label for="passwordless-javascript-origin">JavaScript Origin</label>
         <VTextField
           id="passwordless-javascript-origin"
           :model-value="javascriptOrigin"

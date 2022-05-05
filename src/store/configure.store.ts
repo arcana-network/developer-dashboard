@@ -29,9 +29,9 @@ const mutations = {
   },
   updatePasswordlessAuthJavascriptOrigin(
     state: ConfigureState,
-    redirectUri: string
+    javascriptOrigin: string
   ) {
-    state.auth.passwordless.javascriptOrigin = redirectUri
+    state.auth.passwordless.javascriptOrigin = javascriptOrigin
   },
   updatePasswordlessAuthRedirectUri(
     state: ConfigureState,
