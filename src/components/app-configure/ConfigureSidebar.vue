@@ -2,10 +2,10 @@
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { CONFIGURE_TABS, type ConfigureTab } from '@/utils/constants'
+import { CONFIGURE_TABS, type ConfigureTabType } from '@/utils/constants'
 
 interface ConfigureProps {
-  currentTab?: ConfigureTab
+  currentTab?: ConfigureTabType
 }
 
 withDefaults(defineProps<ConfigureProps>(), {
@@ -24,7 +24,7 @@ const emit = defineEmits(['switch-tab'])
           :key="`configure-sidebar-tab-${tab.type}`"
           :class="{ strong: currentTab === tab.type }"
           :active="currentTab === tab.type"
-          @click.stop="emit('switch-tab', tab.type)"
+          @click.stop="emit('switch-tab', tab)"
           >{{ tab.label }}
         </VCardButton>
       </VStack>

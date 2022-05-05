@@ -16,6 +16,9 @@ const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 
+const GeneralSettings = () =>
+  import('@/components/app-configure/general/GeneralSettings.vue')
+
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
     if (val === '0' || val === 'false') {
@@ -45,6 +48,37 @@ const routes: RouteRecordRaw[] = [
     name: 'Configure',
     path: '/configure',
     component: AppConfigure,
+    children: [
+      {
+        path: '',
+        redirect: '/configure/general',
+      },
+      {
+        name: 'GeneralSettings',
+        path: 'general',
+        component: GeneralSettings,
+      },
+      {
+        name: 'AuthSettings',
+        path: 'auth',
+        component: GeneralSettings,
+      },
+      {
+        name: 'StoreSettings',
+        path: 'store',
+        component: GeneralSettings,
+      },
+      {
+        name: 'AccessSettings',
+        path: 'access',
+        component: GeneralSettings,
+      },
+      {
+        name: 'WalletSettings',
+        path: 'wallet',
+        component: GeneralSettings,
+      },
+    ],
   },
   {
     name: 'Users',
