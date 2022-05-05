@@ -13,18 +13,18 @@ import appConfigService from '@/services/app-config.service'
 
 const router = useRouter()
 
-const deletePopup = ref(false)
-const deleteTimerPopup = ref(false)
+const showDeletePopup = ref(false)
+const showDeleteTimerPopup = ref(false)
 const isLoading = ref(false)
 const loadingMessage = ref('')
 
 function proceedDelete() {
-  deleteTimerPopup.value = true
-  deletePopup.value = false
+  showDeleteTimerPopup.value = true
+  showDeletePopup.value = false
 }
 
 async function deleteApp() {
-  deleteTimerPopup.value = false
+  showDeleteTimerPopup.value = false
   isLoading.value = true
   loadingMessage.value = 'Deleting App...'
   await appConfigService.deleteApp()
@@ -45,19 +45,19 @@ async function deleteApp() {
         label="DELETE"
         variant="secondary"
         class="delete-button"
-        @click.stop="deletePopup = true"
+        @click.stop="showDeletePopup = true"
       />
     </SettingCard>
-    <VOverlay v-if="deletePopup || deleteTimerPopup">
+    <VOverlay v-if="showDeletePopup || showDeleteTimerPopup">
       <VCard class="modal-card">
         <ConfirmDeletePopup
-          v-if="deletePopup"
-          @cancel="deletePopup = false"
+          v-if="showDeletePopup"
+          @cancel="showDeletePopup = false"
           @proceed="proceedDelete"
         />
         <DeleteTimerPopup
-          v-if="deleteTimerPopup"
-          @cancel="deleteTimerPopup = false"
+          v-if="showDeleteTimerPopup"
+          @cancel="showDeleteTimerPopup = false"
           @delete="deleteApp"
         />
       </VCard>
