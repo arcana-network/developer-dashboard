@@ -1,14 +1,16 @@
+import type { Chain } from '@/utils/constants'
+
 type ConfigureState = {
   appName: string
   access: {
-    selectedChain: string
+    selectedChain: Chain
   }
 }
 
 const state: ConfigureState = {
   appName: '',
   access: {
-    selectedChain: '',
+    selectedChain: 'ethereum',
   },
 }
 
@@ -21,7 +23,7 @@ const mutations = {
   updateAppName(state: ConfigureState, appName: string) {
     state.appName = appName
   },
-  updateSelectedChain(state: ConfigureState, selectedChain: string) {
+  updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
     state.access.selectedChain = selectedChain
   },
 }

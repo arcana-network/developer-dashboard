@@ -6,14 +6,14 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VRadioGroup from '@/components/lib/VRadioGroup/VRadioGroup.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { chains } from '@/utils/constants'
+import { chains, type Chain } from '@/utils/constants'
 
 const store = useStore()
-const selectedChain: ComputedRef<string> = computed(
+const selectedChain: ComputedRef<Chain> = computed(
   () => store.getters.selectedChain
 )
 
-function handleChangeChainType(value: string) {
+function handleChangeChainType(value: Chain) {
   store.commit('updateSelectedChain', value)
 }
 </script>
