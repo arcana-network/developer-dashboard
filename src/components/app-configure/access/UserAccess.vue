@@ -3,7 +3,7 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 </script>
 
 <template>
-  <section name="configure-wallet-auth">
+  <section name="user-access">
     <SettingCard>
       <template #title>User Access</template>
       <template #description

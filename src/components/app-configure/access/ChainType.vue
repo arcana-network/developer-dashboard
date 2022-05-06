@@ -19,7 +19,7 @@ function handleChangeChainType(value: string) {
 </script>
 
 <template>
-  <section name="configure-wallet-auth">
+  <section name="configure-chain-type">
     <SettingCard>
       <template #title>Chain Type</template>
       <template #description
