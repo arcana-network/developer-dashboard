@@ -1,9 +1,4 @@
-type SocialAuth = {
-  verifier: string
-  clientId: string
-  clientSecret?: string
-  redirectUri?: string
-}
+import type { SocialAuth } from '@/utils/constants'
 
 type ConfigureState = {
   appName: string

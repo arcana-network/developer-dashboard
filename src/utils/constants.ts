@@ -44,6 +44,70 @@ const CONFIGURE_TABS: ConfigureTab[] = [
   { type: 'wallet', label: 'Wallet' },
 ]
 
+type SocialLogin = {
+  name: 'Google' | 'Twitter' | 'Twitch' | 'Reddit' | 'Github' | 'Discord'
+  verifier: 'google' | 'twitter' | 'twitch' | 'reddit' | 'github' | 'discord'
+  hasClientSecret: boolean
+  hasRedirectUri: boolean
+  documentation: string
+  clientId?: string
+  clientSecret?: string
+  redirectUri?: string
+}
+
+type SocialAuth = {
+  verifier: string
+  clientId?: string
+  clientSecret?: string
+  redirectUri?: string
+}
+
+const socialLogins: SocialLogin[] = [
+  {
+    name: 'Google',
+    verifier: 'google',
+    hasClientSecret: false,
+    hasRedirectUri: false,
+    documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
+  },
+  {
+    name: 'Reddit',
+    verifier: 'reddit',
+    hasClientSecret: false,
+    hasRedirectUri: false,
+    documentation: 'https://github.com/reddit-archive/reddit/wiki/OAuth2',
+  },
+  {
+    name: 'Discord',
+    verifier: 'discord',
+    hasClientSecret: false,
+    hasRedirectUri: false,
+    documentation: 'https://canary.discord.com/developers/applications',
+  },
+  {
+    name: 'Twitch',
+    verifier: 'twitch',
+    hasClientSecret: false,
+    hasRedirectUri: false,
+    documentation: 'https://dev.twitch.tv/docs/authentication#registration',
+  },
+  {
+    name: 'Github',
+    verifier: 'github',
+    hasClientSecret: true,
+    hasRedirectUri: false,
+    documentation:
+      'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
+  },
+  {
+    name: 'Twitter',
+    verifier: 'twitter',
+    hasClientSecret: true,
+    hasRedirectUri: true,
+    documentation: 'https://developer.twitter.com/en/docs/apps/overview',
+  },
+]
+
 const constants = {
   sentry,
   api,
@@ -51,6 +115,7 @@ const constants = {
   isAppDown,
   chains,
   CONFIGURE_TABS,
+  socialLogins,
 }
 
 export {
@@ -60,8 +125,11 @@ export {
   isAppDown,
   chains,
   CONFIGURE_TABS,
+  socialLogins,
   type ConfigureTab,
   type ConfigureTabType,
+  type SocialLogin,
+  type SocialAuth,
 }
 
 export default constants

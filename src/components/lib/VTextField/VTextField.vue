@@ -114,7 +114,7 @@ function onIconClicked(ev) {
         :src="icon"
         :class="{
           'icon-clickable': clickableIcon,
-          height: '1.1em',
+          'input-icon': true,
         }"
         @click.stop="onIconClicked"
       />
@@ -225,5 +225,9 @@ input::-webkit-inner-spin-button {
 
 input[type='number'] {
   appearance: textfield;
+}
+
+.input-icon {
+  margin: auto 1.5rem;
 }
 </style>
