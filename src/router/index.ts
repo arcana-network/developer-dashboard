@@ -20,6 +20,8 @@ const GeneralSettings = () =>
   import('@/components/app-configure/general/GeneralSettings.vue')
 const AuthSettings = () =>
   import('@/components/app-configure/auth/AuthSettings.vue')
+const StoreSettings = () =>
+  import('@/components/app-configure/store/StoreSettings.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -68,7 +70,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'StoreSettings',
         path: 'store',
-        component: GeneralSettings,
+        component: StoreSettings,
       },
       {
         name: 'AccessSettings',
