@@ -5,6 +5,12 @@ type ConfigureState = {
   access: {
     selectedChain: Chain
   }
+  auth: {
+    passwordless: {
+      javascriptOrigin: string
+      redirectUri: string
+    }
+  }
 }
 
 const state: ConfigureState = {
@@ -12,11 +18,18 @@ const state: ConfigureState = {
   access: {
     selectedChain: 'ethereum',
   },
+  auth: {
+    passwordless: {
+      javascriptOrigin: '',
+      redirectUri: '',
+    },
+  },
 }
 
 const getters = {
   appName: (state: ConfigureState) => state.appName,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
+  passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
 }
 
 const mutations = {
@@ -25,6 +38,18 @@ const mutations = {
   },
   updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
     state.access.selectedChain = selectedChain
+  },
+  updatePasswordlessAuthJavascriptOrigin(
+    state: ConfigureState,
+    javascriptOrigin: string
+  ) {
+    state.auth.passwordless.javascriptOrigin = javascriptOrigin
+  },
+  updatePasswordlessAuthRedirectUri(
+    state: ConfigureState,
+    redirectUri: string
+  ) {
+    state.auth.passwordless.redirectUri = redirectUri
   },
 }
 
