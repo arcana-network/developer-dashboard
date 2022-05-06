@@ -66,6 +66,8 @@ const classes = computed(() => {
 }
 
 .card.depressed {
+  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  border-radius: 10px;
   box-shadow: inset -2px -2px 4px rgb(57 57 57 / 44%),
     inset 5px 5px 10px rgb(11 11 11 / 50%);
 }

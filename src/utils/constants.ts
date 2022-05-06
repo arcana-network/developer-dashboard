@@ -14,7 +14,14 @@ const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID
 
 const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false
 
-const chains = [
+type Chain = 'ethereum' | 'polygon' | 'binance'
+
+type ChainOption<T> = {
+  label: string
+  value: T
+}
+
+const chains: ChainOption<Chain>[] = [
   {
     label: 'Ethereum',
     value: 'ethereum',
@@ -62,6 +69,8 @@ export {
   CONFIGURE_TABS,
   type ConfigureTab,
   type ConfigureTabType,
+  type Chain,
+  type ChainOption,
 }
 
 export default constants
