@@ -1,8 +1,11 @@
-import type { SocialAuth } from '@/utils/constants'
+import type { SocialAuth, Chain } from '@/utils/constants'
 
 type ConfigureState = {
   appName: string
   isAppConfigured: boolean
+  access: {
+    selectedChain: Chain
+  }
   auth: {
     social: SocialAuth[]
     passwordless: {
@@ -16,6 +19,9 @@ type ConfigureState = {
 const state: ConfigureState = {
   appName: '',
   isAppConfigured: false,
+  access: {
+    selectedChain: 'ethereum',
+  },
   auth: {
     social: [],
     passwordless: {
@@ -31,6 +37,7 @@ const getters = {
   isAppConfigured: (state: ConfigureState) => state.isAppConfigured,
   hasAggregateLogin: (state: ConfigureState) => state.auth.hasAggregateLogin,
   socialAuth: (state: ConfigureState) => state.auth.social,
+  selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
 }
 
@@ -40,6 +47,9 @@ const mutations = {
   },
   updateAggregateLogin(state: ConfigureState, hasAggregateLogin: boolean) {
     state.auth.hasAggregateLogin = hasAggregateLogin
+  },
+  updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
+    state.access.selectedChain = selectedChain
   },
   updatePasswordlessAuthJavascriptOrigin(
     state: ConfigureState,
