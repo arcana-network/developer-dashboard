@@ -16,22 +16,33 @@ import copyToClipboard from '@/utils/copyToClipboard'
 
 const store = useStore()
 
-const authDetails = [...store.getters.socialAuth]
+let authDetails = [...store.getters.socialAuth]
 
 function handleUpdate(
   socialLogin: SocialLogin,
   inputType: 'clientId' | 'clientSecret' | 'redirectUri'
 ) {
-  const existingAuthIndex = authDetails.findIndex(
-    (authDetail: SocialAuth) => authDetail.verifier === socialLogin.verifier
-  )
-  if (existingAuthIndex !== -1) {
-    authDetails[existingAuthIndex][inputType] = socialLogin[inputType]
+  if (
+    !socialLogin[inputType] &&
+    !socialLogin.clientId &&
+    !socialLogin.clientSecret &&
+    !socialLogin.redirectUri
+  ) {
+    authDetails = authDetails.filter(
+      (authDetail) => authDetail.verifier !== socialLogin.verifier
+    )
   } else {
-    authDetails.push({
-      verifier: socialLogin.verifier,
-      [inputType]: socialLogin[inputType],
-    })
+    const existingAuthIndex = authDetails.findIndex(
+      (authDetail: SocialAuth) => authDetail.verifier === socialLogin.verifier
+    )
+    if (existingAuthIndex !== -1) {
+      authDetails[existingAuthIndex][inputType] = socialLogin[inputType]
+    } else {
+      authDetails.push({
+        verifier: socialLogin.verifier,
+        [inputType]: socialLogin[inputType],
+      })
+    }
   }
 
   store.commit('updateSocialAuth', authDetails)
@@ -70,7 +81,9 @@ function handleUpdate(
             placeholder="Enter Client ID"
             :icon="CopyIcon"
             clickable-icon
-            @icon-clicked="copyToClipboard(socialLogin.clientId)"
+            @icon-clicked="
+              copyToClipboard(socialLogin.clientId ? socialLogin.clientId : '')
+            "
             @update:model-value="handleUpdate(socialLogin, 'clientId')"
           ></VTextField>
           <VTextField
