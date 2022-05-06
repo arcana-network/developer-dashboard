@@ -30,14 +30,6 @@ function handleAggregateLoginChange(value: boolean) {
         Decentralised Key Generation (DKG) mechanism and keep them secure.
         <a>LEARN MORE</a>
       </template>
-      <VStack gap="1rem">
-        <span class="body-2">Aggregate Login</span>
-        <VSwitch
-          :model-value="hasAggregateLogin"
-          :disabled="isAppConfigured"
-          @update:model-value="handleAggregateLoginChange"
-        />
-      </VStack>
       <VStack>
         <h4>Social</h4>
         <VSeperator vertical />

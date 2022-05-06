@@ -1,14 +1,20 @@
+type SocialAuth = {
+  verifier: string
+  clientId: string
+  clientSecret?: string
+  redirectUri?: string
+}
+
 type ConfigureState = {
   appName: string
   isAppConfigured: boolean
   auth: {
-    social: {
-      hasAggregateLogin: boolean
-    }
+    social: SocialAuth[]
     passwordless: {
       javascriptOrigin: string
       redirectUri: string
     }
+    hasAggregateLogin: boolean
   }
 }
 
@@ -16,21 +22,20 @@ const state: ConfigureState = {
   appName: '',
   isAppConfigured: false,
   auth: {
-    social: {
-      hasAggregateLogin: false,
-    },
+    social: [],
     passwordless: {
       javascriptOrigin: '',
       redirectUri: '',
     },
+    hasAggregateLogin: false,
   },
 }
 
 const getters = {
   appName: (state: ConfigureState) => state.appName,
   isAppConfigured: (state: ConfigureState) => state.isAppConfigured,
-  hasAggregateLogin: (state: ConfigureState) =>
-    state.auth.social.hasAggregateLogin,
+  hasAggregateLogin: (state: ConfigureState) => state.auth.hasAggregateLogin,
+  socialAuth: (state: ConfigureState) => state.auth.social,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
 }
 
@@ -39,7 +44,7 @@ const mutations = {
     state.appName = appName
   },
   updateAggregateLogin(state: ConfigureState, hasAggregateLogin: boolean) {
-    state.auth.social.hasAggregateLogin = hasAggregateLogin
+    state.auth.hasAggregateLogin = hasAggregateLogin
   },
   updatePasswordlessAuthJavascriptOrigin(
     state: ConfigureState,
@@ -52,6 +57,9 @@ const mutations = {
     redirectUri: string
   ) {
     state.auth.passwordless.redirectUri = redirectUri
+  },
+  updateSocialAuth(state: ConfigureState, socialAuth: SocialAuth[]) {
+    state.auth.social = socialAuth
   },
 }
 
