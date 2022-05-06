@@ -26,23 +26,21 @@ function handleChangeChainType(value: string) {
         >Please specify the blockchains that your app is going to use in the
         future <a>LEARN MORE</a></template
       >
-      <VStack direction="column" gap="2em" class="flex-grow">
-        <VCard variant="depressed" class="chain-options-container">
-          <VStack
-            direction="column"
-            gap="1.2em"
-            justify="space-between"
-            class="flex-grow"
-          >
-            <VRadioGroup
-              :model-value="selectedChain"
-              :options="chains"
-              name="ChainSelection"
-              @update:modelValue="handleChangeChainType"
-            />
-          </VStack>
-        </VCard>
-      </VStack>
+      <VCard variant="depressed" class="chain-options-container">
+        <VStack
+          direction="column"
+          gap="2rem"
+          justify="space-between"
+          class="flex-grow"
+        >
+          <VRadioGroup
+            :model-value="selectedChain"
+            :options="chains"
+            name="ChainSelection"
+            @update:modelValue="handleChangeChainType"
+          />
+        </VStack>
+      </VCard>
     </SettingCard>
   </section>
 </template>
