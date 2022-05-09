@@ -43,12 +43,45 @@ type ConfigureTab = {
   label: string
 }
 
+const userLimitOptions: string[] = ['Limited', 'Unlimited']
+
 const CONFIGURE_TABS: ConfigureTab[] = [
   { type: 'general', label: 'General' },
   { type: 'auth', label: 'Auth' },
   { type: 'store', label: 'Store' },
   { type: 'access', label: 'Access' },
   { type: 'wallet', label: 'Wallet' },
+]
+
+type UserLimit = {
+  isUnlimited: boolean
+  value?: number
+  unit?: 'MB' | 'GB'
+}
+
+const unlimitedUserLimit: UserLimit = {
+  isUnlimited: true,
+}
+
+const defaultUserLimit: UserLimit = {
+  isUnlimited: false,
+  value: 2,
+  unit: 'MB',
+}
+
+type UserLimitType = 'Unlimited' | 'Limited'
+
+const storageValues = ['MB', 'GB']
+
+const bandwidthValues = [
+  {
+    label: 'MB/mo',
+    value: 'MB',
+  },
+  {
+    label: 'GB/mo',
+    value: 'GB',
+  },
 ]
 
 const constants = {
@@ -67,10 +100,17 @@ export {
   isAppDown,
   chains,
   CONFIGURE_TABS,
+  userLimitOptions,
+  unlimitedUserLimit,
+  defaultUserLimit,
+  bandwidthValues,
+  storageValues,
   type ConfigureTab,
   type ConfigureTabType,
   type Chain,
   type ChainOption,
+  type UserLimit,
+  type UserLimitType,
 }
 
 export default constants

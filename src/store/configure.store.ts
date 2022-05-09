@@ -1,4 +1,4 @@
-import type { Chain } from '@/utils/constants'
+import type { Chain, UserLimit } from '@/utils/constants'
 
 type ConfigureState = {
   appName: string
@@ -9,6 +9,12 @@ type ConfigureState = {
     passwordless: {
       javascriptOrigin: string
       redirectUri: string
+    }
+  }
+  store: {
+    userLimits: {
+      storage: UserLimit
+      bandwidth: UserLimit
     }
   }
 }
@@ -24,12 +30,28 @@ const state: ConfigureState = {
       redirectUri: '',
     },
   },
+  store: {
+    userLimits: {
+      storage: {
+        isUnlimited: true,
+        value: 2,
+        unit: 'MB',
+      },
+      bandwidth: {
+        isUnlimited: true,
+        value: 2,
+        unit: 'MB',
+      },
+    },
+  },
 }
 
 const getters = {
   appName: (state: ConfigureState) => state.appName,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
+  storageLimits: (state: ConfigureState) => state.store.userLimits.storage,
+  bandwidthLimits: (state: ConfigureState) => state.store.userLimits.bandwidth,
 }
 
 const mutations = {
@@ -50,6 +72,12 @@ const mutations = {
     redirectUri: string
   ) {
     state.auth.passwordless.redirectUri = redirectUri
+  },
+  updateStorageLimits(state: ConfigureState, limit: UserLimit) {
+    state.store.userLimits.storage = limit
+  },
+  updateBandwidthLimits(state: ConfigureState, limit: UserLimit) {
+    state.store.userLimits.bandwidth = limit
   },
 }
 

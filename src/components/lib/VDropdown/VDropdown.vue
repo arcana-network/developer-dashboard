@@ -11,7 +11,7 @@ const props = defineProps({
     default: '',
   },
   modelValue: {
-    type: [String, Object],
+    type: [String, Object, Boolean],
     default: '',
   },
   placeholder: {
