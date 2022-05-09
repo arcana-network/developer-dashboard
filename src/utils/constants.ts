@@ -78,13 +78,6 @@ const socialLogins: SocialLogin[] = [
     documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
   },
   {
-    name: 'Reddit',
-    verifier: 'reddit',
-    hasClientSecret: false,
-    hasRedirectUri: false,
-    documentation: 'https://github.com/reddit-archive/reddit/wiki/OAuth2',
-  },
-  {
     name: 'Discord',
     verifier: 'discord',
     hasClientSecret: false,
