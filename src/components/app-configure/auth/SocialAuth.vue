@@ -23,7 +23,6 @@ function handleUpdate(
   inputType: 'clientId' | 'clientSecret' | 'redirectUri'
 ) {
   if (
-    !socialLogin[inputType] &&
     !socialLogin.clientId &&
     !socialLogin.clientSecret &&
     !socialLogin.redirectUri
@@ -78,7 +77,7 @@ function handleUpdate(
             v-model="socialLogin.clientId"
             no-message
             class="social-auth-input"
-            placeholder="Enter Client ID"
+            placeholder="Client ID"
             :icon="CopyIcon"
             clickable-icon
             @icon-clicked="
@@ -91,7 +90,7 @@ function handleUpdate(
             v-model="socialLogin.clientSecret"
             no-message
             class="social-auth-input"
-            placeholder="Enter Client Secret"
+            placeholder="Client Secret"
             @update:model-value="handleUpdate(socialLogin, 'clientSecret')"
           ></VTextField>
           <VTextField
@@ -99,7 +98,7 @@ function handleUpdate(
             v-model="socialLogin.redirectUri"
             no-message
             class="social-auth-input"
-            placeholder="Enter Redirect URI"
+            placeholder="Redirect URI"
             @update:model-value="handleUpdate(socialLogin, 'redirectUri')"
           ></VTextField>
         </VStack>
