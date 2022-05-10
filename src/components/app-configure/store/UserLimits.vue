@@ -65,7 +65,7 @@ function handleIsUnlimitedChange(
 </script>
 
 <template>
-  <section name="asset-encryption">
+  <section name="user-limits">
     <SettingCard>
       <template #title>User Limits</template>
       <template #description
