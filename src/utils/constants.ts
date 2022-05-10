@@ -36,6 +36,28 @@ const chains: ChainOption<Chain>[] = [
   },
 ]
 
+type StorageRegion = 'asia' | 'europe' | 'north-america'
+
+type Region = {
+  name: string
+  value: StorageRegion
+}
+
+const regions: Region[] = [
+  {
+    name: 'Asia',
+    value: 'asia',
+  },
+  {
+    name: 'Europe',
+    value: 'europe',
+  },
+  {
+    name: 'North America',
+    value: 'north-america',
+  },
+]
+
 type ConfigureTabType = 'general' | 'auth' | 'store' | 'access' | 'wallet'
 
 type ConfigureTab = {
@@ -126,6 +148,9 @@ export {
   chains,
   CONFIGURE_TABS,
   socialLogins,
+  regions,
+  type Region,
+  type StorageRegion,
   type ConfigureTab,
   type ConfigureTabType,
   type SocialLogin,

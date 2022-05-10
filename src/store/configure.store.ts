@@ -1,4 +1,4 @@
-import type { SocialAuth, Chain } from '@/utils/constants'
+import type { SocialAuth, Chain, StorageRegion } from '@/utils/constants'
 
 type ConfigureState = {
   appName: string
@@ -13,6 +13,9 @@ type ConfigureState = {
       redirectUri: string
     }
     hasAggregateLogin: boolean
+  }
+  store: {
+    region: StorageRegion
   }
 }
 
@@ -30,6 +33,9 @@ const state: ConfigureState = {
     },
     hasAggregateLogin: false,
   },
+  store: {
+    region: 'asia',
+  },
 }
 
 const getters = {
@@ -39,6 +45,7 @@ const getters = {
   socialAuth: (state: ConfigureState) => state.auth.social,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
+  storageRegion: (state: ConfigureState) => state.store.region,
 }
 
 const mutations = {
@@ -65,6 +72,9 @@ const mutations = {
   },
   updateSocialAuth(state: ConfigureState, socialAuth: SocialAuth[]) {
     state.auth.social = socialAuth
+  },
+  updateStorageRegion(state: ConfigureState, region: StorageRegion) {
+    state.store.region = region
   },
 }
 
