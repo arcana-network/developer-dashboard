@@ -35,13 +35,9 @@ const state: ConfigureState = {
     userLimits: {
       storage: {
         isUnlimited: true,
-        value: 2,
-        unit: 'MB',
       },
       bandwidth: {
         isUnlimited: true,
-        value: 2,
-        unit: 'MB',
       },
     },
     region: 'asia',
@@ -52,8 +48,8 @@ const getters = {
   appName: (state: ConfigureState) => state.appName,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
-  storageLimits: (state: ConfigureState) => state.store.userLimits.storage,
-  bandwidthLimits: (state: ConfigureState) => state.store.userLimits.bandwidth,
+  storageLimit: (state: ConfigureState) => state.store.userLimits.storage,
+  bandwidthLimit: (state: ConfigureState) => state.store.userLimits.bandwidth,
   storageRegion: (state: ConfigureState) => state.store.region,
 }
 
@@ -76,10 +72,10 @@ const mutations = {
   ) {
     state.auth.passwordless.redirectUri = redirectUri
   },
-  updateStorageLimits(state: ConfigureState, limit: UserLimit) {
+  updateStorageLimit(state: ConfigureState, limit: UserLimit) {
     state.store.userLimits.storage = limit
   },
-  updateBandwidthLimits(state: ConfigureState, limit: UserLimit) {
+  updateBandwidthLimit(state: ConfigureState, limit: UserLimit) {
     state.store.userLimits.bandwidth = limit
   },
   updateStorageRegion(state: ConfigureState, region: StorageRegion) {

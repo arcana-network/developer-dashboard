@@ -95,7 +95,12 @@ type UserLimitType = 'Unlimited' | 'Limited'
 
 const storageValues = ['MB', 'GB']
 
-const bandwidthValues = [
+type BandwidthLimitUnits = {
+  label: 'MB/mo' | 'GB/mo'
+  value: 'MB' | 'GB'
+}
+
+const bandwidthUnits: BandwidthLimitUnits[] = [
   {
     label: 'MB/mo',
     value: 'MB',
@@ -125,7 +130,7 @@ export {
   userLimitOptions,
   unlimitedUserLimit,
   defaultUserLimit,
-  bandwidthValues,
+  bandwidthUnits,
   storageValues,
   regions,
   type Region,
@@ -136,6 +141,7 @@ export {
   type ChainOption,
   type UserLimit,
   type UserLimitType,
+  type BandwidthLimitUnits,
 }
 
 export default constants
