@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { computed, type ComputedRef } from 'vue'
 import { useStore } from 'vuex'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
@@ -9,42 +10,73 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import {
   socialLogins,
-  type SocialLogin,
   type SocialAuth,
+  type SocialAuthVerifier,
+  type SocialAuthField,
 } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const store = useStore()
 
-let authDetails = [...store.getters.socialAuth]
+const socialAuthTypes: SocialAuthField[] = [
+  'clientId',
+  'clientSecret',
+  'redirectUri',
+]
+
+const authDetails: ComputedRef<SocialAuth[]> = computed(
+  () => store.getters.socialAuth
+)
+
+function getAuthIndex(
+  authDetailsList: SocialAuth[],
+  verifier: SocialAuthVerifier
+): number {
+  return authDetailsList.findIndex(
+    (authDetail: SocialAuth) => authDetail.verifier === verifier
+  )
+}
+
+function getClient(verifier: SocialAuthVerifier): SocialAuth | undefined {
+  const tempAuthDetails: SocialAuth[] = [...authDetails.value]
+  let existingAuthIndex = getAuthIndex(tempAuthDetails, verifier)
+  if (existingAuthIndex !== -1) {
+    return tempAuthDetails[existingAuthIndex]
+  }
+}
 
 function handleUpdate(
-  socialLogin: SocialLogin,
-  inputType: 'clientId' | 'clientSecret' | 'redirectUri'
+  verifier: SocialAuthVerifier,
+  inputType: SocialAuthField,
+  value: string
 ) {
-  if (
-    !socialLogin.clientId &&
-    !socialLogin.clientSecret &&
-    !socialLogin.redirectUri
-  ) {
-    authDetails = authDetails.filter(
-      (authDetail) => authDetail.verifier !== socialLogin.verifier
+  let tempAuthDetails: SocialAuth[] = [...authDetails.value]
+  const existingAuthIndex = getAuthIndex(tempAuthDetails, verifier)
+  if (existingAuthIndex !== -1) {
+    const existingAuth = { ...tempAuthDetails[existingAuthIndex] }
+    const otherInputTypes: SocialAuthField[] = socialAuthTypes.filter(
+      (el) => el !== inputType
     )
-  } else {
-    const existingAuthIndex = authDetails.findIndex(
-      (authDetail: SocialAuth) => authDetail.verifier === socialLogin.verifier
-    )
-    if (existingAuthIndex !== -1) {
-      authDetails[existingAuthIndex][inputType] = socialLogin[inputType]
+    if (
+      !value &&
+      !existingAuth[otherInputTypes[0]] &&
+      !existingAuth[otherInputTypes[1]]
+    ) {
+      // Logic to remove auth if all fields are empty
+      tempAuthDetails = tempAuthDetails.filter(
+        (authDetail) => authDetail.verifier !== existingAuth.verifier
+      )
     } else {
-      authDetails.push({
-        verifier: socialLogin.verifier,
-        [inputType]: socialLogin[inputType],
-      })
+      existingAuth[inputType] = value
+      tempAuthDetails[existingAuthIndex] = existingAuth
     }
+  } else {
+    tempAuthDetails.push({
+      verifier,
+      [inputType]: value,
+    })
   }
-
-  store.commit('updateSocialAuth', authDetails)
+  store.commit('updateSocialAuth', tempAuthDetails)
 }
 </script>
 
@@ -74,32 +106,38 @@ function handleUpdate(
         <VSeperator vertical class="social-auth-separator" />
         <VStack gap="1.25rem" class="social-auth-input-container">
           <VTextField
-            v-model="socialLogin.clientId"
+            :model-value="getClient(socialLogin.verifier)?.clientId"
             no-message
             class="social-auth-input"
             placeholder="Client ID"
             :icon="CopyIcon"
             clickable-icon
             @icon-clicked="
-              copyToClipboard(socialLogin.clientId ? socialLogin.clientId : '')
+              copyToClipboard(getClient(socialLogin.verifier)?.clientId || '')
             "
-            @update:model-value="handleUpdate(socialLogin, 'clientId')"
+            @update:model-value="
+              handleUpdate(socialLogin.verifier, 'clientId', $event)
+            "
           ></VTextField>
           <VTextField
             v-if="socialLogin.hasClientSecret"
-            v-model="socialLogin.clientSecret"
+            :model-value="getClient(socialLogin.verifier)?.clientSecret"
             no-message
             class="social-auth-input"
             placeholder="Client Secret"
-            @update:model-value="handleUpdate(socialLogin, 'clientSecret')"
+            @update:model-value="
+              handleUpdate(socialLogin.verifier, 'clientSecret', $event)
+            "
           ></VTextField>
           <VTextField
             v-if="socialLogin.hasRedirectUri"
-            v-model="socialLogin.redirectUri"
+            :model-value="getClient(socialLogin.verifier)?.redirectUri"
             no-message
             class="social-auth-input"
             placeholder="Redirect URI"
-            @update:model-value="handleUpdate(socialLogin, 'redirectUri')"
+            @update:model-value="
+              handleUpdate(socialLogin.verifier, 'redirectUri', $event)
+            "
           ></VTextField>
         </VStack>
         <a :href="socialLogin.documentation" target="_blank">

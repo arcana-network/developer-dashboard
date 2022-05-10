@@ -10,9 +10,9 @@ const api = {
   testnet: import.meta.env.VITE_TESTNET_API,
 }
 
-const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID
+const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID
 
-const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false
+const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 
 type Chain = 'ethereum' | 'polygon' | 'binance'
 
@@ -21,7 +21,7 @@ type ChainOption<T> = {
   value: T
 }
 
-const chains: ChainOption<Chain>[] = [
+const chains: readonly ChainOption<Chain>[] = [
   {
     label: 'Ethereum',
     value: 'ethereum',
@@ -65,7 +65,7 @@ type ConfigureTab = {
   label: string
 }
 
-const CONFIGURE_TABS: ConfigureTab[] = [
+const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'general', label: 'General' },
   { type: 'auth', label: 'Auth' },
   { type: 'store', label: 'Store' },
@@ -73,25 +73,32 @@ const CONFIGURE_TABS: ConfigureTab[] = [
   { type: 'wallet', label: 'Wallet' },
 ]
 
-type SocialLogin = {
+type SocialAuthVerifier =
+  | 'google'
+  | 'twitter'
+  | 'twitch'
+  | 'reddit'
+  | 'github'
+  | 'discord'
+
+type SocialAuthField = 'clientId' | 'clientSecret' | 'redirectUri'
+
+type SocialAuthOptions = {
   name: 'Google' | 'Twitter' | 'Twitch' | 'Reddit' | 'Github' | 'Discord'
-  verifier: 'google' | 'twitter' | 'twitch' | 'reddit' | 'github' | 'discord'
+  verifier: SocialAuthVerifier
   hasClientSecret: boolean
   hasRedirectUri: boolean
   documentation: string
-  clientId?: string
-  clientSecret?: string
-  redirectUri?: string
 }
 
 type SocialAuth = {
-  verifier: string
+  verifier: SocialAuthVerifier
   clientId?: string
   clientSecret?: string
   redirectUri?: string
 }
 
-const socialLogins: SocialLogin[] = [
+const socialLogins: readonly SocialAuthOptions[] = [
   {
     name: 'Google',
     verifier: 'google',
@@ -153,7 +160,9 @@ export {
   type StorageRegion,
   type ConfigureTab,
   type ConfigureTabType,
-  type SocialLogin,
+  type SocialAuthOptions,
+  type SocialAuthVerifier,
+  type SocialAuthField,
   type SocialAuth,
   type Chain,
   type ChainOption,
