@@ -17,12 +17,7 @@ function handleSwitchStateChange(value: boolean) {
 
 <template>
   <section name="configure-aggregate-login">
-    <SettingCard
-      :has-header-switch="true"
-      :switch-state="hasAggregateLogin"
-      :is-switch-disabled="isAppConfigured"
-      @switch-state-change="handleSwitchStateChange"
-    >
+    <SettingCard>
       <template #title>Aggregate Login</template>
       <template #controls>
         <VSwitch
