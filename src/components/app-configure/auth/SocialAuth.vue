@@ -62,7 +62,6 @@ function handleUpdate(
       !existingAuth[otherInputTypes[0]] &&
       !existingAuth[otherInputTypes[1]]
     ) {
-      // Logic to remove auth if all fields are empty
       tempAuthDetails = tempAuthDetails.filter(
         (authDetail) => authDetail.verifier !== existingAuth.verifier
       )
