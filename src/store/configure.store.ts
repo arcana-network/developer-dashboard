@@ -1,4 +1,4 @@
-import type { Chain, UserLimit } from '@/utils/constants'
+import type { Chain, UserLimit, StorageRegion } from '@/utils/constants'
 
 type ConfigureState = {
   appName: string
@@ -16,6 +16,7 @@ type ConfigureState = {
       storage: UserLimit
       bandwidth: UserLimit
     }
+    region: StorageRegion
   }
 }
 
@@ -43,6 +44,7 @@ const state: ConfigureState = {
         unit: 'MB',
       },
     },
+    region: 'asia',
   },
 }
 
@@ -52,6 +54,7 @@ const getters = {
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
   storageLimits: (state: ConfigureState) => state.store.userLimits.storage,
   bandwidthLimits: (state: ConfigureState) => state.store.userLimits.bandwidth,
+  storageRegion: (state: ConfigureState) => state.store.region,
 }
 
 const mutations = {
@@ -78,6 +81,9 @@ const mutations = {
   },
   updateBandwidthLimits(state: ConfigureState, limit: UserLimit) {
     state.store.userLimits.bandwidth = limit
+  },
+  updateStorageRegion(state: ConfigureState, region: StorageRegion) {
+    state.store.region = region
   },
 }
 
