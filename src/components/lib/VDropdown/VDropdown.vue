@@ -123,7 +123,7 @@ watch(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 20px;
+  padding: 1.25rem 2rem;
   font-family: var(--font-body);
   font-size: 1.1em;
   font-weight: 400;
@@ -168,7 +168,7 @@ watch(
 .custom-option {
   position: relative;
   display: block;
-  padding: 15px 20px;
+  padding: 1.25rem 2rem;
   font-family: var(--font-body);
   font-size: 1.1em;
   font-weight: 400;

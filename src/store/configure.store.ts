@@ -1,4 +1,4 @@
-import type { Chain } from '@/utils/constants'
+import type { Chain, StorageRegion } from '@/utils/constants'
 
 type ConfigureState = {
   appName: string
@@ -10,6 +10,9 @@ type ConfigureState = {
       javascriptOrigin: string
       redirectUri: string
     }
+  }
+  store: {
+    region: StorageRegion
   }
 }
 
@@ -24,12 +27,16 @@ const state: ConfigureState = {
       redirectUri: '',
     },
   },
+  store: {
+    region: 'asia',
+  },
 }
 
 const getters = {
   appName: (state: ConfigureState) => state.appName,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
+  storageRegion: (state: ConfigureState) => state.store.region,
 }
 
 const mutations = {
@@ -50,6 +57,9 @@ const mutations = {
     redirectUri: string
   ) {
     state.auth.passwordless.redirectUri = redirectUri
+  },
+  updateStorageRegion(state: ConfigureState, region: StorageRegion) {
+    state.store.region = region
   },
 }
 
