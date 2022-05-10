@@ -80,13 +80,13 @@ function handleIsUnlimitedChange(
                   max="1024"
                   :disabled="storageLimitType === 'Unlimited'"
                   no-message
+                  class="usage-value-textfield"
                 />
                 <VDropdown
                   :options="storageValues"
                   placeholder="unit"
-                  class="usage"
-                  style="min-width: 8rem"
-                  trigger-style="padding: 18px 20px"
+                  class="usage-unit-dropdown"
+                  trigger-class="usage-unit-dropdown-trigger"
                   :disabled="storageLimitType === 'Unlimited'"
                 />
               </div>
@@ -117,14 +117,14 @@ function handleIsUnlimitedChange(
                   max="1024"
                   :disabled="bandwidthLimitType === 'Unlimited'"
                   no-message
+                  class="usage-value-textfield"
                 />
                 <VDropdown
                   :options="bandwidthValues"
                   display-field="label"
                   placeholder="unit"
-                  class="usage"
-                  style="min-width: 8rem"
-                  trigger-style="padding: 18px 20px"
+                  class="usage-unit-dropdown"
+                  trigger-class="usage-unit-dropdown-trigger"
                   :disabled="bandwidthLimitType === 'Unlimited'"
                 />
               </div>
@@ -148,9 +148,26 @@ function handleIsUnlimitedChange(
   flex-wrap: nowrap;
 }
 
+.usage-unit-dropdown {
+  min-width: 8rem;
+}
+
 @media screen and (min-width: 1024px) {
   .limits-input-container > * {
     flex: 0 0 calc(50% - 1rem);
   }
+}
+</style>
+
+<style>
+.usage-unit-dropdown-trigger {
+  padding: 22px !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.usage-value-textfield > * {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 </style>

@@ -26,6 +26,10 @@ const props = defineProps({
     type: [String, Object, Array],
     default: '',
   },
+  triggerClass: {
+    type: String,
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -75,7 +79,11 @@ watch(
     :aria-disabled="disabled"
     @click.stop="toggle"
   >
-    <div class="custom-select__trigger" :style="triggerStyle">
+    <div
+      class="custom-select__trigger"
+      :class="triggerClass"
+      :style="triggerStyle"
+    >
       <span v-if="value">
         <span v-if="displayField">
           {{ value[displayField] }}
