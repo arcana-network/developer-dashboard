@@ -1,3 +1,5 @@
+import type { SocialAuthOption } from '@/store/configure.store'
+
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
   tracingOrigins: [
@@ -73,32 +75,7 @@ const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'wallet', label: 'Wallet' },
 ]
 
-type SocialAuthVerifier =
-  | 'google'
-  | 'twitter'
-  | 'twitch'
-  | 'reddit'
-  | 'github'
-  | 'discord'
-
-type SocialAuthField = 'clientId' | 'clientSecret' | 'redirectUri'
-
-type SocialAuthOptions = {
-  name: 'Google' | 'Twitter' | 'Twitch' | 'Reddit' | 'Github' | 'Discord'
-  verifier: SocialAuthVerifier
-  hasClientSecret: boolean
-  hasRedirectUri: boolean
-  documentation: string
-}
-
-type SocialAuth = {
-  verifier: SocialAuthVerifier
-  clientId?: string
-  clientSecret?: string
-  redirectUri?: string
-}
-
-const socialLogins: readonly SocialAuthOptions[] = [
+const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Google',
     verifier: 'google',
@@ -160,10 +137,6 @@ export {
   type StorageRegion,
   type ConfigureTab,
   type ConfigureTabType,
-  type SocialAuthOptions,
-  type SocialAuthVerifier,
-  type SocialAuthField,
-  type SocialAuth,
   type Chain,
   type ChainOption,
 }
