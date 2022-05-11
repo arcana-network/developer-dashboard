@@ -82,17 +82,16 @@ type BandwidthLimitUnit = {
   value: 'MB' | 'GB'
 }
 
-const unlimitedUserLimit: UserLimitState = {
+const storageValues = ['MB', 'GB']
+
+const unlimitedUserLimit: Readonly<UserLimitState> = {
   isUnlimited: true,
 }
-
-const defaultUserLimit: UserLimitState = {
+const defaultUserLimit: Readonly<UserLimitState> = {
   isUnlimited: false,
   value: 2,
   unit: 'MB',
 }
-
-const storageValues = ['MB', 'GB']
 
 const bandwidthUnits: BandwidthLimitUnit[] = [
   {
@@ -122,10 +121,10 @@ export {
   chains,
   CONFIGURE_TABS,
   userLimitOptions,
-  unlimitedUserLimit,
-  defaultUserLimit,
   bandwidthUnits,
   storageValues,
+  unlimitedUserLimit,
+  defaultUserLimit,
   regions,
   type Region,
   type StorageRegion,

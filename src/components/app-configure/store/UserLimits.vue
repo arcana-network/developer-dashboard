@@ -6,10 +6,13 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import type {
+  UserLimitParam,
+  UserLimitTarget,
+  UserLimitUnit,
+} from '@/store/configure.store'
 import {
   userLimitOptions,
-  unlimitedUserLimit,
-  defaultUserLimit,
   storageValues,
   bandwidthUnits,
   type BandwidthLimitUnit,
@@ -19,7 +22,7 @@ type UserLimitKind = 'Unlimited' | 'Limited'
 type UserLimit = {
   isUnlimited: boolean
   value?: number
-  unit?: 'MB' | 'GB'
+  unit?: UserLimitUnit
 }
 
 const store = useStore()
@@ -47,25 +50,23 @@ const bandwidthLimit: ComputedRef<UserLimit> = computed(
 
 const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
   computed(() => {
-    if (!store.getters.bandwidth.isUnlimited) {
+    if (!store.getters.bandwidthLimit.isUnlimited) {
       return bandwidthUnits.find(
-        (bandwidthUnit) => bandwidthUnit.value === store.getters.bandwidth.unit
+        (bandwidthUnit) =>
+          bandwidthUnit.value === store.getters.bandwidthLimit.unit
       )
     } else {
       return undefined
     }
   })
 
-function handleIsUnlimitedChange(
-  type: 'storage' | 'bandwidth',
-  value: 'Limited' | 'Unlimited'
-) {
-  const userLimit: UserLimit =
-    value === 'Unlimited' ? unlimitedUserLimit : defaultUserLimit
-  if (type === 'storage') {
-    return store.commit('updateStorageLimit', userLimit)
-  }
-  return store.commit('updateBandwidthLimit', userLimit)
+function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
+  const isUnlimited: boolean = value === 'Unlimited' ? true : false
+  return store.commit('updateUserLimit', { type, isUnlimited })
+}
+
+function handleUserLimitFieldChange({ type, field, value }: UserLimitParam) {
+  return store.commit('updateUserLimitField', { type, field, value })
 }
 </script>
 
@@ -105,6 +106,13 @@ function handleIsUnlimitedChange(
                   no-message
                   class="usage-value-textfield"
                   placeholder="value"
+                  @update:model-value="
+                    handleUserLimitFieldChange({
+                      type: 'storage',
+                      field: 'value',
+                      value: $event,
+                    })
+                  "
                 />
                 <VDropdown
                   :options="storageValues"
@@ -113,6 +121,13 @@ function handleIsUnlimitedChange(
                   class="usage-unit-dropdown"
                   trigger-class="usage-unit-dropdown-trigger"
                   :disabled="storageLimitKind === 'Unlimited'"
+                  @update:model-value="
+                    handleUserLimitFieldChange({
+                      type: 'storage',
+                      field: 'unit',
+                      value: $event,
+                    })
+                  "
                 />
               </div>
             </VStack>
@@ -140,6 +155,13 @@ function handleIsUnlimitedChange(
                   no-message
                   class="usage-value-textfield"
                   placeholder="value"
+                  @update:model-value="
+                    handleUserLimitFieldChange({
+                      type: 'bandwidth',
+                      field: 'value',
+                      value: $event,
+                    })
+                  "
                 />
                 <VDropdown
                   :options="bandwidthUnits"
@@ -149,6 +171,13 @@ function handleIsUnlimitedChange(
                   class="usage-unit-dropdown"
                   trigger-class="usage-unit-dropdown-trigger"
                   :disabled="bandwidthLimitKind === 'Unlimited'"
+                  @update:model-value="
+                    handleUserLimitFieldChange({
+                      type: 'bandwidth',
+                      field: 'unit',
+                      value: $event.value,
+                    })
+                  "
                 />
               </div>
             </VStack>
