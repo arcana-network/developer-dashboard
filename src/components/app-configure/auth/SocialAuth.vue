@@ -43,9 +43,7 @@ function handleFieldUpdate(
   field: SocialAuthField,
   value: string
 ) {
-  const existingAuth = socialAuth.value.find(
-    (auth) => auth.verifier === verifier
-  )
+  const existingAuth = getSocialAuth(verifier)
   if (existingAuth) {
     const areOtherFieldsEmpty: boolean = socialAuthFields
       .filter((el) => el !== field)
