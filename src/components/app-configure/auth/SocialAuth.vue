@@ -147,7 +147,7 @@ function handleFieldUpdate(
   </section>
 </template>
 
-<style>
+<style scoped>
 .verifier-name {
   flex: 0 0 6rem;
 }
