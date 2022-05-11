@@ -130,13 +130,13 @@ function handleFieldUpdate(
               target="_blank"
               class="icon-link"
             >
-              <img src="@/assets/iconography/link.svg" alt="Go to docs" />
+              <img src="@/assets/iconography/link.svg" alt="Get Credentials" />
             </a>
           </VTooltip>
           <VTooltip title="Clear Fields">
             <img
               src="@/assets/iconography/close.svg"
-              alt="Clear fields"
+              alt="Clear Fields"
               class="cursor-pointer"
               @click.stop="handleCloseClick(socialLogin.verifier)"
             />
