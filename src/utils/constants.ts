@@ -1,3 +1,5 @@
+import type { UserLimitState } from '@/store/configure.store'
+
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
   tracingOrigins: [
@@ -75,32 +77,24 @@ const CONFIGURE_TABS: ConfigureTab[] = [
   { type: 'wallet', label: 'Wallet' },
 ]
 
-type UserLimit = {
-  isUnlimited: boolean
-  value?: number
-  unit?: 'MB' | 'GB'
+type BandwidthLimitUnit = {
+  label: 'MB/mo' | 'GB/mo'
+  value: 'MB' | 'GB'
 }
 
-const unlimitedUserLimit: UserLimit = {
+const unlimitedUserLimit: UserLimitState = {
   isUnlimited: true,
 }
 
-const defaultUserLimit: UserLimit = {
+const defaultUserLimit: UserLimitState = {
   isUnlimited: false,
   value: 2,
   unit: 'MB',
 }
 
-type UserLimitType = 'Unlimited' | 'Limited'
-
 const storageValues = ['MB', 'GB']
 
-type BandwidthLimitUnits = {
-  label: 'MB/mo' | 'GB/mo'
-  value: 'MB' | 'GB'
-}
-
-const bandwidthUnits: BandwidthLimitUnits[] = [
+const bandwidthUnits: BandwidthLimitUnit[] = [
   {
     label: 'MB/mo',
     value: 'MB',
@@ -139,9 +133,7 @@ export {
   type ConfigureTabType,
   type Chain,
   type ChainOption,
-  type UserLimit,
-  type UserLimitType,
-  type BandwidthLimitUnits,
+  type BandwidthLimitUnit,
 }
 
 export default constants

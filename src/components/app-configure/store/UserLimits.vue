@@ -12,22 +12,27 @@ import {
   defaultUserLimit,
   storageValues,
   bandwidthUnits,
-  type UserLimit,
-  type UserLimitType,
-  type BandwidthLimitUnits,
+  type BandwidthLimitUnit,
 } from '@/utils/constants'
 
+type UserLimitKind = 'Unlimited' | 'Limited'
+type UserLimit = {
+  isUnlimited: boolean
+  value?: number
+  unit?: 'MB' | 'GB'
+}
+
 const store = useStore()
-const storageLimitType: ComputedRef<UserLimitType> = computed(() => {
-  const storageLimit: UserLimit = store.getters.storageLimit
-  if (storageLimit.isUnlimited) {
+
+const storageLimitKind: ComputedRef<UserLimitKind> = computed(() => {
+  if (store.getters.storageLimit.isUnlimited) {
     return 'Unlimited'
   }
   return 'Limited'
 })
-const bandwidthLimitType: ComputedRef<UserLimitType> = computed(() => {
-  const bandwidthLimit: UserLimit = store.getters.bandwidthLimit
-  if (bandwidthLimit.isUnlimited) {
+
+const bandwidthLimitKind: ComputedRef<UserLimitKind> = computed(() => {
+  if (store.getters.bandwidthLimit.isUnlimited) {
     return 'Unlimited'
   }
   return 'Limited'
@@ -39,12 +44,12 @@ const storageLimit: ComputedRef<UserLimit> = computed(
 const bandwidthLimit: ComputedRef<UserLimit> = computed(
   () => store.getters.bandwidthLimit
 )
-const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnits | undefined> =
+
+const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
   computed(() => {
-    const tempBandwidthLimit: UserLimit = { ...store.getters.bandwidthLimit }
-    if (!tempBandwidthLimit.isUnlimited) {
+    if (!store.getters.bandwidth.isUnlimited) {
       return bandwidthUnits.find(
-        (bandwidthUnit) => bandwidthUnit.value === tempBandwidthLimit.unit
+        (bandwidthUnit) => bandwidthUnit.value === store.getters.bandwidth.unit
       )
     } else {
       return undefined
@@ -83,7 +88,7 @@ function handleIsUnlimitedChange(
           <VStack gap="1.25rem" wrap class="width-100">
             <VDropdown
               :options="userLimitOptions"
-              :model-value="storageLimitType"
+              :model-value="storageLimitKind"
               class="limits-type-dropdown"
               trigger-class="limits-type-dropdown-trigger"
               @update:model-value="handleIsUnlimitedChange('storage', $event)"
@@ -95,7 +100,7 @@ function handleIsUnlimitedChange(
                   type="number"
                   min="1"
                   max="1024"
-                  :disabled="storageLimitType === 'Unlimited'"
+                  :disabled="storageLimitKind === 'Unlimited'"
                   :model-value="storageLimit.value"
                   no-message
                   class="usage-value-textfield"
@@ -107,7 +112,7 @@ function handleIsUnlimitedChange(
                   :model-value="storageLimit.unit"
                   class="usage-unit-dropdown"
                   trigger-class="usage-unit-dropdown-trigger"
-                  :disabled="storageLimitType === 'Unlimited'"
+                  :disabled="storageLimitKind === 'Unlimited'"
                 />
               </div>
             </VStack>
@@ -118,7 +123,7 @@ function handleIsUnlimitedChange(
           <VStack gap="1.25rem" wrap class="width-100">
             <VDropdown
               :options="userLimitOptions"
-              :model-value="bandwidthLimitType"
+              :model-value="bandwidthLimitKind"
               class="limits-type-dropdown"
               trigger-class="limits-type-dropdown-trigger"
               @update:model-value="handleIsUnlimitedChange('bandwidth', $event)"
@@ -130,7 +135,7 @@ function handleIsUnlimitedChange(
                   type="number"
                   min="1"
                   max="1024"
-                  :disabled="bandwidthLimitType === 'Unlimited'"
+                  :disabled="bandwidthLimitKind === 'Unlimited'"
                   :model-value="bandwidthLimit.value"
                   no-message
                   class="usage-value-textfield"
@@ -143,7 +148,7 @@ function handleIsUnlimitedChange(
                   placeholder="unit"
                   class="usage-unit-dropdown"
                   trigger-class="usage-unit-dropdown-trigger"
-                  :disabled="bandwidthLimitType === 'Unlimited'"
+                  :disabled="bandwidthLimitKind === 'Unlimited'"
                 />
               </div>
             </VStack>
