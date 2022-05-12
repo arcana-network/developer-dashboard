@@ -2,6 +2,7 @@ import type { Chain, StorageRegion } from '@/utils/constants'
 
 type ConfigureState = {
   appName: string
+  selectedTheme: string
   access: {
     selectedChain: Chain
   }
@@ -18,6 +19,7 @@ type ConfigureState = {
 
 const state: ConfigureState = {
   appName: '',
+  selectedTheme: 'light',
   access: {
     selectedChain: 'ethereum',
   },
@@ -34,6 +36,7 @@ const state: ConfigureState = {
 
 const getters = {
   appName: (state: ConfigureState) => state.appName,
+  selectedTheme: (state: ConfigureState) => state.selectedTheme,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
   storageRegion: (state: ConfigureState) => state.store.region,
@@ -42,6 +45,9 @@ const getters = {
 const mutations = {
   updateAppName(state: ConfigureState, appName: string) {
     state.appName = appName
+  },
+  updateSelectedTheme(state: ConfigureState, selectedTheme: string) {
+    state.selectedTheme = selectedTheme
   },
   updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
     state.access.selectedChain = selectedChain

@@ -73,6 +73,17 @@ const CONFIGURE_TABS: ConfigureTab[] = [
   { type: 'wallet', label: 'Wallet' },
 ]
 
+const availableThemes = [
+  {
+    label: 'Light Mode',
+    value: 'light',
+  },
+  {
+    label: 'Dark Mode',
+    value: 'dark',
+  },
+]
+
 const constants = {
   sentry,
   api,
@@ -90,6 +101,7 @@ export {
   chains,
   CONFIGURE_TABS,
   regions,
+  availableThemes,
   type Region,
   type StorageRegion,
   type ConfigureTab,
