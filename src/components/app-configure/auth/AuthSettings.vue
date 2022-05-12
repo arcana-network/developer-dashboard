@@ -1,5 +1,7 @@
 <script lang="ts" setup>
+import AggregateLogin from '@/components/app-configure/auth/AggregateLogin.vue'
 import PasswordlessAuth from '@/components/app-configure/auth/PasswordlessAuth.vue'
+import SocialAuth from '@/components/app-configure/auth/SocialAuth.vue'
 import WalletAuth from '@/components/app-configure/auth/WalletAuth.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 </script>
@@ -7,7 +9,9 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 <template>
   <main>
     <VStack direction="column" gap="2rem">
+      <SocialAuth />
       <PasswordlessAuth />
+      <AggregateLogin />
       <WalletAuth />
     </VStack>
   </main>

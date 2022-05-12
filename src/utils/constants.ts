@@ -1,4 +1,4 @@
-import type { UserLimitState } from '@/store/configure.store'
+import type { UserLimitState, SocialAuthOption } from '@/store/configure.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -12,9 +12,9 @@ const api = {
   testnet: import.meta.env.VITE_TESTNET_API,
 }
 
-const arcanaAppId = import.meta.env.VITE_ARCANA_APP_ID
+const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID
 
-const isAppDown = import.meta.env.VITE_IS_APP_DOWN || false
+const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 
 type Chain = 'ethereum' | 'polygon' | 'binance'
 
@@ -23,7 +23,7 @@ type ChainOption<T> = {
   value: T
 }
 
-const chains: ChainOption<Chain>[] = [
+const chains: readonly ChainOption<Chain>[] = [
   {
     label: 'Ethereum',
     value: 'ethereum',
@@ -69,7 +69,7 @@ type ConfigureTab = {
 
 const userLimitOptions: string[] = ['Limited', 'Unlimited']
 
-const CONFIGURE_TABS: ConfigureTab[] = [
+const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'general', label: 'General' },
   { type: 'auth', label: 'Auth' },
   { type: 'store', label: 'Store' },
@@ -104,6 +104,45 @@ const bandwidthUnits: BandwidthLimitUnit[] = [
   },
 ]
 
+const socialLogins: readonly SocialAuthOption[] = [
+  {
+    name: 'Google',
+    verifier: 'google',
+    hasClientSecret: false,
+    hasRedirectUri: false,
+    documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
+  },
+  {
+    name: 'Discord',
+    verifier: 'discord',
+    hasClientSecret: false,
+    hasRedirectUri: false,
+    documentation: 'https://canary.discord.com/developers/applications',
+  },
+  {
+    name: 'Twitch',
+    verifier: 'twitch',
+    hasClientSecret: false,
+    hasRedirectUri: false,
+    documentation: 'https://dev.twitch.tv/docs/authentication#registration',
+  },
+  {
+    name: 'Github',
+    verifier: 'github',
+    hasClientSecret: true,
+    hasRedirectUri: false,
+    documentation:
+      'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
+  },
+  {
+    name: 'Twitter',
+    verifier: 'twitter',
+    hasClientSecret: true,
+    hasRedirectUri: true,
+    documentation: 'https://developer.twitter.com/en/docs/apps/overview',
+  },
+]
+
 const constants = {
   sentry,
   api,
@@ -111,6 +150,7 @@ const constants = {
   isAppDown,
   chains,
   CONFIGURE_TABS,
+  socialLogins,
 }
 
 export {
@@ -125,6 +165,7 @@ export {
   storageValues,
   unlimitedUserLimit,
   defaultUserLimit,
+  socialLogins,
   regions,
   type Region,
   type StorageRegion,

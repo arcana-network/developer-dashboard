@@ -34,8 +34,7 @@ const emit = defineEmits(['switch-tab'])
 
 <style scoped>
 .configure-sidebar {
-  width: 12rem;
-  height: 100vh;
+  flex: 0 0 12rem;
 }
 
 .configure-sidebar-card {

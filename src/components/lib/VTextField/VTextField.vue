@@ -124,7 +124,7 @@ function onIconClicked(ev) {
         :src="icon"
         :class="{
           'icon-clickable': clickableIcon,
-          height: '1.1em',
+          'input-icon': true,
         }"
         @click.stop="onIconClicked"
       />
@@ -198,10 +198,9 @@ input {
 }
 
 input::placeholder {
-  margin: 10px 20px 10px 0;
   font-family: var(--font-body);
-  font-size: 1.1em;
-  line-height: 1.5em;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-grey);
 }
 
@@ -218,7 +217,7 @@ input:-webkit-autofill:focus {
 }
 
 div.text-field.icon input {
-  width: calc(100% - 80px);
+  margin-right: 0.5rem;
 }
 
 input.strong {
@@ -240,5 +239,9 @@ input::-webkit-inner-spin-button {
 
 input[type='number'] {
   appearance: textfield;
+}
+
+.input-icon {
+  margin: auto 1.25rem auto 0;
 }
 </style>
