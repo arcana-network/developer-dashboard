@@ -10,6 +10,7 @@ import type {
   UserLimitParam,
   UserLimitTarget,
   UserLimitUnit,
+  UserLimitState,
 } from '@/store/configure.store'
 import {
   userLimitOptions,
@@ -19,11 +20,6 @@ import {
 } from '@/utils/constants'
 
 type UserLimitKind = 'Unlimited' | 'Limited'
-type UserLimit = {
-  isUnlimited: boolean
-  value?: number
-  unit?: UserLimitUnit
-}
 
 const store = useStore()
 
@@ -41,10 +37,10 @@ const bandwidthLimitKind: ComputedRef<UserLimitKind> = computed(() => {
   return 'Limited'
 })
 
-const storageLimit: ComputedRef<UserLimit> = computed(
+const storageLimit: ComputedRef<UserLimitState> = computed(
   () => store.getters.storageLimit
 )
-const bandwidthLimit: ComputedRef<UserLimit> = computed(
+const bandwidthLimit: ComputedRef<UserLimitState> = computed(
   () => store.getters.bandwidthLimit
 )
 
