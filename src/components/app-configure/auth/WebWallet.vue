@@ -82,12 +82,13 @@ function handleUIModeUpdate(value: boolean) {
         <a>LEARN MORE</a>
       </div>
       <h3 class="text-uppercase">Preview Interface</h3>
-      <VStack gap="2.75rem" wrap>
+      <VStack gap="2.5rem" wrap>
         <VStack direction="column" gap="0.625rem">
           <h4>Desktop</h4>
           <img
             src="@/assets/web-wallet-preview-desktop.png"
             alt="Web wallet desktop preview"
+            class="web-wallet-desktop-preview"
           />
         </VStack>
         <VSeperator vertical />
@@ -96,6 +97,7 @@ function handleUIModeUpdate(value: boolean) {
           <img
             src="@/assets/web-wallet-preview-mobile.png"
             alt="Web wallet mobile preview"
+            class="web-wallet-mobile-preview"
           />
         </VStack>
       </VStack>
@@ -106,9 +108,5 @@ function handleUIModeUpdate(value: boolean) {
 <style scoped>
 .web-wallet-input {
   max-width: 24rem;
-}
-
-img {
-  max-width: 100%;
 }
 </style>

@@ -109,7 +109,7 @@ const state: ConfigureState = {
     hasAggregateLogin: false,
     wallet: {
       websiteDomain: '',
-      redirectUri: 'https://verify.arcana.network/verify/2',
+      redirectUri: '',
       hasUIMode: false,
     },
   },
