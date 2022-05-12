@@ -51,7 +51,6 @@ function handleFileChange(
   files: File[]
 ) {
   themeLogos[mode][logoType] = files[0]
-  console.log(themeLogos)
 }
 
 function handleFileRemove(
