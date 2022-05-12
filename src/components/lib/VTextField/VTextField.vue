@@ -72,6 +72,10 @@ const props = defineProps({
     type: [String, Object, Array],
     default: '',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'icon-clicked'])
@@ -94,13 +98,19 @@ function onIconClicked(ev) {
 </script>
 
 <template>
-  <div class="form-group" aria-label="Form group" :style="style">
+  <div
+    class="form-group"
+    aria-label="Form group"
+    :style="style"
+    :data-disabled="disabled"
+  >
     <label v-if="label" :style="[labelStyle]" :for="componentId">
       {{ label }}
     </label>
     <div class="text-field" :class="{ icon: !!icon }">
       <input
         :id="componentId"
+        :disabled="props.disabled"
         :type="inputType"
         :value="modelValue"
         v-bind="attrs"
@@ -192,6 +202,11 @@ input::placeholder {
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-grey);
+}
+
+.form-group[data-disabled='true'],
+input:disabled {
+  cursor: not-allowed;
 }
 
 input:-webkit-autofill,

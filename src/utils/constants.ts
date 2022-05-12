@@ -1,4 +1,4 @@
-import type { SocialAuthOption } from '@/store/configure.store'
+import type { UserLimitState, SocialAuthOption } from '@/store/configure.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -67,12 +67,41 @@ type ConfigureTab = {
   label: string
 }
 
+const userLimitOptions: string[] = ['Limited', 'Unlimited']
+
 const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'general', label: 'General' },
   { type: 'auth', label: 'Auth' },
   { type: 'store', label: 'Store' },
   { type: 'access', label: 'Access' },
   { type: 'wallet', label: 'Wallet' },
+]
+
+type BandwidthLimitUnit = {
+  label: 'MB/mo' | 'GB/mo'
+  value: 'MB' | 'GB'
+}
+
+const storageValues = ['MB', 'GB']
+
+const unlimitedUserLimit: Readonly<UserLimitState> = {
+  isUnlimited: true,
+}
+const defaultUserLimit: Readonly<UserLimitState> = {
+  isUnlimited: false,
+  value: 2,
+  unit: 'MB',
+}
+
+const bandwidthUnits: BandwidthLimitUnit[] = [
+  {
+    label: 'MB/mo',
+    value: 'MB',
+  },
+  {
+    label: 'GB/mo',
+    value: 'GB',
+  },
 ]
 
 const socialLogins: readonly SocialAuthOption[] = [
@@ -131,6 +160,11 @@ export {
   isAppDown,
   chains,
   CONFIGURE_TABS,
+  userLimitOptions,
+  bandwidthUnits,
+  storageValues,
+  unlimitedUserLimit,
+  defaultUserLimit,
   socialLogins,
   regions,
   type Region,
@@ -139,6 +173,7 @@ export {
   type ConfigureTabType,
   type Chain,
   type ChainOption,
+  type BandwidthLimitUnit,
 }
 
 export default constants

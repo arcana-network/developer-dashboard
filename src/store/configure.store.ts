@@ -1,4 +1,39 @@
-import type { StorageRegion, Chain } from '@/utils/constants'
+import {
+  defaultUserLimit,
+  unlimitedUserLimit,
+  type Chain,
+  type StorageRegion,
+} from '@/utils/constants'
+
+type UserLimitUnit = 'MB' | 'GB'
+type UserLimitTarget = 'storage' | 'bandwidth'
+
+type UserLimitState =
+  | {
+      isUnlimited: true
+    }
+  | {
+      isUnlimited: false
+      value: number
+      unit: UserLimitUnit
+    }
+
+type UserLimitParam =
+  | {
+      type: UserLimitTarget
+      field: 'value'
+      value: number
+    }
+  | {
+      type: UserLimitTarget
+      field: 'unit'
+      value: UserLimitUnit
+    }
+
+type UserLimitUnlimitedParam = {
+  type: UserLimitTarget
+  isUnlimited: boolean
+}
 
 type SocialAuthVerifier =
   | 'google'
@@ -46,6 +81,10 @@ type ConfigureState = {
     hasAggregateLogin: boolean
   }
   store: {
+    userLimits: {
+      storage: UserLimitState
+      bandwidth: UserLimitState
+    }
     region: StorageRegion
   }
 }
@@ -65,6 +104,14 @@ const state: ConfigureState = {
     hasAggregateLogin: false,
   },
   store: {
+    userLimits: {
+      storage: {
+        isUnlimited: true,
+      },
+      bandwidth: {
+        isUnlimited: true,
+      },
+    },
     region: 'asia',
   },
 }
@@ -76,6 +123,8 @@ const getters = {
   socialAuth: (state: ConfigureState) => state.auth.social,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
+  storageLimit: (state: ConfigureState) => state.store.userLimits.storage,
+  bandwidthLimit: (state: ConfigureState) => state.store.userLimits.bandwidth,
   storageRegion: (state: ConfigureState) => state.store.region,
 }
 
@@ -100,6 +149,20 @@ const mutations = {
     redirectUri: string
   ) {
     state.auth.passwordless.redirectUri = redirectUri
+  },
+  updateUserLimit(
+    state: ConfigureState,
+    { type, isUnlimited }: UserLimitUnlimitedParam
+  ) {
+    state.store.userLimits[type] = isUnlimited
+      ? { ...unlimitedUserLimit }
+      : { ...defaultUserLimit }
+  },
+  updateUserLimitField(
+    state: ConfigureState,
+    { type, field, value }: UserLimitParam
+  ) {
+    state.store.userLimits[type][field] = value
   },
   addSocialAuth(
     state: ConfigureState,
@@ -138,6 +201,10 @@ const configureStore = {
 }
 
 export type {
+  UserLimitState,
+  UserLimitParam,
+  UserLimitTarget,
+  UserLimitUnit,
   SocialAuthField,
   SocialAuthState,
   SocialAuthUpdateParam,
