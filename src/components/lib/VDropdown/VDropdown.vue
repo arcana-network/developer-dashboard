@@ -11,7 +11,7 @@ const props = defineProps({
     default: '',
   },
   modelValue: {
-    type: [String, Object],
+    type: [String, Object, Boolean],
     default: '',
   },
   placeholder: {
@@ -24,6 +24,10 @@ const props = defineProps({
   },
   triggerStyle: {
     type: [String, Object, Array],
+    default: '',
+  },
+  triggerClass: {
+    type: String,
     default: '',
   },
 })
@@ -75,7 +79,11 @@ watch(
     :aria-disabled="disabled"
     @click.stop="toggle"
   >
-    <div class="custom-select__trigger" :style="triggerStyle">
+    <div
+      class="custom-select__trigger"
+      :class="triggerClass"
+      :style="triggerStyle"
+    >
       <span v-if="value">
         <span v-if="displayField">
           {{ value[displayField] }}
