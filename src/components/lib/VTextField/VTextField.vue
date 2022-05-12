@@ -243,5 +243,6 @@ input[type='number'] {
 
 .input-icon {
   margin: auto 1.25rem auto 0;
+  cursor: pointer !important;
 }
 </style>

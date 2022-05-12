@@ -79,6 +79,11 @@ type ConfigureState = {
       redirectUri: string
     }
     hasAggregateLogin: boolean
+    wallet: {
+      websiteDomain: string
+      redirectUri: string
+      hasUIMode: boolean
+    }
   }
   store: {
     userLimits: {
@@ -102,6 +107,11 @@ const state: ConfigureState = {
       redirectUri: '',
     },
     hasAggregateLogin: false,
+    wallet: {
+      websiteDomain: '',
+      redirectUri: 'https://verify.arcana.network/verify/2',
+      hasUIMode: false,
+    },
   },
   store: {
     userLimits: {
@@ -121,6 +131,10 @@ const getters = {
   isAppConfigured: (state: ConfigureState) => state.isAppConfigured,
   hasAggregateLogin: (state: ConfigureState) => state.auth.hasAggregateLogin,
   socialAuth: (state: ConfigureState) => state.auth.social,
+  walletUIMode: (state: ConfigureState) => state.auth.wallet.hasUIMode,
+  walletWebsiteDomain: (state: ConfigureState) =>
+    state.auth.wallet.websiteDomain,
+  walletRedirectUri: (state: ConfigureState) => state.auth.wallet.redirectUri,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
   storageLimit: (state: ConfigureState) => state.store.userLimits.storage,
@@ -188,6 +202,15 @@ const mutations = {
     state.auth.social = state.auth.social.filter(
       (auth) => auth.verifier !== verifier
     )
+  },
+  updateWalletUIMode(state: ConfigureState, hasUIMode: boolean) {
+    state.auth.wallet.hasUIMode = hasUIMode
+  },
+  updateWalletWebsiteDomain(state: ConfigureState, websiteDomain: string) {
+    state.auth.wallet.websiteDomain = websiteDomain
+  },
+  updateWalletRedirectUri(state: ConfigureState, redirectUri: string) {
+    state.auth.wallet.redirectUri = redirectUri
   },
   updateStorageRegion(state: ConfigureState, region: StorageRegion) {
     state.store.region = region
