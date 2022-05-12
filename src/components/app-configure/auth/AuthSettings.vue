@@ -2,7 +2,7 @@
 import AggregateLogin from '@/components/app-configure/auth/AggregateLogin.vue'
 import PasswordlessAuth from '@/components/app-configure/auth/PasswordlessAuth.vue'
 import SocialAuth from '@/components/app-configure/auth/SocialAuth.vue'
-import WalletAuth from '@/components/app-configure/auth/WalletAuth.vue'
+import WebWallet from '@/components/app-configure/auth/WebWallet.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 </script>
 
@@ -12,7 +12,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
       <SocialAuth />
       <PasswordlessAuth />
       <AggregateLogin />
-      <WalletAuth />
+      <WebWallet />
     </VStack>
   </main>
 </template>
