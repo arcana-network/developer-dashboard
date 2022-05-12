@@ -7,9 +7,12 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 <template>
   <VCard variant="elevated" class="settings-card">
     <VStack direction="column" gap="2rem" class="flex-grow">
-      <h3 class="text-uppercase">
-        <slot name="title" />
-      </h3>
+      <VStack justify="space-between">
+        <h3 class="text-uppercase">
+          <slot name="title" />
+        </h3>
+        <slot name="controls" />
+      </VStack>
       <VSeperator class="settings-card-separator" />
       <div class="body-1">
         <slot name="description" />

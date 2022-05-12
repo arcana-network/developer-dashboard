@@ -158,6 +158,10 @@ a {
   cursor: pointer;
 }
 
+.icon-link {
+  line-height: 0;
+}
+
 .mx-auto {
   margin: 0 auto;
 }
