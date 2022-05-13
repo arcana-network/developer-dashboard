@@ -196,7 +196,7 @@ function onLearnMoreClicked() {
 }
 
 function updateAggregateLogin(ev) {
-  store.dispatch('test/updateAggregateLogin', ev.value)
+  store.dispatch('test/updateAggregateLogin', ev)
 }
 </script>
 
@@ -238,10 +238,10 @@ function updateAggregateLogin(ev) {
             Aggregate Login
           </span>
           <v-switch
-            :value="hasAggregateLogin"
-            :disabled="isConfigured"
+            :model-value="hasAggregateLogin"
+            :disabled="props.isConfigured"
             style="margin-top: 1px"
-            @checked="updateAggregateLogin"
+            @update:model-value="updateAggregateLogin"
           ></v-switch>
           <v-tooltip title="Aggregate Login (Needs content here)">
             <img
