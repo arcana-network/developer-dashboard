@@ -74,7 +74,6 @@ const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'auth', label: 'Auth' },
   { type: 'store', label: 'Store' },
   { type: 'access', label: 'Access' },
-  { type: 'wallet', label: 'Wallet' },
 ]
 
 type BandwidthLimitUnit = {
