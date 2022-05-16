@@ -77,17 +77,6 @@ const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'wallet', label: 'Wallet' },
 ]
 
-const availableThemes = [
-  {
-    label: 'Light Mode',
-    value: 'light',
-  },
-  {
-    label: 'Dark Mode',
-    value: 'dark',
-  },
-]
-
 type BandwidthLimitUnit = {
   label: 'MB/mo' | 'GB/mo'
   value: 'MB' | 'GB'
@@ -178,7 +167,6 @@ export {
   defaultUserLimit,
   socialLogins,
   regions,
-  availableThemes,
   type Region,
   type StorageRegion,
   type ConfigureTab,

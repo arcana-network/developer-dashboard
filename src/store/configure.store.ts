@@ -69,7 +69,6 @@ type SocialAuthState = {
 type ConfigureState = {
   appName: string
   appId: string
-  selectedTheme: string
   isAppConfigured: boolean
   access: {
     selectedChain: Chain
@@ -94,7 +93,6 @@ type ConfigureState = {
 const state: ConfigureState = {
   appName: '',
   appId: '',
-  selectedTheme: 'light',
   isAppConfigured: false,
   access: {
     selectedChain: 'ethereum',
@@ -123,7 +121,6 @@ const state: ConfigureState = {
 const getters = {
   appName: (state: ConfigureState) => state.appName,
   appId: (state: ConfigureState) => state.appId,
-  selectedTheme: (state: ConfigureState) => state.selectedTheme,
   isAppConfigured: (state: ConfigureState) => state.isAppConfigured,
   hasAggregateLogin: (state: ConfigureState) => state.auth.hasAggregateLogin,
   socialAuth: (state: ConfigureState) => state.auth.social,
@@ -140,9 +137,6 @@ const mutations = {
   },
   updateAppName(state: ConfigureState, appName: string) {
     state.appName = appName
-  },
-  updateSelectedTheme(state: ConfigureState, selectedTheme: string) {
-    state.selectedTheme = selectedTheme
   },
   updateAggregateLogin(state: ConfigureState, hasAggregateLogin: boolean) {
     state.auth.hasAggregateLogin = hasAggregateLogin
