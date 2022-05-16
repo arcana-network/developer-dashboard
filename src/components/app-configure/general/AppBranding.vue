@@ -1,18 +1,11 @@
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref, type ComputedRef } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { uploadLogo } from '@/services/gateway.service'
-import { availableThemes } from '@/utils/constants'
-
-type Theme = {
-  label: string
-  value: string
-}
 
 const store = useStore()
 
@@ -21,8 +14,8 @@ onMounted(async () => {
 })
 
 type ThemeLogoOption = {
-  logo: File | undefined
-  horizontalLogo: File | undefined
+  logo?: File
+  horizontalLogo?: File
 }
 
 type ThemeLogo = {
@@ -42,16 +35,6 @@ const themeLogos: ThemeLogo = reactive({
 })
 
 const isLoading = ref(false)
-
-const selectedTheme: ComputedRef<Theme | undefined> = computed(() => {
-  return availableThemes.find(
-    (theme) => theme.value === store.getters.selectedTheme
-  )
-})
-
-function handleThemeChange(theme: Theme) {
-  store.commit('updateSelectedTheme', theme.value)
-}
 
 function handleFileChange(
   mode: 'light' | 'dark',
@@ -77,21 +60,12 @@ function handleFileRemove(
       <template #title>Branding</template>
       <template #description
         >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Lorem ipsum
-        dolor sit amet, consectetuer adipiscing elit.</template
+        dolor sit amet, consectetuer adipiscing elit.
+        <a>LEARN MORE</a></template
       >
-      <VStack direction="column" gap="2rem">
-        <VStack direction="column" gap="0.75rem" align="start">
-          <h4>Choose Theme</h4>
-          <VDropdown
-            :options="availableThemes"
-            display-field="label"
-            :model-value="selectedTheme"
-            class="theme-dropdown"
-            @update:model-value="handleThemeChange"
-          />
-        </VStack>
-        <VStack direction="column" gap="1.5rem">
-          <h3 class="text-uppercase">Upload Logo</h3>
+      <VStack direction="column" gap="1.5rem">
+        <h3 class="text-uppercase" style="margin-top: 2rem">Upload Logo</h3>
+        <VStack direction="column" gap="1rem">
           <h4 class="text-uppercase font-700">Light Mode</h4>
           <VStack gap="4rem" md-gap="2rem" wrap>
             <VStack
@@ -132,6 +106,8 @@ function handleFileRemove(
               >
             </VStack>
           </VStack>
+        </VStack>
+        <VStack direction="column" gap="1rem">
           <h4 class="text-uppercase font-700">Dark Mode</h4>
           <VStack gap="4rem" md-gap="2rem" wrap>
             <VStack
