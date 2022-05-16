@@ -1,11 +1,12 @@
 <script lang="ts" setup>
-import { computed, reactive, type ComputedRef } from 'vue'
+import { computed, onMounted, reactive, ref, type ComputedRef } from 'vue'
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { uploadLogo } from '@/services/gateway.service'
 import { availableThemes } from '@/utils/constants'
 
 type Theme = {
@@ -14,6 +15,10 @@ type Theme = {
 }
 
 const store = useStore()
+
+onMounted(async () => {
+  store.commit('updateAppId', '181')
+})
 
 type ThemeLogoOption = {
   logo: File | undefined
@@ -35,6 +40,9 @@ const themeLogos: ThemeLogo = reactive({
     horizontalLogo: undefined,
   },
 })
+
+const isLoading = ref(false)
+
 const selectedTheme: ComputedRef<Theme | undefined> = computed(() => {
   return availableThemes.find(
     (theme) => theme.value === store.getters.selectedTheme
@@ -50,7 +58,9 @@ function handleFileChange(
   logoType: 'logo' | 'horizontalLogo',
   files: File[]
 ) {
-  themeLogos[mode][logoType] = files[0]
+  isLoading.value = true
+  const orientation = logoType === 'horizontalLogo' ? 'horizontal' : ''
+  uploadLogo(files[0], mode, orientation)
 }
 
 function handleFileRemove(
@@ -94,7 +104,7 @@ function handleFileRemove(
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
                 :value="themeLogos.light.logo?.name"
-                @file-change="handleFileChange('light', 'logo', $event)"
+                @change-file="handleFileChange('light', 'logo', $event)"
                 @remove-file="handleFileRemove('light', 'logo')"
               />
               <span class="body-3 font-300 file-upload-hint"
@@ -108,10 +118,11 @@ function handleFileRemove(
             >
               <label>Horizontal Logo</label>
               <VFileUpload
+                :is-loading="isLoading"
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
                 :value="themeLogos.light.horizontalLogo?.name"
-                @file-change="
+                @change-file="
                   handleFileChange('light', 'horizontalLogo', $event)
                 "
                 @remove-file="handleFileRemove('light', 'horizontalLogo')"
@@ -133,7 +144,7 @@ function handleFileRemove(
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
                 :value="themeLogos.dark.logo?.name"
-                @file-change="handleFileChange('dark', 'logo', $event)"
+                @change-file="handleFileChange('dark', 'logo', $event)"
                 @remove-file="handleFileRemove('dark', 'logo')"
               />
               <span class="body-3 font-300 file-upload-hint"
@@ -150,7 +161,7 @@ function handleFileRemove(
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
                 :value="themeLogos.dark.horizontalLogo?.name"
-                @file-change="
+                @change-file="
                   handleFileChange('dark', 'horizontalLogo', $event)
                 "
                 @remove-file="handleFileRemove('dark', 'horizontalLogo')"

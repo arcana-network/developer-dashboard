@@ -2,13 +2,15 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 
 import VCard from '@/components/lib/VCard/VCard.vue'
+import VCircularProgress from '@/components/lib/VCircularProgress/VCircularProgress.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 
 interface FileUploadProps {
-  placeholder: string
+  placeholder?: string
   value?: string
   multiple?: boolean
   allowedFileType?: string
+  isLoading?: boolean
 }
 
 const props = withDefaults(defineProps<FileUploadProps>(), {
@@ -16,9 +18,10 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   multiple: false,
   value: '',
   allowedFileType: '*',
+  isLoading: false,
 })
 
-const emit = defineEmits(['file-change', 'remove-file'])
+const emit = defineEmits(['change-file', 'remove-file'])
 
 let file: HTMLInputElement
 
@@ -32,14 +35,14 @@ onMounted(() => {
 })
 
 function fileChangeHandler(event) {
-  emit('file-change', event.target.files)
+  emit('change-file', event.target.files)
 }
 
 function handleUploadClick() {
   file.click()
 }
 
-function removeFile() {
+function handleRemoveFile() {
   emit('remove-file')
 }
 
@@ -55,7 +58,7 @@ onBeforeUnmount(() => {
       <img
         src="@/assets/iconography/close.svg"
         class="cursor-pointer"
-        @click.stop="removeFile"
+        @click.stop="handleRemoveFile"
       />
     </VStack>
   </VCard>
@@ -69,7 +72,8 @@ onBeforeUnmount(() => {
       <span class="body-1 text-ellipsis">
         {{ props.placeholder }}
       </span>
-      <img src="@/assets/iconography/upload.svg" />
+      <img v-if="!props.isLoading" src="@/assets/iconography/upload.svg" />
+      <VCircularProgress v-else size="1.5rem" stroke="0.5rem" />
     </VStack>
   </VCard>
 </template>
