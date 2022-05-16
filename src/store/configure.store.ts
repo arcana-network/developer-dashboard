@@ -81,9 +81,10 @@ type ConfigureState = {
     hasAggregateLogin: boolean
     wallet: {
       websiteDomain: string
-      redirectUri: string
+      selectedTheme: 'light' | 'dark'
       hasUIMode: boolean
     }
+    redirectUri: string
   }
   store: {
     userLimits: {
@@ -106,10 +107,11 @@ const state: ConfigureState = {
       javascriptOrigin: '',
       redirectUri: '',
     },
-    hasAggregateLogin: false,
+    hasAggregateLogin: true,
+    redirectUri: '',
     wallet: {
       websiteDomain: '',
-      redirectUri: '',
+      selectedTheme: 'dark',
       hasUIMode: false,
     },
   },
@@ -134,12 +136,13 @@ const getters = {
   walletUIMode: (state: ConfigureState) => state.auth.wallet.hasUIMode,
   walletWebsiteDomain: (state: ConfigureState) =>
     state.auth.wallet.websiteDomain,
-  walletRedirectUri: (state: ConfigureState) => state.auth.wallet.redirectUri,
+  selectedTheme: (state: ConfigureState) => state.auth.wallet.selectedTheme,
   selectedChain: (state: ConfigureState) => state.access.selectedChain,
   passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
   storageLimit: (state: ConfigureState) => state.store.userLimits.storage,
   bandwidthLimit: (state: ConfigureState) => state.store.userLimits.bandwidth,
   storageRegion: (state: ConfigureState) => state.store.region,
+  redirectUri: (state: ConfigureState) => state.auth.redirectUri,
 }
 
 const mutations = {
@@ -151,6 +154,9 @@ const mutations = {
   },
   updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
     state.access.selectedChain = selectedChain
+  },
+  updateSelectedTheme(state: ConfigureState, selectedTheme: 'light' | 'dark') {
+    state.auth.wallet.selectedTheme = selectedTheme
   },
   updatePasswordlessAuthJavascriptOrigin(
     state: ConfigureState,
@@ -209,11 +215,11 @@ const mutations = {
   updateWalletWebsiteDomain(state: ConfigureState, websiteDomain: string) {
     state.auth.wallet.websiteDomain = websiteDomain
   },
-  updateWalletRedirectUri(state: ConfigureState, redirectUri: string) {
-    state.auth.wallet.redirectUri = redirectUri
-  },
   updateStorageRegion(state: ConfigureState, region: StorageRegion) {
     state.store.region = region
+  },
+  updateRedirectUri(state: ConfigureState, redirectUri: string) {
+    state.auth.redirectUri = redirectUri
   },
 }
 
