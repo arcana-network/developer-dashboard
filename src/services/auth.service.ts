@@ -1,7 +1,7 @@
 import axios from 'axios'
 import jsonp from 'jsonp'
 
-import getEnvApi from '@/services/get-env-api'
+import getEnvApi from '@/utils/get-env-api'
 
 function getNonce(address: string) {
   return axios.get(getEnvApi() + '/get-nonce/?address=' + address)

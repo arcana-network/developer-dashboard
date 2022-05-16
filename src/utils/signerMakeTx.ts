@@ -1,5 +1,5 @@
-import getEnvApi from '@/services/get-env-api'
 import store from '@/store'
+import getEnvApi from '@/utils/get-env-api'
 
 function getTxRequestProps() {
   return {
