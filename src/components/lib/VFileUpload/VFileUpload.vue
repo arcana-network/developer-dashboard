@@ -34,7 +34,7 @@ onMounted(() => {
   file.onchange = fileChangeHandler
 })
 
-function fileChangeHandler(event) {
+function fileChangeHandler(event: any) {
   emit('change-file', event.target.files)
 }
 
@@ -54,7 +54,9 @@ onBeforeUnmount(() => {
 <template>
   <VCard v-if="props.value" variant="elevated" class="file-upload-card">
     <VStack gap="2rem" justify="space-between" class="flex-grow">
-      <span class="body-1 text-ellipsis">{{ props.value }}</span>
+      <span class="body-1 text-ellipsis" :title="props.value">{{
+        props.value
+      }}</span>
       <img
         src="@/assets/iconography/close.svg"
         class="cursor-pointer"
@@ -82,5 +84,9 @@ onBeforeUnmount(() => {
 .file-upload-card {
   padding: 1.25rem 1rem 1.25rem 2rem;
   border-radius: 10px;
+}
+
+.file-upload-card > * {
+  width: 100%;
 }
 </style>

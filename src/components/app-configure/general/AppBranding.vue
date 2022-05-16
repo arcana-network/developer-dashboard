@@ -1,21 +1,25 @@
 <script lang="ts" setup>
-import { onMounted, reactive, ref } from 'vue'
+import bytes from 'bytes'
+import { reactive } from 'vue'
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { uploadLogo } from '@/services/gateway.service'
+import getEnvApi from '@/utils/get-env-api'
 
 const store = useStore()
 
-onMounted(async () => {
-  store.commit('updateAppId', '181')
-})
+type OrientationOption = {
+  logo: string
+  isLoading: boolean
+  hasError: boolean
+}
 
 type ThemeLogoOption = {
-  logo?: File
-  horizontalLogo?: File
+  vertical: OrientationOption
+  horizontal: OrientationOption
 }
 
 type ThemeLogo = {
@@ -25,32 +29,55 @@ type ThemeLogo = {
 
 const themeLogos: ThemeLogo = reactive({
   dark: {
-    logo: undefined,
-    horizontalLogo: undefined,
+    vertical: {
+      logo: store.getters.logos.dark.vertical,
+      isLoading: false,
+      hasError: false,
+    },
+    horizontal: {
+      logo: store.getters.logos.dark.horizontal,
+      isLoading: false,
+      hasError: false,
+    },
   },
   light: {
-    logo: undefined,
-    horizontalLogo: undefined,
+    vertical: {
+      logo: store.getters.logos.light.vertical,
+      isLoading: false,
+      hasError: false,
+    },
+    horizontal: {
+      logo: store.getters.logos.light.horizontal,
+      isLoading: false,
+      hasError: false,
+    },
   },
 })
 
-const isLoading = ref(false)
-
-function handleFileChange(
+async function handleFileChange(
   mode: 'light' | 'dark',
-  logoType: 'logo' | 'horizontalLogo',
+  orientation: 'vertical' | 'horizontal',
   files: File[]
 ) {
-  isLoading.value = true
-  const orientation = logoType === 'horizontalLogo' ? 'horizontal' : ''
-  uploadLogo(files[0], mode, orientation)
+  if (files[0].size > bytes('2 MB')) {
+    return (themeLogos[mode][orientation].hasError = true)
+  }
+  themeLogos[mode][orientation].hasError = false
+  themeLogos[mode][orientation].isLoading = true
+  await uploadLogo(files[0], mode, orientation)
+  const logoUrl = `${getEnvApi('v2')}/app/${
+    store.getters.appId
+  }/logo?type=${mode}&orientation=${orientation}`
+  themeLogos[mode][orientation].logo = logoUrl
+  store.commit('updateLogo', { mode, orientation, url: logoUrl })
+  themeLogos[mode][orientation].isLoading = false
 }
 
 function handleFileRemove(
   mode: 'light' | 'dark',
-  logoType: 'logo' | 'horizontalLogo'
+  orientation: 'vertical' | 'horizontal'
 ) {
-  themeLogos[mode][logoType] = undefined
+  themeLogos[mode][orientation].logo = ''
 }
 </script>
 
@@ -77,12 +104,16 @@ function handleFileRemove(
               <VFileUpload
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
-                :value="themeLogos.light.logo?.name"
-                @change-file="handleFileChange('light', 'logo', $event)"
-                @remove-file="handleFileRemove('light', 'logo')"
+                :value="themeLogos.light.vertical.logo"
+                :is-loading="themeLogos.light.vertical.isLoading"
+                class="file-upload-input"
+                @change-file="handleFileChange('light', 'vertical', $event)"
+                @remove-file="handleFileRemove('light', 'vertical')"
               />
-              <span class="body-3 font-300 file-upload-hint"
-                >Image size limit 10MB and less than 50 px in height</span
+              <span
+                class="body-3 font-300 file-upload-hint"
+                :class="{ error: themeLogos.light.vertical.hasError }"
+                >Image size limit 2MB</span
               >
             </VStack>
             <VStack
@@ -92,17 +123,18 @@ function handleFileRemove(
             >
               <label>Horizontal Logo</label>
               <VFileUpload
-                :is-loading="isLoading"
+                :value="themeLogos.light.horizontal.logo"
+                :is-loading="themeLogos.light.horizontal.isLoading"
+                class="file-upload-input"
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
-                :value="themeLogos.light.horizontalLogo?.name"
-                @change-file="
-                  handleFileChange('light', 'horizontalLogo', $event)
-                "
-                @remove-file="handleFileRemove('light', 'horizontalLogo')"
+                @change-file="handleFileChange('light', 'horizontal', $event)"
+                @remove-file="handleFileRemove('light', 'horizontal')"
               />
-              <span class="body-3 font-300 file-upload-hint"
-                >Image size limit 10MB and less than 50 px in height</span
+              <span
+                class="body-3 font-300 file-upload-hint"
+                :class="{ error: themeLogos.light.horizontal.hasError }"
+                >Image size limit 2MB</span
               >
             </VStack>
           </VStack>
@@ -117,14 +149,18 @@ function handleFileRemove(
             >
               <label>Logo Mark</label>
               <VFileUpload
+                :value="themeLogos.dark.vertical.logo"
+                :is-loading="themeLogos.dark.vertical.isLoading"
                 placeholder="Upload .png, .svg or .gif"
+                class="file-upload-input"
                 allowed-file-type=".png,.svg,.gif"
-                :value="themeLogos.dark.logo?.name"
-                @change-file="handleFileChange('dark', 'logo', $event)"
-                @remove-file="handleFileRemove('dark', 'logo')"
+                @change-file="handleFileChange('dark', 'vertical', $event)"
+                @remove-file="handleFileRemove('dark', 'vertical')"
               />
-              <span class="body-3 font-300 file-upload-hint"
-                >Image size limit 10MB and less than 50 px in height</span
+              <span
+                class="body-3 font-300 file-upload-hint"
+                :class="{ error: themeLogos.dark.vertical.hasError }"
+                >Image size limit 2MB</span
               >
             </VStack>
             <VStack
@@ -134,16 +170,18 @@ function handleFileRemove(
             >
               <label>Horizontal Logo</label>
               <VFileUpload
+                :value="themeLogos.dark.horizontal.logo"
+                :is-loading="themeLogos.dark.horizontal.isLoading"
                 placeholder="Upload .png, .svg or .gif"
+                class="file-upload-input"
                 allowed-file-type=".png,.svg,.gif"
-                :value="themeLogos.dark.horizontalLogo?.name"
-                @change-file="
-                  handleFileChange('dark', 'horizontalLogo', $event)
-                "
-                @remove-file="handleFileRemove('dark', 'horizontalLogo')"
+                @change-file="handleFileChange('dark', 'horizontal', $event)"
+                @remove-file="handleFileRemove('dark', 'horizontal')"
               />
-              <span class="body-3 font-300 file-upload-hint"
-                >Image size limit 10MB and less than 50 px in height</span
+              <span
+                class="body-3 font-300 file-upload-hint"
+                :class="{ error: themeLogos.dark.horizontal.hasError }"
+                >Image size limit 2MB</span
               >
             </VStack>
           </VStack>
@@ -170,10 +208,12 @@ label {
   font-size: 0.75rem;
   color: var(--text-grey);
 }
-</style>
 
-<style>
-.app-branding-card > * {
-  z-index: 2 !important;
+.file-upload-hint.error {
+  color: #ee193f;
+}
+
+.file-upload-input {
+  max-width: 20rem;
 }
 </style>

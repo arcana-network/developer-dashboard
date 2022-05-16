@@ -14,7 +14,7 @@ gatewayAuthorizedInstance.interceptors.request.use(
 function uploadLogo(
   file: File,
   mode: 'dark' | 'light',
-  orientation?: 'horizontal' | ''
+  orientation?: 'horizontal' | 'vertical'
 ) {
   const formData: FormData = new FormData()
   formData.append('file', file)
