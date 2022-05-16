@@ -79,11 +79,6 @@ const routes: RouteRecordRaw[] = [
         path: 'access',
         component: AccessSettings,
       },
-      {
-        name: 'WalletSettings',
-        path: 'wallet',
-        component: GeneralSettings,
-      },
     ],
   },
   {
