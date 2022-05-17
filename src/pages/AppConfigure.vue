@@ -3,6 +3,7 @@ import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
+import ConfigureFooter from '@/components/ConfigureFooter.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
 
@@ -16,8 +17,21 @@ function switchTab(tab: ConfigureTab) {
 </script>
 
 <template>
-  <VStack gap="2rem" class="container">
-    <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
-    <router-view></router-view>
+  <VStack direction="column" gap="2rem" class="container">
+    <VStack gap="2rem">
+      <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
+      <router-view></router-view>
+    </VStack>
+    <ConfigureFooter class="footer" />
   </VStack>
 </template>
+
+<style scoped>
+.container {
+  min-height: 100vh;
+}
+
+.footer {
+  margin-top: auto;
+}
+</style>
