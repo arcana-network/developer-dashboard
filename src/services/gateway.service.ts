@@ -31,4 +31,10 @@ function createApp(appName: string) {
   return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/app/`, { appName })
 }
 
-export { uploadLogo, createApp }
+function deleteApp() {
+  return gatewayAuthorizedInstance.delete(
+    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`
+  )
+}
+
+export { uploadLogo, createApp, deleteApp }

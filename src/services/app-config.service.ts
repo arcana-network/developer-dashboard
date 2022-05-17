@@ -79,14 +79,6 @@ function deleteCred(verifier) {
   )
 }
 
-function deleteApp() {
-  return axios.delete(getEnvApi() + '/delete-app/?id=' + store.getters.appId, {
-    headers: {
-      Authorization: 'Bearer ' + store.getters.accessToken,
-    },
-  })
-}
-
 async function fetchAndStoreAppConfig() {
   const apps = await dashboardService.fetchAllApps()
   if (apps.data.length) {
@@ -170,7 +162,6 @@ const appConfigService = {
   createApp,
   updateApp,
   deleteCred,
-  deleteApp,
   fetchAndStoreAppConfig,
 }
 
