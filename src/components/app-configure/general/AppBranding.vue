@@ -196,10 +196,6 @@ label {
   color: var(--text-grey);
 }
 
-.theme-dropdown {
-  min-width: 16rem;
-}
-
 .file-upload-container {
   flex: 0 0 24rem;
 }
