@@ -42,7 +42,7 @@ footer {
   left: 0;
   z-index: 100;
   display: flex;
-  padding: 1.5rem;
+  padding: 1.5rem 0;
   background: var(--dark-theme-bg);
 }
 

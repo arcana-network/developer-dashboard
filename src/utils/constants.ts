@@ -1,3 +1,5 @@
+import bytes from 'bytes'
+
 import type { UserLimitState, SocialAuthOption } from '@/store/configure.store'
 
 const sentry = {
@@ -142,6 +144,20 @@ const socialLogins: readonly SocialAuthOption[] = [
   },
 ]
 
+enum ChainMapping {
+  ethereum = 0,
+  polygon = 1,
+  binance = 2,
+}
+
+enum RegionMapping {
+  asia = 1,
+  europe = 4,
+  'north-america' = 5,
+}
+
+const unlimitedBytes = bytes('10 TB')
+
 const constants = {
   sentry,
   api,
@@ -173,6 +189,9 @@ export {
   type Chain,
   type ChainOption,
   type BandwidthLimitUnit,
+  ChainMapping,
+  RegionMapping,
+  unlimitedBytes,
 }
 
 export default constants

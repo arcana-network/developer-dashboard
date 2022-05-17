@@ -1,6 +1,7 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 
 import store from '@/store'
+import { ChainMapping, RegionMapping, unlimitedBytes } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const gatewayAuthorizedInstance = axios.create()
@@ -27,8 +28,40 @@ function uploadLogo(
   )
 }
 
-function createApp(appName: string) {
-  return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/app/`, { appName })
+type AppCredParams = {
+  clientId: string
+  clientSecret?: string
+  redirectUri?: string
 }
 
-export { uploadLogo, createApp }
+type AppParams = {
+  name?: string
+  region?: number
+  chain?: number
+  cred?: AppCredParams[]
+  storage_limit?: number
+  bandwidth_limit?: number
+  aggregate_login?: boolean
+}
+
+function createApp(appName: string) {
+  const appParams: AppParams = {
+    name: appName,
+    region: RegionMapping.asia,
+    chain: ChainMapping.ethereum,
+    cred: [],
+    storage_limit: unlimitedBytes,
+    bandwidth_limit: unlimitedBytes,
+    aggregate_login: true,
+  }
+  return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/app/`, appParams)
+}
+
+function updateApp(updateAppParams: AppParams) {
+  return gatewayAuthorizedInstance.patch(
+    `${getEnvApi('v2')}/app?id=${store.getters.appId}`,
+    updateAppParams
+  )
+}
+
+export { uploadLogo, createApp, updateApp }

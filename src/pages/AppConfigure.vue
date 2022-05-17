@@ -17,21 +17,21 @@ function switchTab(tab: ConfigureTab) {
 </script>
 
 <template>
-  <VStack direction="column" gap="2rem" class="container">
-    <VStack gap="2rem">
+  <VStack direction="column" gap="2rem" class="configure-container">
+    <VStack gap="2rem" class="container">
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
       <router-view></router-view>
     </VStack>
-    <ConfigureFooter class="footer" />
+    <ConfigureFooter class="configure-footer" />
   </VStack>
 </template>
 
 <style scoped>
-.container {
+.configure-container {
   min-height: 100vh;
 }
 
-.footer {
+.configure-footer {
   margin-top: auto;
 }
 </style>
