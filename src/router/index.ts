@@ -24,6 +24,7 @@ const StoreSettings = () =>
   import('@/components/app-configure/store/StoreSettings.vue')
 const AccessSettings = () =>
   import('@/components/app-configure/access/AccessSettings.vue')
+const CreateApp = () => import('@/components/app-configure/CreateApp.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -51,13 +52,17 @@ const routes: RouteRecordRaw[] = [
     component: AppDashboard,
   },
   {
+    path: '/app',
+    redirect: store.getters.appId ? '/app/configure' : '/app/create',
+  },
+  {
     name: 'Configure',
-    path: '/configure',
+    path: '/app/configure',
     component: AppConfigure,
     children: [
       {
         path: '',
-        redirect: '/configure/general',
+        redirect: '/app/configure/general',
       },
       {
         name: 'GeneralSettings',
@@ -80,6 +85,11 @@ const routes: RouteRecordRaw[] = [
         component: AccessSettings,
       },
     ],
+  },
+  {
+    name: 'CreateApp',
+    path: '/app/create',
+    component: CreateApp,
   },
   {
     name: 'Users',

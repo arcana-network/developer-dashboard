@@ -121,7 +121,7 @@ async function fetchStatistics(appId: string | number) {
 }
 
 function goToConfigure() {
-  router.push('/configure')
+  router.push('/app')
 }
 
 const SmartContractIcon = ref(CopyIcon)
