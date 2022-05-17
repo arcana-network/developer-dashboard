@@ -9,15 +9,19 @@ const debug = process.env.NODE_ENV !== 'production'
 const state = {
   env: 'test',
   smartContractAddress: '',
-  showLoader: false,
+  isLoading: false,
   loadingMessage: '',
+  forwarder: '',
+  rpcUrl: '',
 }
 
 const getters = {
   env: (state) => state.env,
   smartContractAddress: (state) => state.smartContractAddress,
-  showLoader: (state) => state.showLoader,
+  isLoading: (state) => state.isLoading,
   loadingMessage: (state) => state.loadingMessage,
+  forwarder: (state) => state.forwarder,
+  rpcUrl: (state) => state.rpcUrl,
 }
 
 const mutations = {
@@ -36,6 +40,12 @@ const mutations = {
   },
   hideLoader(state) {
     state.showLoader = false
+  },
+  updateForwarder(state, forwarder) {
+    state.forwarder = forwarder
+  },
+  updateRpcUrl(state, rpcUrl) {
+    state.rpcUrl = rpcUrl
   },
 }
 

@@ -6,14 +6,17 @@ import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import appConfigService from '@/services/app-config.service'
 import useArcanaAuth from '@/use/arcanaAuth'
 import cryptoUtils from '@/utils/cryptoUtils'
+import fetchAndStoreAppConfig from '@/utils/fetchAndStoreAppConfig'
 
 const store = useStore()
 const arcanaAuth = useArcanaAuth()
-const showLoader = computed(() => store.getters.showLoader)
+const isLoading = computed(() => store.getters.isLoading)
 const loadingMessage = computed(() => store.getters.loadingMessage)
 const isAuthLoaded = ref(false)
 
 onBeforeMount(async () => {
+  store.commit('showLoader', 'Initializing Arcana Auth SDK...')
+  await arcanaAuth.init()
   store.commit('showLoader', 'Fetching app configuration...')
   const encodedAccessToken = localStorage.getItem('access-token')
   const userInfo = localStorage.getItem('user-info')
@@ -24,18 +27,16 @@ onBeforeMount(async () => {
     store.dispatch('updateAccessToken', accessToken)
     store.dispatch('updateUserInfo', JSON.parse(userInfo))
   }
-
-  await arcanaAuth.init()
   isAuthLoaded.value = true
-  if (!store.getters['test/forwarder'] || !store.getters['test/rpc']) {
+  if (!store.getters['forwarder'] || !store.getters['rpc']) {
     const configResponse = await appConfigService.getConfig()
     const config = configResponse.data
-    store.dispatch('test/updateForwarder', config?.Forwarder)
-    store.dispatch('test/updateRPCUrl', config?.RPC_URL)
+    store.commit('updateForwarder', config?.Forwarder)
+    store.commit('updateRPCUrl', config?.RPC_URL)
   }
 
   if (!store.getters.appName && store.getters.accessToken) {
-    await appConfigService.fetchAndStoreAppConfig()
+    await fetchAndStoreAppConfig()
   }
   store.commit('hideLoader')
 })
@@ -49,7 +50,7 @@ onBeforeMount(async () => {
       </transition>
     </router-view>
     <FullScreenLoader
-      v-if="showLoader || !isAuthLoaded"
+      v-if="isLoading || !isAuthLoaded"
       :message="loadingMessage"
     />
   </div>

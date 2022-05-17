@@ -20,7 +20,7 @@ function handleChange(option: Region) {
 
 <template>
   <section name="storage-region">
-    <SettingCard>
+    <SettingCard class="storage-region-card">
       <template #title>Storage Region</template>
       <template #description
         >Please specify where your data should be hosted by selecting from the
@@ -43,5 +43,11 @@ function handleChange(option: Region) {
 <style scoped>
 .region-dropdown {
   width: 16rem;
+}
+</style>
+
+<style>
+.storage-region-card > * {
+  z-index: 2 !important;
 }
 </style>

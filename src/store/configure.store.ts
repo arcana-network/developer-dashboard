@@ -75,7 +75,6 @@ type SocialAuthState = {
 type ConfigureState = {
   appName: string
   appId: string
-  isAppConfigured: boolean
   logos: {
     dark: {
       horizontal: string
@@ -95,7 +94,6 @@ type ConfigureState = {
       javascriptOrigin: string
       redirectUri: string
     }
-    hasAggregateLogin: boolean
     wallet: {
       websiteDomain: string
       selectedTheme: 'light' | 'dark'
@@ -112,10 +110,9 @@ type ConfigureState = {
   }
 }
 
-const state: ConfigureState = {
+const defaultState: ConfigureState = {
   appName: '',
   appId: '',
-  isAppConfigured: false,
   access: {
     selectedChain: 'ethereum',
   },
@@ -135,7 +132,6 @@ const state: ConfigureState = {
       javascriptOrigin: '',
       redirectUri: '',
     },
-    hasAggregateLogin: true,
     redirectUri: '',
     wallet: {
       websiteDomain: '',
@@ -156,11 +152,11 @@ const state: ConfigureState = {
   },
 }
 
+let state: ConfigureState = { ...defaultState }
+
 const getters = {
   appName: (state: ConfigureState) => state.appName,
   appId: (state: ConfigureState) => state.appId,
-  isAppConfigured: (state: ConfigureState) => state.isAppConfigured,
-  hasAggregateLogin: (state: ConfigureState) => state.auth.hasAggregateLogin,
   socialAuth: (state: ConfigureState) => state.auth.social,
   walletUIMode: (state: ConfigureState) => state.auth.wallet.hasUIMode,
   walletWebsiteDomain: (state: ConfigureState) =>
@@ -181,9 +177,6 @@ const mutations = {
   },
   updateAppName(state: ConfigureState, appName: string) {
     state.appName = appName
-  },
-  updateAggregateLogin(state: ConfigureState, hasAggregateLogin: boolean) {
-    state.auth.hasAggregateLogin = hasAggregateLogin
   },
   updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
     state.access.selectedChain = selectedChain
@@ -256,6 +249,9 @@ const mutations = {
   },
   updateRedirectUri(state: ConfigureState, redirectUri: string) {
     state.auth.redirectUri = redirectUri
+  },
+  resetSettings() {
+    state = { ...defaultState }
   },
 }
 

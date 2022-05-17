@@ -64,4 +64,34 @@ function updateApp(updateAppParams: AppParams) {
   )
 }
 
-export { uploadLogo, createApp, updateApp }
+function fetchAllApps() {
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
+}
+
+function fetchApp(appId: number) {
+  return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
+}
+
+function fetchStats() {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi('v2')}/overview/?id=${store.getters.appId}`
+  )
+}
+
+function fetchPeriodicUsage(
+  period: 'month' | 'day' | 'year' | 'quarter' = 'month'
+) {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi('v2')}/app-usage/?id=${store.getters.appId}&period=${period}`
+  )
+}
+
+export {
+  uploadLogo,
+  createApp,
+  updateApp,
+  fetchApp,
+  fetchAllApps,
+  fetchStats,
+  fetchPeriodicUsage,
+}
