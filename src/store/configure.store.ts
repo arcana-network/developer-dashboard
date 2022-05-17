@@ -8,6 +8,12 @@ import {
 type UserLimitUnit = 'MB' | 'GB'
 type UserLimitTarget = 'storage' | 'bandwidth'
 
+type Logo = {
+  mode: 'dark' | 'light'
+  orientation: 'horizontal' | 'vertical'
+  url: string
+}
+
 type UserLimitState =
   | {
       isUnlimited: true
@@ -68,7 +74,18 @@ type SocialAuthState = {
 
 type ConfigureState = {
   appName: string
+  appId: string
   isAppConfigured: boolean
+  logos: {
+    dark: {
+      horizontal: string
+      vertical: string
+    }
+    light: {
+      horizontal: string
+      vertical: string
+    }
+  }
   access: {
     selectedChain: Chain
   }
@@ -97,9 +114,20 @@ type ConfigureState = {
 
 const state: ConfigureState = {
   appName: '',
+  appId: '',
   isAppConfigured: false,
   access: {
     selectedChain: 'ethereum',
+  },
+  logos: {
+    dark: {
+      horizontal: '',
+      vertical: '',
+    },
+    light: {
+      horizontal: '',
+      vertical: '',
+    },
   },
   auth: {
     social: [],
@@ -130,6 +158,7 @@ const state: ConfigureState = {
 
 const getters = {
   appName: (state: ConfigureState) => state.appName,
+  appId: (state: ConfigureState) => state.appId,
   isAppConfigured: (state: ConfigureState) => state.isAppConfigured,
   hasAggregateLogin: (state: ConfigureState) => state.auth.hasAggregateLogin,
   socialAuth: (state: ConfigureState) => state.auth.social,
@@ -142,10 +171,14 @@ const getters = {
   storageLimit: (state: ConfigureState) => state.store.userLimits.storage,
   bandwidthLimit: (state: ConfigureState) => state.store.userLimits.bandwidth,
   storageRegion: (state: ConfigureState) => state.store.region,
+  logos: (state: ConfigureState) => state.logos,
   redirectUri: (state: ConfigureState) => state.auth.redirectUri,
 }
 
 const mutations = {
+  updateAppId(state: ConfigureState, appId: string) {
+    state.appId = appId
+  },
   updateAppName(state: ConfigureState, appName: string) {
     state.appName = appName
   },
@@ -217,6 +250,9 @@ const mutations = {
   },
   updateStorageRegion(state: ConfigureState, region: StorageRegion) {
     state.store.region = region
+  },
+  updateLogo(state: ConfigureState, { mode, orientation, url }: Logo) {
+    state.logos[mode][orientation] = url
   },
   updateRedirectUri(state: ConfigureState, redirectUri: string) {
     state.auth.redirectUri = redirectUri

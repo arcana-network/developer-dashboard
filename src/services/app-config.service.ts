@@ -2,8 +2,8 @@ import axios from 'axios'
 import bytes from 'bytes'
 
 import dashboardService from '@/services/dashboard.service'
-import getEnvApi from '@/services/get-env-api'
 import store from '@/store'
+import getEnvApi from '@/utils/get-env-api'
 
 const UNLIMITED_BYTE_SIZE = bytes('10 TB')
 const CHAIN_TYPES = ['ethereum', 'polygon', 'binance']
