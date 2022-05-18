@@ -15,8 +15,16 @@ const store = useStore()
       <template #title>Redirect URI</template>
       <template #controls>
         <VCard variant="elevated" class="redirect-uri-card">
-          <VStack align="center" justify="space-between" class="flex-grow">
-            <span class="body-1">{{ store.getters.redirectUri }}</span>
+          <VStack
+            align="center"
+            justify="space-between"
+            class="flex-grow redirect-uri-container"
+          >
+            <span
+              class="body-1 text-ellipsis redirect-uri"
+              :title="store.getters.redirectUri"
+              >{{ store.getters.redirectUri }}</span
+            >
             <img
               src="@/assets/iconography/copy.svg"
               class="cursor-pointer copy-icon"
@@ -38,5 +46,13 @@ const store = useStore()
   width: 20rem;
   padding: 0.75rem 1.5rem;
   border-radius: 10px;
+}
+
+.redirect-uri-container {
+  width: 20rem;
+}
+
+.redirect-uri {
+  width: (100% - 2rem);
 }
 </style>

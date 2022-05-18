@@ -331,9 +331,9 @@ const actions = {
       const app: AppConfig = (await fetchApp(currentApp.ID)).data
 
       commit('updateAppName', app.name)
-      commit('updateAppId', String(app.ID))
+      commit('updateAppId', String(currentApp.ID))
       commit('updateSmartContractAddress', app.address)
-      commit('updateRedirectUri', `${api.verify}/${app.ID}`)
+      commit('updateRedirectUri', `${api.verify}/${currentApp.ID}`)
 
       const selectedChain = ChainMapping[app.chain]
       commit('updateSelectedChain', selectedChain)

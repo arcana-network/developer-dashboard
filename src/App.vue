@@ -31,7 +31,7 @@ onBeforeMount(async () => {
     const configResponse = await getConfig()
     const config = configResponse.data
     store.commit('updateForwarder', config?.Forwarder)
-    store.commit('updateRPCUrl', config?.RPC_URL)
+    store.commit('updateRpcUrl', config?.RPC_URL)
   }
 
   if (!store.getters.appName && store.getters.accessToken) {
