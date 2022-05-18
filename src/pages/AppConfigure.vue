@@ -3,8 +3,10 @@ import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
+import ConfigureFooter from '@/components/app-configure/ConfigureFooter.vue'
+import ConfigureHeader from '@/components/app-configure/ConfigureHeader.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
-import ConfigureFooter from '@/components/ConfigureFooter.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { updateApp } from '@/services/gateway.service'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
@@ -63,9 +65,11 @@ function handleCancel() {
 
 <template>
   <VStack direction="column" gap="2rem" class="configure-container">
+    <AppHeader />
+    <ConfigureHeader />
     <VStack gap="2rem" class="container">
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
-      <router-view></router-view>
+      <router-view />
     </VStack>
     <ConfigureFooter
       class="configure-footer"
