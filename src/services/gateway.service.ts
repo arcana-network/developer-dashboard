@@ -41,7 +41,7 @@ function createApp(appName: string) {
     theme: 'dark',
   }
   return gatewayAuthorizedInstance.post(
-    `${getEnvApi('v2')}/app/`,
+    `${getEnvApi('v2')}/app`,
     defaultAppConfig
   )
 }
@@ -54,16 +54,16 @@ function updateApp(updatedAppConfig: AppConfig) {
 }
 
 function fetchAllApps() {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app`)
 }
 
 function fetchApp(appId: number) {
-  return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
+  return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app?id=${appId}`)
 }
 
 function fetchStats() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi('v2')}/overview/?id=${store.getters.appId}`
+    `${getEnvApi('v2')}/overview?id=${store.getters.appId}`
   )
 }
 
@@ -71,14 +71,84 @@ function fetchPeriodicUsage(
   period: 'month' | 'day' | 'year' | 'quarter' = 'month'
 ) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi('v2')}/app-usage/?id=${store.getters.appId}&period=${period}`
+    `${getEnvApi('v2')}/app-usage?id=${store.getters.appId}&period=${period}`
   )
 }
 
 function deleteApp() {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`
+    `${getEnvApi('v2')}/app?id=${store.getters.appId}`
   )
+}
+
+function getConfig() {
+  return axios.get(`${getEnvApi()}/get-config`)
+}
+
+function fetchProfile() {
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/profile`)
+}
+
+type OrganizationOptions = {
+  name: string
+  country: string
+  size: number
+}
+
+function updateOrganization({ name, country, size }: OrganizationOptions) {
+  return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/organization`, {
+    name,
+    country,
+    size,
+  })
+}
+
+function fetchAllUsers() {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi()}/user-details?id=${store.getters.appId}`
+  )
+}
+
+function searchUsers(address: string) {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi()}/user-transactions/?id=${
+      store.getters.appId
+    }&address=${address}`
+  )
+}
+
+function fetchAllUserTransactions(address: string) {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi()}/user-transactions?id=${
+      store.getters.appId
+    }&address=${address}`
+  )
+}
+
+function fetchMonthlyUsers() {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi()}/no-of-users?id=${store.getters.appId}`
+  )
+}
+
+function getNonce(address: string) {
+  return axios.get(`${getEnvApi()}/get-nonce?address=${address}`)
+}
+
+function loginUser({
+  signature,
+  email,
+  address,
+}: {
+  signature: string
+  email: string
+  address: string
+}) {
+  return axios.post(`${getEnvApi()}/login`, {
+    signature,
+    email,
+    address,
+  })
 }
 
 export {
@@ -90,4 +160,13 @@ export {
   fetchAllApps,
   fetchStats,
   fetchPeriodicUsage,
+  getConfig,
+  fetchProfile,
+  updateOrganization,
+  fetchAllUsers,
+  searchUsers,
+  fetchAllUserTransactions,
+  fetchMonthlyUsers,
+  loginUser,
+  getNonce,
 }

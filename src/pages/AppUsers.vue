@@ -1,24 +1,29 @@
 <script lang="ts" setup>
 import bytes from 'bytes'
 import moment from 'moment'
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, type Ref } from 'vue'
 
 import SearchIcon from '@/assets/iconography/search.svg'
 import AppHeader from '@/components/AppHeader.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import userService from '@/services/user.service'
+import {
+  fetchAllUsers,
+  searchUsers,
+  fetchAllUserTransactions,
+  fetchMonthlyUsers,
+} from '@/services/gateway.service'
 import chartUtils from '@/utils/chart'
 
-let users = ref([])
+let users: Ref<any[]> = ref([])
 let walletAddress = ref('')
 let showDetails = ref(false)
 let userLog = ref({})
 let userTransactions = ref([])
 
 function fetchUsers() {
-  userService.fetchAllUsers().then((response) => {
+  fetchAllUsers().then((response) => {
     if (response.data instanceof Array) {
       users.value = response.data.map((user) => {
         return {
@@ -34,7 +39,7 @@ function fetchUsers() {
 }
 
 function generateMonthlyUsersChart() {
-  userService.fetchMonthlyUsers().then((response) => {
+  fetchMonthlyUsers().then((response) => {
     const currentMonth = moment()
     let monthLabels = []
     let monthAliases = []
@@ -86,13 +91,13 @@ onBeforeMount(() => {
   generateMonthlyUsersChart()
 })
 
-function fetchUserLogsApi(address, index) {
-  userService.fetchAllUserTransactions(address).then((response) => {
+function fetchUserLogsApi(address: string, index: number) {
+  fetchAllUserTransactions(address).then((response) => {
     users.value[index].email = response.data.email
     if (response.data.transaction instanceof Array) {
       userLog.value = users.value[index]
       userTransactions.value = response.data.transaction.filter(
-        (transaction) =>
+        (transaction: any) =>
           transaction.type && transaction.type !== 'Set convergence'
       )
     } else {
@@ -103,21 +108,21 @@ function fetchUserLogsApi(address, index) {
   })
 }
 
-function getTime(date) {
+function getTime(date: string) {
   return moment(new Date(date)).format('HH:mm:ss')
 }
 
-function getDate(date) {
+function getDate(date: string) {
   return moment(new Date(date)).format('DD-MM-YYYY')
 }
 
-function truncate(address) {
+function truncate(address: string) {
   return address.substr(0, 4) + '....' + address.substr(address.length - 4)
 }
 
 function searchUsersByWalletAddress() {
   if (walletAddress.value.trim()) {
-    userService.searchUsers(walletAddress.value).then((response) => {
+    searchUsers(walletAddress.value).then((response) => {
       if (response.data?.usage?.address) {
         const user = response.data.usage
         users.value = [
@@ -138,7 +143,7 @@ function searchUsersByWalletAddress() {
   }
 }
 
-function convertToBytes(value) {
+function convertToBytes(value: number) {
   return bytes(value, { unitSeparator: ' ' })
 }
 </script>

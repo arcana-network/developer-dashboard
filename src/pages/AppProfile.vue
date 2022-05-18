@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount } from 'vue'
+import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -7,18 +7,25 @@ import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import profileService from '@/services/profile.service'
+import { fetchProfile, updateOrganization } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
 
 const store = useStore()
 const { logout } = useArcanaAuth()
 
+type OrganizationDetails = {
+  name: string
+  size: number
+  country: string
+  sizeErrorMessage?: string
+}
+
 const editOrganisationDetails = ref(false)
-const organisationDetails = ref({
-  name: ' ',
+const organisationDetails: Ref<OrganizationDetails> = ref({
+  name: '',
   size: 0,
-  sizeErrorMessage: null,
-  country: ' ',
+  sizeErrorMessage: '',
+  country: '',
 })
 const name = ref('')
 name.value = store.getters.userInfo.name
@@ -26,7 +33,7 @@ const email = ref('')
 email.value = store.getters.userInfo.email
 const router = useRouter()
 
-let organisationDetailsResetState = {}
+let organisationDetailsResetState: OrganizationDetails
 
 function onUpdateOrganization() {
   const size = Number(organisationDetails.value.size)
@@ -34,26 +41,24 @@ function onUpdateOrganization() {
     organisationDetails.value.sizeErrorMessage = 'Invalid organization size.'
     return
   }
-  organisationDetails.value.sizeErrorMessage = null
+  organisationDetails.value.sizeErrorMessage = ''
 
   try {
-    profileService
-      .updateOrganization({
-        name: organisationDetails.value.name,
-        size,
-        country: organisationDetails.value.country,
-      })
-      .then(() => {
-        editOrganisationDetails.value = false
-        organisationDetailsResetState = { ...organisationDetails.value }
-      })
+    updateOrganization({
+      name: organisationDetails.value.name,
+      size,
+      country: organisationDetails.value.country,
+    }).then(() => {
+      editOrganisationDetails.value = false
+      organisationDetailsResetState = { ...organisationDetails.value }
+    })
   } catch (e) {
     console.error(e)
   }
 }
 
 onBeforeMount(() => {
-  profileService.fetchProfile().then((response) => {
+  fetchProfile().then((response) => {
     organisationDetails.value = {
       name: response.data.organization.name,
       size: response.data.organization.size,
@@ -77,7 +82,7 @@ function resetOrganisationDetails() {
   organisationDetails.value = { ...organisationDetailsResetState }
 
   if (organisationDetails.value.sizeErrorMessage) {
-    organisationDetails.value.sizeErrorMessage = null
+    organisationDetails.value.sizeErrorMessage = ''
   }
 }
 </script>
@@ -189,7 +194,7 @@ function resetOrganisationDetails() {
                 <span
                   v-if="!editOrganisationDetails"
                   class="sub-heading-3 overflow-ellipsis"
-                  :title="organisationDetails.size"
+                  :title="String(organisationDetails.size)"
                 >
                   {{ organisationDetails.size }}
                 </span>

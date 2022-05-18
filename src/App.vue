@@ -3,7 +3,7 @@ import { onBeforeMount, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
-import appConfigService from '@/services/app-config.service'
+import { getConfig } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
 import cryptoUtils from '@/utils/cryptoUtils'
 import fetchAndStoreAppConfig from '@/utils/fetchAndStoreAppConfig'
@@ -29,7 +29,7 @@ onBeforeMount(async () => {
   }
   isAuthLoaded.value = true
   if (!store.getters['forwarder'] || !store.getters['rpc']) {
-    const configResponse = await appConfigService.getConfig()
+    const configResponse = await getConfig()
     const config = configResponse.data
     store.commit('updateForwarder', config?.Forwarder)
     store.commit('updateRPCUrl', config?.RPC_URL)
