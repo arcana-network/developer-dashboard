@@ -15,7 +15,6 @@ import {
   setDefaultLimit,
 } from '@/services/smart-contract.service'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
-import fetchAndStoreAppConfig from '@/utils/fetchAndStoreAppConfig'
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
@@ -50,7 +49,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
 }
 
 function handleCancel() {
-  fetchAndStoreAppConfig()
+  store.dispatch('fetchAppConfig')
   router.push({ name: 'Dashboard' })
 }
 </script>

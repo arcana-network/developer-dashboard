@@ -10,7 +10,6 @@ import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import { loginUser, getNonce } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import useArcanaAuth from '@/use/arcanaAuth'
-import fetchAndStoreAppConfig from '@/utils/fetchAndStoreAppConfig'
 import signWithPrivateKey from '@/utils/signWithPrivateKey'
 
 const router = useRouter()
@@ -26,7 +25,7 @@ async function launchLogin(type: SocialLoginType) {
 async function fetchAndStoreDetails() {
   store.commit('showLoader', 'Fetching user info...')
   await fetchAndStoreUserInfo()
-  await fetchAndStoreAppConfig()
+  await store.commit('fetchAppConfig')
   store.commit('hideLoader')
 
   if (localStorage.getItem('skipPassword') !== 'true') {

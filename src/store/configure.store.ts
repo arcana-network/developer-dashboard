@@ -1,6 +1,12 @@
 import bytes from 'bytes'
+import type { Store } from 'vuex'
 
-import type { AppConfig } from '@/services/gateway.service'
+import {
+  type AppConfig,
+  fetchAllApps,
+  fetchApp,
+  getThemeLogo,
+} from '@/services/gateway.service'
 import {
   defaultUserLimit,
   unlimitedUserLimit,
@@ -9,6 +15,7 @@ import {
   type Chain,
   type StorageRegion,
   MAX_DATA_TRANSFER_BYTES,
+  api,
 } from '@/utils/constants'
 
 type UserLimitUnit = 'MB' | 'GB'
@@ -316,10 +323,122 @@ const mutations = {
   },
 }
 
+const actions = {
+  async fetchAppConfig({ commit }: Store<ConfigureState>) {
+    const apps = await fetchAllApps()
+    if (apps.data.length) {
+      const currentApp: AppConfig = apps.data[0]
+      const app: AppConfig = (await fetchApp(currentApp.ID)).data
+
+      commit('updateAppName', app.name)
+      commit('updateAppId', String(app.ID))
+      commit('updateSmartContractAddress', app.address)
+      commit('updateRedirectUri', `${api.redirect}/${app.ID}`)
+
+      const selectedChain = ChainMapping[app.chain]
+      commit('updateSelectedChain', selectedChain)
+
+      const storageRegion = RegionMapping[app.region]
+      commit('updateStorageRegion', storageRegion)
+
+      const selectedTheme = app.theme
+      commit('updateSelectedTheme', selectedTheme)
+
+      if (app.logo?.dark_horizontal) {
+        commit('updateLogo', getThemeLogo('dark', 'horizontal'))
+      }
+      if (app.logo?.light_horizontal) {
+        commit('updateLogo', getThemeLogo('light', 'horizontal'))
+      }
+      if (app.logo?.dark_vertical) {
+        commit('updateLogo', getThemeLogo('dark', 'vertical'))
+      }
+      if (app.logo?.light_vertical) {
+        commit('updateLogo', getThemeLogo('light', 'vertical'))
+      }
+
+      if (app.cred?.length) {
+        app.cred.forEach((authDetail) => {
+          if (authDetail.verifier !== 'passwordless') {
+            commit('addSocialAuth', {
+              verifier: authDetail.verifier,
+              clientId: authDetail.clientId,
+              clientSecret: authDetail.clientSecret,
+              redirectUri: authDetail.redirectURL,
+            })
+          } else {
+            commit('updatePasswordlessAuthJavascriptOrigin', authDetail.origin)
+            commit('updatePasswordlessAuthRedirectUri', authDetail.redirectURL)
+          }
+        })
+      }
+
+      const storageLimit = calculateUserLimits(app.storage_limit)
+      if (storageLimit.isUnlimited) {
+        commit('updateUserLimit', {
+          type: 'storage',
+          isUnlimited: true,
+        })
+      } else {
+        commit('updateUserLimitField', {
+          type: 'storage',
+          field: 'value',
+          value: storageLimit.value,
+        })
+        commit('updateUserLimitField', {
+          type: 'storage',
+          field: 'unit',
+          value: storageLimit.unit,
+        })
+      }
+
+      const bandwidthLimit = calculateUserLimits(app.bandwidth_limit)
+      if (bandwidthLimit.isUnlimited) {
+        commit('updateUserLimit', {
+          type: 'bandwidth',
+          isUnlimited: true,
+        })
+      } else {
+        commit('updateUserLimitField', {
+          type: 'bandwidth',
+          field: 'value',
+          value: bandwidthLimit.value,
+        })
+        commit('updateUserLimitField', {
+          type: 'storage',
+          field: 'unit',
+          value: bandwidthLimit.unit,
+        })
+      }
+
+      if (app.wallet_domain) {
+        commit('updateWalletWebsiteDomain', app.wallet_domain)
+      }
+    }
+  },
+}
+
+function calculateUserLimits(userLimit: number) {
+  if (userLimit < MAX_DATA_TRANSFER_BYTES) {
+    const isUnder1GB = userLimit < bytes('1 GB')
+
+    const calculatedUserLimit = bytes(userLimit, {
+      unitSeparator: ' ',
+      unit: isUnder1GB ? 'MB' : 'GB',
+    })
+
+    const [value, unit] = calculatedUserLimit.split(' ')
+    return { value, unit }
+  } else {
+    return { isUnlimited: true }
+  }
+}
+
 const configureStore = {
   state: () => ({ ...state }),
   getters,
   mutations,
+  actions,
 }
 
 export type {

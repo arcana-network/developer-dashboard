@@ -11,7 +11,8 @@ const sentry = {
 }
 
 const api = {
-  testnet: import.meta.env.VITE_TESTNET_API,
+  gateway: import.meta.env.VITE_GATEWAY_API,
+  redirect: import.meta.env.VITE_REDIRECT_URI,
 }
 
 const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID

@@ -6,7 +6,6 @@ import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import { getConfig } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
 import cryptoUtils from '@/utils/cryptoUtils'
-import fetchAndStoreAppConfig from '@/utils/fetchAndStoreAppConfig'
 
 const store = useStore()
 const arcanaAuth = useArcanaAuth()
@@ -36,7 +35,7 @@ onBeforeMount(async () => {
   }
 
   if (!store.getters.appName && store.getters.accessToken) {
-    await fetchAndStoreAppConfig()
+    await store.dispatch('fetchAppConfig')
   }
   store.commit('hideLoader')
 })
