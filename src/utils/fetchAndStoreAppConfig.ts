@@ -5,37 +5,37 @@ import store from '@/store'
 import { ChainMapping, RegionMapping, unlimitedBytes } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
-type AppResponse = {
-  ID: number
-  name: string
-  address: string
-  cred: {
+type AppConfig = {
+  ID?: number
+  name?: string
+  address?: string
+  cred?: {
     verifier: string
     clientId?: string
     clientSecret?: string
     redirectURL?: string
     origin?: string
   }[]
-  aggregate_login: boolean
+  aggregate_login?: boolean
   bandwidth_limit: number
   storage_limit: number
   chain: number
   region: number
-  theme: string
-  wallet_type: number
-  logo: {
-    dark_horizontal: string
-    dark_vertical: string
-    light_horizontal: string
-    light_vertical: string
+  theme?: string
+  wallet_type?: number
+  logo?: {
+    dark_horizontal?: string
+    dark_vertical?: string
+    light_horizontal?: string
+    light_vertical?: string
   }
 }
 
 async function fetchAndStoreAppConfig() {
   const apps = await fetchAllApps()
   if (apps.data.length) {
-    const currentApp: AppResponse = apps.data[0]
-    const appDetails: AppResponse = (await fetchApp(currentApp.ID)).data
+    const currentApp: AppConfig = apps.data[0]
+    const appDetails: AppConfig = (await fetchApp(currentApp.ID)).data
 
     storeBasicAppData(currentApp)
     storeSelectedChain(appDetails)
@@ -54,23 +54,23 @@ async function fetchAndStoreAppConfig() {
   }
 }
 
-function storeBasicAppData(app: AppResponse) {
+function storeBasicAppData(app: AppConfig) {
   store.commit('updateAppName', app.name)
   store.commit('updateAppId', String(app.ID))
   store.commit('updateSmartContractAddress', app.address)
 }
 
-function storeSelectedChain(app: AppResponse) {
+function storeSelectedChain(app: AppConfig) {
   const selectedChain = ChainMapping[app.chain]
   store.commit('updateSelectedChain', selectedChain)
 }
 
-function storeStorageRegion(app: AppResponse) {
+function storeStorageRegion(app: AppConfig) {
   const storageRegion = RegionMapping[app.region]
   store.commit('updateStorageRegion', storageRegion)
 }
 
-function storeSelectedTheme(app: AppResponse) {
+function storeSelectedTheme(app: AppConfig) {
   const selectedTheme = app.theme
   store.commit('updateSelectedTheme', selectedTheme)
 }
@@ -87,7 +87,7 @@ function getThemeLogo(
   }
 }
 
-function storeThemeLogos(app: AppResponse) {
+function storeThemeLogos(app: AppConfig) {
   if (app.logo?.dark_horizontal) {
     store.commit('updateLogo', getThemeLogo('dark', 'horizontal'))
   }
@@ -105,7 +105,7 @@ function storeThemeLogos(app: AppResponse) {
   }
 }
 
-function storeSocialAndPasswordlessAuth(app: AppResponse) {
+function storeSocialAndPasswordlessAuth(app: AppConfig) {
   if (app.cred?.length) {
     app.cred.forEach((authDetail) => {
       if (authDetail.verifier !== 'passwordless') {
@@ -164,3 +164,5 @@ function storeUserLimits({
 }
 
 export default fetchAndStoreAppConfig
+
+export type { AppConfig }

@@ -12,7 +12,7 @@ function getTxRequestProps() {
   }
 }
 
-async function signerMakeTx(method, value) {
+async function signerMakeTx(method: string, value: any) {
   return await window.signerMakeTx({ ...getTxRequestProps(), method, value })
 }
 

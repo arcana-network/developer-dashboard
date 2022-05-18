@@ -1,9 +1,15 @@
+import bytes from 'bytes'
+
 import {
   defaultUserLimit,
   unlimitedUserLimit,
+  ChainMapping,
+  RegionMapping,
+  unlimitedBytes,
   type Chain,
   type StorageRegion,
 } from '@/utils/constants'
+import type { AppConfig } from '@/utils/fetchAndStoreAppConfig'
 
 type UserLimitUnit = 'MB' | 'GB'
 type UserLimitTarget = 'storage' | 'bandwidth'
@@ -169,6 +175,61 @@ const getters = {
   storageRegion: (state: ConfigureState) => state.store.region,
   logos: (state: ConfigureState) => state.logos,
   redirectUri: (state: ConfigureState) => state.auth.redirectUri,
+  appConfigRequestBody: (state: ConfigureState): AppConfig => {
+    let storage_limit: number, bandwidth_limit: number
+
+    const storageLimit = state.store.userLimits.storage
+    const bandwidthLimit = state.store.userLimits.bandwidth
+    if (storageLimit.isUnlimited) {
+      storage_limit = unlimitedBytes
+    } else {
+      storage_limit = bytes(`${storageLimit.value} ${storageLimit.unit}`)
+    }
+
+    if (bandwidthLimit.isUnlimited) {
+      bandwidth_limit = unlimitedBytes
+    } else {
+      bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
+    }
+
+    const socialAuth = state.auth.social
+    const cred: {
+      verifier: string
+      clientId?: string
+      clientSecret?: string
+      redirectURL?: string
+      origin?: string
+    }[] = socialAuth.map((authType) => {
+      return {
+        verifier: authType.verifier,
+        clientId: authType.clientId,
+        clientSecret: authType.clientSecret,
+        redirectURL: authType.redirectUri,
+      }
+    })
+
+    if (
+      state.auth.passwordless.javascriptOrigin &&
+      state.auth.passwordless.redirectUri
+    ) {
+      cred.push({
+        verifier: 'passwordless',
+        origin: state.auth.passwordless.javascriptOrigin,
+        redirectURL: state.auth.passwordless.redirectUri,
+      })
+    }
+
+    return {
+      name: state.appName,
+      storage_limit,
+      bandwidth_limit,
+      cred,
+      aggregate_login: true,
+      chain: ChainMapping[state.access.selectedChain],
+      region: RegionMapping[state.store.region],
+      theme: state.auth.wallet.selectedTheme,
+    }
+  },
 }
 
 const mutations = {
