@@ -203,7 +203,7 @@ function generateInitialChartValuesForYear() {
 }
 
 function goToConfigure() {
-  router.push({ name: 'Configure' })
+  router.push({ name: 'GeneralSettings' })
 }
 
 const SmartContractIcon = ref(CopyIcon)

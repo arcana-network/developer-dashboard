@@ -21,7 +21,7 @@ function uploadLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    `${getEnvApi('v2')}/app/${store.getters.appId}/logo/`,
     formData,
     {
       params: { type: mode, orientation },
@@ -41,29 +41,29 @@ function createApp(appName: string) {
     theme: 'dark',
   }
   return gatewayAuthorizedInstance.post(
-    `${getEnvApi('v2')}/app`,
+    `${getEnvApi('v2')}/app/`,
     defaultAppConfig
   )
 }
 
 function updateApp(updatedAppConfig: AppConfig) {
   return gatewayAuthorizedInstance.patch(
-    `${getEnvApi('v2')}/app?id=${store.getters.appId}`,
+    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`,
     updatedAppConfig
   )
 }
 
 function fetchAllApps() {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app`)
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
 function fetchApp(appId: number) {
-  return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app?id=${appId}`)
+  return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
 function fetchStats() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi('v2')}/overview?id=${store.getters.appId}`
+    `${getEnvApi()}/overview/?id=${store.getters.appId}`
   )
 }
 
@@ -71,22 +71,22 @@ function fetchPeriodicUsage(
   period: 'month' | 'day' | 'year' | 'quarter' = 'month'
 ) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi('v2')}/app-usage?id=${store.getters.appId}&period=${period}`
+    `${getEnvApi()}/app-usage/?id=${store.getters.appId}&period=${period}`
   )
 }
 
 function deleteApp() {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app?id=${store.getters.appId}`
+    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`
   )
 }
 
 function getConfig() {
-  return axios.get(`${getEnvApi()}/get-config`)
+  return axios.get(`${getEnvApi()}/get-config/`)
 }
 
 function fetchProfile() {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/profile`)
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/profile/`)
 }
 
 type OrganizationOptions = {
@@ -96,7 +96,7 @@ type OrganizationOptions = {
 }
 
 function updateOrganization({ name, country, size }: OrganizationOptions) {
-  return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/organization`, {
+  return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/organization/`, {
     name,
     country,
     size,
@@ -105,7 +105,7 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
 
 function fetchAllUsers() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details?id=${store.getters.appId}`
+    `${getEnvApi()}/user-details/?id=${store.getters.appId}`
   )
 }
 
@@ -119,7 +119,7 @@ function searchUsers(address: string) {
 
 function fetchAllUserTransactions(address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions?id=${
+    `${getEnvApi()}/user-transactions/?id=${
       store.getters.appId
     }&address=${address}`
   )
@@ -127,12 +127,12 @@ function fetchAllUserTransactions(address: string) {
 
 function fetchMonthlyUsers() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/no-of-users?id=${store.getters.appId}`
+    `${getEnvApi()}/no-of-users/?id=${store.getters.appId}`
   )
 }
 
 function getNonce(address: string) {
-  return axios.get(`${getEnvApi()}/get-nonce?address=${address}`)
+  return axios.get(`${getEnvApi()}/get-nonce/?address=${address}`)
 }
 
 function loginUser({
@@ -144,7 +144,7 @@ function loginUser({
   email: string
   address: string
 }) {
-  return axios.post(`${getEnvApi()}/login`, {
+  return axios.post(`${getEnvApi()}/login/`, {
     signature,
     email,
     address,

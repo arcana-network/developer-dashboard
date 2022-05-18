@@ -31,24 +31,28 @@ async function handleSave() {
 }
 
 async function updateSmartContractTransactions(app: AppConfig) {
-  store.commit('showLoader', 'Updating app name in smart contract...')
-  await signerMakeTx('setAppName', [app.name])
+  try {
+    store.commit('showLoader', 'Updating app name in smart contract...')
+    await signerMakeTx('setAppName', [app.name])
 
-  store.commit('showLoader', 'Updating user limits in smart contract...')
-  await signerMakeTx('setDefaultLimit', [
-    app.storage_limit,
-    app.bandwidth_limit,
-  ])
+    store.commit('showLoader', 'Updating user limits in smart contract...')
+    await signerMakeTx('setDefaultLimit', [
+      app.storage_limit,
+      app.bandwidth_limit,
+    ])
 
-  store.commit('showLoader', 'Updating social auth in smart contract...')
-  const authSignerMakeTxValue: [string[], string[]] = [[], []]
-  app.cred?.forEach((authDetail) => {
-    if (authDetail.verifier !== 'passwordless' && authDetail.clientId) {
-      authSignerMakeTxValue[0].push(authDetail.verifier)
-      authSignerMakeTxValue[1].push(authDetail.clientId)
-    }
-  })
-  await signerMakeTx('setClientIds', authSignerMakeTxValue)
+    store.commit('showLoader', 'Updating social auth in smart contract...')
+    const authSignerMakeTxValue: [string[], string[]] = [[], []]
+    app.cred?.forEach((authDetail) => {
+      if (authDetail.verifier !== 'passwordless' && authDetail.clientId) {
+        authSignerMakeTxValue[0].push(authDetail.verifier)
+        authSignerMakeTxValue[1].push(authDetail.clientId)
+      }
+    })
+    await signerMakeTx('setClientIds', authSignerMakeTxValue)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 function handleCancel() {

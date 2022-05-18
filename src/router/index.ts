@@ -38,7 +38,7 @@ function toBoolean(val: string | boolean | number): boolean {
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+    redirect: store.getters.accessToken ? '/app/dashboard' : '/login',
   },
   {
     name: 'Signup',
@@ -51,13 +51,13 @@ const routes: RouteRecordRaw[] = [
     redirect: '/login',
   },
   {
+    path: '/app',
+    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+  },
+  {
     name: 'Dashboard',
     path: '/app/dashboard',
     component: AppDashboard,
-  },
-  {
-    path: '/app',
-    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
   },
   {
     name: 'Configure',
@@ -132,6 +132,14 @@ router.beforeEach((to, from, next) => {
   if (!openRoutes.includes(String(to.name)) && !store.getters.accessToken) {
     router.push({ name: 'Login' })
   } else if (to.name === 'Login' && store.getters.accessToken) {
+    router.push({ name: 'Dashboard' })
+  } else if (
+    to.path.includes('/app') &&
+    to.name !== 'CreateApp' &&
+    !store.getters.appId
+  ) {
+    router.push({ name: 'CreateApp' })
+  } else if (to.name === 'CreateApp' && store.getters.appId) {
     router.push({ name: 'Dashboard' })
   }
   return next()
