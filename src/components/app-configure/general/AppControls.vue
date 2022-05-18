@@ -9,7 +9,7 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
-import appConfigService from '@/services/app-config.service'
+import { deleteApp } from '@/services/gateway.service'
 
 const router = useRouter()
 const store = useStore()
@@ -25,9 +25,9 @@ function handleProceedDeletion() {
 async function handleAppDeletion() {
   showDeleteTimerPopup.value = false
   store.commit('showLoader', 'Deleting App...')
-  await appConfigService.deleteApp()
+  await deleteApp()
   store.commit('hideLoader')
-  router.push('/')
+  router.push({ name: 'CreateApp' })
 }
 </script>
 

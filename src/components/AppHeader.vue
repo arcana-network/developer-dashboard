@@ -31,14 +31,14 @@ const menuItems = computed(() => {
     {
       label: 'Dashboard',
       action() {
-        router.push('/')
+        router.push({ name: 'Dashboard' })
       },
       selected: false,
     },
     {
       label: 'Users',
       action() {
-        router.push('/users')
+        router.push({ name: 'Users' })
       },
       selected: false,
     },

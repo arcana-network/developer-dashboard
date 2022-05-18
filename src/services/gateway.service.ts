@@ -46,10 +46,10 @@ function createApp(appName: string) {
   )
 }
 
-function updateApp(updateAppParams: AppConfig) {
+function updateApp(updatedAppConfig: AppConfig) {
   return gatewayAuthorizedInstance.patch(
     `${getEnvApi('v2')}/app?id=${store.getters.appId}`,
-    updateAppParams
+    updatedAppConfig
   )
 }
 
@@ -75,10 +75,17 @@ function fetchPeriodicUsage(
   )
 }
 
+function deleteApp() {
+  return gatewayAuthorizedInstance.delete(
+    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`
+  )
+}
+
 export {
   uploadLogo,
   createApp,
   updateApp,
+  deleteApp,
   fetchApp,
   fetchAllApps,
   fetchStats,
