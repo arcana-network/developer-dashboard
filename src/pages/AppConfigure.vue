@@ -8,11 +8,9 @@ import ConfigureHeader from '@/components/app-configure/ConfigureHeader.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { updateApp } from '@/services/gateway.service'
+import { updateApp, type AppConfig } from '@/services/gateway.service'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
-import fetchAndStoreAppConfig, {
-  type AppConfig,
-} from '@/utils/fetchAndStoreAppConfig'
+import fetchAndStoreAppConfig from '@/utils/fetchAndStoreAppConfig'
 import signerMakeTx from '@/utils/signerMakeTx'
 
 const currentTab: Ref<ConfigureTabType> = ref('general')

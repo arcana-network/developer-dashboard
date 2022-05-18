@@ -1,9 +1,39 @@
 import axios, { type AxiosRequestConfig } from 'axios'
 
 import store from '@/store'
-import { ChainMapping, RegionMapping, unlimitedBytes } from '@/utils/constants'
-import type { AppConfig } from '@/utils/fetchAndStoreAppConfig'
+import {
+  ChainMapping,
+  MAX_DATA_TRANSFER_BYTES,
+  RegionMapping,
+} from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
+
+type AppConfig = {
+  ID?: number
+  name?: string
+  address?: string
+  cred?: {
+    verifier: string
+    clientId?: string
+    clientSecret?: string
+    redirectURL?: string
+    origin?: string
+  }[]
+  aggregate_login?: boolean
+  bandwidth_limit: number
+  storage_limit: number
+  chain: number
+  region: number
+  theme?: string
+  wallet_type?: number
+  wallet_domain?: string
+  logo?: {
+    dark_horizontal?: string
+    dark_vertical?: string
+    light_horizontal?: string
+    light_vertical?: string
+  }
+}
 
 const gatewayAuthorizedInstance = axios.create()
 gatewayAuthorizedInstance.interceptors.request.use(
@@ -35,10 +65,11 @@ function createApp(appName: string) {
     region: RegionMapping.asia,
     chain: ChainMapping.ethereum,
     cred: [],
-    storage_limit: unlimitedBytes,
-    bandwidth_limit: unlimitedBytes,
+    storage_limit: MAX_DATA_TRANSFER_BYTES,
+    bandwidth_limit: MAX_DATA_TRANSFER_BYTES,
     aggregate_login: true,
     theme: 'dark',
+    wallet_domain: '',
   }
   return gatewayAuthorizedInstance.post(
     `${getEnvApi('v2')}/app/`,
@@ -57,7 +88,7 @@ function fetchAllApps() {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
-function fetchApp(appId: number) {
+function fetchApp(appId?: number) {
   return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
@@ -169,4 +200,5 @@ export {
   fetchMonthlyUsers,
   loginUser,
   getNonce,
+  type AppConfig,
 }

@@ -1,15 +1,15 @@
 import bytes from 'bytes'
 
+import type { AppConfig } from '@/services/gateway.service'
 import {
   defaultUserLimit,
   unlimitedUserLimit,
   ChainMapping,
   RegionMapping,
-  unlimitedBytes,
   type Chain,
   type StorageRegion,
+  MAX_DATA_TRANSFER_BYTES,
 } from '@/utils/constants'
-import type { AppConfig } from '@/utils/fetchAndStoreAppConfig'
 
 type UserLimitUnit = 'MB' | 'GB'
 type UserLimitTarget = 'storage' | 'bandwidth'
@@ -181,13 +181,13 @@ const getters = {
     const storageLimit = state.store.userLimits.storage
     const bandwidthLimit = state.store.userLimits.bandwidth
     if (storageLimit.isUnlimited) {
-      storage_limit = unlimitedBytes
+      storage_limit = MAX_DATA_TRANSFER_BYTES
     } else {
       storage_limit = bytes(`${storageLimit.value} ${storageLimit.unit}`)
     }
 
     if (bandwidthLimit.isUnlimited) {
-      bandwidth_limit = unlimitedBytes
+      bandwidth_limit = MAX_DATA_TRANSFER_BYTES
     } else {
       bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
     }

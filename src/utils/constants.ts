@@ -156,7 +156,7 @@ enum RegionMapping {
   'north-america' = 5,
 }
 
-const unlimitedBytes = bytes('10 TB')
+const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
 const constants = {
   sentry,
@@ -191,7 +191,7 @@ export {
   type BandwidthLimitUnit,
   ChainMapping,
   RegionMapping,
-  unlimitedBytes,
+  MAX_DATA_TRANSFER_BYTES,
 }
 
 export default constants

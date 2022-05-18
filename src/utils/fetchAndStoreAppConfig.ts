@@ -1,35 +1,17 @@
 import bytes from 'bytes'
 
-import { fetchAllApps, fetchApp } from '@/services/gateway.service'
+import {
+  fetchAllApps,
+  fetchApp,
+  type AppConfig,
+} from '@/services/gateway.service'
 import store from '@/store'
-import { ChainMapping, RegionMapping, unlimitedBytes } from '@/utils/constants'
+import {
+  ChainMapping,
+  MAX_DATA_TRANSFER_BYTES,
+  RegionMapping,
+} from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
-
-type AppConfig = {
-  ID?: number
-  name?: string
-  address?: string
-  cred?: {
-    verifier: string
-    clientId?: string
-    clientSecret?: string
-    redirectURL?: string
-    origin?: string
-  }[]
-  aggregate_login?: boolean
-  bandwidth_limit: number
-  storage_limit: number
-  chain: number
-  region: number
-  theme?: string
-  wallet_type?: number
-  logo?: {
-    dark_horizontal?: string
-    dark_vertical?: string
-    light_horizontal?: string
-    light_vertical?: string
-  }
-}
 
 async function fetchAndStoreAppConfig() {
   const apps = await fetchAllApps()
@@ -136,7 +118,7 @@ function storeUserLimits({
   userLimit: number
   type: 'storage' | 'bandwidth'
 }) {
-  if (userLimit < unlimitedBytes) {
+  if (userLimit < MAX_DATA_TRANSFER_BYTES) {
     const isUnder1GB = userLimit < bytes('1 GB')
 
     const calculatedUserLimit = bytes(userLimit, {
@@ -164,5 +146,3 @@ function storeUserLimits({
 }
 
 export default fetchAndStoreAppConfig
-
-export type { AppConfig }
