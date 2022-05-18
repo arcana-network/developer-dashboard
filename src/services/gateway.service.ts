@@ -8,17 +8,26 @@ import {
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
+type AppConfigCred = {
+  verifier: string
+  clientId?: string
+  clientSecret?: string
+  redirectURL?: string
+  origin?: string
+}
+
+type AppConfigThemeLogo = {
+  dark_horizontal?: string
+  dark_vertical?: string
+  light_horizontal?: string
+  light_vertical?: string
+}
+
 type AppConfig = {
   ID?: number
   name?: string
   address?: string
-  cred?: {
-    verifier: string
-    clientId?: string
-    clientSecret?: string
-    redirectURL?: string
-    origin?: string
-  }[]
+  cred?: AppConfigCred[]
   aggregate_login?: boolean
   bandwidth_limit: number
   storage_limit: number
@@ -27,12 +36,7 @@ type AppConfig = {
   theme?: string
   wallet_type?: number
   wallet_domain?: string
-  logo?: {
-    dark_horizontal?: string
-    dark_vertical?: string
-    light_horizontal?: string
-    light_vertical?: string
-  }
+  logo?: AppConfigThemeLogo
 }
 
 const gatewayAuthorizedInstance = axios.create()
@@ -201,4 +205,6 @@ export {
   loginUser,
   getNonce,
   type AppConfig,
+  type AppConfigCred,
+  type AppConfigThemeLogo,
 }

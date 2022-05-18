@@ -6,8 +6,10 @@ declare module '*.vue' {
   export default component
 }
 declare global {
+  import type { SmartContractRequestParams } from '@/utils/signerMakeTx'
+
   interface Window {
-    signerMakeTx: function
+    signerMakeTx: (data: SmartContractRequestParams) => Promise<string>
   }
 }
 

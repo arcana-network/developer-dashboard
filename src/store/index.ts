@@ -35,11 +35,11 @@ const mutations = {
     state.smartContractAddress = smartContractAddress
   },
   showLoader(state, loadingMessage) {
-    state.showLoader = true
+    state.isLoading = true
     state.loadingMessage = loadingMessage
   },
   hideLoader(state) {
-    state.showLoader = false
+    state.isLoading = false
   },
   updateForwarder(state, forwarder) {
     state.forwarder = forwarder
