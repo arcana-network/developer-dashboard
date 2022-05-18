@@ -16,7 +16,16 @@ import {
 } from '@/services/gateway.service'
 import chartUtils from '@/utils/chart'
 
-let users: Ref<any[]> = ref([])
+type User = {
+  id: string
+  walletAddress: string
+  storage: number
+  bandwidth: number
+  actionCount: number
+  email: string
+}
+
+let users: Ref<User[]> = ref([])
 let walletAddress = ref('')
 let showDetails = ref(false)
 let userLog = ref({})
@@ -28,6 +37,7 @@ function fetchUsers() {
       users.value = response.data.map((user) => {
         return {
           id: user.id,
+          email: user.email,
           walletAddress: user.address,
           storage: user.storage,
           bandwidth: user.bandwidth,
