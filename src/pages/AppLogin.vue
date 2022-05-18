@@ -25,7 +25,7 @@ async function launchLogin(type: SocialLoginType) {
 async function fetchAndStoreDetails() {
   store.commit('showLoader', 'Fetching user info...')
   await fetchAndStoreUserInfo()
-  await store.commit('fetchAppConfig')
+  await store.dispatch('fetchAppConfig')
   store.commit('hideLoader')
 
   if (localStorage.getItem('skipPassword') !== 'true') {

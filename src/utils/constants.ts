@@ -12,7 +12,7 @@ const sentry = {
 
 const api = {
   gateway: import.meta.env.VITE_GATEWAY_API,
-  redirect: import.meta.env.VITE_REDIRECT_URI,
+  verify: import.meta.env.VITE_VERIFY_URI,
 }
 
 const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID

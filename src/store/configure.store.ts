@@ -333,7 +333,7 @@ const actions = {
       commit('updateAppName', app.name)
       commit('updateAppId', String(app.ID))
       commit('updateSmartContractAddress', app.address)
-      commit('updateRedirectUri', `${api.redirect}/${app.ID}`)
+      commit('updateRedirectUri', `${api.verify}/${app.ID}`)
 
       const selectedChain = ChainMapping[app.chain]
       commit('updateSelectedChain', selectedChain)
