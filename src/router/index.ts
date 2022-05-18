@@ -37,6 +37,7 @@ function toBoolean(val: string | boolean | number): boolean {
 
 const routes: RouteRecordRaw[] = [
   {
+    name: 'Home',
     path: '/',
     redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
   },
@@ -51,18 +52,24 @@ const routes: RouteRecordRaw[] = [
     redirect: '/login',
   },
   {
+    path: '/app',
+    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+  },
+  {
     name: 'Dashboard',
     path: '/app/dashboard',
     component: AppDashboard,
-  },
-  {
-    path: '/app',
-    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     name: 'Configure',
     path: '/app/configure',
     component: AppConfigure,
+    meta: {
+      requiresAuth: true,
+    },
     children: [
       {
         path: '',
@@ -94,22 +101,34 @@ const routes: RouteRecordRaw[] = [
     name: 'CreateApp',
     path: '/app/create',
     component: CreateApp,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     name: 'Users',
     path: '/app/users',
     component: AppUsers,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     name: 'Profile',
     path: '/profile',
     component: AppProfile,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     name: 'Create Password',
     path: '/password/create',
     component: AppNewPassword,
     props: true,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     name: 'Login',
@@ -126,12 +145,21 @@ const router: Router = createRouter({
   },
 })
 
-const openRoutes: string[] = ['Login', 'Signup', 'Signin', 'Create Password']
-
 router.beforeEach((to, from, next) => {
-  if (!openRoutes.includes(String(to.name)) && !store.getters.accessToken) {
+  if (
+    to.matched.some((record) => record.meta.requiresAuth) &&
+    !store.getters.accessToken
+  ) {
     router.push({ name: 'Login' })
   } else if (to.name === 'Login' && store.getters.accessToken) {
+    router.push({ name: 'Dashboard' })
+  } else if (
+    to.path.includes('/app') &&
+    to.name !== 'CreateApp' &&
+    !store.getters.appId
+  ) {
+    router.push({ name: 'CreateApp' })
+  } else if (to.name === 'CreateApp' && store.getters.appId) {
     router.push({ name: 'Dashboard' })
   }
   return next()

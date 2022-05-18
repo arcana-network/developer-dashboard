@@ -1,19 +1,4 @@
-import axios from 'axios'
 import jsonp from 'jsonp'
-
-import getEnvApi from '@/utils/get-env-api'
-
-function getNonce(address: string) {
-  return axios.get(getEnvApi() + '/get-nonce/?address=' + address)
-}
-
-function login({ signature, email, address }) {
-  return axios.post(getEnvApi() + '/login/', {
-    signature,
-    email,
-    address,
-  })
-}
 
 function addUserToMailchimp(email: string) {
   const mailchimpGroup = import.meta.env.VITE_MAILCHIMP_GROUP
@@ -36,10 +21,4 @@ function addUserToMailchimp(email: string) {
   })
 }
 
-const authService = {
-  getNonce,
-  login,
-  addUserToMailchimp,
-}
-
-export default authService
+export { addUserToMailchimp }

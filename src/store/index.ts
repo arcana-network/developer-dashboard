@@ -2,69 +2,68 @@ import { createStore, createLogger } from 'vuex'
 
 import authStore from '@/store/auth.store'
 import configureStore from '@/store/configure.store'
-import oldConfigureStore from '@/store/old-configure.store'
 
 const debug = process.env.NODE_ENV !== 'production'
 
-const state = {
-  env: 'test',
+type State = {
+  smartContractAddress: string
+  isLoading: boolean
+  loadingMessage: string
+  forwarder: string
+  rpcUrl: string
+}
+
+const state: State = {
   smartContractAddress: '',
-  showLoader: false,
+  isLoading: false,
   loadingMessage: '',
+  forwarder: '',
+  rpcUrl: '',
 }
 
 const getters = {
-  env: (state) => state.env,
-  smartContractAddress: (state) => state.smartContractAddress,
-  showLoader: (state) => state.showLoader,
-  loadingMessage: (state) => state.loadingMessage,
+  smartContractAddress: (state: State) => state.smartContractAddress,
+  isLoading: (state: State) => state.isLoading,
+  loadingMessage: (state: State) => state.loadingMessage,
+  forwarder: (state: State) => state.forwarder,
+  rpcUrl: (state: State) => state.rpcUrl,
 }
 
 const mutations = {
-  toggleEnv(state) {
-    state.env = state.env === 'test' ? 'live' : 'test'
-  },
-  resetStore(state) {
+  resetStore(state: State) {
     state.smartContractAddress = ''
+    state.forwarder = ''
+    state.rpcUrl = ''
   },
-  updateSmartContractAddress(state, smartContractAddress) {
+  updateSmartContractAddress(state: State, smartContractAddress: string) {
     state.smartContractAddress = smartContractAddress
   },
-  showLoader(state, loadingMessage) {
-    state.showLoader = true
+  showLoader(state: State, loadingMessage: string) {
+    state.isLoading = true
     state.loadingMessage = loadingMessage
   },
-  hideLoader(state) {
-    state.showLoader = false
+  hideLoader(state: State) {
+    state.isLoading = false
+  },
+  updateForwarder(state: State, forwarder: string) {
+    state.forwarder = forwarder
+  },
+  updateRpcUrl(state: State, rpcUrl: string) {
+    state.rpcUrl = rpcUrl
   },
 }
 
 const actions = {
-  toggleEnv({ commit }) {
-    commit('toggleEnv')
-  },
   resetStore({ commit }) {
     commit('resetStore')
   },
-  updateSmartContractAddress({ commit }, smartContractAddress) {
+  updateSmartContractAddress({ commit }, smartContractAddress: string) {
     commit('updateSmartContractAddress', smartContractAddress)
   },
 }
 
 const store = createStore({
   modules: {
-    test: {
-      namespaced: true,
-      modules: {
-        oldConfigureStore,
-      },
-    },
-    live: {
-      namespaced: true,
-      modules: {
-        oldConfigureStore,
-      },
-    },
     configureStore,
     authStore,
   },

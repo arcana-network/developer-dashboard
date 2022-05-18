@@ -1,3 +1,5 @@
+import bytes from 'bytes'
+
 import type { UserLimitState, SocialAuthOption } from '@/store/configure.store'
 
 const sentry = {
@@ -9,7 +11,8 @@ const sentry = {
 }
 
 const api = {
-  testnet: import.meta.env.VITE_TESTNET_API,
+  gateway: import.meta.env.VITE_GATEWAY_API,
+  verify: import.meta.env.VITE_VERIFY_URI,
 }
 
 const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID
@@ -142,6 +145,20 @@ const socialLogins: readonly SocialAuthOption[] = [
   },
 ]
 
+enum ChainMapping {
+  ethereum = 0,
+  polygon = 1,
+  binance = 2,
+}
+
+enum RegionMapping {
+  asia = 1,
+  europe = 4,
+  'north-america' = 5,
+}
+
+const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
+
 const constants = {
   sentry,
   api,
@@ -173,6 +190,9 @@ export {
   type Chain,
   type ChainOption,
   type BandwidthLimitUnit,
+  ChainMapping,
+  RegionMapping,
+  MAX_DATA_TRANSFER_BYTES,
 }
 
 export default constants
