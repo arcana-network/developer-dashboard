@@ -35,10 +35,15 @@ function toBoolean(val: string | boolean | number): boolean {
   return !!val
 }
 
+const RequiresAuth = {
+  requiresAuth: true,
+}
+
 const routes: RouteRecordRaw[] = [
   {
+    name: 'Home',
     path: '/',
-    redirect: store.getters.accessToken ? '/app/dashboard' : '/login',
+    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
   },
   {
     name: 'Signup',
@@ -58,11 +63,13 @@ const routes: RouteRecordRaw[] = [
     name: 'Dashboard',
     path: '/app/dashboard',
     component: AppDashboard,
+    meta: RequiresAuth,
   },
   {
     name: 'Configure',
     path: '/app/configure',
     component: AppConfigure,
+    meta: RequiresAuth,
     children: [
       {
         path: '',
@@ -72,21 +79,25 @@ const routes: RouteRecordRaw[] = [
         name: 'GeneralSettings',
         path: 'general',
         component: GeneralSettings,
+        meta: RequiresAuth,
       },
       {
         name: 'AuthSettings',
         path: 'auth',
         component: AuthSettings,
+        meta: RequiresAuth,
       },
       {
         name: 'StoreSettings',
         path: 'store',
         component: StoreSettings,
+        meta: RequiresAuth,
       },
       {
         name: 'AccessSettings',
         path: 'access',
         component: AccessSettings,
+        meta: RequiresAuth,
       },
     ],
   },
@@ -94,22 +105,26 @@ const routes: RouteRecordRaw[] = [
     name: 'CreateApp',
     path: '/app/create',
     component: CreateApp,
+    meta: RequiresAuth,
   },
   {
     name: 'Users',
     path: '/app/users',
     component: AppUsers,
+    meta: RequiresAuth,
   },
   {
     name: 'Profile',
     path: '/profile',
     component: AppProfile,
+    meta: RequiresAuth,
   },
   {
     name: 'Create Password',
     path: '/password/create',
     component: AppNewPassword,
     props: true,
+    meta: RequiresAuth,
   },
   {
     name: 'Login',
@@ -126,10 +141,8 @@ const router: Router = createRouter({
   },
 })
 
-const openRoutes: string[] = ['Login', 'Signup', 'Signin', 'Create Password']
-
 router.beforeEach((to, from, next) => {
-  if (!openRoutes.includes(String(to.name)) && !store.getters.accessToken) {
+  if (to.meta.requiresAuth && !store.getters.accessToken) {
     router.push({ name: 'Login' })
   } else if (to.name === 'Login' && store.getters.accessToken) {
     router.push({ name: 'Dashboard' })

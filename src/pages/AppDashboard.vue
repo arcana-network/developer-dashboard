@@ -42,7 +42,7 @@ const actions = ref({
 })
 const totalUsers = ref(0)
 const isConfigured = computed(() => {
-  return store.getters.appId ? true : false
+  return !!store.getters.appId
 })
 const liveEnv = ref(false)
 const appName = computed(() => {
