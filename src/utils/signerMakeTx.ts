@@ -23,7 +23,9 @@ function getTxRequestProps(): SmartContractRequestParams {
   }
 }
 
-type SmartContractAcceptedValue = string[] | string[][] | number[]
+type SmartContractAcceptedValue =
+  | (string | undefined | number)[]
+  | (string | undefined)[][]
 
 async function signerMakeTx(method: string, value: SmartContractAcceptedValue) {
   return await window.signerMakeTx({ ...getTxRequestProps(), method, value })

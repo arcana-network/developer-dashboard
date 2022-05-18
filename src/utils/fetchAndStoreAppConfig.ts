@@ -3,6 +3,7 @@ import bytes from 'bytes'
 import {
   fetchAllApps,
   fetchApp,
+  getThemeLogo,
   type AppConfig,
 } from '@/services/gateway.service'
 import store from '@/store'
@@ -11,7 +12,6 @@ import {
   MAX_DATA_TRANSFER_BYTES,
   RegionMapping,
 } from '@/utils/constants'
-import getEnvApi from '@/utils/get-env-api'
 
 async function fetchAndStoreAppConfig() {
   const apps = await fetchAllApps()
@@ -55,18 +55,6 @@ function storeStorageRegion(app: AppConfig) {
 function storeSelectedTheme(app: AppConfig) {
   const selectedTheme = app.theme
   store.commit('updateSelectedTheme', selectedTheme)
-}
-
-function getThemeLogo(
-  mode: 'dark' | 'light',
-  orientation: 'horizontal' | 'vertical'
-) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${store.getters.appId}/logo`
-  return {
-    mode,
-    orientation,
-    url: `${logoFetchUrl}?type=${mode}&orientation=${orientation}`,
-  }
 }
 
 function storeThemeLogos(app: AppConfig) {

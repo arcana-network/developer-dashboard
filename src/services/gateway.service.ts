@@ -186,6 +186,18 @@ function loginUser({
   })
 }
 
+function getThemeLogo(
+  mode: 'dark' | 'light',
+  orientation: 'horizontal' | 'vertical'
+) {
+  const logoFetchUrl = `${getEnvApi('v2')}/app/${store.getters.appId}/logo`
+  return {
+    mode,
+    orientation,
+    url: `${logoFetchUrl}?type=${mode}&orientation=${orientation}`,
+  }
+}
+
 export {
   uploadLogo,
   createApp,
@@ -204,6 +216,7 @@ export {
   fetchMonthlyUsers,
   loginUser,
   getNonce,
+  getThemeLogo,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

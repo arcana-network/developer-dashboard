@@ -9,9 +9,13 @@ import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { updateApp, type AppConfig } from '@/services/gateway.service'
+import {
+  setAppName,
+  setClientIds,
+  setDefaultLimit,
+} from '@/services/smart-contract.service'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
 import fetchAndStoreAppConfig from '@/utils/fetchAndStoreAppConfig'
-import signerMakeTx from '@/utils/signerMakeTx'
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
@@ -33,23 +37,13 @@ async function handleSave() {
 async function updateSmartContractTransactions(app: AppConfig) {
   try {
     store.commit('showLoader', 'Updating app name in smart contract...')
-    await signerMakeTx('setAppName', [app.name])
+    await setAppName(app.name)
 
     store.commit('showLoader', 'Updating user limits in smart contract...')
-    await signerMakeTx('setDefaultLimit', [
-      app.storage_limit,
-      app.bandwidth_limit,
-    ])
+    await setDefaultLimit(app.storage_limit, app.bandwidth_limit)
 
     store.commit('showLoader', 'Updating social auth in smart contract...')
-    const authSignerMakeTxValue: [string[], string[]] = [[], []]
-    app.cred?.forEach((authDetail) => {
-      if (authDetail.verifier !== 'passwordless' && authDetail.clientId) {
-        authSignerMakeTxValue[0].push(authDetail.verifier)
-        authSignerMakeTxValue[1].push(authDetail.clientId)
-      }
-    })
-    await signerMakeTx('setClientIds', authSignerMakeTxValue)
+    await setClientIds(app.cred)
   } catch (e) {
     console.error(e)
   }
