@@ -37,6 +37,10 @@ function toBoolean(val: string | boolean | number): boolean {
 
 const routes: RouteRecordRaw[] = [
   {
+    path: '/',
+    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+  },
+  {
     name: 'Signup',
     path: '/signup',
     redirect: '/login',
