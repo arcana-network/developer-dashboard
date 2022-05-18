@@ -5,8 +5,15 @@ import configureStore from '@/store/configure.store'
 
 const debug = process.env.NODE_ENV !== 'production'
 
-const state = {
-  env: 'test',
+type State = {
+  smartContractAddress: string
+  isLoading: boolean
+  loadingMessage: string
+  forwarder: string
+  rpcUrl: string
+}
+
+const state: State = {
   smartContractAddress: '',
   isLoading: false,
   loadingMessage: '',
@@ -15,49 +22,42 @@ const state = {
 }
 
 const getters = {
-  env: (state) => state.env,
-  smartContractAddress: (state) => state.smartContractAddress,
-  isLoading: (state) => state.isLoading,
-  loadingMessage: (state) => state.loadingMessage,
-  forwarder: (state) => state.forwarder,
-  rpcUrl: (state) => state.rpcUrl,
+  smartContractAddress: (state: State) => state.smartContractAddress,
+  isLoading: (state: State) => state.isLoading,
+  loadingMessage: (state: State) => state.loadingMessage,
+  forwarder: (state: State) => state.forwarder,
+  rpcUrl: (state: State) => state.rpcUrl,
 }
 
 const mutations = {
-  toggleEnv(state) {
-    state.env = state.env === 'test' ? 'live' : 'test'
-  },
-  resetStore(state) {
+  resetStore(state: State) {
     state.smartContractAddress = ''
     state.forwarder = ''
     state.rpcUrl = ''
   },
-  updateSmartContractAddress(state, smartContractAddress) {
+  updateSmartContractAddress(state: State, smartContractAddress: string) {
     state.smartContractAddress = smartContractAddress
   },
-  showLoader(state, loadingMessage) {
+  showLoader(state: State, loadingMessage: string) {
     state.isLoading = true
     state.loadingMessage = loadingMessage
   },
-  hideLoader(state) {
+  hideLoader(state: State) {
     state.isLoading = false
   },
-  updateForwarder(state, forwarder) {
+  updateForwarder(state: State, forwarder: string) {
     state.forwarder = forwarder
   },
-  updateRpcUrl(state, rpcUrl) {
+  updateRpcUrl(state: State, rpcUrl: string) {
     state.rpcUrl = rpcUrl
   },
 }
 
 const actions = {
-  toggleEnv({ commit }) {
-    commit('toggleEnv')
-  },
   resetStore({ commit }) {
     commit('resetStore')
   },
-  updateSmartContractAddress({ commit }, smartContractAddress) {
+  updateSmartContractAddress({ commit }, smartContractAddress: string) {
     commit('updateSmartContractAddress', smartContractAddress)
   },
 }
