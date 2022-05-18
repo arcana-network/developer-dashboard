@@ -235,6 +235,7 @@ const getters = {
       chain: ChainMapping[state.access.selectedChain],
       region: RegionMapping[state.store.region],
       theme: state.auth.wallet.selectedTheme,
+      wallet_domain: state.auth.wallet.websiteDomain,
     }
   },
 }
@@ -277,6 +278,7 @@ const mutations = {
     { type, field, value }: UserLimitParam
   ) {
     state.store.userLimits[type][field] = value
+    state.store.userLimits[type].isUnlimited = false
   },
   addSocialAuth(
     state: ConfigureState,
@@ -362,10 +364,25 @@ const actions = {
           if (authDetail.verifier !== 'passwordless') {
             commit('addSocialAuth', {
               verifier: authDetail.verifier,
-              clientId: authDetail.clientId,
+              field: 'clientId',
+              value: authDetail.clientId,
               clientSecret: authDetail.clientSecret,
               redirectUri: authDetail.redirectURL,
             })
+            if (authDetail.clientSecret) {
+              commit('updateSocialAuth', {
+                verifier: authDetail.verifier,
+                field: 'clientSecret',
+                value: authDetail.clientSecret,
+              })
+            }
+            if (authDetail.redirectURL) {
+              commit('updateSocialAuth', {
+                verifier: authDetail.verifier,
+                field: 'redirectUri',
+                value: authDetail.redirectURL,
+              })
+            }
           } else {
             commit('updatePasswordlessAuthJavascriptOrigin', authDetail.origin)
             commit('updatePasswordlessAuthRedirectUri', authDetail.redirectURL)
@@ -383,7 +400,7 @@ const actions = {
         commit('updateUserLimitField', {
           type: 'storage',
           field: 'value',
-          value: storageLimit.value,
+          value: Number(storageLimit.value),
         })
         commit('updateUserLimitField', {
           type: 'storage',
@@ -402,17 +419,17 @@ const actions = {
         commit('updateUserLimitField', {
           type: 'bandwidth',
           field: 'value',
-          value: bandwidthLimit.value,
+          value: Number(bandwidthLimit.value),
         })
         commit('updateUserLimitField', {
-          type: 'storage',
+          type: 'bandwidth',
           field: 'unit',
           value: bandwidthLimit.unit,
         })
       }
 
-      if (app.wallet_domain) {
-        commit('updateWalletWebsiteDomain', app.wallet_domain)
+      if (currentApp.wallet_domain) {
+        commit('updateWalletWebsiteDomain', currentApp.wallet_domain)
       }
     }
   },

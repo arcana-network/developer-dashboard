@@ -45,7 +45,6 @@ async function handleCreateApp() {
           :message-type="hasAppNameError ? 'error' : ''"
           message="App Name cannot be empty"
           @update:model-value="handleAppNameChange"
-          @keyup.enter="handleCreateApp"
         />
       </VStack>
       <VButton
