@@ -33,12 +33,12 @@ async function handleCreateApp() {
 </script>
 
 <template>
-  <section name="configure-app-name">
-    <VCard variant="popup" class="modal-card">
-      <h2>Create New App</h2>
+  <section name="create-app" class="create-app-section">
+    <VCard variant="popup" class="create-app-modal-card">
+      <h2 class="create-app-title">Create New App</h2>
       <VSeperator />
       <VStack direction="column" gap="1rem">
-        <label>Enter App Name</label>
+        <label class="app-name-label">Enter App Name</label>
         <VTextField
           :model-value="appName"
           class="app-name-input"
@@ -59,7 +59,7 @@ async function handleCreateApp() {
 </template>
 
 <style scoped>
-section {
+.create-app-section {
   position: fixed;
   top: 0;
   right: 0;
@@ -68,7 +68,7 @@ section {
   background: rgb(10 10 10 / 72%);
 }
 
-.modal-card {
+.create-app-modal-card {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -81,14 +81,14 @@ section {
   transform: translate(-50%, -50%);
 }
 
-h2 {
+.create-app-title {
   font-family: var(--font-body);
   font-size: 2.5rem;
   font-weight: 700;
   text-align: center;
 }
 
-label {
+.app-name-label {
   font-family: var(--font-body);
   font-size: 1.125rem;
   font-weight: 400;
