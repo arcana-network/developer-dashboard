@@ -5,7 +5,6 @@ import { useStore } from 'vuex'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
-import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
@@ -14,18 +13,19 @@ import { createApp } from '@/services/gateway.service'
 const store = useStore()
 const router = useRouter()
 const appName: ComputedRef<string> = computed(() => store.getters.appName)
-const appNameError: Ref<boolean> = ref(false)
+const hasAppNameError: Ref<boolean> = ref(false)
 
-function onAppNameChange(appName: string) {
+function handleAppNameChange(appName: string) {
   store.commit('updateAppName', appName)
 }
 
 async function handleCreateApp() {
   if (!appName.value?.trim()) {
-    return (appNameError.value = true)
+    hasAppNameError.value = true
+    return
   }
   store.commit('showLoader', 'Creating App...')
-  appNameError.value = false
+  hasAppNameError.value = false
   await createApp(appName.value)
   store.commit('hideLoader')
   router.push({ name: 'GeneralSettings' })
@@ -42,15 +42,16 @@ async function handleCreateApp() {
         <VTextField
           :model-value="appName"
           class="app-name-input"
-          :message-type="appNameError ? 'error' : ''"
+          :message-type="hasAppNameError ? 'error' : ''"
           message="App Name cannot be empty"
-          @update:model-value="onAppNameChange"
+          @update:model-value="handleAppNameChange"
           @keyup.enter="handleCreateApp"
         />
       </VStack>
       <VButton
         label="CREATE"
         class="create-button"
+        :disabled="!appName?.trim()"
         @click.stop="handleCreateApp"
       />
     </VCard>
