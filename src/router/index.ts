@@ -48,12 +48,12 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'Dashboard',
-    path: '/',
+    path: '/app/dashboard',
     component: AppDashboard,
   },
   {
     path: '/app',
-    redirect: store.getters.appId ? '/app/configure' : '/app/create',
+    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
   },
   {
     name: 'Configure',
@@ -93,7 +93,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'Users',
-    path: '/users',
+    path: '/app/users',
     component: AppUsers,
   },
   {
@@ -122,17 +122,11 @@ const router: Router = createRouter({
   },
 })
 
-const openRoutes: string[] = [
-  'SSO Redirect',
-  'Login',
-  'Signup',
-  'Signin',
-  'Create Password',
-]
+const openRoutes: string[] = ['Login', 'Signup', 'Signin', 'Create Password']
 
 router.beforeEach((to, from, next) => {
   if (!openRoutes.includes(String(to.name)) && !store.getters.accessToken) {
-    router.replace({ name: 'Login' })
+    router.push({ name: 'Login' })
   } else if (to.name === 'Login' && store.getters.accessToken) {
     router.push({ name: 'Dashboard' })
   }

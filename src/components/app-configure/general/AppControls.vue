@@ -27,7 +27,7 @@ async function handleAppDeletion() {
   store.commit('showLoader', 'Deleting App...')
   await deleteApp()
   store.commit('hideLoader')
-  router.push('/')
+  router.push({ name: 'CreateApp' })
 }
 </script>
 
