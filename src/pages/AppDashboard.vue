@@ -19,7 +19,11 @@ import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import { fetchPeriodicUsage, fetchStats } from '@/services/gateway.service'
+import {
+  fetchPeriodicUsage,
+  fetchStats,
+  type Duration,
+} from '@/services/gateway.service'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -31,7 +35,7 @@ const smartContractAddress = computed(() => {
 const appId = computed(() => {
   return store.getters.appId
 })
-const durationSelected: Ref<'month' | 'year' | 'day' | 'quarter'> = ref('month')
+const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
   download: 0,

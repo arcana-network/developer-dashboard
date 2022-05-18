@@ -8,6 +8,8 @@ import {
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
+type Duration = 'month' | 'day' | 'year' | 'quarter'
+
 type AppConfigCred = {
   verifier: string
   clientId?: string
@@ -102,9 +104,7 @@ function fetchStats() {
   )
 }
 
-function fetchPeriodicUsage(
-  period: 'month' | 'day' | 'year' | 'quarter' = 'month'
-) {
+function fetchPeriodicUsage(period: Duration = 'month') {
   return gatewayAuthorizedInstance.get(
     `${getEnvApi()}/app-usage/?id=${store.getters.appId}&period=${period}`
   )
@@ -220,4 +220,5 @@ export {
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
+  type Duration,
 }
