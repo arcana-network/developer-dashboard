@@ -39,6 +39,7 @@ const emit = defineEmits(['switch-tab'])
 
 .configure-sidebar-card {
   flex-grow: 1;
+  height: calc(100% - 5rem);
   padding: 2.5rem 1.25rem;
 }
 

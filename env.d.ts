@@ -1,3 +1,4 @@
+import 'vue-router'
 /// <reference types="vite/client" />
 declare module '*.vue' {
   import type { DefineComponent } from 'vue'
@@ -10,6 +11,12 @@ declare global {
 
   interface Window {
     signerMakeTx: (data: SmartContractRequestParams) => Promise<string>
+  }
+}
+
+declare module 'vue-router' {
+  interface RouteMeta {
+    requiresAuth: boolean
   }
 }
 
