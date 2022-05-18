@@ -24,6 +24,7 @@ const StoreSettings = () =>
   import('@/components/app-configure/store/StoreSettings.vue')
 const AccessSettings = () =>
   import('@/components/app-configure/access/AccessSettings.vue')
+const CreateApp = () => import('@/components/app-configure/CreateApp.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -36,6 +37,10 @@ function toBoolean(val: string | boolean | number): boolean {
 
 const routes: RouteRecordRaw[] = [
   {
+    path: '/',
+    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+  },
+  {
     name: 'Signup',
     path: '/signup',
     redirect: '/login',
@@ -47,17 +52,21 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'Dashboard',
-    path: '/',
+    path: '/app/dashboard',
     component: AppDashboard,
   },
   {
+    path: '/app',
+    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+  },
+  {
     name: 'Configure',
-    path: '/configure',
+    path: '/app/configure',
     component: AppConfigure,
     children: [
       {
         path: '',
-        redirect: '/configure/general',
+        redirect: '/app/configure/general',
       },
       {
         name: 'GeneralSettings',
@@ -82,8 +91,13 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    name: 'CreateApp',
+    path: '/app/create',
+    component: CreateApp,
+  },
+  {
     name: 'Users',
-    path: '/users',
+    path: '/app/users',
     component: AppUsers,
   },
   {
@@ -112,17 +126,11 @@ const router: Router = createRouter({
   },
 })
 
-const openRoutes: string[] = [
-  'SSO Redirect',
-  'Login',
-  'Signup',
-  'Signin',
-  'Create Password',
-]
+const openRoutes: string[] = ['Login', 'Signup', 'Signin', 'Create Password']
 
 router.beforeEach((to, from, next) => {
   if (!openRoutes.includes(String(to.name)) && !store.getters.accessToken) {
-    router.replace({ name: 'Login' })
+    router.push({ name: 'Login' })
   } else if (to.name === 'Login' && store.getters.accessToken) {
     router.push({ name: 'Dashboard' })
   }
