@@ -16,7 +16,7 @@ declare global {
 
 declare module 'vue-router' {
   interface RouteMeta {
-    requiresAuth: boolean
+    requiresAuth?: boolean
   }
 }
 
