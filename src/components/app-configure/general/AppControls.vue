@@ -26,7 +26,7 @@ async function handleAppDeletion() {
   showDeleteTimerPopup.value = false
   store.commit('showLoader', 'Deleting App...')
   await deleteApp()
-  store.commit('resetSettings')
+  store.dispatch('resetSettings')
   store.commit('hideLoader')
   router.push({ name: 'CreateApp' })
 }

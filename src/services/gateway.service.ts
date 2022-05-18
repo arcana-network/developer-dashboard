@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig } from 'axios'
+import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
 import store from '@/store'
 import {
@@ -65,7 +65,7 @@ function uploadLogo(
   )
 }
 
-function createApp(appName: string) {
+function createApp(appName: string): Promise<AxiosResponse<AppConfig>> {
   const defaultAppConfig: AppConfig = {
     name: appName,
     region: RegionMapping.asia,

@@ -165,7 +165,7 @@ const defaultState: ConfigureState = {
   },
 }
 
-let state: ConfigureState = { ...defaultState }
+const state: ConfigureState = { ...defaultState }
 
 const getters = {
   appName: (state: ConfigureState) => state.appName,
@@ -305,6 +305,9 @@ const mutations = {
       (auth) => auth.verifier !== verifier
     )
   },
+  resetSocialAuth(state: ConfigureState) {
+    state.auth.social = []
+  },
   updateWalletUIMode(state: ConfigureState, hasUIMode: boolean) {
     state.auth.wallet.hasUIMode = hasUIMode
   },
@@ -319,9 +322,6 @@ const mutations = {
   },
   updateRedirectUri(state: ConfigureState, redirectUri: string) {
     state.auth.redirectUri = redirectUri
-  },
-  resetSettings() {
-    state = { ...defaultState }
   },
 }
 
@@ -432,6 +432,25 @@ const actions = {
         commit('updateWalletWebsiteDomain', currentApp.wallet_domain)
       }
     }
+  },
+  resetSettings({ commit }: Store<ConfigureState>) {
+    commit('updateAppId', '')
+    commit('updateAppName', '')
+    commit('updateSelectedChain', 'ethereum')
+    commit('updateStorageRegion', 'asia')
+    commit('updateSelectedTheme', 'dark')
+    commit('updatePasswordlessAuthJavascriptOrigin', '')
+    commit('updatePasswordlessAuthRedirectUri', '')
+    commit('resetSocialAuth')
+    commit('updateUserLimit', { type: 'storage', isUnlimited: true })
+    commit('updateUserLimit', { type: 'bandwidth', isUnlimited: true })
+    commit('updateWalletUIMode', false)
+    commit('updateWalletWebsiteDomain', '')
+    commit('updateRedirectUri', '')
+    commit('updateLogo', { mode: 'dark', orientation: 'horizontal', url: '' })
+    commit('updateLogo', { mode: 'dark', orientation: 'vertical', url: '' })
+    commit('updateLogo', { mode: 'light', orientation: 'horizontal', url: '' })
+    commit('updateLogo', { mode: 'light', orientation: 'vertical', url: '' })
   },
 }
 

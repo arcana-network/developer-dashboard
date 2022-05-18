@@ -71,7 +71,7 @@ onBeforeMount(() => {
 function onLogout() {
   logout()
   localStorage.clear()
-  store.commit('resetSettings')
+  store.dispatch('resetSettings')
   store.dispatch('resetAuth')
   store.dispatch('resetStore')
   router.push({ name: 'Login' })
