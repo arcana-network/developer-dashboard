@@ -21,7 +21,7 @@ function uploadLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo/`,
+    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
     formData,
     {
       params: { type: mode, orientation },
