@@ -2,7 +2,6 @@ import { createStore, createLogger } from 'vuex'
 
 import authStore from '@/store/auth.store'
 import configureStore from '@/store/configure.store'
-import oldConfigureStore from '@/store/old-configure.store'
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -30,6 +29,8 @@ const mutations = {
   },
   resetStore(state) {
     state.smartContractAddress = ''
+    state.forwarder = ''
+    state.rpcUrl = ''
   },
   updateSmartContractAddress(state, smartContractAddress) {
     state.smartContractAddress = smartContractAddress
@@ -63,18 +64,6 @@ const actions = {
 
 const store = createStore({
   modules: {
-    test: {
-      namespaced: true,
-      modules: {
-        oldConfigureStore,
-      },
-    },
-    live: {
-      namespaced: true,
-      modules: {
-        oldConfigureStore,
-      },
-    },
     configureStore,
     authStore,
   },
