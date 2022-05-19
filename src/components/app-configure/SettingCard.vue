@@ -1,7 +1,11 @@
 <script lang="ts" setup>
+import { useSlots } from 'vue'
+
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+
+const slot = useSlots()
 </script>
 
 <template>
@@ -14,7 +18,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
         <slot name="controls" />
       </VStack>
       <VSeperator class="settings-card-separator" />
-      <div class="body-1">
+      <div v-if="slot.description" class="body-1">
         <slot name="description" />
       </div>
       <slot />

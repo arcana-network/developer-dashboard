@@ -12,7 +12,7 @@ import type {
   SocialAuthState,
   SocialAuthVerifier,
   SocialAuthField,
-} from '@/store/configure.store'
+} from '@/store/app.store'
 import { socialLogins } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -64,10 +64,14 @@ function handleFieldUpdate(
     <SettingCard>
       <template #title>Social Auth</template>
       <template #description>
-        Increase adoption of your app by enabling this option. Arcana will take
-        care of issuing public and prviate keys to each user through our
-        Decentralised Key Generation (DKG) mechanism and keep them secure.
-        <a>LEARN MORE</a>
+        Provide easy onboarding for your users with familiar social login
+        mechanisms. Once the dApp users successfully authenticate themselves,
+        Arcana will take care of securely assigning a public-private key pair
+        per user, using our Distributed Key Generation.
+        <a
+          >Learn more about Arcana's Distributed Key Generation → Concepts:
+          DKG</a
+        >
       </template>
       <VStack gap="2rem">
         <h4 class="verifier-name">Social</h4>

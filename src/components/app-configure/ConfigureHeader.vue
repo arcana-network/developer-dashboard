@@ -24,11 +24,6 @@ const selectedNetwork = ref('Testnet')
       </VStack>
       <VDropdown v-model="selectedNetwork" :options="networks" />
     </VStack>
-    <div class="body-1">
-      Use this dashboard to configure your applications as required. You can
-      choose from various options available for authentication, storage, access
-      as well as how the Arcana wallet would function and appear.
-    </div>
   </VStack>
 </template>
 

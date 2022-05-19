@@ -9,9 +9,8 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import type {
   UserLimitParam,
   UserLimitTarget,
-  UserLimitUnit,
   UserLimitState,
-} from '@/store/configure.store'
+} from '@/store/app.store'
 import {
   userLimitOptions,
   storageValues,
@@ -71,8 +70,8 @@ function handleUserLimitFieldChange({ type, field, value }: UserLimitParam) {
     <SettingCard>
       <template #title>User Limits</template>
       <template #description
-        >If you would like to limit the bandwidth or storage for each of your
-        users, please specify the same below. <a>LEARN MORE</a></template
+        >You can configure the maximum storage and bandwidth consumption limits
+        per user. Or you can use the "Unlimited" default.</template
       >
       <VStack
         class="limits-input-container"

@@ -36,10 +36,6 @@ async function handleAppDeletion() {
   <section name="configure-app-controls">
     <SettingCard>
       <template #title>Controls</template>
-      <template #description
-        >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Lorem ipsum
-        dolor sit amet, consectetuer adipiscing elit.</template
-      >
       <VButton
         label="DELETE"
         variant="secondary"

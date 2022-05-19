@@ -23,8 +23,11 @@ function handleChange(option: Region) {
     <SettingCard class="storage-region-card">
       <template #title>Storage Region</template>
       <template #description
-        >Please specify where your data should be hosted by selecting from the
-        geographical regions provided below. <a>LEARN MORE</a></template
+        >Arcana logically groups storage nodes by geography so you can choose
+        where your app's assets reside and conform to regulations.
+        <a
+          >Learn more about Arcana's Storage Nodes → Concepts: Storage Node</a
+        ></template
       >
       <VStack direction="column" gap="0.75rem" align="start">
         <h4>Choose Region</h4>

@@ -85,13 +85,8 @@ function handleFileRemove(
   <section name="app-branding">
     <SettingCard class="app-branding-card">
       <template #title>Branding</template>
-      <template #description
-        >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Lorem ipsum
-        dolor sit amet, consectetuer adipiscing elit.
-        <a>LEARN MORE</a></template
-      >
       <VStack direction="column" gap="1.5rem">
-        <h3 class="text-uppercase" style="margin-top: 2rem">Upload Logo</h3>
+        <h3 class="text-uppercase">Upload Logo</h3>
         <VStack direction="column" gap="1rem">
           <h4 class="text-uppercase font-700">Light Mode</h4>
           <VStack gap="4rem" md-gap="2rem" wrap>
