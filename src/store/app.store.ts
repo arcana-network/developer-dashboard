@@ -1,5 +1,4 @@
 import bytes from 'bytes'
-import type { Store } from 'vuex'
 
 import {
   type AppConfig,
@@ -85,9 +84,10 @@ type SocialAuthState = {
   redirectUri?: string
 }
 
-type ConfigureState = {
+type AppState = {
   appName: string
   appId: string
+  appAddress: string
   logos: {
     dark: {
       horizontal: string
@@ -123,66 +123,69 @@ type ConfigureState = {
   }
 }
 
-const defaultState: ConfigureState = {
-  appName: '',
-  appId: '',
-  access: {
-    selectedChain: 'ethereum',
-  },
-  logos: {
-    dark: {
-      horizontal: '',
-      vertical: '',
+function getDefaultAppState(): AppState {
+  return {
+    appName: '',
+    appId: '',
+    appAddress: '',
+    access: {
+      selectedChain: 'ethereum',
     },
-    light: {
-      horizontal: '',
-      vertical: '',
+    logos: {
+      dark: {
+        horizontal: '',
+        vertical: '',
+      },
+      light: {
+        horizontal: '',
+        vertical: '',
+      },
     },
-  },
-  auth: {
-    social: [],
-    passwordless: {
-      javascriptOrigin: '',
+    auth: {
+      social: [],
+      passwordless: {
+        javascriptOrigin: '',
+        redirectUri: '',
+      },
       redirectUri: '',
-    },
-    redirectUri: '',
-    wallet: {
-      websiteDomain: '',
-      selectedTheme: 'dark',
-      hasUIMode: false,
-    },
-  },
-  store: {
-    userLimits: {
-      storage: {
-        isUnlimited: true,
-      },
-      bandwidth: {
-        isUnlimited: true,
+      wallet: {
+        websiteDomain: '',
+        selectedTheme: 'dark',
+        hasUIMode: false,
       },
     },
-    region: 'asia',
-  },
+    store: {
+      userLimits: {
+        storage: {
+          isUnlimited: true,
+        },
+        bandwidth: {
+          isUnlimited: true,
+        },
+      },
+      region: 'asia',
+    },
+  }
 }
 
-let state: ConfigureState = { ...defaultState }
+const state: AppState = getDefaultAppState()
 
 const getters = {
-  appName: (state: ConfigureState) => state.appName,
-  appId: (state: ConfigureState) => state.appId,
-  socialAuth: (state: ConfigureState) => state.auth.social,
-  walletUIMode: (state: ConfigureState) => state.auth.wallet.hasUIMode,
-  walletWebsiteDomain: (state: ConfigureState) =>
-    state.auth.wallet.websiteDomain,
-  selectedTheme: (state: ConfigureState) => state.auth.wallet.selectedTheme,
-  selectedChain: (state: ConfigureState) => state.access.selectedChain,
-  passwordlessAuth: (state: ConfigureState) => state.auth.passwordless,
-  storageLimit: (state: ConfigureState) => state.store.userLimits.storage,
-  bandwidthLimit: (state: ConfigureState) => state.store.userLimits.bandwidth,
-  storageRegion: (state: ConfigureState) => state.store.region,
-  logos: (state: ConfigureState) => state.logos,
-  redirectUri: (state: ConfigureState) => state.auth.redirectUri,
-  appConfigRequestBody: (state: ConfigureState): AppConfig => {
+  appName: (state: AppState) => state.appName,
+  appId: (state: AppState) => state.appId,
+  appAddress: (state: AppState) => state.appAddress,
+  socialAuth: (state: AppState) => state.auth.social,
+  walletUIMode: (state: AppState) => state.auth.wallet.hasUIMode,
+  walletWebsiteDomain: (state: AppState) => state.auth.wallet.websiteDomain,
+  selectedTheme: (state: AppState) => state.auth.wallet.selectedTheme,
+  selectedChain: (state: AppState) => state.access.selectedChain,
+  passwordlessAuth: (state: AppState) => state.auth.passwordless,
+  storageLimit: (state: AppState) => state.store.userLimits.storage,
+  bandwidthLimit: (state: AppState) => state.store.userLimits.bandwidth,
+  storageRegion: (state: AppState) => state.store.region,
+  logos: (state: AppState) => state.logos,
+  redirectUri: (state: AppState) => state.auth.redirectUri,
+  appConfigRequestBody: (state: AppState): AppConfig => {
     let storage_limit: number, bandwidth_limit: number
 
     const storageLimit = state.store.userLimits.storage
@@ -228,6 +231,7 @@ const getters = {
 
     return {
       name: state.appName,
+      address: state.appAddress,
       storage_limit,
       bandwidth_limit,
       cred,
@@ -236,37 +240,43 @@ const getters = {
       region: RegionMapping[state.store.region],
       theme: state.auth.wallet.selectedTheme,
       wallet_domain: state.auth.wallet.websiteDomain,
+      logo: {
+        dark_horizontal: state.logos.dark.horizontal,
+        dark_vertical: state.logos.dark.vertical,
+        light_horizontal: state.logos.light.horizontal,
+        light_vertical: state.logos.light.vertical,
+      },
     }
   },
 }
 
 const mutations = {
-  updateAppId(state: ConfigureState, appId: string) {
+  updateAppId(state: AppState, appId: string) {
     state.appId = appId
   },
-  updateAppName(state: ConfigureState, appName: string) {
+  updateAppName(state: AppState, appName: string) {
     state.appName = appName
   },
-  updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
+  updateAppAddress(state: AppState, appAddress: string) {
+    state.appAddress = appAddress
+  },
+  updateSelectedChain(state: AppState, selectedChain: Chain) {
     state.access.selectedChain = selectedChain
   },
-  updateSelectedTheme(state: ConfigureState, selectedTheme: 'light' | 'dark') {
+  updateSelectedTheme(state: AppState, selectedTheme: 'light' | 'dark') {
     state.auth.wallet.selectedTheme = selectedTheme
   },
   updatePasswordlessAuthJavascriptOrigin(
-    state: ConfigureState,
+    state: AppState,
     javascriptOrigin: string
   ) {
     state.auth.passwordless.javascriptOrigin = javascriptOrigin
   },
-  updatePasswordlessAuthRedirectUri(
-    state: ConfigureState,
-    redirectUri: string
-  ) {
+  updatePasswordlessAuthRedirectUri(state: AppState, redirectUri: string) {
     state.auth.passwordless.redirectUri = redirectUri
   },
   updateUserLimit(
-    state: ConfigureState,
+    state: AppState,
     { type, isUnlimited }: UserLimitUnlimitedParam
   ) {
     state.store.userLimits[type] = isUnlimited
@@ -274,14 +284,14 @@ const mutations = {
       : { ...defaultUserLimit }
   },
   updateUserLimitField(
-    state: ConfigureState,
+    state: AppState,
     { type, field, value }: UserLimitParam
   ) {
     state.store.userLimits[type][field] = value
     state.store.userLimits[type].isUnlimited = false
   },
   addSocialAuth(
-    state: ConfigureState,
+    state: AppState,
     { verifier, field, value }: SocialAuthUpdateParam
   ) {
     state.auth.social.push({
@@ -290,7 +300,7 @@ const mutations = {
     })
   },
   updateSocialAuth(
-    state: ConfigureState,
+    state: AppState,
     { verifier, field, value }: SocialAuthUpdateParam
   ) {
     const exisitingAuth: SocialAuthState | undefined = state.auth.social.find(
@@ -300,33 +310,43 @@ const mutations = {
       exisitingAuth[field] = value
     }
   },
-  removeSocialAuth(state: ConfigureState, verifier: SocialAuthVerifier) {
+  removeSocialAuth(state: AppState, verifier: SocialAuthVerifier) {
     state.auth.social = state.auth.social.filter(
       (auth) => auth.verifier !== verifier
     )
   },
-  updateWalletUIMode(state: ConfigureState, hasUIMode: boolean) {
+  resetSocialAuth(state: AppState) {
+    state.auth.social = []
+  },
+  updateWalletUIMode(state: AppState, hasUIMode: boolean) {
     state.auth.wallet.hasUIMode = hasUIMode
   },
-  updateWalletWebsiteDomain(state: ConfigureState, websiteDomain: string) {
+  updateWalletWebsiteDomain(state: AppState, websiteDomain: string) {
     state.auth.wallet.websiteDomain = websiteDomain
   },
-  updateStorageRegion(state: ConfigureState, region: StorageRegion) {
+  updateStorageRegion(state: AppState, region: StorageRegion) {
     state.store.region = region
   },
-  updateLogo(state: ConfigureState, { mode, orientation, url }: Logo) {
+  updateLogo(state: AppState, { mode, orientation, url }: Logo) {
     state.logos[mode][orientation] = url
   },
-  updateRedirectUri(state: ConfigureState, redirectUri: string) {
+  updateRedirectUri(state: AppState, redirectUri: string) {
     state.auth.redirectUri = redirectUri
   },
-  resetSettings() {
-    state = { ...defaultState }
+  resetSettings(state: AppState) {
+    const appState = getDefaultAppState()
+    state.appName = appState.appName
+    state.appId = appState.appId
+    state.auth = appState.auth
+    state.store = appState.store
+    state.access = appState.access
+    state.appAddress = appState.appAddress
+    state.logos = appState.logos
   },
 }
 
 const actions = {
-  async fetchAppConfig({ commit }: Store<ConfigureState>) {
+  async fetchAppConfig({ commit }) {
     const apps = await fetchAllApps()
     if (apps.data.length) {
       const currentApp: AppConfig = apps.data[0]
@@ -334,7 +354,7 @@ const actions = {
 
       commit('updateAppName', app.name)
       commit('updateAppId', String(currentApp.ID))
-      commit('updateSmartContractAddress', app.address)
+      commit('updateAppAddress', app.address)
       commit('updateRedirectUri', `${api.verify}/${currentApp.ID}`)
 
       const selectedChain = ChainMapping[app.chain]
@@ -376,16 +396,16 @@ const actions = {
                 value: authDetail.clientSecret,
               })
             }
-            if (authDetail.redirectURL) {
+            if (authDetail.redirectUrl) {
               commit('updateSocialAuth', {
                 verifier: authDetail.verifier,
                 field: 'redirectUri',
-                value: authDetail.redirectURL,
+                value: authDetail.redirectUrl,
               })
             }
           } else {
             commit('updatePasswordlessAuthJavascriptOrigin', authDetail.origin)
-            commit('updatePasswordlessAuthRedirectUri', authDetail.redirectURL)
+            commit('updatePasswordlessAuthRedirectUri', authDetail.redirectUrl)
           }
         })
       }
@@ -432,6 +452,9 @@ const actions = {
         commit('updateWalletWebsiteDomain', currentApp.wallet_domain)
       }
     }
+  },
+  resetSettings({ commit }) {
+    commit('resetSettings')
   },
 }
 

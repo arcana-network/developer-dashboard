@@ -76,6 +76,6 @@ function handleCancel() {
 }
 
 .configure-footer {
-  margin-top: auto;
+  margin-top: 4rem;
 }
 </style>

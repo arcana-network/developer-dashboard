@@ -8,7 +8,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import { createApp } from '@/services/gateway.service'
+import { createApp, type AppConfig } from '@/services/gateway.service'
 
 const store = useStore()
 const router = useRouter()
@@ -26,7 +26,9 @@ async function handleCreateApp() {
   }
   store.commit('showLoader', 'Creating App...')
   hasAppNameError.value = false
-  await createApp(appName.value)
+  const app: AppConfig = (await createApp(appName.value)).data
+  store.commit('updateAppId', app.ID)
+  await store.dispatch('fetchAppConfig')
   store.commit('hideLoader')
   router.push({ name: 'GeneralSettings' })
 }

@@ -180,7 +180,7 @@ function convertToBytes(value: number) {
         />
       </div>
       <v-card
-        variant="raised"
+        variant="elevated"
         class="flex column users-table-card"
         style="margin-top: 4vh"
       >
