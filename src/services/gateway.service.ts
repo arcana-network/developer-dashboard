@@ -15,6 +15,7 @@ type AppConfigCred = {
   clientId?: string
   clientSecret?: string
   redirectURL?: string
+  redirectUrl?: string
   origin?: string
 }
 
