@@ -1,5 +1,4 @@
 import bytes from 'bytes'
-import type { Store } from 'vuex'
 
 import {
   type AppConfig,
@@ -88,6 +87,7 @@ type SocialAuthState = {
 type ConfigureState = {
   appName: string
   appId: string
+  appAddress: string
   logos: {
     dark: {
       horizontal: string
@@ -126,6 +126,7 @@ type ConfigureState = {
 const defaultState: ConfigureState = {
   appName: '',
   appId: '',
+  appAddress: '',
   access: {
     selectedChain: 'ethereum',
   },
@@ -170,6 +171,7 @@ const state: ConfigureState = { ...defaultState }
 const getters = {
   appName: (state: ConfigureState) => state.appName,
   appId: (state: ConfigureState) => state.appId,
+  appAddress: (state: ConfigureState) => state.appAddress,
   socialAuth: (state: ConfigureState) => state.auth.social,
   walletUIMode: (state: ConfigureState) => state.auth.wallet.hasUIMode,
   walletWebsiteDomain: (state: ConfigureState) =>
@@ -228,6 +230,7 @@ const getters = {
 
     return {
       name: state.appName,
+      address: state.appAddress,
       storage_limit,
       bandwidth_limit,
       cred,
@@ -246,6 +249,9 @@ const mutations = {
   },
   updateAppName(state: ConfigureState, appName: string) {
     state.appName = appName
+  },
+  updateAppAddress(state: ConfigureState, appAddress: string) {
+    state.appAddress = appAddress
   },
   updateSelectedChain(state: ConfigureState, selectedChain: Chain) {
     state.access.selectedChain = selectedChain
@@ -326,7 +332,7 @@ const mutations = {
 }
 
 const actions = {
-  async fetchAppConfig({ commit }: Store<ConfigureState>) {
+  async fetchAppConfig({ commit }) {
     const apps = await fetchAllApps()
     if (apps.data.length) {
       const currentApp: AppConfig = apps.data[0]
@@ -334,7 +340,7 @@ const actions = {
 
       commit('updateAppName', app.name)
       commit('updateAppId', String(currentApp.ID))
-      commit('updateSmartContractAddress', app.address)
+      commit('updateAppAddress', app.address)
       commit('updateRedirectUri', `${api.verify}/${currentApp.ID}`)
 
       const selectedChain = ChainMapping[app.chain]
@@ -433,7 +439,7 @@ const actions = {
       }
     }
   },
-  resetSettings({ commit }: Store<ConfigureState>) {
+  resetSettings({ commit }) {
     commit('updateAppId', '')
     commit('updateAppName', '')
     commit('updateSelectedChain', 'ethereum')

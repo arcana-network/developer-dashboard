@@ -29,9 +29,6 @@ import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
 const store = useStore()
-const smartContractAddress = computed(() => {
-  return store.getters.smartContractAddress
-})
 const appId = computed(() => {
   return store.getters.appId
 })
@@ -213,7 +210,7 @@ function goToConfigure() {
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
-function copySmartContractAddress() {
+function copyAppId() {
   SmartContractIcon.value = CheckIcon
   smartContractTooltip.value = 'Copied'
   copyToClipboard(appId.value)
@@ -280,7 +277,7 @@ watch(
           <v-tooltip
             :title="smartContractTooltip"
             class="mobile-remove"
-            @click.stop="copySmartContractAddress"
+            @click.stop="copyAppId"
           >
             <img
               :src="SmartContractIcon"
@@ -318,20 +315,20 @@ watch(
         class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
       >
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
-          Smart Contract Address:
+          App ID:
         </span>
-        <v-tooltip :title="smartContractAddress" class="">
+        <v-tooltip :title="appId" class="">
           <div
             style="width: 6em; font-weight: 500; color: var(--text-white)"
             class="body-1 text-ellipsis cursor-pointer"
           >
-            {{ smartContractAddress }}
+            {{ appId }}
           </div>
         </v-tooltip>
         <v-tooltip
           :title="smartContractTooltip"
           class=""
-          @click.stop="copySmartContractAddress"
+          @click.stop="copyAppId"
         >
           <img
             :src="SmartContractIcon"

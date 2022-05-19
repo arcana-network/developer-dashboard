@@ -6,7 +6,6 @@ import configureStore from '@/store/configure.store'
 const debug = process.env.NODE_ENV !== 'production'
 
 type State = {
-  smartContractAddress: string
   isLoading: boolean
   loadingMessage: string
   forwarder: string
@@ -14,7 +13,6 @@ type State = {
 }
 
 const state: State = {
-  smartContractAddress: '',
   isLoading: false,
   loadingMessage: '',
   forwarder: '',
@@ -22,7 +20,6 @@ const state: State = {
 }
 
 const getters = {
-  smartContractAddress: (state: State) => state.smartContractAddress,
   isLoading: (state: State) => state.isLoading,
   loadingMessage: (state: State) => state.loadingMessage,
   forwarder: (state: State) => state.forwarder,
@@ -31,12 +28,8 @@ const getters = {
 
 const mutations = {
   resetStore(state: State) {
-    state.smartContractAddress = ''
     state.forwarder = ''
     state.rpcUrl = ''
-  },
-  updateSmartContractAddress(state: State, smartContractAddress: string) {
-    state.smartContractAddress = smartContractAddress
   },
   showLoader(state: State, loadingMessage: string) {
     state.isLoading = true
@@ -56,9 +49,6 @@ const mutations = {
 const actions = {
   resetStore({ commit }) {
     commit('resetStore')
-  },
-  updateSmartContractAddress({ commit }, smartContractAddress: string) {
-    commit('updateSmartContractAddress', smartContractAddress)
   },
 }
 

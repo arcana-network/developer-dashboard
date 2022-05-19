@@ -15,7 +15,7 @@ type SmartContractRequestParams = {
 function getTxRequestProps(): SmartContractRequestParams {
   return {
     privateKey: store.getters.keys.privateKey,
-    appAddress: store.getters.smartContractAddress,
+    appAddress: store.getters.appAddress,
     rpc: store.getters.rpcUrl,
     gateway: getEnvApi(),
     forwarderAddress: store.getters.forwarder,
