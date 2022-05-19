@@ -1,7 +1,7 @@
 import { createStore, createLogger } from 'vuex'
 
+import appStore from '@/store/app.store'
 import authStore from '@/store/auth.store'
-import configureStore from '@/store/configure.store'
 
 const debug = process.env.NODE_ENV !== 'production'
 
@@ -54,7 +54,7 @@ const actions = {
 
 const store = createStore({
   modules: {
-    configureStore,
+    appStore,
     authStore,
   },
   state,
