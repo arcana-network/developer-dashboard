@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  dashboard:
+    build: ./
+    restart: on-failure
+    ports:
+      - '3000:3000'
+    expose:
+      - '3000'
+    environment:
+      NODE_OPTIONS: --max-old-space-size=8192
+    networks:
+      - arcana
+
+networks:
+  arcana:
+    external: true

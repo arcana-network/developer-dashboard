@@ -1,0 +1,10 @@
+.github
+.husky
+.vscode
+.git
+node_modules
+npm-debug.log
+Dockerfile
+.dockerignore
+readme.md
+.env
