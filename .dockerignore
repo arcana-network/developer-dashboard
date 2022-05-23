@@ -7,4 +7,6 @@ npm-debug.log
 Dockerfile
 .dockerignore
 readme.md
-.env
+.env.example
+.DS_Store
+Makefile

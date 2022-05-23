@@ -33,3 +33,27 @@ Preview the generated site before deploying.
 ```bash
 npm run serve
 ```
+
+## Local environment setup
+
+#### Prerequisits
+
+- [Docker](https://docs.docker.com/engine/install/)
+
+1. Clone the repository
+
+```
+git clone git@github.com:arcana-network/developer-dashboard.git
+```
+
+2. Create environment file
+
+```
+cp .env.example .env
+```
+
+3. Run local environment with Dashboard service
+
+```
+make run-local
+```
