@@ -10,3 +10,4 @@ readme.md
 .env.example
 .DS_Store
 Makefile
+dist

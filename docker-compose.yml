@@ -4,7 +4,7 @@ services:
     build: ./
     restart: on-failure
     ports:
-      - '3000:3000'
+      - '3000:80'
     expose:
       - '3000'
     env_file:

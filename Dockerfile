@@ -1,10 +1,13 @@
-FROM node:16.13.1-alpine3.15
-
-RUN mkdir app
-WORKDIR /app/
-
-COPY . .
-
+# build stage
+FROM node:lts-alpine as build-stage
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
+COPY . .
+RUN npm run build
 
-CMD [ "npm", "run", "dev", "--", "--host"]
+# production stage
+FROM nginx:stable-alpine as production-stage
+RUN mkdir /app
+COPY --from=build-stage /app/dist /app
+COPY nginx.conf /etc/nginx/nginx.conf
