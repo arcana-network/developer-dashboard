@@ -20,24 +20,6 @@ module.exports={
     {
       "inputs": [
         {
-          "internalType": "string",
-          "name": "_client",
-          "type": "string"
-        },
-        {
-          "internalType": "string",
-          "name": "_clientId",
-          "type": "string"
-        }
-      ],
-      "name": "setClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
           "internalType": "string[]",
           "name": "_client",
           "type": "string[]"
@@ -67,6 +49,13 @@ module.exports={
         }
       ],
       "name": "setDefaultLimit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "setUiMode",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
