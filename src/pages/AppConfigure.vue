@@ -13,12 +13,19 @@ import {
   setAppName,
   setClientIds,
   setDefaultLimit,
+  enableUiMode,
 } from '@/services/smart-contract.service'
-import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
+import {
+  WalletModeMapping,
+  type ConfigureTab,
+  type ConfigureTabType,
+} from '@/utils/constants'
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
 const store = useStore()
+
+let currentConfig: AppConfig = store.getters.appConfigRequestBody
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
@@ -35,14 +42,31 @@ async function handleSave() {
 
 async function updateSmartContractTransactions(app: AppConfig) {
   try {
-    store.commit('showLoader', 'Updating app name in smart contract...')
-    await setAppName(app.name)
+    if (app.name !== currentConfig.name) {
+      store.commit('showLoader', 'Updating app name in smart contract...')
+      await setAppName(app.name)
+    }
 
-    store.commit('showLoader', 'Updating user limits in smart contract...')
-    await setDefaultLimit(app.storage_limit, app.bandwidth_limit)
+    const hasStorageLimitChanged =
+      app.storage_limit !== currentConfig.storage_limit
+    const hasBandwidthLimitChanged =
+      app.bandwidth_limit !== currentConfig.bandwidth_limit
+
+    if (hasStorageLimitChanged || hasBandwidthLimitChanged) {
+      store.commit('showLoader', 'Updating user limits in smart contract...')
+      await setDefaultLimit(app.storage_limit, app.bandwidth_limit)
+    }
 
     store.commit('showLoader', 'Updating social auth in smart contract...')
     await setClientIds(app.cred)
+
+    if (
+      app.wallet_type === WalletModeMapping.UI &&
+      currentConfig.wallet_type === WalletModeMapping.noUI
+    ) {
+      store.commit('showLoader', 'Enabling UI Mode in smart contract...')
+      await enableUiMode()
+    }
   } catch (e) {
     console.error(e)
   }
