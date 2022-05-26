@@ -95,6 +95,7 @@ function handleUIModeUpdate(value: boolean) {
               <VSwitch
                 :model-value="walletUIMode"
                 class="ui-mode-switch"
+                :disabled="walletUIMode"
                 @update:model-value="handleUIModeUpdate"
               />
               <span
@@ -108,7 +109,12 @@ function handleUIModeUpdate(value: boolean) {
             Allow your users to authenticate themselves by signing transactions
             using wallets.<a>LEARN MORE</a>
           </div>
-          <VStack direction="column" gap="0.75rem" align="start">
+          <VStack
+            v-if="walletUIMode"
+            direction="column"
+            gap="0.75rem"
+            align="start"
+          >
             <h4 class="text-grey">Choose Theme</h4>
             <VDropdown
               :options="availableThemes"
@@ -119,7 +125,7 @@ function handleUIModeUpdate(value: boolean) {
             />
           </VStack>
         </VStack>
-        <VStack direction="column" gap="1rem">
+        <VStack v-if="walletUIMode" direction="column" gap="1rem">
           <h3 class="text-uppercase">Preview Interface</h3>
           <VStack gap="2.5rem" wrap>
             <VStack direction="column" gap="0.625rem">
