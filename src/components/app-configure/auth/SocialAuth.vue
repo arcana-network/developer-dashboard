@@ -12,7 +12,7 @@ import type {
   SocialAuthState,
   SocialAuthVerifier,
   SocialAuthField,
-} from '@/store/configure.store'
+} from '@/store/app.store'
 import { socialLogins } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 

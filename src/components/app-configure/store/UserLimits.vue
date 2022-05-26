@@ -9,9 +9,8 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import type {
   UserLimitParam,
   UserLimitTarget,
-  UserLimitUnit,
   UserLimitState,
-} from '@/store/configure.store'
+} from '@/store/app.store'
 import {
   userLimitOptions,
   storageValues,
