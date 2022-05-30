@@ -245,12 +245,6 @@ const getters = {
       region: RegionMapping[state.store.region],
       theme: state.auth.wallet.selectedTheme,
       wallet_domain: state.auth.wallet.websiteDomain,
-      logo: {
-        dark_horizontal: state.logos.dark.horizontal,
-        dark_vertical: state.logos.dark.vertical,
-        light_horizontal: state.logos.light.horizontal,
-        light_vertical: state.logos.light.vertical,
-      },
       wallet_type,
     }
   },
