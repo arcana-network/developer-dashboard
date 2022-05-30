@@ -16,7 +16,7 @@ import {
   enableUiMode,
 } from '@/services/smart-contract.service'
 import {
-  WalletModeMapping,
+  WalletMode,
   type ConfigureTab,
   type ConfigureTabType,
 } from '@/utils/constants'
@@ -37,6 +37,7 @@ async function handleSave() {
   const appConfigRequestBody: AppConfig = store.getters.appConfigRequestBody
   await updateApp(appConfigRequestBody)
   await updateSmartContractTransactions(appConfigRequestBody)
+  currentConfig = store.getters.appConfigRequestBody
   store.commit('hideLoader')
 }
 
@@ -61,14 +62,16 @@ async function updateSmartContractTransactions(app: AppConfig) {
     await setClientIds(app.cred)
 
     if (
-      app.wallet_type === WalletModeMapping.UI &&
-      currentConfig.wallet_type === WalletModeMapping.noUI
+      app.wallet_type === WalletMode.UI &&
+      currentConfig.wallet_type === WalletMode.noUI
     ) {
       store.commit('showLoader', 'Enabling UI Mode in smart contract...')
       await enableUiMode()
     }
   } catch (e) {
     console.error(e)
+  } finally {
+    store.commit('hideLoader')
   }
 }
 

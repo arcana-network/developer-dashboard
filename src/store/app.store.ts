@@ -11,7 +11,7 @@ import {
   unlimitedUserLimit,
   ChainMapping,
   RegionMapping,
-  WalletModeMapping,
+  WalletMode,
   type Chain,
   type StorageRegion,
   MAX_DATA_TRANSFER_BYTES,
@@ -231,8 +231,8 @@ const getters = {
     }
 
     const wallet_type = state.auth.wallet.hasUIMode
-      ? WalletModeMapping.UI
-      : WalletModeMapping.noUI
+      ? WalletMode.UI
+      : WalletMode.noUI
 
     return {
       name: state.appName,
@@ -452,11 +452,7 @@ const actions = {
         commit('updateWalletWebsiteDomain', currentApp.wallet_domain)
       }
 
-      if (currentApp.wallet_type === WalletModeMapping.UI) {
-        commit('updateWalletUIMode', true)
-      } else {
-        commit('updateWalletUIMode', false)
-      }
+      commit('updateWalletUIMode', currentApp.wallet_type === WalletMode.UI)
     }
   },
   resetSettings({ commit }) {

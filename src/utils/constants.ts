@@ -157,7 +157,7 @@ enum RegionMapping {
   'north-america' = 5,
 }
 
-enum WalletModeMapping {
+enum WalletMode {
   noUI = 0,
   UI = 1,
 }
@@ -197,7 +197,7 @@ export {
   type BandwidthLimitUnit,
   ChainMapping,
   RegionMapping,
-  WalletModeMapping,
+  WalletMode,
   MAX_DATA_TRANSFER_BYTES,
 }
 
