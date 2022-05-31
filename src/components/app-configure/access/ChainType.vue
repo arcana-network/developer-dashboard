@@ -4,7 +4,6 @@ import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
-import VStack from '@/components/lib/VStack/VStack.vue'
 import { chains, type Chain, type ChainOption } from '@/utils/constants'
 
 const store = useStore()
@@ -14,7 +13,7 @@ const selectedChain: ComputedRef<ChainOption<Chain> | undefined> = computed(
   }
 )
 
-function handleChangeChainType(chain: ChainOption<Chain>) {
+function handleSelectedChainChange(chain: ChainOption<Chain>) {
   store.commit('updateSelectedChain', chain.value)
 }
 </script>
@@ -27,21 +26,14 @@ function handleChangeChainType(chain: ChainOption<Chain>) {
         >Please specify the blockchains that your app is going to use in the
         future <a>LEARN MORE</a></template
       >
-      <VStack
-        direction="column"
-        gap="2rem"
-        justify="space-between"
-        class="flex-grow"
-      >
-        <VDropdown
-          :model-value="selectedChain"
-          :options="chains"
-          display-field="label"
-          name="ChainSelection"
-          class="chain-selection-dropdown"
-          @update:model-value="handleChangeChainType"
-        />
-      </VStack>
+      <VDropdown
+        :model-value="selectedChain"
+        :options="chains"
+        display-field="label"
+        name="ChainSelection"
+        class="chain-selection-dropdown"
+        @update:model-value="handleSelectedChainChange"
+      />
     </SettingCard>
   </section>
 </template>
