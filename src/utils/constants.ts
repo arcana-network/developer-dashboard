@@ -157,6 +157,11 @@ enum RegionMapping {
   'north-america' = 5,
 }
 
+enum WalletMode {
+  NoUI = 0,
+  UI = 1,
+}
+
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
 const constants = {
@@ -192,6 +197,7 @@ export {
   type BandwidthLimitUnit,
   ChainMapping,
   RegionMapping,
+  WalletMode,
   MAX_DATA_TRANSFER_BYTES,
 }
 

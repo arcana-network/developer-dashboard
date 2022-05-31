@@ -11,6 +11,7 @@ import {
   unlimitedUserLimit,
   ChainMapping,
   RegionMapping,
+  WalletMode,
   type Chain,
   type StorageRegion,
   MAX_DATA_TRANSFER_BYTES,
@@ -229,6 +230,10 @@ const getters = {
       })
     }
 
+    const wallet_type = state.auth.wallet.hasUIMode
+      ? WalletMode.UI
+      : WalletMode.NoUI
+
     return {
       name: state.appName,
       address: state.appAddress,
@@ -240,12 +245,7 @@ const getters = {
       region: RegionMapping[state.store.region],
       theme: state.auth.wallet.selectedTheme,
       wallet_domain: state.auth.wallet.websiteDomain,
-      logo: {
-        dark_horizontal: state.logos.dark.horizontal,
-        dark_vertical: state.logos.dark.vertical,
-        light_horizontal: state.logos.light.horizontal,
-        light_vertical: state.logos.light.vertical,
-      },
+      wallet_type,
     }
   },
 }
@@ -451,6 +451,8 @@ const actions = {
       if (currentApp.wallet_domain) {
         commit('updateWalletWebsiteDomain', currentApp.wallet_domain)
       }
+
+      commit('updateWalletUIMode', currentApp.wallet_type === WalletMode.UI)
     }
   },
   resetSettings({ commit }) {

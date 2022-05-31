@@ -20,4 +20,8 @@ async function setClientIds(socialAuth?: AppConfigCred[]) {
   await signerMakeTx('setClientIds', authSignerMakeTxValue)
 }
 
-export { setAppName, setDefaultLimit, setClientIds }
+async function enableUiMode() {
+  await signerMakeTx('setUiMode')
+}
+
+export { setAppName, setDefaultLimit, setClientIds, enableUiMode }
