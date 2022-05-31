@@ -28,9 +28,12 @@ function handleRedirectUriUpdate(value: string) {
     <SettingCard>
       <template #title>Passwordless Auth</template>
       <template #description
-        >Provide your users the convenience of using magic links delivered to
-        their email addresses that they can click on to authenticate themselves
-        instead of using passwords. <a>LEARN MORE</a></template
+        >Offer your users the convenience of authentication by simply clicking
+        links sent to their email address instead of using passwords.
+        <a
+          >Learn more about Arcana's Passwordless Auth → Passwordless Auth
+          Usage</a
+        ></template
       >
       <VStack
         direction="row"

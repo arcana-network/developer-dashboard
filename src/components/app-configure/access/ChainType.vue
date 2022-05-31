@@ -23,8 +23,8 @@ function handleChangeChainType(value: Chain) {
     <SettingCard>
       <template #title>Chain Type</template>
       <template #description
-        >Please specify the blockchains that your app is going to use in the
-        future <a>LEARN MORE</a></template
+        >Select the chain your dApp will be deployed on. For Web2 apps or if you
+        don't see your chain in the list, choose "None".</template
       >
       <VCard variant="depressed" class="chain-options-container">
         <VStack

@@ -17,10 +17,6 @@ function onAppNameChange(appName: string) {
   <section name="configure-app-name">
     <SettingCard>
       <template #title>Enter App Name</template>
-      <template #description
-        >Lorem ipsum dolor sit amet, consectetuer adipiscing elit, Lorem ipsum
-        dolor sit amet, consectetuer adipiscing elit.</template
-      >
       <VTextField
         :model-value="appName"
         class="app-name-input"

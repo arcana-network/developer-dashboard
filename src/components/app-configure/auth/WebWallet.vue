@@ -62,16 +62,18 @@ function handleUIModeUpdate(value: boolean) {
   <section name="web-wallet">
     <SettingCard>
       <template #title>Wallet</template>
-      <template #description
-        >Allow your users to authenticate themselves by signing transactions
-        using wallets. <a>LEARN MORE</a></template
-      >
-      <VStack direction="column" gap="3rem" style="margin-top: 2rem">
+      <VStack direction="column" gap="3rem">
         <VStack direction="column" gap="1rem" class="flex-grow">
           <h3 class="text-uppercase">Website Domain</h3>
           <div class="body-1">
-            Allow your users to authenticate themselves by signing transactions
-            using wallets.<a>LEARN MORE</a>
+            Set your website domain here. It's used by the server to restrict
+            wallet from loading anywhere else other than what you specify, for
+            security. It uses frame-ancestor CSP to restrict domains. For more
+            <a
+              href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
+              target="_blank"
+              >details</a
+            >
           </div>
           <VTextField
             class="web-wallet-input"
@@ -105,8 +107,8 @@ function handleUIModeUpdate(value: boolean) {
             </VStack>
           </VStack>
           <div class="body-1">
-            Allow your users to authenticate themselves by signing transactions
-            using wallets.<a>LEARN MORE</a>
+            Choose theme and enable UI mode for the wallet.
+            <a>Learn more about UI Modes for Web Wallet → Web Wallet</a>
           </div>
           <VStack direction="column" gap="0.75rem" align="start">
             <h4 class="text-grey">Choose Theme</h4>
