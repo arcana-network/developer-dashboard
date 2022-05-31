@@ -37,7 +37,7 @@ const selectedTheme: ComputedRef<Theme | undefined> = computed(() => {
 const walletWebsiteDomain: ComputedRef<string> = computed(
   () => store.getters.walletWebsiteDomain
 )
-const walletUIMode: ComputedRef<boolean> = computed(
+const hasUIMode: ComputedRef<boolean> = computed(
   () => store.getters.walletUIMode
 )
 
@@ -87,20 +87,16 @@ function handleUIModeUpdate(value: boolean) {
           <VStack justify="space-between">
             <h3 class="text-uppercase">UI Mode</h3>
             <VStack align="center" gap="0.625rem">
-              <span
-                class="body-1 font-300"
-                :class="{ 'font-700': walletUIMode === false }"
+              <span class="body-1 font-300" :class="{ 'font-700': !hasUIMode }"
                 >Disable</span
               >
               <VSwitch
-                :model-value="walletUIMode"
+                :model-value="hasUIMode"
                 class="ui-mode-switch"
-                :disabled="walletUIMode"
+                :disabled="hasUIMode"
                 @update:model-value="handleUIModeUpdate"
               />
-              <span
-                class="body-1 font-300"
-                :class="{ 'font-700': walletUIMode === true }"
+              <span class="body-1 font-300" :class="{ 'font-700': hasUIMode }"
                 >Enable</span
               >
             </VStack>
@@ -110,7 +106,7 @@ function handleUIModeUpdate(value: boolean) {
             using wallets.<a>LEARN MORE</a>
           </div>
           <VStack
-            v-if="walletUIMode"
+            v-if="hasUIMode"
             direction="column"
             gap="0.75rem"
             align="start"
@@ -125,7 +121,7 @@ function handleUIModeUpdate(value: boolean) {
             />
           </VStack>
         </VStack>
-        <VStack v-if="walletUIMode" direction="column" gap="1rem">
+        <VStack v-if="hasUIMode" direction="column" gap="1rem">
           <h3 class="text-uppercase">Preview Interface</h3>
           <VStack gap="2.5rem" wrap>
             <VStack direction="column" gap="0.625rem">
