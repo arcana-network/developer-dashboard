@@ -232,7 +232,7 @@ const getters = {
 
     const wallet_type = state.auth.wallet.hasUIMode
       ? WalletMode.UI
-      : WalletMode.noUI
+      : WalletMode.NoUI
 
     return {
       name: state.appName,

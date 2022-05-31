@@ -158,7 +158,7 @@ enum RegionMapping {
 }
 
 enum WalletMode {
-  noUI = 0,
+  NoUI = 0,
   UI = 1,
 }
 
