@@ -3,18 +3,19 @@ import { computed, type ComputedRef } from 'vue'
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import VCard from '@/components/lib/VCard/VCard.vue'
-import VRadioGroup from '@/components/lib/VRadioGroup/VRadioGroup.vue'
+import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { chains, type Chain } from '@/utils/constants'
+import { chains, type Chain, type ChainOption } from '@/utils/constants'
 
 const store = useStore()
-const selectedChain: ComputedRef<Chain> = computed(
-  () => store.getters.selectedChain
+const selectedChain: ComputedRef<ChainOption<Chain> | undefined> = computed(
+  () => {
+    return chains.find((chain) => chain.value === store.getters.selectedChain)
+  }
 )
 
-function handleChangeChainType(value: Chain) {
-  store.commit('updateSelectedChain', value)
+function handleChangeChainType(chain: ChainOption<Chain>) {
+  store.commit('updateSelectedChain', chain.value)
 }
 </script>
 
@@ -26,28 +27,27 @@ function handleChangeChainType(value: Chain) {
         >Please specify the blockchains that your app is going to use in the
         future <a>LEARN MORE</a></template
       >
-      <VCard variant="depressed" class="chain-options-container">
-        <VStack
-          direction="column"
-          gap="2rem"
-          justify="space-between"
-          class="flex-grow"
-        >
-          <VRadioGroup
-            :model-value="selectedChain"
-            :options="chains"
-            name="ChainSelection"
-            @update:modelValue="handleChangeChainType"
-          />
-        </VStack>
-      </VCard>
+      <VStack
+        direction="column"
+        gap="2rem"
+        justify="space-between"
+        class="flex-grow"
+      >
+        <VDropdown
+          :model-value="selectedChain"
+          :options="chains"
+          display-field="label"
+          name="ChainSelection"
+          class="chain-selection-dropdown"
+          @update:model-value="handleChangeChainType"
+        />
+      </VStack>
     </SettingCard>
   </section>
 </template>
 
 <style scoped>
-.chain-options-container {
+.chain-selection-dropdown {
   max-width: 20rem;
-  padding: 1.5rem 2rem;
 }
 </style>

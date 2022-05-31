@@ -1,6 +1,6 @@
 import bytes from 'bytes'
 
-import type { UserLimitState, SocialAuthOption } from '@/store/configure.store'
+import type { UserLimitState, SocialAuthOption } from '@/store/app.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -19,7 +19,7 @@ const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 
-type Chain = 'ethereum' | 'polygon' | 'binance'
+type Chain = 'ethereum' | 'polygon' | 'binance' | 'none'
 
 type ChainOption<T> = {
   label: string
@@ -27,6 +27,10 @@ type ChainOption<T> = {
 }
 
 const chains: readonly ChainOption<Chain>[] = [
+  {
+    label: 'None',
+    value: 'none',
+  },
   {
     label: 'Ethereum',
     value: 'ethereum',
@@ -149,6 +153,7 @@ enum ChainMapping {
   ethereum = 0,
   polygon = 1,
   binance = 2,
+  none = 3,
 }
 
 enum RegionMapping {
