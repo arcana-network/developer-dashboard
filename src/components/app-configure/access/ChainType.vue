@@ -3,18 +3,18 @@ import { computed, type ComputedRef } from 'vue'
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import VCard from '@/components/lib/VCard/VCard.vue'
-import VRadioGroup from '@/components/lib/VRadioGroup/VRadioGroup.vue'
-import VStack from '@/components/lib/VStack/VStack.vue'
-import { chains, type Chain } from '@/utils/constants'
+import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
+import { chains, type Chain, type ChainOption } from '@/utils/constants'
 
 const store = useStore()
-const selectedChain: ComputedRef<Chain> = computed(
-  () => store.getters.selectedChain
+const selectedChain: ComputedRef<ChainOption<Chain> | undefined> = computed(
+  () => {
+    return chains.find((chain) => chain.value === store.getters.selectedChain)
+  }
 )
 
-function handleChangeChainType(value: Chain) {
-  store.commit('updateSelectedChain', value)
+function handleSelectedChainChange(chain: ChainOption<Chain>) {
+  store.commit('updateSelectedChain', chain.value)
 }
 </script>
 
@@ -26,28 +26,20 @@ function handleChangeChainType(value: Chain) {
         >Select the chain your dApp will be deployed on. For Web2 apps or if you
         don't see your chain in the list, choose "None".</template
       >
-      <VCard variant="depressed" class="chain-options-container">
-        <VStack
-          direction="column"
-          gap="2rem"
-          justify="space-between"
-          class="flex-grow"
-        >
-          <VRadioGroup
-            :model-value="selectedChain"
-            :options="chains"
-            name="ChainSelection"
-            @update:modelValue="handleChangeChainType"
-          />
-        </VStack>
-      </VCard>
+      <VDropdown
+        :model-value="selectedChain"
+        :options="chains"
+        display-field="label"
+        name="ChainSelection"
+        class="chain-selection-dropdown"
+        @update:model-value="handleSelectedChainChange"
+      />
     </SettingCard>
   </section>
 </template>
 
 <style scoped>
-.chain-options-container {
+.chain-selection-dropdown {
   max-width: 20rem;
-  padding: 1.5rem 2rem;
 }
 </style>

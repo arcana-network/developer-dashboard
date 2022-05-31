@@ -130,7 +130,7 @@ function getDefaultAppState(): AppState {
     appId: '',
     appAddress: '',
     access: {
-      selectedChain: 'ethereum',
+      selectedChain: 'none',
     },
     logos: {
       dark: {
