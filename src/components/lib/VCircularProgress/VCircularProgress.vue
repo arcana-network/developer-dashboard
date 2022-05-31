@@ -8,15 +8,20 @@ const props = defineProps({
   },
   size: {
     type: String,
-    default: '',
+    default: '3rem',
+  },
+  stroke: {
+    type: String,
+    default: '1rem',
   },
 })
 
 const styles = computed(() => {
   return {
     color: props.color || 'var(--primary)',
-    width: props.size || '3em',
-    height: props.size || '3em',
+    width: props.size,
+    height: props.size,
+    fontSize: props.stroke,
   }
 })
 </script>
@@ -32,7 +37,7 @@ progress {
   height: 3em;
   padding: 0.25em;
   overflow: hidden;
-  font-size: 16px;
+  font-size: 8px;
   background-color: transparent;
   border: none;
   border-radius: 50%;

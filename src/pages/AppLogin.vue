@@ -1,44 +1,52 @@
 <script lang="ts" setup>
 import { SocialLoginType } from '@arcana/auth'
-import { onMounted, ref } from '@vue/runtime-core'
+import { onMounted } from '@vue/runtime-core'
 import { Wallet } from 'ethers'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
-import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
-import authService from '@/services/auth.service'
-import sign from '@/services/sign'
+import { loginUser, getNonce } from '@/services/gateway.service'
+import { addUserToMailchimp } from '@/services/mailchimp.service'
 import useArcanaAuth from '@/use/arcanaAuth'
+import signWithPrivateKey from '@/utils/signWithPrivateKey'
 
 const router = useRouter()
 const store = useStore()
-let loadingMessage = ref('')
-let loading = ref(false)
 const arcanaAuth = useArcanaAuth()
 
 async function launchLogin(type: SocialLoginType) {
-  try {
-    loading.value = true
-    loadingMessage.value = 'Signing In...'
-    await arcanaAuth.loginWithSocial(type)
-    await fetchAndStoreUserDetails()
-  } catch (e) {
-    loading.value = false
-    console.error(e)
+  store.commit('showLoader', `Signing with ${type}`)
+  await arcanaAuth.loginWithSocial(type)
+  await fetchAndStoreDetails()
+}
+
+async function fetchAndStoreDetails() {
+  store.commit('showLoader', 'Fetching user info...')
+  await fetchAndStoreUserInfo()
+  await store.dispatch('fetchAppConfig')
+  store.commit('hideLoader')
+
+  if (localStorage.getItem('skipPassword') !== 'true') {
+    router.push({
+      name: 'Create Password',
+      params: { redirectTo: 'Dashboard' },
+    })
+  } else {
+    router.push({
+      name: 'Dashboard',
+    })
   }
 }
 
-async function fetchAndStoreUserDetails() {
-  loading.value = true
-  loadingMessage.value = 'Fetching user info...'
+async function fetchAndStoreUserInfo() {
   const { userInfo, privateKey } = await arcanaAuth.fetchUserDetails()
   const wallet = new Wallet(privateKey)
-  const nonce = await authService.getNonce(wallet.address)
-  loadingMessage.value = 'Signing In...'
-  const signature = await sign(privateKey, nonce.data)
-  const access_token = await authService.login({
+  const nonce = await getNonce(wallet.address)
+  store.commit('showLoader', 'Signing In...')
+  const signature = await signWithPrivateKey(privateKey, nonce.data)
+  const access_token = await loginUser({
     signature,
     email: userInfo.id,
     address: wallet.address,
@@ -54,26 +62,13 @@ async function fetchAndStoreUserDetails() {
   })
 
   if (nonce.data === 0) {
-    authService.addUserToMailchimp(userInfo.id)
-  }
-
-  loading.value = false
-
-  if (localStorage.getItem('skipPassword') !== 'true') {
-    router.push({
-      name: 'Create Password',
-      params: { redirectTo: 'Dashboard' },
-    })
-  } else {
-    router.push({
-      name: 'Dashboard',
-    })
+    addUserToMailchimp(userInfo.id)
   }
 }
 
 onMounted(async () => {
   if (arcanaAuth.isLoggedIn()) {
-    await fetchAndStoreUserDetails()
+    await fetchAndStoreDetails()
   }
 })
 </script>
@@ -167,7 +162,6 @@ onMounted(async () => {
         </section>
       </section>
     </main>
-    <full-screen-loader v-if="loading" :message="loadingMessage" />
   </div>
 </template>
 

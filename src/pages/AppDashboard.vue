@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import bytes from 'bytes'
+import type { Chart } from 'chart.js'
 import moment from 'moment'
-import { computed, onBeforeMount, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
@@ -18,20 +19,20 @@ import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import appConfigService from '@/services/app-config.service'
-import dashboardService from '@/services/dashboard.service'
+import {
+  fetchPeriodicUsage,
+  fetchStats,
+  type Duration,
+} from '@/services/gateway.service'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
 const store = useStore()
-const smartContractAddress = computed(() => {
-  return store.getters.smartContractAddress
-})
 const appId = computed(() => {
   return store.getters.appId
 })
-const durationSelected = ref('week')
+const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
   download: 0,
@@ -42,7 +43,7 @@ const actions = ref({
 })
 const totalUsers = ref(0)
 const isConfigured = computed(() => {
-  return store.getters.isAppConfigured
+  return !!store.getters.appId
 })
 const liveEnv = ref(false)
 const appName = computed(() => {
@@ -54,80 +55,162 @@ const storageUsedPercentage = ref(0)
 const bandwidthUsedPercentage = ref(0)
 const storageRemaining = ref('5 GB')
 const bandwidthRemaining = ref('5 GB')
+let labels: string[] = []
+let labelAliases: string[] = []
+let storageData: number[] = []
+let bandwidthData: number[] = []
+const currentDate = moment()
+const quarters = ['Jan-Mar', 'Apr-Jun', 'Jul-Sept', 'Oct-Dec']
 
-onBeforeMount(async () => {
-  await appConfigService.fetchAndStoreAppConfig()
-  await fetchStatistics(appId.value)
+let StorageChart: Chart
+let BandwidthChart: Chart
+
+onMounted(async () => {
+  var storageCtx = document.getElementById('storageChart')?.getContext('2d')
+  if (storageCtx) {
+    StorageChart = chartUtils.createChartView(storageCtx, {
+      ...chartUtils.getInitialUsageChartConfig(),
+    })
+  }
+  var bandwidthCtx = document.getElementById('bandwidthChart')?.getContext('2d')
+  if (bandwidthCtx) {
+    BandwidthChart = chartUtils.createChartView(bandwidthCtx, {
+      ...chartUtils.getInitialUsageChartConfig(),
+    })
+  }
+  if (store.getters.appId) {
+    store.commit('showLoader', 'Fetching App statistics...')
+    await fetchAndPopulateStatistics()
+    store.commit('hideLoader')
+  }
 })
 
-async function fetchStatistics(appId: string | number) {
+async function fetchAndPopulateStatistics() {
   try {
-    updateChart()
-    const stats = await dashboardService.fetchStats(appId)
-    const env = store.getters.env
-    totalUsers.value = stats.data.no_of_users
-    actions.value = {
-      download: stats.data.actions?.download,
-      upload: stats.data.actions?.upload,
-      delete: stats.data.actions?.delete,
-      transfers: stats.data.actions?.transfers,
-      share: stats.data.actions?.share,
-      revoke: stats.data.actions?.revoke,
-    }
-    const bytes100Gb = bytes('5 GB')
-    storageUsed.value = bytes(stats.data.actions?.storage, {
-      unitSeparator: ' ',
-    })
-    bandwidthUsed.value = bytes(stats.data.actions?.bandwidth, {
-      unitSeparator: ' ',
-    })
-    storageUsedPercentage.value =
-      (stats.data.actions?.storage / bytes100Gb) * 100
-    bandwidthUsedPercentage.value =
-      (stats.data.actions?.bandwidth / bytes100Gb) * 100
-    storageRemaining.value = bytes(bytes100Gb - stats.data.actions?.storage, {
-      unitSeparator: ' ',
-    })
-    bandwidthRemaining.value = bytes(
-      bytes100Gb - stats.data.actions?.bandwidth,
-      {
-        unitSeparator: ' ',
-      }
-    )
-    const appDetails = await dashboardService.fetchApp(appId)
-
-    if (appDetails.data.cred) {
-      store.dispatch(
-        env + '/updateAuthDetails',
-        appDetails.data.cred.map((el) => {
-          return {
-            type: el.verifier,
-            authType: el.verifier,
-            verifier: el.verifier,
-            clientId: el.clientId,
-            clientSecret: el.clientSecret,
-            origin: el.origin,
-            redirectUrl: el.redirectUrl,
-          }
-        })
-      )
-    } else {
-      store.dispatch(env + '/updateAuthDetails', [])
-    }
+    await fetchAndPopulateCharts()
+    await fetchAndPopulateUsersAndActions()
   } catch (e) {
     console.error(e)
-    return []
+  }
+}
+
+async function fetchAndPopulateCharts() {
+  const periodicUsage = await fetchPeriodicUsage(durationSelected.value)
+  updateChart(periodicUsage.data)
+}
+
+async function fetchAndPopulateUsersAndActions() {
+  const stats = await fetchStats()
+  totalUsers.value = stats.data.no_of_users
+  actions.value = {
+    download: stats.data.actions?.download,
+    upload: stats.data.actions?.upload,
+    delete: stats.data.actions?.delete,
+    transfers: stats.data.actions?.transfers,
+    share: stats.data.actions?.share,
+    revoke: stats.data.actions?.revoke,
+  }
+}
+
+function updateChart(data: any[]) {
+  switch (durationSelected.value) {
+    case 'day':
+      generateInitialChartValuesForDay()
+      break
+    case 'month':
+      generateInitialChartValuesForMonth()
+      break
+    case 'quarter':
+      generateInitialChartValuesForQuarter()
+      break
+    case 'year':
+      generateInitialChartValuesForYear()
+      break
+    default:
+      break
+  }
+
+  data?.forEach((d) => {
+    const index = labelAliases.indexOf(d[durationSelected.value])
+    storageData[index] = Number(
+      bytes(d.storage, { unit: 'MB' }).replace('MB', '')
+    )
+    bandwidthData[index] = Number(
+      bytes(d.bandwidth, {
+        unit: 'MB',
+      }).replace('MB', '')
+    )
+  })
+
+  const storageDatasets = [
+    {
+      label: 'Storage used in MB',
+      data: storageData,
+      borderColor: 'white',
+      borderWidth: 4,
+      lineTension: 0.2,
+    },
+  ]
+  chartUtils.updateChartView(StorageChart, labels, storageDatasets)
+
+  const bandwidthDatasets = [
+    {
+      label: 'Bandwidth used in MB',
+      data: bandwidthData,
+      borderColor: 'white',
+      borderWidth: 4,
+      lineTension: 0.2,
+    },
+  ]
+  chartUtils.updateChartView(BandwidthChart, labels, bandwidthDatasets)
+}
+
+function generateInitialChartValuesForDay() {
+  for (let i = 7 - 1; i >= 0; i--) {
+    const date = currentDate.clone().subtract(i, 'days')
+    labels.push(date.format('DD/MM'))
+    labelAliases.push(date.format('D-M-Y'))
+    storageData.push(0)
+    bandwidthData.push(0)
+  }
+}
+
+function generateInitialChartValuesForMonth() {
+  for (let i = 12 - 1; i >= 0; i--) {
+    const date = currentDate.clone().subtract(i, 'months')
+    labels.push(date.format('MMM'))
+    labelAliases.push(date.format('M-Y'))
+    storageData.push(0)
+    bandwidthData.push(0)
+  }
+}
+
+function generateInitialChartValuesForQuarter() {
+  for (let i = 4 - 1; i >= 0; i--) {
+    const date = currentDate.clone().subtract(i, 'quarter')
+    labels.push(quarters[date.quarter() - 1])
+    labelAliases.push(date.format('Q-Y'))
+    storageData.push(0)
+    bandwidthData.push(0)
+  }
+}
+
+function generateInitialChartValuesForYear() {
+  for (let i = 2; i >= 0; i--) {
+    labels.push(currentDate.clone().subtract(i, 'years').format('YYYY'))
+    storageData.push(0)
+    bandwidthData.push(0)
   }
 }
 
 function goToConfigure() {
-  router.push('/configure')
+  router.push({ name: 'GeneralSettings' })
 }
 
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
-function copySmartContractAddress() {
+function copyAppId() {
   SmartContractIcon.value = CheckIcon
   smartContractTooltip.value = 'Copied'
   copyToClipboard(appId.value)
@@ -137,167 +220,15 @@ function copySmartContractAddress() {
   }, 3000)
 }
 
-let StorageChart, BandwidthChart
-
-onMounted(() => {
-  setTimeout(() => {
-    var storageCtx = document.getElementById('storageChart')?.getContext('2d')
-    if (storageCtx) {
-      StorageChart = chartUtils.createChartView(storageCtx, {
-        ...chartUtils.getInitialUsageChartConfig(),
-      })
-    }
-    var bandwidthCtx = document
-      .getElementById('bandwidthChart')
-      ?.getContext('2d')
-    if (bandwidthCtx) {
-      BandwidthChart = chartUtils.createChartView(bandwidthCtx, {
-        ...chartUtils.getInitialUsageChartConfig(),
-      })
-    }
-    durationSelected.value = 'month'
-  }, 100)
-})
-
 function goToUsers() {
   router.push('/users')
-}
-
-function updateChart() {
-  try {
-    let labels: string[] = []
-    let labelAliases: string[] = []
-    let storageData: number[] = []
-    let bandwidthData: number[] = []
-    dashboardService
-      .fetchPeriodicUsage(durationSelected.value)
-      .then((periodicUsage) => {
-        const data = periodicUsage.data
-        const currentDate = moment()
-        const quarters = ['Jan-Mar', 'Apr-Jun', 'Jul-Sept', 'Oct-Dec']
-        switch (durationSelected.value) {
-          case 'day':
-            for (let i = 7 - 1; i >= 0; i--) {
-              const date = currentDate.clone().subtract(i, 'days')
-              labels.push(date.format('DD/MM'))
-              labelAliases.push(date.format('D-M-Y'))
-            }
-            storageData = [0, 0, 0, 0, 0, 0, 0]
-            bandwidthData = [0, 0, 0, 0, 0, 0, 0]
-            if (data instanceof Array && data.length) {
-              data.forEach((d) => {
-                const index = labelAliases.indexOf(d.day)
-                storageData[index] = Number(
-                  bytes(d.storage, { unit: 'MB' }).replace('MB', '')
-                )
-                bandwidthData[index] = Number(
-                  bytes(d.bandwidth, {
-                    unit: 'MB',
-                  }).replace('MB', '')
-                )
-              })
-            }
-            break
-          case 'month':
-            for (let i = 12 - 1; i >= 0; i--) {
-              const date = currentDate.clone().subtract(i, 'months')
-              labels.push(date.format('MMM'))
-              labelAliases.push(date.format('M-Y'))
-            }
-            storageData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            bandwidthData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            if (data instanceof Array && data.length) {
-              data.forEach((d) => {
-                const index = labelAliases.indexOf(d.month)
-                storageData[index] = Number(
-                  bytes(d.storage, { unit: 'MB' }).replace('MB', '')
-                )
-                bandwidthData[index] = Number(
-                  bytes(d.bandwidth, {
-                    unit: 'MB',
-                  }).replace('MB', '')
-                )
-              })
-            }
-            break
-          case 'quarter':
-            for (let i = 4 - 1; i >= 0; i--) {
-              const date = currentDate.clone().subtract(i, 'quarter')
-              labels.push(quarters[date.quarter() - 1])
-              labelAliases.push(date.format('Q-Y'))
-            }
-            storageData = [0, 0, 0, 0]
-            bandwidthData = [0, 0, 0, 0]
-            if (data instanceof Array && data.length) {
-              data.forEach((d) => {
-                const index = labelAliases.indexOf(d.quarter)
-                storageData[index] = Number(
-                  bytes(d.storage, { unit: 'MB' }).replace('MB', '')
-                )
-                bandwidthData[index] = Number(
-                  bytes(d.bandwidth, {
-                    unit: 'MB',
-                  }).replace('MB', '')
-                )
-              })
-            }
-            break
-          case 'year':
-            for (let i = 2; i >= 0; i--) {
-              labels.push(
-                currentDate.clone().subtract(i, 'years').format('YYYY')
-              )
-            }
-            storageData = [0, 0, 0]
-            bandwidthData = [0, 0, 0]
-            if (data instanceof Array && data.length) {
-              data.forEach((d) => {
-                const index = labels.indexOf('' + d.year)
-                storageData[index] = Number(
-                  bytes(d.storage, { unit: 'MB' }).replace('MB', '')
-                )
-                bandwidthData[index] = Number(
-                  bytes(d.bandwidth, {
-                    unit: 'MB',
-                  }).replace('MB', '')
-                )
-              })
-            }
-            break
-          default:
-            break
-        }
-        const storageDatasets = [
-          {
-            label: 'Storage used in MB',
-            data: storageData,
-            borderColor: 'white',
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ]
-        chartUtils.updateChartView(StorageChart, labels, storageDatasets)
-        const bandwidthDatasets = [
-          {
-            label: 'Bandwidth used in MB',
-            data: bandwidthData,
-            borderColor: 'white',
-            borderWidth: 4,
-            lineTension: 0.2,
-          },
-        ]
-        chartUtils.updateChartView(BandwidthChart, labels, bandwidthDatasets)
-      })
-  } catch (e) {
-    console.error(e)
-  }
 }
 
 watch(
   () => durationSelected.value,
   () => {
     if (store.getters.appId) {
-      updateChart()
+      fetchAndPopulateCharts()
     }
   }
 )
@@ -346,7 +277,7 @@ watch(
           <v-tooltip
             :title="smartContractTooltip"
             class="mobile-remove"
-            @click.stop="copySmartContractAddress"
+            @click.stop="copyAppId"
           >
             <img
               :src="SmartContractIcon"
@@ -384,20 +315,20 @@ watch(
         class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
       >
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
-          Smart Contract Address:
+          App ID:
         </span>
-        <v-tooltip :title="smartContractAddress" class="">
+        <v-tooltip :title="appId" class="">
           <div
             style="width: 6em; font-weight: 500; color: var(--text-white)"
             class="body-1 text-ellipsis cursor-pointer"
           >
-            {{ smartContractAddress }}
+            {{ appId }}
           </div>
         </v-tooltip>
         <v-tooltip
           :title="smartContractTooltip"
           class=""
-          @click.stop="copySmartContractAddress"
+          @click.stop="copyAppId"
         >
           <img
             :src="SmartContractIcon"

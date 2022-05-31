@@ -1,123 +1,60 @@
 import { createStore, createLogger } from 'vuex'
 
+import appStore from '@/store/app.store'
 import authStore from '@/store/auth.store'
-import configureStore from '@/store/configure.store'
 
 const debug = process.env.NODE_ENV !== 'production'
 
-const state = {
-  env: 'test',
-  appName: '',
-  appId: null,
-  appNameError: false,
-  onConfigChange: false,
-  isAppConfigured: false,
-  smartContractAddress: '',
-  showLearnMorePopup: false,
-  configDetails: {},
+type State = {
+  isLoading: boolean
+  loadingMessage: string
+  forwarder: string
+  rpcUrl: string
+}
+
+const state: State = {
+  isLoading: false,
+  loadingMessage: '',
+  forwarder: '',
+  rpcUrl: '',
 }
 
 const getters = {
-  env: (state) => state.env,
-  appName: (state) => state.appName,
-  appId: (state) => state.appId,
-  onConfigChange: (state) => state.onConfigChange,
-  isAppConfigured: (state) => state.isAppConfigured,
-  smartContractAddress: (state) => state.smartContractAddress,
-  showLearnMorePopup: (state) => state.showLearnMorePopup,
-  configDetails: (state) => state.configDetails,
-  appNameError: (state) => state.appNameError,
+  isLoading: (state: State) => state.isLoading,
+  loadingMessage: (state: State) => state.loadingMessage,
+  forwarder: (state: State) => state.forwarder,
+  rpcUrl: (state: State) => state.rpcUrl,
 }
 
 const mutations = {
-  toggleEnv(state) {
-    state.env = state.env === 'test' ? 'live' : 'test'
+  resetStore(state: State) {
+    state.forwarder = ''
+    state.rpcUrl = ''
   },
-  updateAppName(state, appName) {
-    state.appName = appName
+  showLoader(state: State, loadingMessage: string) {
+    state.isLoading = true
+    state.loadingMessage = loadingMessage
   },
-  updateAppId(state, appId) {
-    state.appId = appId
+  hideLoader(state: State) {
+    state.isLoading = false
   },
-  configChangeDetected(state) {
-    state.onConfigChange = true
+  updateForwarder(state: State, forwarder: string) {
+    state.forwarder = forwarder
   },
-  configChangeReset(state) {
-    state.onConfigChange = false
-  },
-  updateAppConfigurationStatus(state, isAppConfigured) {
-    state.isAppConfigured = isAppConfigured
-  },
-  resetStore(state) {
-    state.appName = ''
-    state.appId = ''
-    state.smartContractAddress = ''
-  },
-  updateSmartContractAddress(state, smartContractAddress) {
-    state.smartContractAddress = smartContractAddress
-  },
-  showLearnMorePopup(state, configDetails) {
-    state.showLearnMorePopup = true
-    state.configDetails = configDetails
-  },
-  hideLearnMorePopup(state) {
-    state.showLearnMorePopup = false
-  },
-  updateAppNameError(state, isError) {
-    state.appNameError = isError
+  updateRpcUrl(state: State, rpcUrl: string) {
+    state.rpcUrl = rpcUrl
   },
 }
 
 const actions = {
-  toggleEnv({ commit }) {
-    commit('toggleEnv')
-  },
-  updateAppName({ commit }, appName) {
-    commit('updateAppName', appName)
-  },
-  updateAppId({ commit }, appId) {
-    commit('updateAppId', appId)
-  },
-  configChangeDetected({ commit }) {
-    commit('configChangeDetected')
-  },
-  configChangeReset({ commit }) {
-    commit('configChangeReset')
-  },
-  updateAppConfigurationStatus({ commit }, isAppConfigured) {
-    commit('updateAppConfigurationStatus', isAppConfigured)
-  },
   resetStore({ commit }) {
     commit('resetStore')
-  },
-  updateSmartContractAddress({ commit }, smartContractAddress) {
-    commit('updateSmartContractAddress', smartContractAddress)
-  },
-  showLearnMorePopup({ commit }, configDetails) {
-    commit('showLearnMorePopup', configDetails)
-  },
-  hideLearnMorePopup({ commit }) {
-    commit('hideLearnMorePopup')
-  },
-  updateAppNameError({ commit }, isError) {
-    commit('updateAppNameError', isError)
   },
 }
 
 const store = createStore({
   modules: {
-    test: {
-      namespaced: true,
-      modules: {
-        configureStore,
-      },
-    },
-    live: {
-      namespaced: true,
-      modules: {
-        configureStore,
-      },
-    },
+    appStore,
     authStore,
   },
   state,

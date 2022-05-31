@@ -72,6 +72,10 @@ const props = defineProps({
     type: [String, Object, Array],
     default: '',
   },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'icon-clicked'])
@@ -94,13 +98,19 @@ function onIconClicked(ev) {
 </script>
 
 <template>
-  <div class="form-group" aria-label="Form group" :style="style">
+  <div
+    class="form-group"
+    aria-label="Form group"
+    :style="style"
+    :data-disabled="disabled"
+  >
     <label v-if="label" :style="[labelStyle]" :for="componentId">
       {{ label }}
     </label>
     <div class="text-field" :class="{ icon: !!icon }">
       <input
         :id="componentId"
+        :disabled="props.disabled"
         :type="inputType"
         :value="modelValue"
         v-bind="attrs"
@@ -114,7 +124,7 @@ function onIconClicked(ev) {
         :src="icon"
         :class="{
           'icon-clickable': clickableIcon,
-          height: '1.1em',
+          'input-icon': true,
         }"
         @click.stop="onIconClicked"
       />
@@ -174,10 +184,10 @@ div.text-field {
 input {
   width: 100%;
   padding: 0;
-  margin: 15px 20px;
+  margin: 1.25rem 2rem;
   font-family: var(--font-body);
-  font-size: 1.1em;
-  line-height: 1.5em;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-white);
   background: transparent;
   border: none;
@@ -188,11 +198,15 @@ input {
 }
 
 input::placeholder {
-  margin: 10px 20px 10px 0;
   font-family: var(--font-body);
-  font-size: 1.1em;
-  line-height: 1.5em;
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-grey);
+}
+
+.form-group[data-disabled='true'],
+input:disabled {
+  cursor: not-allowed;
 }
 
 input:-webkit-autofill,
@@ -203,7 +217,7 @@ input:-webkit-autofill:focus {
 }
 
 div.text-field.icon input {
-  width: calc(100% - 80px);
+  margin-right: 0.5rem;
 }
 
 input.strong {
@@ -225,5 +239,10 @@ input::-webkit-inner-spin-button {
 
 input[type='number'] {
   appearance: textfield;
+}
+
+.input-icon {
+  margin: auto 1.25rem auto 0;
+  cursor: pointer !important;
 }
 </style>

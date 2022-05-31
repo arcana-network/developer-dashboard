@@ -1,4 +1,13 @@
-const state = {
+type AuthState = {
+  email: string
+  accessToken: string
+  name: string
+  privateKey: string
+  walletAddress: string
+  publicKey: string
+}
+
+const state: AuthState = {
   email: '',
   accessToken: '',
   name: '',
@@ -8,14 +17,14 @@ const state = {
 }
 
 const getters = {
-  accessToken: (state) => state.accessToken,
-  keys: (state) => {
+  accessToken: (state: AuthState) => state.accessToken,
+  keys: (state: AuthState) => {
     return {
       privateKey: state.privateKey,
     }
   },
-  walletAddress: (state) => state.walletAddress,
-  userInfo: (state) => {
+  walletAddress: (state: AuthState) => state.walletAddress,
+  userInfo: (state: AuthState) => {
     return {
       email: state.email,
       name: state.name,
@@ -24,23 +33,26 @@ const getters = {
 }
 
 const mutations = {
-  updateAccessToken(state, access_token) {
+  updateAccessToken(state: AuthState, access_token: string) {
     state.accessToken = access_token
   },
 
-  updateKeys(state, { privateKey }) {
+  updateKeys(state: AuthState, { privateKey }: { privateKey: string }) {
     state.privateKey = privateKey
   },
 
-  updateWalletAddress(state, walletAddress) {
+  updateWalletAddress(state: AuthState, walletAddress: string) {
     state.walletAddress = walletAddress
   },
 
-  updateUserInfo(state, { name, email }) {
+  updateUserInfo(
+    state: AuthState,
+    { name, email }: { name: string; email: string }
+  ) {
     state.name = name
     state.email = email
   },
-  resetAuth(state) {
+  resetAuth(state: AuthState) {
     state.name = ''
     state.email = ''
     state.walletAddress = ''
@@ -51,19 +63,19 @@ const mutations = {
 }
 
 const actions = {
-  updateAccessToken({ commit }, access_token) {
+  updateAccessToken({ commit }, access_token: string) {
     commit('updateAccessToken', access_token)
   },
 
-  updateKeys({ commit }, { privateKey }) {
+  updateKeys({ commit }, { privateKey }: { privateKey: string }) {
     commit('updateKeys', { privateKey })
   },
 
-  updateWalletAddress({ commit }, walletAddress) {
+  updateWalletAddress({ commit }, walletAddress: string) {
     commit('updateWalletAddress', walletAddress)
   },
 
-  updateUserInfo({ commit }, { name, email }) {
+  updateUserInfo({ commit }, { name, email }: { name: string; email: string }) {
     commit('updateUserInfo', { name, email })
   },
 
