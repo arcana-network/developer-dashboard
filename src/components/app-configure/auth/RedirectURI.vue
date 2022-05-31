@@ -54,6 +54,6 @@ const store = useStore()
 }
 
 .redirect-uri {
-  width: (100% - 2rem);
+  width: calc(100% - 2rem);
 }
 </style>
