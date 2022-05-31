@@ -66,7 +66,7 @@ function handleUIModeUpdate(value: boolean) {
         <VStack direction="column" gap="1rem" class="flex-grow">
           <h3 class="text-uppercase">Website Domain</h3>
           <div class="body-1">
-            Set your website domain here, Its used by the server to restrict
+            Set your website domain here. It's used by the server to restrict
             wallet from loading anywhere else other than what you specify, for
             security. It uses frame-ancestor CSP to restrict domains. For more
             <a

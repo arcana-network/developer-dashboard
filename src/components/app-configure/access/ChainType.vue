@@ -24,7 +24,7 @@ function handleChangeChainType(value: Chain) {
       <template #title>Chain Type</template>
       <template #description
         >Select the chain your dApp will be deployed on. For Web2 apps or if you
-        dont see your chain in the list, choose "None".</template
+        don't see your chain in the list, choose "None".</template
       >
       <VCard variant="depressed" class="chain-options-container">
         <VStack
