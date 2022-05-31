@@ -63,7 +63,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
 
     if (
       app.wallet_type === WalletMode.UI &&
-      currentConfig.wallet_type === WalletMode.noUI
+      currentConfig.wallet_type === WalletMode.NoUI
     ) {
       store.commit('showLoader', 'Enabling UI Mode in smart contract...')
       await enableUiMode()
