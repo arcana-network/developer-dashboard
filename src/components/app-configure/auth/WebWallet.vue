@@ -40,6 +40,9 @@ const walletWebsiteDomain: ComputedRef<string> = computed(
 const hasUIMode: ComputedRef<boolean> = computed(
   () => store.getters.walletUIMode
 )
+const hasUIModeInGateway: ComputedRef<boolean> = computed(
+  () => store.getters.walletUIModeInGateway
+)
 
 function handleThemeChange(theme: Theme) {
   store.commit('updateSelectedTheme', theme.value)
@@ -95,7 +98,7 @@ function handleUIModeUpdate(value: boolean) {
               <VSwitch
                 :model-value="hasUIMode"
                 class="ui-mode-switch"
-                :disabled="hasUIMode"
+                :disabled="hasUIModeInGateway"
                 @update:model-value="handleUIModeUpdate"
               />
               <span class="body-1 font-300" :class="{ 'font-700': hasUIMode }"
