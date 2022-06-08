@@ -56,7 +56,7 @@ const bandwidthUsedPercentage = ref(0)
 const storageRemaining = ref('5 GB')
 const bandwidthRemaining = ref('5 GB')
 let labels: string[] = []
-let labelAliases: string[] = []
+let labelAliases: (string | number)[] = []
 let storageData: number[] = []
 let bandwidthData: number[] = []
 const currentDate = moment()
@@ -137,14 +137,16 @@ function updateChart(data: any[]) {
 
   data?.forEach((d) => {
     const index = labelAliases.indexOf(d[durationSelected.value])
-    storageData[index] = Number(
-      bytes(d.storage, { unit: 'MB' }).replace('MB', '')
-    )
-    bandwidthData[index] = Number(
-      bytes(d.bandwidth, {
-        unit: 'MB',
-      }).replace('MB', '')
-    )
+    if (index > -1) {
+      storageData[index] = Number(
+        bytes(d.storage, { unit: 'MB' }).replace('MB', '')
+      )
+      bandwidthData[index] = Number(
+        bytes(d.bandwidth, {
+          unit: 'MB',
+        }).replace('MB', '')
+      )
+    }
   })
 
   const storageDatasets = [
@@ -202,7 +204,9 @@ function generateInitialChartValuesForQuarter() {
 
 function generateInitialChartValuesForYear() {
   for (let i = 2; i >= 0; i--) {
-    labels.push(currentDate.clone().subtract(i, 'years').format('YYYY'))
+    const year = currentDate.clone().subtract(i, 'years').format('YYYY')
+    labels.push(year)
+    labelAliases.push(Number(year))
     storageData.push(0)
     bandwidthData.push(0)
   }
