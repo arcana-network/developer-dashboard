@@ -37,11 +37,9 @@ const selectedTheme: ComputedRef<Theme | undefined> = computed(() => {
 const walletWebsiteDomain: ComputedRef<string> = computed(
   () => store.getters.walletWebsiteDomain
 )
-const hasUIMode: ComputedRef<boolean> = computed(
-  () => store.getters.walletUIMode
-)
+const hasUIMode: ComputedRef<boolean> = computed(() => store.getters.hasUIMode)
 const hasUIModeInGateway: ComputedRef<boolean> = computed(
-  () => store.getters.walletUIModeInGateway
+  () => store.getters.hasUIModeInGateway
 )
 
 function handleThemeChange(theme: Theme) {

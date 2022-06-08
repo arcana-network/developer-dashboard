@@ -178,9 +178,8 @@ const getters = {
   appId: (state: AppState) => state.appId,
   appAddress: (state: AppState) => state.appAddress,
   socialAuth: (state: AppState) => state.auth.social,
-  walletUIMode: (state: AppState) => state.auth.wallet.hasUIMode,
-  walletUIModeInGateway: (state: AppState) =>
-    state.auth.wallet.hasUIModeInGateway,
+  hasUIMode: (state: AppState) => state.auth.wallet.hasUIMode,
+  hasUIModeInGateway: (state: AppState) => state.auth.wallet.hasUIModeInGateway,
   walletWebsiteDomain: (state: AppState) => state.auth.wallet.websiteDomain,
   selectedTheme: (state: AppState) => state.auth.wallet.selectedTheme,
   selectedChain: (state: AppState) => state.access.selectedChain,
