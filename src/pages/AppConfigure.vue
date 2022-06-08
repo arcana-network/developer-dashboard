@@ -35,7 +35,11 @@ function switchTab(tab: ConfigureTab) {
 async function handleSave() {
   store.commit('showLoader', 'Saving app config...')
   const appConfigRequestBody: AppConfig = store.getters.appConfigRequestBody
-  await updateApp(appConfigRequestBody)
+  const updatedApp = (await updateApp(appConfigRequestBody)).data
+  store.commit(
+    'updateWalletUIModeFromGateway',
+    updatedApp.app.wallet_type === WalletMode.UI
+  )
   await updateSmartContractTransactions(appConfigRequestBody)
   currentConfig = store.getters.appConfigRequestBody
   store.commit('hideLoader')
@@ -87,7 +91,7 @@ function handleCancel() {
     <ConfigureHeader />
     <VStack gap="2rem" class="container">
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
-      <router-view />
+      <RouterView />
     </VStack>
     <ConfigureFooter
       class="configure-footer"

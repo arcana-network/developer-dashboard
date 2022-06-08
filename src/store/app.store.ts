@@ -112,6 +112,7 @@ type AppState = {
       websiteDomain: string
       selectedTheme: 'light' | 'dark'
       hasUIMode: boolean
+      hasUIModeInGateway: boolean
     }
     redirectUri: string
   }
@@ -153,6 +154,7 @@ function getDefaultAppState(): AppState {
         websiteDomain: '',
         selectedTheme: 'dark',
         hasUIMode: false,
+        hasUIModeInGateway: false,
       },
     },
     store: {
@@ -176,7 +178,8 @@ const getters = {
   appId: (state: AppState) => state.appId,
   appAddress: (state: AppState) => state.appAddress,
   socialAuth: (state: AppState) => state.auth.social,
-  walletUIMode: (state: AppState) => state.auth.wallet.hasUIMode,
+  hasUIMode: (state: AppState) => state.auth.wallet.hasUIMode,
+  hasUIModeInGateway: (state: AppState) => state.auth.wallet.hasUIModeInGateway,
   walletWebsiteDomain: (state: AppState) => state.auth.wallet.websiteDomain,
   selectedTheme: (state: AppState) => state.auth.wallet.selectedTheme,
   selectedChain: (state: AppState) => state.access.selectedChain,
@@ -321,6 +324,9 @@ const mutations = {
   updateWalletUIMode(state: AppState, hasUIMode: boolean) {
     state.auth.wallet.hasUIMode = hasUIMode
   },
+  updateWalletUIModeFromGateway(state: AppState, hasUIModeInGateway: boolean) {
+    state.auth.wallet.hasUIModeInGateway = hasUIModeInGateway
+  },
   updateWalletWebsiteDomain(state: AppState, websiteDomain: string) {
     state.auth.wallet.websiteDomain = websiteDomain
   },
@@ -453,6 +459,10 @@ const actions = {
       }
 
       commit('updateWalletUIMode', currentApp.wallet_type === WalletMode.UI)
+      commit(
+        'updateWalletUIModeFromGateway',
+        currentApp.wallet_type === WalletMode.UI
+      )
     }
   },
   resetSettings({ commit }) {

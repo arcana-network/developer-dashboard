@@ -221,7 +221,7 @@ function copyAppId() {
 }
 
 function goToUsers() {
-  router.push('/users')
+  router.push({ name: 'Users' })
 }
 
 watch(
