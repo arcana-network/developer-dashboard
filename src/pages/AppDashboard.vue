@@ -113,6 +113,11 @@ async function fetchAndPopulateUsersAndActions() {
 }
 
 function updateChart(data: any[]) {
+  labels = []
+  labelAliases = []
+  storageData = []
+  bandwidthData = []
+
   switch (durationSelected.value) {
     case 'day':
       generateInitialChartValuesForDay()
