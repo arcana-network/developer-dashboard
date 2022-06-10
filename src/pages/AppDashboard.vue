@@ -107,7 +107,7 @@ async function fetchAndPopulateUsersAndActions() {
     download: stats.data.actions?.download,
     upload: stats.data.actions?.upload,
     delete: stats.data.actions?.delete,
-    transfers: stats.data.actions?.transfers,
+    transfers: stats.data.actions?.ownership_change,
     share: stats.data.actions?.share,
     revoke: stats.data.actions?.revoke,
   }
