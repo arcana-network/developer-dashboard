@@ -13,12 +13,10 @@ type SmartContractRequestParams = {
 }
 
 function getTxRequestProps(): SmartContractRequestParams {
-  let appAddress: string
+  let appAddress: string = store.getters.appAddress
 
-  if (!store.getters.appAddress.startsWith('0x')) {
-    appAddress = `0x${store.getters.appAddress}`
-  } else {
-    appAddress = store.getters.appAddress
+  if (!appAddress.startsWith('0x')) {
+    appAddress = `0x${appAddress}`
   }
 
   return {
