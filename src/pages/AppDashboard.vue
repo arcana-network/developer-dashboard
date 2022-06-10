@@ -61,6 +61,7 @@ let storageData: number[] = []
 let bandwidthData: number[] = []
 const currentDate = moment()
 const quarters = ['Jan-Mar', 'Apr-Jun', 'Jul-Sept', 'Oct-Dec']
+const MAX_ALLOWED_APP_LIMIT: number = bytes('5 GB')
 
 let StorageChart: Chart
 let BandwidthChart: Chart
@@ -106,10 +107,28 @@ async function fetchAndPopulateUsersAndActions() {
     download: stats.data.actions?.download,
     upload: stats.data.actions?.upload,
     delete: stats.data.actions?.delete,
-    transfers: stats.data.actions?.transfers,
+    transfers: stats.data.actions?.ownership_change,
     share: stats.data.actions?.share,
     revoke: stats.data.actions?.revoke,
   }
+
+  const storage: number = stats.data.actions?.storage
+  storageUsed.value = bytes(storage, {
+    unitSeparator: ' ',
+  })
+  storageUsedPercentage.value = (storage / MAX_ALLOWED_APP_LIMIT) * 100
+  storageRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT - storage, {
+    unitSeparator: ' ',
+  })
+
+  const bandwidth: number = stats.data.actions?.bandwidth
+  bandwidthUsed.value = bytes(bandwidth, {
+    unitSeparator: ' ',
+  })
+  bandwidthUsedPercentage.value = (bandwidth / MAX_ALLOWED_APP_LIMIT) * 100
+  bandwidthRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT - bandwidth, {
+    unitSeparator: ' ',
+  })
 }
 
 function updateChart(data: any[]) {
