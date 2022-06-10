@@ -13,9 +13,17 @@ type SmartContractRequestParams = {
 }
 
 function getTxRequestProps(): SmartContractRequestParams {
+  let appAddress: string
+
+  if (!store.getters.appAddress.startsWith('0x')) {
+    appAddress = `0x${store.getters.appAddress}`
+  } else {
+    appAddress = store.getters.appAddress
+  }
+
   return {
     privateKey: store.getters.keys.privateKey,
-    appAddress: store.getters.appAddress,
+    appAddress,
     rpc: store.getters.rpcUrl,
     gateway: getEnvApi(),
     forwarderAddress: store.getters.forwarder,
