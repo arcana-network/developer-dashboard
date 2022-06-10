@@ -361,7 +361,7 @@ const actions = {
       commit('updateAppName', app.name)
       commit('updateAppId', String(currentApp.ID))
       commit('updateAppAddress', app.address)
-      commit('updateRedirectUri', `${api.verify}/${currentApp.ID}`)
+      commit('updateRedirectUri', `${api.verify}/${currentApp.ID}/`)
 
       const selectedChain = ChainMapping[app.chain]
       commit('updateSelectedChain', selectedChain)
