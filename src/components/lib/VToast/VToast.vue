@@ -69,11 +69,11 @@ function handleCloseToast(toastMessage: ToastMessage) {
 }
 
 .v-toast.success {
-  background-color: var(--color-success);
+  background-color: var(--color-green);
 }
 
 .v-toast.error {
-  background-color: var(--color-error);
+  background-color: var(--color-orange);
 }
 
 .v-toast-close {
