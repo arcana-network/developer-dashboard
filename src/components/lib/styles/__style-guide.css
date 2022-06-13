@@ -7,6 +7,8 @@
   --colors-green: #8fff00;
   --colors-yellow: #ffc226;
   --colors-orange: #ff6826;
+  --color-error: #ee193f;
+  --color-success: #28a745;
   --font-title: 'Montserrat', sans-serif;
   --font-body: 'Sora', sans-serif;
   --dark-theme-bg: #181818;
