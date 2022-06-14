@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { SocialLoginType } from '@arcana/auth'
+import { SocialLoginType } from '@arcana/auth-core'
 import { onMounted } from '@vue/runtime-core'
 import { Wallet } from 'ethers'
 import { useRouter } from 'vue-router'
