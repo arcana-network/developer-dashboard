@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 import { useStore } from 'vuex'
 
+import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import type { ToastMessage } from '@/store/toast.store'
 
@@ -27,14 +28,15 @@ function handleCloseToast(toastMessage: ToastMessage) {
       }"
     >
       <VStack justify="space-between" align="start" gap="0.5rem">
-        <span class="body-2 font-500 text-grey">
+        <span class="body-2 font-500 v-toast-message">
           {{ toastMessage.message }}
         </span>
-        <img
-          src="@/assets/iconography/cancel.svg"
+        <span
           class="v-toast-close"
           @click.stop="handleCloseToast(toastMessage)"
-        />
+        >
+          <CloseIcon color="#181818" />
+        </span>
       </VStack>
     </div>
   </VStack>
@@ -48,7 +50,6 @@ function handleCloseToast(toastMessage: ToastMessage) {
   z-index: 10000000;
   width: 22rem;
   padding: 2rem;
-  color: white;
 }
 
 .v-toast {
@@ -77,5 +78,9 @@ function handleCloseToast(toastMessage: ToastMessage) {
   width: 1rem;
   height: 1rem;
   cursor: pointer;
+}
+
+.v-toast-message {
+  color: var(--dark-theme-bg);
 }
 </style>
