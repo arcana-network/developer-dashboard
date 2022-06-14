@@ -1,4 +1,4 @@
-import { AuthProvider, SocialLoginType } from '@arcana/auth'
+import { AuthProvider, SocialLoginType } from '@arcana/auth-core'
 import { useStore } from 'vuex'
 
 const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID
@@ -16,6 +16,7 @@ function useArcanaAuth() {
         network: ARCANA_AUTH_NETWORK,
         flow: 'redirect',
         redirectUri: `${window.location.origin}/login`,
+        autoRedirect: true,
       })
     }
   }

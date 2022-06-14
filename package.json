@@ -24,7 +24,7 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
-    "@arcana/auth": "https://testnet-dev.s3.ap-south-1.amazonaws.com/arcana-auth-dev.tgz",
+    "@arcana/auth-core": "^0.0.3-beta",
     "@sentry/tracing": "^6.16.1",
     "@sentry/vue": "^6.16.1",
     "autoprefixer": "^10.3.4",
