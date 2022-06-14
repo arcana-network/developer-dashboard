@@ -78,6 +78,13 @@ function handleCloseToast(toastMessage: ToastMessage) {
   width: 1rem;
   height: 1rem;
   cursor: pointer;
+  opacity: 1;
+  transition: opacity 150ms ease-in;
+}
+
+.v-toast-close:hover,
+.v-toast-close:focus {
+  opacity: 0.5;
 }
 
 .v-toast-message {
