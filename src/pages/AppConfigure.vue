@@ -45,7 +45,7 @@ async function handleSave() {
   await updateSmartContractTransactions(appConfigRequestBody)
   currentConfig = store.getters.appConfigRequestBody
   store.commit('hideLoader')
-  toast.success('App Configuration Updated')
+  toast.success('App configuration updated')
 }
 
 async function updateSmartContractTransactions(app: AppConfig) {
