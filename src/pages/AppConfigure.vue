@@ -99,7 +99,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
 
 function handleSmartContractErrors(type: string, error: unknown) {
   toast.error(
-    `An error occurred while saving the ${type} in the blockchain. Please try again or contact support`
+    `An error occurred while saving the ${type} in the blockchain. Please try again or contact support.`
   )
   console.error(error)
 }
