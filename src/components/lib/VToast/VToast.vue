@@ -15,7 +15,7 @@ function handleCloseToast(toastMessage: ToastMessage) {
 </script>
 
 <template>
-  <div class="v-toast-container">
+  <VStack class="v-toast-container" direction="column" gap="1rem">
     <div
       v-for="toastMessage in toastMessages"
       :key="`toast-message-${toastMessage.id}`"
@@ -27,7 +27,7 @@ function handleCloseToast(toastMessage: ToastMessage) {
       }"
     >
       <VStack justify="space-between" align="start" gap="0.5rem">
-        <span class="body-2 font-500">
+        <span class="body-2 font-500 text-grey">
           {{ toastMessage.message }}
         </span>
         <img
@@ -37,7 +37,7 @@ function handleCloseToast(toastMessage: ToastMessage) {
         />
       </VStack>
     </div>
-  </div>
+  </VStack>
 </template>
 
 <style scoped>
@@ -46,9 +46,6 @@ function handleCloseToast(toastMessage: ToastMessage) {
   top: 0;
   right: 0;
   z-index: 10000000;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
   width: 22rem;
   padding: 2rem;
   color: white;
