@@ -132,7 +132,7 @@ type OrganizationOptions = {
 }
 
 function updateOrganization({ name, country, size }: OrganizationOptions) {
-  return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/organization/`, {
+  return gatewayAuthorizedInstance.patch(`${getEnvApi('v2')}/organization/`, {
     name,
     country,
     size,

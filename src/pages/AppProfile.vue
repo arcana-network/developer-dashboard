@@ -7,10 +7,12 @@ import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
 import { fetchProfile, updateOrganization } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
 
 const store = useStore()
+const toast = useToast()
 const { logout } = useArcanaAuth()
 
 type OrganizationDetails = {
@@ -35,7 +37,7 @@ const router = useRouter()
 
 let organisationDetailsResetState: OrganizationDetails
 
-function onUpdateOrganization() {
+async function onUpdateOrganization() {
   const size = Number(organisationDetails.value.size)
   if (!Number.isFinite(size) || !Number.isSafeInteger(size) || size <= 0) {
     organisationDetails.value.sizeErrorMessage = 'Invalid organization size.'
@@ -44,16 +46,22 @@ function onUpdateOrganization() {
   organisationDetails.value.sizeErrorMessage = ''
 
   try {
-    updateOrganization({
+    store.commit('showLoader', 'Updating Profile details...')
+    await updateOrganization({
       name: organisationDetails.value.name,
       size,
       country: organisationDetails.value.country,
-    }).then(() => {
-      editOrganisationDetails.value = false
-      organisationDetailsResetState = { ...organisationDetails.value }
     })
+    toast.success('Profile details updated')
+    editOrganisationDetails.value = false
+    organisationDetailsResetState = { ...organisationDetails.value }
   } catch (e) {
     console.error(e)
+    toast.error(
+      'An error occurred while saving the profile details. Please try again or contact support'
+    )
+  } finally {
+    store.commit('hideLoader')
   }
 }
 

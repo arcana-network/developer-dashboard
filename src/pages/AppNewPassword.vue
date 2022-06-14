@@ -265,7 +265,7 @@ h1 {
 }
 
 li.success-message {
-  color: var(--colors-green);
+  color: var(--color-green);
 }
 
 .close-popup-button {

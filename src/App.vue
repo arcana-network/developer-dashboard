@@ -3,6 +3,7 @@ import { onBeforeMount, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
+import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
 import cryptoUtils from '@/utils/cryptoUtils'
@@ -52,6 +53,7 @@ onBeforeMount(async () => {
       v-if="isLoading || !isAuthLoaded"
       :message="loadingMessage"
     />
+    <VToast />
   </div>
 </template>
 

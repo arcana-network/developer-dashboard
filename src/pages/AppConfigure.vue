@@ -8,6 +8,7 @@ import ConfigureHeader from '@/components/app-configure/ConfigureHeader.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { useToast } from '@/components/lib/VToast'
 import { updateApp, type AppConfig } from '@/services/gateway.service'
 import {
   setAppName,
@@ -24,6 +25,7 @@ import {
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
 const store = useStore()
+const toast = useToast()
 
 let currentConfig: AppConfig = store.getters.appConfigRequestBody
 
@@ -43,6 +45,7 @@ async function handleSave() {
   await updateSmartContractTransactions(appConfigRequestBody)
   currentConfig = store.getters.appConfigRequestBody
   store.commit('hideLoader')
+  toast.success('App configuration updated')
 }
 
 async function updateSmartContractTransactions(app: AppConfig) {
@@ -50,8 +53,13 @@ async function updateSmartContractTransactions(app: AppConfig) {
     if (app.name !== currentConfig.name) {
       store.commit('showLoader', 'Updating app name in smart contract...')
       await setAppName(app.name)
+      toast.success('App name saved in blockchain')
     }
+  } catch (e) {
+    handleSmartContractErrors('App name', e)
+  }
 
+  try {
     const hasStorageLimitChanged =
       app.storage_limit !== currentConfig.storage_limit
     const hasBandwidthLimitChanged =
@@ -60,23 +68,40 @@ async function updateSmartContractTransactions(app: AppConfig) {
     if (hasStorageLimitChanged || hasBandwidthLimitChanged) {
       store.commit('showLoader', 'Updating user limits in smart contract...')
       await setDefaultLimit(app.storage_limit, app.bandwidth_limit)
+      toast.success('User limits saved in blockchain')
     }
+  } catch (e) {
+    handleSmartContractErrors('User limits', e)
+  }
 
+  try {
     store.commit('showLoader', 'Updating social auth in smart contract...')
     await setClientIds(app.cred)
+    toast.success('Client IDs saved in blockchain')
+  } catch (e) {
+    handleSmartContractErrors('Client IDs', e)
+  }
 
+  try {
     if (
       app.wallet_type === WalletMode.UI &&
       currentConfig.wallet_type === WalletMode.NoUI
     ) {
       store.commit('showLoader', 'Enabling UI Mode in smart contract...')
       await enableUiMode()
+      toast.success('UI mode saved in blockchain')
     }
   } catch (e) {
-    console.error(e)
-  } finally {
-    store.commit('hideLoader')
+    handleSmartContractErrors('UI mode', e)
   }
+  store.commit('hideLoader')
+}
+
+function handleSmartContractErrors(type: string, error: unknown) {
+  toast.error(
+    `An error occurred while saving the ${type} in the blockchain. Please try again or contact support.`
+  )
+  console.error(error)
 }
 
 function handleCancel() {
