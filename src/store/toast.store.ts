@@ -2,19 +2,13 @@ type ToastMessage = {
   type: 'success' | 'error'
   message: string
   id: number
-  show: boolean
 }
 
 type ToastState = {
   messages: ToastMessage[]
 }
 
-const toastTimeout = 5000
-const timeToAnimateToast = 300
-const timeToShowToast = 100
-const timeToHideToast: number =
-  timeToShowToast + timeToAnimateToast + toastTimeout
-const timeToRemoveToast: number = timeToHideToast + timeToAnimateToast
+const toastTimeout = 25300
 
 const state: ToastState = {
   messages: [],
@@ -31,22 +25,6 @@ const mutations = {
   removeToast(state: ToastState, message: ToastMessage) {
     state.messages = state.messages.filter((msg) => msg.id !== message.id)
   },
-  showToast(state: ToastState, message: ToastMessage) {
-    const messageIndex = state.messages.findIndex(
-      (msg) => msg.id === message.id
-    )
-    if (messageIndex > -1) {
-      state.messages[messageIndex].show = true
-    }
-  },
-  hideToast(state: ToastState, message: ToastMessage) {
-    const messageIndex = state.messages.findIndex(
-      (msg) => msg.id === message.id
-    )
-    if (messageIndex > -1) {
-      state.messages[messageIndex].show = false
-    }
-  },
 }
 
 const actions = {
@@ -58,12 +36,7 @@ const actions = {
       show: false,
     }
     commit('createToast', successToastMessage)
-    setTimeout(() => commit('showToast', successToastMessage), timeToShowToast)
-    setTimeout(() => commit('hideToast', successToastMessage), timeToHideToast)
-    setTimeout(
-      () => commit('removeToast', successToastMessage),
-      timeToRemoveToast
-    )
+    setTimeout(() => commit('removeToast', successToastMessage), toastTimeout)
   },
   showErrorToast({ commit }, message: string) {
     const errorToastMessage = {
@@ -72,16 +45,10 @@ const actions = {
       message,
     }
     commit('createToast', errorToastMessage)
-    setTimeout(() => commit('showToast', errorToastMessage), timeToShowToast)
-    setTimeout(() => commit('hideToast', errorToastMessage), timeToHideToast)
-    setTimeout(
-      () => commit('removeToast', errorToastMessage),
-      timeToRemoveToast
-    )
+    setTimeout(() => commit('removeToast', errorToastMessage), toastTimeout)
   },
   closeToast({ commit }, toastMessage: ToastMessage) {
-    commit('hideToast', toastMessage)
-    setTimeout(() => commit('removeToast', toastMessage), timeToAnimateToast)
+    commit('removeToast', toastMessage)
   },
 }
 

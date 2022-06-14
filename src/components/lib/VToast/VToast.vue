@@ -17,28 +17,26 @@ function handleCloseToast(toastMessage: ToastMessage) {
 
 <template>
   <VStack class="v-toast-container" direction="column" gap="1rem">
-    <div
-      v-for="toastMessage in toastMessages"
-      :key="`toast-message-${toastMessage.id}`"
-      class="v-toast"
-      :class="{
-        success: toastMessage.type === 'success',
-        error: toastMessage.type === 'error',
-        show: toastMessage.show,
-      }"
-    >
-      <VStack justify="space-between" align="start" gap="0.5rem">
-        <span class="body-2 font-500 v-toast-message">
-          {{ toastMessage.message }}
-        </span>
-        <span
-          class="v-toast-close"
-          @click.stop="handleCloseToast(toastMessage)"
-        >
-          <CloseIcon color="#181818" />
-        </span>
-      </VStack>
-    </div>
+    <TransitionGroup name="v-toast-slide">
+      <div
+        v-for="toastMessage in toastMessages"
+        :key="`toast-message-${toastMessage.id}`"
+        class="v-toast"
+        :class="toastMessage.type"
+      >
+        <VStack justify="space-between" align="start" gap="0.5rem">
+          <span class="body-2 font-500 v-toast-message">
+            {{ toastMessage.message }}
+          </span>
+          <span
+            class="v-toast-close"
+            @click.stop="handleCloseToast(toastMessage)"
+          >
+            <CloseIcon color="#181818" />
+          </span>
+        </VStack>
+      </div>
+    </TransitionGroup>
   </VStack>
 </template>
 
@@ -56,14 +54,6 @@ function handleCloseToast(toastMessage: ToastMessage) {
   padding: 1rem 1.5rem;
   border-radius: 10px;
   box-shadow: 0 10px 20px rgb(75 50 50 / 50%);
-  opacity: 0;
-  transition: transform 300ms, opacity 300ms;
-  transform: translateX(26rem);
-}
-
-.v-toast.show {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 .v-toast.success {
@@ -89,5 +79,21 @@ function handleCloseToast(toastMessage: ToastMessage) {
 
 .v-toast-message {
   color: var(--dark-theme-bg);
+}
+
+.v-toast-slide-enter-active,
+.v-toast-slide-leave-active,
+.v-toast-slide-move {
+  transition: all 300ms ease-out;
+}
+
+.v-toast-slide-enter-from,
+.v-toast-slide-leave-to {
+  opacity: 0;
+  transform: translateX(26rem);
+}
+
+.v-toast-slide-leave-active {
+  position: absolute;
 }
 </style>
