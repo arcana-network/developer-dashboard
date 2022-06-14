@@ -8,7 +8,7 @@ type ToastState = {
   messages: ToastMessage[]
 }
 
-const toastTimeout = 25300
+const toastTimeout = 5600
 
 const state: ToastState = {
   messages: [],
