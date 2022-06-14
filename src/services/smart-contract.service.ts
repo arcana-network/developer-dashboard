@@ -2,7 +2,7 @@ import type { AppConfigCred } from '@/services/gateway.service'
 import signerMakeTx from '@/utils/signerMakeTx'
 
 async function setAppName(appName?: string) {
-  await signerMakeTx('setAppName1', [appName])
+  await signerMakeTx('setAppName', [appName])
 }
 
 async function setDefaultLimit(storage: number, bandwidth: number) {
