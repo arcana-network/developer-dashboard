@@ -1,11 +1,7 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
 import store from '@/store'
-import {
-  ChainMapping,
-  MAX_DATA_TRANSFER_BYTES,
-  RegionMapping,
-} from '@/utils/constants'
+import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
@@ -66,10 +62,17 @@ function uploadLogo(
   )
 }
 
-function createApp(appName: string): Promise<AxiosResponse<AppConfig>> {
+type CreateAppRequestBody = {
+  name: string
+  region: number
+}
+
+function createApp(
+  config: CreateAppRequestBody
+): Promise<AxiosResponse<AppConfig>> {
   const defaultAppConfig: AppConfig = {
-    name: appName,
-    region: RegionMapping.asia,
+    name: config.name,
+    region: config.region,
     chain: ChainMapping.ethereum,
     cred: [],
     storage_limit: MAX_DATA_TRANSFER_BYTES,
