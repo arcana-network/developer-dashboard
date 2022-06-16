@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import ConfigureFooter from '@/components/app-configure/ConfigureFooter.vue'
@@ -26,6 +26,9 @@ const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
 const store = useStore()
 const toast = useToast()
+const route = useRoute()
+
+currentTab.value = String(route.name).replace('Settings', '').toLowerCase()
 
 let currentConfig: AppConfig = store.getters.appConfigRequestBody
 
