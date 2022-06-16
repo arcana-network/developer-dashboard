@@ -112,7 +112,7 @@ function handleScroll(ev: any) {
     <div class="banner" :class="{ hide: !showBanner || hideBanner }">
       <h4>Disclaimer:</h4>
       <h5>
-        This is an ALPHA release with all features being experimental. Please do
+        This is an BETA release with all features being experimental. Please do
         not use important data without backups.
       </h5>
       <span class="banner-close" role="button" @click.stop="onCloseBanner">
