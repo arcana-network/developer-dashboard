@@ -13,7 +13,7 @@ import VHeader from '@/components/lib/VHeader/VHeader.vue'
 defineProps({
   hideBanner: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 })
 
