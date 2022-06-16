@@ -6,7 +6,6 @@ import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
-import cryptoUtils from '@/utils/cryptoUtils'
 
 const store = useStore()
 const arcanaAuth = useArcanaAuth()
@@ -17,17 +16,8 @@ const isAuthLoaded = ref(false)
 onBeforeMount(async () => {
   store.commit('showLoader', 'Initializing Arcana Auth SDK...')
   await arcanaAuth.init()
-  store.commit('showLoader', 'Fetching app configuration...')
-  const encodedAccessToken = localStorage.getItem('access-token')
-  const userInfo = localStorage.getItem('user-info')
-  if (encodedAccessToken && userInfo) {
-    const accessToken = new TextDecoder().decode(
-      cryptoUtils.stringToBuffer(encodedAccessToken)
-    )
-    store.dispatch('updateAccessToken', accessToken)
-    store.dispatch('updateUserInfo', JSON.parse(userInfo))
-  }
   isAuthLoaded.value = true
+
   if (!store.getters['forwarder'] || !store.getters['rpc']) {
     const configResponse = await getConfig()
     const config = configResponse.data
@@ -35,6 +25,7 @@ onBeforeMount(async () => {
     store.commit('updateRpcUrl', config?.RPC_URL)
   }
 
+  store.commit('showLoader', 'Fetching app configuration...')
   if (!store.getters.appName && store.getters.accessToken) {
     await store.dispatch('fetchAppConfig')
   }
