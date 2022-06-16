@@ -2,8 +2,8 @@
 import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
+import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { regions, type StorageRegion } from '@/utils/constants'
 
 const store = useStore()
@@ -24,15 +24,23 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
       >
       <VStack direction="column" gap="0.75rem" align="start">
         <h4>Selected Region</h4>
-        <VTextField
-          disabled
+        <VDropdown
+          :options="regions"
+          display-field="name"
           class="region-dropdown"
-          :model-value="selectedRegion?.name"
+          :model-value="selectedRegion"
+          disabled
         />
       </VStack>
     </SettingCard>
   </section>
 </template>
+
+<style scoped>
+.region-dropdown {
+  width: 16rem;
+}
+</style>
 
 <style>
 .storage-region-card > * {
