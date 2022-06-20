@@ -10,17 +10,10 @@ import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VHeader from '@/components/lib/VHeader/VHeader.vue'
 
-defineProps({
-  hideBanner: {
-    type: Boolean,
-    default: true,
-  },
-})
-
 const route = useRoute()
 const router = useRouter()
 const store = useStore()
-const showBanner = ref(true)
+const canShowBanner = ref(true)
 const hideHeader = ref(false)
 
 let lastScrollTop = 0
@@ -81,11 +74,11 @@ function onLogoClick() {
 
 function onCloseBanner() {
   sessionStorage.setItem('hide-banner', 'true')
-  showBanner.value = false
+  canShowBanner.value = false
 }
 
 onMounted(() => {
-  showBanner.value = !sessionStorage.getItem('hide-banner')
+  canShowBanner.value = !sessionStorage.getItem('hide-banner')
   document.querySelector('#app')?.addEventListener('scroll', handleScroll)
 })
 
@@ -109,10 +102,10 @@ function handleScroll(ev: any) {
 
 <template>
   <section :class="hideHeader ? 'hide-header' : ''">
-    <div class="banner" :class="{ hide: !showBanner || hideBanner }">
+    <div v-if="canShowBanner" class="banner">
       <h4>Disclaimer:</h4>
       <h5>
-        This is an ALPHA release with all features being experimental. Please do
+        This is an BETA release with all features being experimental. Please do
         not use important data without backups.
       </h5>
       <span class="banner-close" role="button" @click.stop="onCloseBanner">

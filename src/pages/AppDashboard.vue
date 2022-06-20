@@ -264,7 +264,7 @@ watch(
 
 <template>
   <div>
-    <app-header :hide-banner="!isConfigured" />
+    <app-header />
     <main v-if="isConfigured" class="container">
       <section class="flex dashboard-heading flex-wrap">
         <h1 class="text-ellipsis flex-grow" style="min-width: 150px">

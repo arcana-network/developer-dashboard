@@ -11,7 +11,6 @@ import constants from '@/utils/constants'
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppConfigure = () => import('@/pages/AppConfigure.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')
-const AppNewPassword = () => import('@/pages/AppNewPassword.vue')
 const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
@@ -122,15 +121,6 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: 'Create Password',
-    path: '/password/create',
-    component: AppNewPassword,
-    props: true,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
     name: 'Login',
     path: '/login',
     component: toBoolean(constants.isAppDown) ? AppDownNotification : AppLogin,
@@ -150,7 +140,7 @@ router.beforeEach((to, from, next) => {
     to.matched.some((record) => record.meta.requiresAuth) &&
     !store.getters.accessToken
   ) {
-    router.push({ name: 'Login' })
+    router.push({ name: 'Login', params: { redirectTo: String(to.name) } })
   } else if (to.name === 'Login' && store.getters.accessToken) {
     router.push({ name: 'Dashboard' })
   } else if (

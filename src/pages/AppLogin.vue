@@ -2,7 +2,7 @@
 import { SocialLoginType } from '@arcana/auth-core'
 import { onMounted } from '@vue/runtime-core'
 import { Wallet } from 'ethers'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
@@ -13,6 +13,7 @@ import useArcanaAuth from '@/use/arcanaAuth'
 import signWithPrivateKey from '@/utils/signWithPrivateKey'
 
 const router = useRouter()
+const route = useRoute()
 const store = useStore()
 const arcanaAuth = useArcanaAuth()
 
@@ -28,11 +29,8 @@ async function fetchAndStoreDetails() {
   await store.dispatch('fetchAppConfig')
   store.commit('hideLoader')
 
-  if (localStorage.getItem('skipPassword') !== 'true') {
-    router.push({
-      name: 'Create Password',
-      params: { redirectTo: 'Dashboard' },
-    })
+  if (route.params.redirectTo) {
+    router.push({ name: String(route.params.redirectTo) })
   } else {
     router.push({
       name: 'Dashboard',
