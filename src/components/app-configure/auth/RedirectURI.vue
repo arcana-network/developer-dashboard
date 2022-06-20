@@ -4,9 +4,22 @@ import { useStore } from 'vuex'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { useToast } from '@/components/lib/VToast'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const store = useStore()
+const toast = useToast()
+
+const redirectUri = store.getters.redirectUri
+
+async function copyRedirectUri() {
+  try {
+    await copyToClipboard(redirectUri)
+    toast.success('Copied Redirect URI to clipboard')
+  } catch (e) {
+    toast.error('Unable to copy. Please try again or contact support')
+  }
+}
 </script>
 
 <template>
@@ -22,13 +35,13 @@ const store = useStore()
           >
             <span
               class="body-1 text-ellipsis redirect-uri"
-              :title="store.getters.redirectUri"
-              >{{ store.getters.redirectUri }}</span
+              :title="redirectUri"
+              >{{ redirectUri }}</span
             >
             <img
               src="@/assets/iconography/copy.svg"
               class="cursor-pointer copy-icon"
-              @click.stop="copyToClipboard(store.getters.redirectUri)"
+              @click.stop="copyRedirectUri"
             />
           </VStack>
         </VCard>
