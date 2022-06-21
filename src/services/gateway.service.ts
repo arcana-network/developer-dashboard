@@ -46,22 +46,6 @@ gatewayAuthorizedInstance.interceptors.request.use(
   }
 )
 
-function uploadLogo(
-  file: File,
-  mode: 'dark' | 'light',
-  orientation?: 'horizontal' | 'vertical'
-) {
-  const formData: FormData = new FormData()
-  formData.append('file', file)
-  return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
-    formData,
-    {
-      params: { type: mode, orientation },
-    }
-  )
-}
-
 type CreateAppRequestBody = {
   name: string
   region: number
@@ -202,8 +186,35 @@ function getThemeLogo(
   }
 }
 
+function uploadThemeLogo(
+  file: File,
+  mode: 'dark' | 'light',
+  orientation?: 'horizontal' | 'vertical'
+) {
+  const formData: FormData = new FormData()
+  formData.append('file', file)
+  return gatewayAuthorizedInstance.put(
+    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    formData,
+    {
+      params: { type: mode, orientation },
+    }
+  )
+}
+
+function removeThemeLogo(
+  mode: 'dark' | 'light',
+  orientation?: 'horizontal' | 'vertical'
+) {
+  return gatewayAuthorizedInstance.delete(
+    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    {
+      params: { type: mode, orientation },
+    }
+  )
+}
+
 export {
-  uploadLogo,
   createApp,
   updateApp,
   deleteApp,
@@ -221,6 +232,8 @@ export {
   loginUser,
   getNonce,
   getThemeLogo,
+  uploadThemeLogo,
+  removeThemeLogo,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

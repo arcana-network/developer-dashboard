@@ -18,6 +18,7 @@ import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
+import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import {
   fetchPeriodicUsage,
@@ -29,6 +30,8 @@ import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
 const store = useStore()
+const toast = useToast()
+
 const appId = computed(() => {
   return store.getters.appId
 })
@@ -238,14 +241,21 @@ function goToConfigure() {
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
-function copyAppId() {
-  SmartContractIcon.value = CheckIcon
-  smartContractTooltip.value = 'Copied'
-  copyToClipboard(appId.value)
-  setTimeout(() => {
-    SmartContractIcon.value = CopyIcon
-    smartContractTooltip.value = 'Click to copy'
-  }, 3000)
+async function copyAppId() {
+  try {
+    SmartContractIcon.value = CheckIcon
+    smartContractTooltip.value = 'Copied'
+    await copyToClipboard(appId.value)
+    toast.success('App ID copied')
+  } catch (e) {
+    console.error(e)
+    toast.error('Failed to copy. Try again or contact support')
+  } finally {
+    setTimeout(() => {
+      SmartContractIcon.value = CopyIcon
+      smartContractTooltip.value = 'Click to copy'
+    }, 3000)
+  }
 }
 
 function goToUsers() {

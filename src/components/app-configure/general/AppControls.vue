@@ -9,10 +9,12 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import { useToast } from '@/components/lib/VToast'
 import { deleteApp } from '@/services/gateway.service'
 
 const router = useRouter()
 const store = useStore()
+const toast = useToast()
 
 const showDeletePopup = ref(false)
 const showDeleteTimerPopup = ref(false)
@@ -25,10 +27,19 @@ function handleProceedDeletion() {
 async function handleAppDeletion() {
   showDeleteTimerPopup.value = false
   store.commit('showLoader', 'Deleting App...')
-  await deleteApp()
-  store.dispatch('resetSettings')
-  store.commit('hideLoader')
-  router.push({ name: 'CreateApp' })
+  try {
+    await deleteApp()
+    store.dispatch('resetSettings')
+    store.commit('hideLoader')
+    toast.success('App deleted successfully')
+    router.push({ name: 'CreateApp' })
+  } catch (e) {
+    console.error(e)
+    toast.error(
+      'Unable to delete the app at the moment. Please try again or contact support'
+    )
+    store.commit('hideLoader')
+  }
 }
 </script>
 

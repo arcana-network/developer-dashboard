@@ -6,10 +6,12 @@ import { useStore } from 'vuex'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { uploadLogo } from '@/services/gateway.service'
+import { useToast } from '@/components/lib/VToast'
+import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
 import getEnvApi from '@/utils/get-env-api'
 
 const store = useStore()
+const toast = useToast()
 
 type OrientationOption = {
   logo: string
@@ -64,20 +66,37 @@ async function handleFileChange(
   }
   themeLogos[mode][orientation].hasError = false
   themeLogos[mode][orientation].isLoading = true
-  await uploadLogo(files[0], mode, orientation)
-  const logoUrl = `${getEnvApi('v2')}/app/${
-    store.getters.appId
-  }/logo?type=${mode}&orientation=${orientation}`
-  themeLogos[mode][orientation].logo = logoUrl
-  store.commit('updateLogo', { mode, orientation, url: logoUrl })
-  themeLogos[mode][orientation].isLoading = false
+  try {
+    await uploadThemeLogo(files[0], mode, orientation)
+    toast.success('Logo uploaded successfully')
+    const logoUrl = `${getEnvApi('v2')}/app/${
+      store.getters.appId
+    }/logo?type=${mode}&orientation=${orientation}`
+    themeLogos[mode][orientation].logo = logoUrl
+    store.commit('updateLogo', { mode, orientation, url: logoUrl })
+  } catch (e) {
+    console.error(e)
+    toast.error("Couldn't upload logo. Please try again or contact support")
+  } finally {
+    themeLogos[mode][orientation].isLoading = false
+  }
 }
 
-function handleFileRemove(
+async function handleFileRemove(
   mode: 'light' | 'dark',
   orientation: 'vertical' | 'horizontal'
 ) {
-  themeLogos[mode][orientation].logo = ''
+  themeLogos[mode][orientation].isLoading = true
+  try {
+    await removeThemeLogo(mode, orientation)
+    toast.success('Logo removed successfully')
+    themeLogos[mode][orientation].logo = ''
+  } catch (e) {
+    console.error(e)
+    toast.error("Couldn't remove logo. Please try again or contact support")
+  } finally {
+    themeLogos[mode][orientation].isLoading = false
+  }
 }
 </script>
 

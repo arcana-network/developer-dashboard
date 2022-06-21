@@ -16,7 +16,12 @@ function handleCloseToast(toastMessage: ToastMessage) {
 </script>
 
 <template>
-  <VStack class="v-toast-container" direction="column" gap="1rem">
+  <VStack
+    class="v-toast-container"
+    :style="{ padding: toastMessages.length ? '2rem' : '0' }"
+    direction="column"
+    gap="1rem"
+  >
     <TransitionGroup name="v-toast-slide">
       <div
         v-for="toastMessage in toastMessages"
@@ -47,7 +52,7 @@ function handleCloseToast(toastMessage: ToastMessage) {
   right: 0;
   z-index: 10000000;
   width: 22rem;
-  padding: 2rem;
+  transition: padding 300ms;
 }
 
 .v-toast {
