@@ -83,7 +83,7 @@ body:
         * If you are using Arcana Auth SDK for your dApp, mention its Version.
         * If you are using Arcana Storage SDK, mention its Version.
         * What's the version of React Native / Vue / JavaScript / TypeScript you're using in your dApp?
-        * Does this issue show up on iOS, Android or both mobileplatforms?
+        * Does this issue show up on iOS, Android or both mobile platforms?
         * Are you using Mac, Linux or Windows desktop platform?
         * Which browser / version you were using to access the Dashboard? 
     validations:
