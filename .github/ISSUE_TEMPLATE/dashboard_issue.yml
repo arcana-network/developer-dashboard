@@ -79,20 +79,12 @@ body:
       description: Describe your development environment package version and other details.
       placeholder: placeholder data
       value: |
-        * What version of Arcana Dashboard you are using?
-        * If you are using Arcana Auth SDK for your dApp, mention its Version.
-        * If you are using Arcana Storage SDK, mention its Version.
-        * What's the version of React Native / Vue / JavaScript / TypeScript you're using in your dApp?
+        * Which browser / version you were using to access the Dashboard? 
         * Does this issue show up on iOS, Android or both mobile platforms?
         * Are you using Mac, Linux or Windows desktop platform?
-        * Which browser / version you were using to access the Dashboard? 
+        * Was browser incognito mode used?
+        * Was access restricted to cookies or local storage in browser settings?
+        * Are there any browser extensions that might interfere?
+        * Mention other details about your dApp tech stack. This includes languages (JavaScript, TypeScript, etc.), frameworks (React, Vue, etc.), or build tools (webpack, rollup, etc.)
     validations:
         required: false
-  - type: input
-    id: contact
-    attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more information about your bug?
-      placeholder: ex. youremail@youremailprovider.com
-    validations:
-      required: false
