@@ -126,6 +126,7 @@ function handleUIModeUpdate(value: boolean) {
             direction="column"
             gap="0.75rem"
             align="start"
+            style="margin-top: 1rem"
           >
             <h4 class="text-grey">Choose Theme</h4>
             <VDropdown

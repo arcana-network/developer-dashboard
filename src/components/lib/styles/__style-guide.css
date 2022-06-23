@@ -320,7 +320,8 @@ a {
 }
 
 .learn-more {
-  line-height: 3;
+  display: inline-block;
+  margin-top: 0.625rem;
 }
 
 @media only screen and (max-width: 767px) {

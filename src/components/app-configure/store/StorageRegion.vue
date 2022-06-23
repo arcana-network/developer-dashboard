@@ -16,10 +16,16 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
     <SettingCard class="storage-region-card">
       <template #title>Storage Region</template>
       <template #description
-        >Arcana logically groups storage nodes by geography so you can choose
-        where your app's assets reside and conform to regulations.
+        >Arcana Store uses physical storage nodes that are logically grouped by
+        geography. This allows you to control the region or location where
+        dApp's data assets reside, for compliance and regulatory purpose. Once a
+        region has been selected it cannot be altered.
+        <br />
         <a
-          >Learn more about Arcana's Storage Nodes → Concepts: Storage Node</a
+          href="https://docs.dev.arcana.network/docs/storage_nodes"
+          target="_blank"
+          class="learn-more"
+          >Learn More...</a
         ></template
       >
       <VStack direction="column" gap="0.75rem" align="start">
