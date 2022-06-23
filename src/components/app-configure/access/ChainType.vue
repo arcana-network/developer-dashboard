@@ -23,8 +23,9 @@ function handleSelectedChainChange(chain: ChainOption<Chain>) {
     <SettingCard>
       <template #title>Chain Type</template>
       <template #description
-        >Select the chain your dApp will be deployed on. For Web2 apps or if you
-        don't see your chain in the list, choose "None".</template
+        >Select the chain where your dApp will be deployed. In case of Web2
+        applications or if your chain does not show up in the dropdown list,
+        choose "None".</template
       >
       <VDropdown
         :model-value="selectedChain"
