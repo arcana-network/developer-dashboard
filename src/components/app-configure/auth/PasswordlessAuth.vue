@@ -33,7 +33,7 @@ function handleRedirectUriUpdate(value: string) {
         passwords.
         <br />
         <a href="https://docs.dev.arcana.network/docs/pwdless" target="_blank">
-          Learn more...
+          Learn More...
         </a>
       </template>
       <VStack

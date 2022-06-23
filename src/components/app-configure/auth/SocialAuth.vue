@@ -69,7 +69,7 @@ function handleFieldUpdate(
         pair for each authenticated user using distributed key generation.
         <br />
         <a href="https://docs.dev.arcana.network/docs/dkg" target="_blank">
-          Learn more...
+          Learn More...
         </a>
       </template>
       <VStack gap="2rem">
