@@ -75,6 +75,7 @@ function handleUIModeUpdate(value: boolean) {
             <a
               href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
               target="_blank"
+              class="learn-more"
             >
               Learn More...
             </a>
@@ -115,6 +116,7 @@ function handleUIModeUpdate(value: boolean) {
             <a
               href="https://docs.dev.arcana.network/docs/arcanawallet#arcana-wallet-ui-modes"
               target="_blank"
+              class="learn-more"
             >
               Learn More...
             </a>

@@ -319,6 +319,10 @@ a {
   text-transform: uppercase;
 }
 
+.learn-more {
+  line-height: 3;
+}
+
 @media only screen and (max-width: 767px) {
   .mobile-hide {
     visibility: hidden !important;

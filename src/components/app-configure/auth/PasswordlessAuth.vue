@@ -32,7 +32,11 @@ function handleRedirectUriUpdate(value: string) {
         links sent to their chosen email address, instead of having to remember
         passwords.
         <br />
-        <a href="https://docs.dev.arcana.network/docs/pwdless" target="_blank">
+        <a
+          href="https://docs.dev.arcana.network/docs/pwdless"
+          target="_blank"
+          class="learn-more"
+        >
           Learn More...
         </a>
       </template>

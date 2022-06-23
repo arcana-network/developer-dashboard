@@ -68,7 +68,11 @@ function handleFieldUpdate(
         authentication mechanisms. Arcana securely manages public-private key
         pair for each authenticated user using distributed key generation.
         <br />
-        <a href="https://docs.dev.arcana.network/docs/dkg" target="_blank">
+        <a
+          href="https://docs.dev.arcana.network/docs/dkg"
+          target="_blank"
+          class="learn-more"
+        >
           Learn More...
         </a>
       </template>
