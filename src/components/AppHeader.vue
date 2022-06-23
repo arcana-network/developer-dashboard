@@ -38,7 +38,7 @@ const menuItems = computed(() => {
     {
       label: 'Docs',
       action() {
-        window.open('https://docs.arcana.network')
+        window.open('https://docs.beta.arcana.network')
       },
       selected: false,
     },

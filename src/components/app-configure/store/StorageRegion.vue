@@ -22,7 +22,7 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
         region has been selected it cannot be altered.
         <br />
         <a
-          href="https://docs.dev.arcana.network/docs/storage_nodes"
+          href="https://docs.beta.arcana.network/docs/storage_nodes"
           target="_blank"
           class="learn-more"
           >Learn More...</a

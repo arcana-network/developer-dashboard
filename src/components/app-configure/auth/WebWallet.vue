@@ -114,7 +114,7 @@ function handleUIModeUpdate(value: boolean) {
             mode.
             <br />
             <a
-              href="https://docs.dev.arcana.network/docs/arcanawallet#arcana-wallet-ui-modes"
+              href="https://docs.beta.arcana.network/docs/arcanawallet#arcana-wallet-ui-modes"
               target="_blank"
               class="learn-more"
             >
