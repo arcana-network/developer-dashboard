@@ -74,7 +74,10 @@ async function handleCreateApp() {
         <VStack gap="0.5rem">
           <label class="app-name-label">Choose Region</label>
           <VTooltip
-            title="Arcana logically groups storage nodes by geography so you can choose where your app's assets reside and conform to regulations."
+            title="Arcana Store uses physical storage nodes that are logically grouped by
+        geography. This allows you to control the region or location where
+        dApp's data assets reside, for compliance and regulatory purpose. Once a
+        region has been selected it cannot be altered."
           >
             <img
               src="@/assets/iconography/info-circle-outline.svg"
