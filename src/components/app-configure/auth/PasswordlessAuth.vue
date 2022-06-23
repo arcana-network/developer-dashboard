@@ -27,14 +27,15 @@ function handleRedirectUriUpdate(value: string) {
   <section name="passwordless-auth">
     <SettingCard>
       <template #title>Passwordless Auth</template>
-      <template #description
-        >Offer your users the convenience of authentication by simply clicking
-        links sent to their email address instead of using passwords.
-        <a
-          >Learn more about Arcana's Passwordless Auth → Passwordless Auth
-          Usage</a
-        ></template
-      >
+      <template #description>
+        Offer dApp users the convenience of authentication by simply clicking on
+        links sent to their chosen email address, instead of having to remember
+        passwords.
+        <br />
+        <a href="https://docs.dev.arcana.network/docs/pwdless" target="_blank">
+          Learn more...
+        </a>
+      </template>
       <VStack
         direction="row"
         align="center"
