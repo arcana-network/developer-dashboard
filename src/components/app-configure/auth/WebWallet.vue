@@ -67,14 +67,18 @@ function handleUIModeUpdate(value: boolean) {
         <VStack direction="column" gap="1rem" class="flex-grow">
           <h3 class="text-uppercase">Website Domain</h3>
           <div class="body-1">
-            Set your website domain here. It's used by the server to restrict
-            wallet from loading anywhere else other than what you specify, for
-            security. It uses frame-ancestor CSP to restrict domains. For more
+            Set your website domain here. It is used for security reasons by the
+            server, to restrict Arcana wallet from loading anywhere else other
+            than the domain you specify. We use frame-ancestor CSP to restrict
+            domains.
+            <br />
             <a
               href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
               target="_blank"
-              >details</a
+              class="learn-more"
             >
+              Learn More...
+            </a>
           </div>
           <VTextField
             class="web-wallet-input"
@@ -105,14 +109,24 @@ function handleUIModeUpdate(value: boolean) {
             </VStack>
           </VStack>
           <div class="body-1">
-            Choose theme and enable UI mode for the wallet.
-            <a>Learn more about UI Modes for Web Wallet → Web Wallet</a>
+            Configure dApp user experience while signing blockchain transactions
+            for storage operations by selecting the appropriate Arcana wallet UI
+            mode.
+            <br />
+            <a
+              href="https://docs.dev.arcana.network/docs/arcanawallet#arcana-wallet-ui-modes"
+              target="_blank"
+              class="learn-more"
+            >
+              Learn More...
+            </a>
           </div>
           <VStack
             v-if="hasUIMode"
             direction="column"
             gap="0.75rem"
             align="start"
+            style="margin-top: 1rem"
           >
             <h4 class="text-grey">Choose Theme</h4>
             <VDropdown

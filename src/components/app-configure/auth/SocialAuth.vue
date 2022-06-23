@@ -64,14 +64,17 @@ function handleFieldUpdate(
     <SettingCard>
       <template #title>Social Auth</template>
       <template #description>
-        Provide easy onboarding for your users with familiar social login
-        mechanisms. Once the dApp users successfully authenticate themselves,
-        Arcana will take care of securely assigning a public-private key pair
-        per user, using our Distributed Key Generation.
+        Provide easy onboarding for dApp users with familiar social
+        authentication mechanisms. Arcana securely manages public-private key
+        pair for each authenticated user using distributed key generation.
+        <br />
         <a
-          >Learn more about Arcana's Distributed Key Generation → Concepts:
-          DKG</a
+          href="https://docs.dev.arcana.network/docs/dkg"
+          target="_blank"
+          class="learn-more"
         >
+          Learn More...
+        </a>
       </template>
       <VStack gap="2rem">
         <h4 class="verifier-name">Social</h4>
