@@ -9,6 +9,7 @@ import ArcanaFavicon from '@/assets/iconography/arcana-favicon.svg'
 import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VHeader from '@/components/lib/VHeader/VHeader.vue'
+import constants from '@/utils/constants'
 
 const route = useRoute()
 const router = useRouter()
@@ -38,7 +39,7 @@ const menuItems = computed(() => {
     {
       label: 'Docs',
       action() {
-        window.open('https://docs.arcana.network')
+        window.open(`${constants.DOCS_URL}`)
       },
       selected: false,
     },
