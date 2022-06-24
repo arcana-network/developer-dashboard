@@ -19,6 +19,8 @@ const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 
+const DOCS_URL: string = import.meta.env.VITE_DOCS_URL
+
 type Chain = 'ethereum' | 'polygon' | 'binance' | 'none'
 
 type ChainOption<T> = {
@@ -177,6 +179,7 @@ const constants = {
   chains,
   CONFIGURE_TABS,
   socialLogins,
+  DOCS_URL,
 }
 
 export {
@@ -204,6 +207,7 @@ export {
   RegionMapping,
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
+  DOCS_URL,
 }
 
 export default constants

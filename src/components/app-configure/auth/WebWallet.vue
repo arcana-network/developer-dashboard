@@ -9,6 +9,7 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import constants from '@/utils/constants'
 
 const store = useStore()
 
@@ -114,7 +115,7 @@ function handleUIModeUpdate(value: boolean) {
             mode.
             <br />
             <a
-              href="https://docs.beta.arcana.network/docs/arcanawallet#arcana-wallet-ui-modes"
+              :href="`${constants.DOCS_URL}/docs/arcanawallet#arcana-wallet-ui-modes`"
               target="_blank"
               class="learn-more"
             >

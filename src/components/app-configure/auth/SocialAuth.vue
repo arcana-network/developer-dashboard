@@ -13,7 +13,7 @@ import type {
   SocialAuthVerifier,
   SocialAuthField,
 } from '@/store/app.store'
-import { socialLogins } from '@/utils/constants'
+import constants, { socialLogins } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const store = useStore()
@@ -69,7 +69,7 @@ function handleFieldUpdate(
         pair for each authenticated user using distributed key generation.
         <br />
         <a
-          href="https://docs.beta.arcana.network/docs/dkg"
+          :href="`${constants.DOCS_URL}/docs/dkg`"
           target="_blank"
           class="learn-more"
         >

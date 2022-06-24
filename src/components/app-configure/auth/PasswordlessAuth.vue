@@ -5,6 +5,7 @@ import { useStore } from 'vuex'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import constants from '@/utils/constants'
 
 const store = useStore()
 const javascriptOrigin: ComputedRef<string> = computed(
@@ -33,7 +34,7 @@ function handleRedirectUriUpdate(value: string) {
         passwords.
         <br />
         <a
-          href="https://docs.beta.arcana.network/docs/pwdless"
+          :href="`${constants.DOCS_URL}/docs/pwdless`"
           target="_blank"
           class="learn-more"
         >

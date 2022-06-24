@@ -4,7 +4,7 @@ import { useStore } from 'vuex'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { regions, type StorageRegion } from '@/utils/constants'
+import { regions, type StorageRegion, DOCS_URL } from '@/utils/constants'
 
 const store = useStore()
 const storageRegion: StorageRegion = store.getters.storageRegion
@@ -22,7 +22,7 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
         region has been selected it cannot be altered.
         <br />
         <a
-          href="https://docs.beta.arcana.network/docs/storage_nodes"
+          :href="`${DOCS_URL}/docs/storage_nodes`"
           target="_blank"
           class="learn-more"
           >Learn More...</a
