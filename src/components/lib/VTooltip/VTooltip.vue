@@ -27,15 +27,15 @@ const positionClass = {
 <template>
   <div v-if="title" class="tooltip-wrapper" v-bind="attrs">
     <slot></slot>
-    <span
+    <div
       class="tooltip body-3"
       :class="positionClass"
       role="tooltip"
       aria-hidden="true"
       style="transition-delay: 500ms"
       :style="tooltipStyle"
-      >{{ title }}</span
-    >
+      v-html="title"
+    />
   </div>
   <slot v-else></slot>
 </template>
@@ -46,7 +46,7 @@ div.tooltip-wrapper {
   display: inline-block;
 }
 
-span.tooltip {
+.tooltip {
   position: absolute;
   top: calc(100% + 5px);
   left: 0;
@@ -69,7 +69,7 @@ span.tooltip {
   transition: opacity 0.4s;
 }
 
-.tooltip-wrapper:hover > span.tooltip {
+.tooltip-wrapper:hover > .tooltip {
   visibility: visible;
   opacity: 1;
 }

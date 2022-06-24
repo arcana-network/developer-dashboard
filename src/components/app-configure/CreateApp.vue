@@ -76,8 +76,8 @@ async function handleCreateApp() {
           <VTooltip
             title="Arcana Store uses physical storage nodes that are logically grouped by
         geography. This allows you to control the region or location where
-        dApp's data assets reside, for compliance and regulatory purpose. Once a
-        region has been selected it cannot be altered."
+        dApp's data assets reside, for compliance and regulatory purpose. <strong>Once a
+        region has been selected it cannot be altered.</strong>"
           >
             <img
               src="@/assets/iconography/info-circle-outline.svg"
