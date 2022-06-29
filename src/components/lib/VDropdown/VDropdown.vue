@@ -84,7 +84,7 @@ watch(
       :class="triggerClass"
       :style="triggerStyle"
     >
-      <span v-if="value">
+      <span v-if="value" class="custom-select-value">
         <span v-if="displayField">
           {{ value[displayField] }}
         </span>
@@ -235,5 +235,10 @@ watch(
 
 .custom-select.disabled .custom-select__trigger {
   cursor: not-allowed;
+}
+
+.custom-select.disabled .custom-select-value,
+.custom-select.disabled .arrow {
+  opacity: 0.4;
 }
 </style>
