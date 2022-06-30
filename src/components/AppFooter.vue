@@ -14,8 +14,8 @@ const canShowDocs = computed(() => {
 
 <template>
   <footer>
-    <VStack justify="space-between" class="container">
-      <VStack gap="2.5rem" align="center">
+    <VStack class="container">
+      <VStack gap="2.5rem" align="center" class="footer-links">
         <a
           class="body-2 footer-link"
           href="https://github.com/arcana-network/license/blob/main/TERMS.md"
@@ -43,7 +43,7 @@ const canShowDocs = computed(() => {
         <span class="body-2">Powered by</span>
         <img src="@/assets/arcana-logo.svg" class="arcana-logo" />
       </VStack>
-      <VStack gap="2rem" align="center">
+      <VStack gap="2rem" align="center" class="social-links">
         <a href="https://twitter.com/arcananetwork" target="_blank">
           <img src="@/assets/twitter-white.svg" class="social-icon" />
         </a>
@@ -72,6 +72,10 @@ footer {
   box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
 }
 
+.footer-links {
+  flex: 1;
+}
+
 .footer-link {
   text-decoration: none;
   vertical-align: middle;
@@ -86,6 +90,11 @@ footer {
   height: 1.5rem;
   margin-top: -0.125rem;
   vertical-align: middle;
+}
+
+.social-links {
+  flex: 1;
+  justify-content: end;
 }
 
 .social-icon {
