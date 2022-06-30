@@ -37,13 +37,13 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="app">
+  <div>
     <router-view v-if="isAuthLoaded" v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
-    <AppFooter v-if="!route.path.includes('/configure/')" />
+    <AppFooter v-if="isAuthLoaded && !route.path.includes('/configure/')" />
     <FullScreenLoader
       v-if="isLoading || !isAuthLoaded"
       :message="loadingMessage"
@@ -53,8 +53,7 @@ onBeforeMount(async () => {
 </template>
 
 <style>
-#app,
-.app {
+#app {
   height: 100vh;
   overflow-x: hidden;
 }
