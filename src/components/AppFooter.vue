@@ -15,7 +15,7 @@ const canShowDocs = computed(() => {
 <template>
   <footer>
     <VStack justify="space-between" class="container">
-      <VStack gap="2rem" align="center">
+      <VStack gap="2.5rem" align="center">
         <a
           class="body-2 footer-link"
           href="https://github.com/arcana-network/license/blob/main/TERMS.md"
