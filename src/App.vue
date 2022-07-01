@@ -1,13 +1,16 @@
 <script lang="ts" setup>
 import { onBeforeMount, ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 
+import AppFooter from '@/components/AppFooter.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
 
 const store = useStore()
+const route = useRoute()
 const arcanaAuth = useArcanaAuth()
 const isLoading = computed(() => store.getters.isLoading)
 const loadingMessage = computed(() => store.getters.loadingMessage)
@@ -40,6 +43,7 @@ onBeforeMount(async () => {
         <component :is="Component" />
       </transition>
     </router-view>
+    <AppFooter v-if="isAuthLoaded && !route.path.includes('/configure/')" />
     <FullScreenLoader
       v-if="isLoading || !isAuthLoaded"
       :message="loadingMessage"
