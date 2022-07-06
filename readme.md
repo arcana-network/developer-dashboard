@@ -8,7 +8,7 @@ For local development, start by cloning the repository.
 git clone git@github.com:arcana-network/developer-dashboard.git
 ```
 
-Move the project directory.
+Move to the project directory.
 
 ```bash
 cd developer-dashboard
