@@ -54,10 +54,10 @@ npm run preview
 
 ## Usage with Docker
 
-If you'd like to use [Docker](https://docs.docker.com/engine/install/) for development, follow the above quick start steps and then use
+If you'd like to use [Docker](https://docs.docker.com/engine/install/) to setup the dashboard as a service, follow the above quick start steps and then use
 
 ```bash
 make run-local
 ```
 
-to spin up a local dashboard serve.
+to spin up the service.
