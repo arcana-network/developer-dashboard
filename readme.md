@@ -2,13 +2,19 @@
 
 ## Quick Start
 
-For local developer, start by cloning the repository.
+For local development, start by cloning the repository.
 
 ```
 git clone git@github.com:arcana-network/developer-dashboard.git
 ```
 
-Ensure you have **node** version v16 or higher installed. Install dependencies.
+Move the project directory.
+
+```bash
+cd developer-dashboard
+```
+
+Ensure you have **node** version v16 or higher installed. Install project dependencies.
 
 ```bash
 npm install
@@ -22,10 +28,16 @@ cp .env.example .env
 
 ## Development
 
-Start the development server.
+Start the local development server.
 
 ```bash
 npm run dev
+```
+
+Run all linters and formatters.
+
+```bash
+npm run lint
 ```
 
 Build and generate static files for production.
