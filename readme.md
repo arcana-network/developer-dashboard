@@ -1,6 +1,8 @@
 # Arcana Developer Dashboard
 
-## Quick Start
+Arcana Developer Dashboard allows dApp developers to configure how they choose to integrate and use Arcana SDKs. It is used to tailor the desired dApp user experience for authentication, data privacy, storage access, and monitoring dApp user storage consumption metrics.
+
+## Installation
 
 Install dependencies.
 
@@ -14,7 +16,7 @@ Create `.env` file in root, copy the content of `.env.example`, and fill in the 
 cp .env.example .env
 ```
 
-## Development
+## Local Development and Build
 
 Run the project in development environment.
 
@@ -34,11 +36,13 @@ Preview the generated site before deploying.
 npm run serve
 ```
 
-## Local environment setup
+## Local Environment Setup
 
-#### Prerequisits
+### Prerequisites
 
 - [Docker](https://docs.docker.com/engine/install/)
+
+### Setup Steps
 
 1. Clone the repository
 
