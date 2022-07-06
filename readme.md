@@ -2,13 +2,19 @@
 
 ## Quick Start
 
-Install dependencies.
+For local developer, start by cloning the repository.
+
+```
+git clone git@github.com:arcana-network/developer-dashboard.git
+```
+
+Ensure you have **node** version v16 or higher installed. Install dependencies.
 
 ```bash
 npm install
 ```
 
-Create `.env` file in root, copy the content of `.env.example`, and fill in the environment variables.
+In the project root, create an `.env` file by copying the content of `.env.example`, and filling in the environment variables.
 
 ```bash
 cp .env.example .env
@@ -16,13 +22,13 @@ cp .env.example .env
 
 ## Development
 
-Run the project in development environment.
+Start the development server.
 
 ```bash
 npm run dev
 ```
 
-Build and generate static files.
+Build and generate static files for production.
 
 ```bash
 npm run build
@@ -31,29 +37,15 @@ npm run build
 Preview the generated site before deploying.
 
 ```bash
-npm run serve
+npm run preview
 ```
 
-## Local environment setup
+## Usage with Docker
 
-#### Prerequisits
+If you'd like to use [Docker](https://docs.docker.com/engine/install/) for development, follow the above quick start steps and then use
 
-- [Docker](https://docs.docker.com/engine/install/)
-
-1. Clone the repository
-
-```
-git clone git@github.com:arcana-network/developer-dashboard.git
-```
-
-2. Create environment file
-
-```
-cp .env.example .env
-```
-
-3. Run local environment with Dashboard service
-
-```
+```bash
 make run-local
 ```
+
+to spin up a local dashboard serve.
