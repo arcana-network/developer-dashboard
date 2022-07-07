@@ -17,6 +17,7 @@ function useArcanaAuth() {
         flow: 'redirect',
         redirectUri: `${window.location.origin}/login`,
         autoRedirect: true,
+        debug: true,
       })
     }
   }
