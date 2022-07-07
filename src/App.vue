@@ -37,7 +37,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div>
+  <div class="root">
     <router-view v-if="isAuthLoaded" v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
@@ -56,6 +56,10 @@ onBeforeMount(async () => {
 #app {
   height: 100vh;
   overflow-x: hidden;
+}
+
+.root {
+  height: 100vh;
 }
 
 .fade-enter-active,
