@@ -16,7 +16,8 @@
 
 Arcana Developer Dashboard allows dApp developers to configure how they choose to integrate and use Arcana SDKs. It is used to tailor the desired dApp user experience for authentication, data privacy, storage access, and monitoring dApp user storage consumption metrics.
 
-<mark> Test </mark>
+| :warning: Caution: Arcana Network SDKs and apps (Beta Release), not recommended for production usage.|
+| --- |
 
 # 💪 Key Features
 
