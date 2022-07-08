@@ -104,10 +104,10 @@ function handleScroll(ev: any) {
 <template>
   <section :class="hideHeader ? 'hide-header' : ''">
     <div v-if="canShowBanner" class="banner">
-      <h4>Disclaimer:</h4>
+      <h4>Caution:</h4>
       <h5>
-        This is an BETA release with all features being experimental. Please do
-        not use important data without backups.
+        Arcana Network SDKs and apps (Beta Release) are not recommended for
+        production usage.
       </h5>
       <span class="banner-close" role="button" @click.stop="onCloseBanner">
         <CloseIcon color="#FFFFFF" />
