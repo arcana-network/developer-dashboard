@@ -121,18 +121,18 @@ const socialLogins: readonly SocialAuthOption[] = [
     documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
   },
   {
-    name: 'Discord',
-    verifier: 'discord',
-    hasClientSecret: false,
-    hasRedirectUri: false,
-    documentation: 'https://canary.discord.com/developers/applications',
-  },
-  {
     name: 'Twitch',
     verifier: 'twitch',
     hasClientSecret: false,
     hasRedirectUri: false,
     documentation: 'https://dev.twitch.tv/docs/authentication#registration',
+  },
+  {
+    name: 'Discord',
+    verifier: 'discord',
+    hasClientSecret: true,
+    hasRedirectUri: false,
+    documentation: 'https://canary.discord.com/developers/applications',
   },
   {
     name: 'Github',
