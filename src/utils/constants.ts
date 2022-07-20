@@ -132,7 +132,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'discord',
     hasClientSecret: true,
     hasRedirectUri: false,
-    documentation: 'https://canary.discord.com/developers/applications',
+    documentation: 'https://discord.com/developers/applications',
   },
   {
     name: 'Github',
