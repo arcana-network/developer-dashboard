@@ -9,7 +9,7 @@
 <a title="Beta release" href="https://github.com/arcana-network/developer-dashboard/releases"><img src="https://img.shields.io/github/v/release/arcana-network/developer-dashboard?style=flat-square&color=28A745"/></a>
 <a title="Twitter" href="https://twitter.com/ArcanaNetwork"><img alt="Twitter URL" src="https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Ftwitter.com%2FArcanaNetwork"/></a>
 </p><p id="start" align="center">
-<a href="https://docs.beta.arcana.network/"><img src="https://raw.githubusercontent.com/arcana-network/branding/main/an_banner_temp.png" alt="Arcana Developer Dashboard"/></a>
+<a href="https://docs.beta.arcana.network/"><img src="https://raw.githubusercontent.com/arcana-network/branding/main/an_banner_docs.png" alt="Arcana Developer Dashboard"/></a>
 </p>
 
 # ⚙️ Arcana Developer Dashboard
@@ -17,7 +17,7 @@
 Arcana Developer Dashboard allows dApp developers to configure how they choose to integrate and use Arcana SDKs. It is used to tailor the desired dApp user experience for authentication, data privacy, storage access, and monitoring dApp user storage consumption metrics.
 
 | :warning: Caution: Arcana Network SDKs and apps (Beta Release), not recommended for production usage.|
-| --- |
+| :--------------------------------------------------------------------------------------------------- |
 
 # 💪 Key Features
 
