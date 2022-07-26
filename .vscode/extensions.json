@@ -1,0 +1,19 @@
+{
+  "recommendations": [
+    // ===
+    // Vue and TypeScript support
+    // ===
+
+    "johnsoncodehk.volar",
+    "johnsoncodehk.vscode-typescript-vue-plugin",
+
+    // ===
+    // Linters and formatters
+    // ===
+
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "stylelint.vscode-stylelint",
+    "davidanson.vscode-markdownlint"
+  ]
+}

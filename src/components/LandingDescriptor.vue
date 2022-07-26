@@ -1,10 +1,15 @@
+<script lang="ts" setup>
+import AppLogo from '@/assets/logo.svg'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
+</script>
+
 <template>
   <div
     class="mobile-remove tablet-remove"
     style="
       width: 40%;
-      max-width: 488px;
       min-width: 400px;
+      max-width: 488px;
       margin-top: 8vh;
       margin-left: 4vw;
     "
@@ -17,41 +22,30 @@
   </div>
   <v-seperator
     :vertical="true"
-    style="height: 99.4vh; position: sticky; top: 0"
+    style="position: sticky; top: 0; height: 99.4vh"
     class="mobile-remove tablet-remove"
   />
 </template>
 
 <style scoped>
 h1 {
-  letter-spacing: unset;
   font-weight: 700;
+  letter-spacing: unset;
 }
+
 .body-3 {
   font-size: 0.9em;
   font-weight: 300;
   line-height: 1.8em;
 }
+
 ul {
-  list-style-type: "-  ";
   padding: 0;
   margin-right: 2em;
+  list-style-type: '-  ';
 }
+
 ul li {
   margin: 4px;
 }
 </style>
-
-<script>
-import VSeperator from "./lib/VSeperator/VSeperator.vue";
-import AppLogo from "../assets/logo.svg";
-export default {
-  name: "LandingDescriptor",
-  components: { VSeperator },
-  setup() {
-    return {
-      AppLogo,
-    };
-  },
-};
-</script>

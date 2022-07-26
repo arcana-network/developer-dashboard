@@ -1,73 +1,74 @@
+<script lang="ts" setup>
+import { onBeforeMount, ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import { useStore } from 'vuex'
+
+import AppFooter from '@/components/AppFooter.vue'
+import FullScreenLoader from '@/components/FullScreenLoader.vue'
+import VToast from '@/components/lib/VToast/VToast.vue'
+import { getConfig } from '@/services/gateway.service'
+import useArcanaAuth from '@/use/arcanaAuth'
+
+const store = useStore()
+const route = useRoute()
+const arcanaAuth = useArcanaAuth()
+const isLoading = computed(() => store.getters.isLoading)
+const loadingMessage = computed(() => store.getters.loadingMessage)
+const isAuthLoaded = ref(false)
+
+onBeforeMount(async () => {
+  store.commit('showLoader', 'Initializing Arcana Auth SDK...')
+  await arcanaAuth.init()
+  isAuthLoaded.value = true
+
+  if (!store.getters['forwarder'] || !store.getters['rpc']) {
+    const configResponse = await getConfig()
+    const config = configResponse.data
+    store.commit('updateForwarder', config?.Forwarder)
+    store.commit('updateRpcUrl', config?.RPC_URL)
+  }
+
+  store.commit('showLoader', 'Fetching app configuration...')
+  if (!store.getters.appName && store.getters.accessToken) {
+    await store.dispatch('fetchAppConfig')
+  }
+  store.commit('hideLoader')
+})
+</script>
+
 <template>
-  <div>
-    <router-view v-slot="{ Component }">
+  <div class="root">
+    <router-view v-if="isAuthLoaded" v-slot="{ Component }">
       <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
-    <full-screen-loader v-if="loading" :message="loadingMessage" />
+    <AppFooter v-if="isAuthLoaded && !route.path.includes('/configure/')" />
+    <FullScreenLoader
+      v-if="isLoading || !isAuthLoaded"
+      :message="loadingMessage"
+    />
+    <VToast />
   </div>
 </template>
-
-<script>
-import { onBeforeMount, ref } from "@vue/runtime-core";
-import { getConfig } from "@/services/app-config.service";
-import { useStore } from "vuex";
-import { stringToBuffer } from "@/utils/cryptoUtils";
-import { fetchAndStoreAppConfig } from "@/services/app-config.service";
-import FullScreenLoader from "@/components/FullScreenLoader.vue";
-
-export default {
-  components: { FullScreenLoader },
-  setup() {
-    const store = useStore();
-    const loading = ref("");
-    const loadingMessage = ref("");
-
-    onBeforeMount(async () => {
-      const encodedAccessToken = localStorage.getItem("access-token");
-      const userInfo = localStorage.getItem("user-info");
-      if (encodedAccessToken && userInfo) {
-        const accessToken = new TextDecoder().decode(
-          stringToBuffer(encodedAccessToken)
-        );
-        store.dispatch("updateAccessToken", accessToken);
-        store.dispatch("updateUserInfo", JSON.parse(userInfo));
-      }
-
-      if (!store.getters["test/forwarder"] || !store.getters["test/rpc"]) {
-        const configResponse = await getConfig();
-        const config = configResponse.data;
-        store.dispatch("test/updateForwarder", config?.Forwarder);
-        store.dispatch("test/updateRPCUrl", config?.RPC_URL);
-      }
-
-      if (!store.getters.appName && store.getters.accessToken) {
-        loading.value = true;
-        loadingMessage.value = "Fetching app configuration...";
-        await fetchAndStoreAppConfig();
-        loading.value = false;
-      }
-    });
-
-    return {
-      loading,
-      loadingMessage,
-    };
-  },
-};
-</script>
 
 <style>
 #app {
   height: 100vh;
   overflow-x: hidden;
 }
+
+.root {
+  height: 100vh;
+}
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s;
 }
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

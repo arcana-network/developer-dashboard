@@ -1,13 +1,25 @@
+<script lang="ts" setup>
+import VCircularProgress from '@/components/lib/VCircularProgress/VCircularProgress.vue'
+import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+
+defineProps({
+  message: {
+    type: String,
+    default: '',
+  },
+})
+</script>
+
 <template>
   <v-overlay>
     <div
       style="
-        width: 100%;
-        height: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        width: 100%;
+        height: 100%;
       "
     >
       <v-circular-progress color="var(--primary)" size="6em" />
@@ -15,15 +27,3 @@
     </div>
   </v-overlay>
 </template>
-
-<script>
-import VCircularProgress from "./lib/VCircularProgress/VCircularProgress.vue";
-import VOverlay from "./lib/VOverlay/VOverlay.vue";
-export default {
-  name: "FullScreenLoader",
-  components: { VOverlay, VCircularProgress },
-  props: {
-    message: String,
-  },
-};
-</script>

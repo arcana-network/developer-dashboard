@@ -20,6 +20,24 @@ module.exports={
     {
       "inputs": [
         {
+          "internalType": "string[]",
+          "name": "_client",
+          "type": "string[]"
+        },
+        {
+          "internalType": "string[]",
+          "name": "_clientId",
+          "type": "string[]"
+        }
+      ],
+      "name": "setClientIds",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "uint256",
           "name": "_store",
           "type": "uint256"
@@ -36,79 +54,8 @@ module.exports={
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setDiscordClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setGithubClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setGoogleClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setRedditClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setTwitchClientId",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "string",
-          "name": "_id",
-          "type": "string"
-        }
-      ],
-      "name": "setTwitterClientId",
+      "inputs": [],
+      "name": "setUiMode",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -11396,7 +11343,7 @@ var EtherscanProvider = /** @class */ (function (_super) {
                         return [3 /*break*/, 28];
                     case 1: return [2 /*return*/, this.fetch("proxy", { action: "eth_blockNumber" })];
                     case 2: return [2 /*return*/, this.fetch("proxy", { action: "eth_gasPrice" })];
-                    case 3: 
+                    case 3:
                     // Returns base-10 result
                     return [2 /*return*/, this.fetch("account", {
                             action: "balance",
@@ -13362,7 +13309,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                                     }
                                 });
                             }); }, { oncePoll: this.provider })];
-                    case 4: 
+                    case 4:
                     // Unfortunately, JSON-RPC only provides and opaque transaction hash
                     // for a response, and we need the actual transaction, so we poll
                     // for it; it should show up very quickly
@@ -13403,7 +13350,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                     case 1:
                         address = _a.sent();
                         return [4 /*yield*/, this.provider.send("eth_sign", [address.toLowerCase(), (0, bytes_1.hexlify)(data)])];
-                    case 2: 
+                    case 2:
                     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
                     return [2 /*return*/, _a.sent()];
                 }

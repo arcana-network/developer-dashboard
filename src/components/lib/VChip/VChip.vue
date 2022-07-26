@@ -1,11 +1,28 @@
+<script lang="ts" setup>
+import CancelIcon from '@/assets/iconography/close.svg'
+
+defineProps({
+  cancellable: {
+    type: Boolean,
+    default: false,
+  },
+})
+
+const emit = defineEmits(['cancel'])
+
+function onCancel() {
+  emit('cancel')
+}
+</script>
+
 <template>
   <div class="chip flex">
     <div class="content">
       <slot />
     </div>
     <img
-      :src="CancelIcon"
       v-if="cancellable"
+      :src="CancelIcon"
       class="cancel-icon"
       @click.stop="onCancel"
     />
@@ -15,51 +32,31 @@
 <style scoped>
 .chip {
   position: relative;
+  width: 240px;
+  padding: 1em;
   background: radial-gradient(
     134.5% 939.99% at -23.59% -12.9%,
     #262626 0%,
-    rgba(26, 26, 26, 0.86293) 31.41%,
-    rgba(32, 32, 32, 0.49) 100%
+    rgb(26 26 26 / 86.3%) 31.41%,
+    rgb(32 32 32 / 49%) 100%
   );
-  box-shadow: 4px 5px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px;
-  padding: 1em;
-  width: 240px;
+  box-shadow: 4px 5px 4px rgb(0 0 0 / 25%);
 }
 
 .content {
   width: calc(240px - 2em);
-  text-overflow: ellipsis;
   overflow-x: hidden;
-  white-space: nowrap;
   color: white;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cancel-icon {
-  cursor: pointer;
   position: absolute;
-  right: 1em;
   top: 1.2em;
+  right: 1em;
   margin-left: 2em;
+  cursor: pointer;
 }
 </style>
-
-<script>
-import CancelIcon from "@/assets/iconography/close.svg";
-export default {
-  name: "VChip",
-  props: {
-    cancellable: Boolean,
-  },
-  setup(props, { emit }) {
-    function onCancel() {
-      emit("cancel");
-    }
-
-    return {
-      CancelIcon,
-      onCancel,
-    };
-  },
-};
-</script>
