@@ -35,6 +35,7 @@
     "ethers": "^5.4.7",
     "jsonp": "^0.2.1",
     "moment": "^2.29.1",
+    "pinia": "^2.0.17",
     "postcss-custom-media": "^8.0.0",
     "postcss-media-variables": "^2.0.1",
     "v-wave": "^1.3.1",
