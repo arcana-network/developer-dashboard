@@ -1,27 +1,22 @@
 import type { AppConfigCred } from '@/services/gateway.service'
-import signerMakeTx from '@/utils/signerMakeTx'
-
-async function setAppName(appName?: string) {
-  await signerMakeTx('setAppName', [appName])
-}
+import { signTransaction, hashJson } from '@/utils/signerUtils'
 
 async function setDefaultLimit(storage: number, bandwidth: number) {
-  await signerMakeTx('setDefaultLimit', [storage, bandwidth])
+  await signTransaction('setDefaultLimit', [storage, bandwidth])
 }
 
-async function setClientIds(socialAuth?: AppConfigCred[]) {
-  const authSignerMakeTxValue: string[][] = [[], []]
-  socialAuth?.forEach((authDetail) => {
-    if (authDetail.verifier !== 'passwordless' && authDetail.clientId) {
-      authSignerMakeTxValue[0].push(authDetail.verifier)
-      authSignerMakeTxValue[1].push(authDetail.clientId)
-    }
-  })
-  await signerMakeTx('setClientIds', authSignerMakeTxValue)
+async function setAppConfig(appName: string, socialAuth: AppConfigCred[]) {
+  const clientIds = socialAuth
+    .filter((authInfo) => authInfo.verifier && authInfo.clientId)
+    .reduce((previousValue, authInfo) => {
+      return { ...previousValue, [authInfo.verifier]: authInfo.clientId }
+    }, {})
+  const appConfig = hashJson({ appName, clientIds })
+  await signTransaction('setAppConfig', [appConfig])
 }
 
 async function enableUiMode() {
-  await signerMakeTx('setUiMode')
+  await signTransaction('setUiMode')
 }
 
-export { setAppName, setDefaultLimit, setClientIds, enableUiMode }
+export { setAppConfig, setDefaultLimit, enableUiMode }
