@@ -1,12 +1,13 @@
 import store from '@/store'
 import getEnvApi from '@/utils/get-env-api'
 
+const provider = window.arcana.provider
+
 type SmartContractRequestParams = {
-  privateKey: string
   appAddress: string
-  rpc: string
-  gateway: string
+  provider?: string
   forwarderAddress: string
+  gateway: string
   accessToken: string
   method?: string
   value?: string
@@ -20,9 +21,7 @@ function getTxRequestProps(): SmartContractRequestParams {
   }
 
   return {
-    privateKey: store.getters.keys.privateKey,
     appAddress,
-    rpc: store.getters.rpcUrl,
     gateway: getEnvApi(),
     forwarderAddress: store.getters.forwarder,
     accessToken: store.getters.accessToken,
@@ -33,13 +32,34 @@ type SmartContractAcceptedValue =
   | (string | undefined | number)[]
   | (string | undefined)[][]
 
-async function signerMakeTx(
+async function signTransaction(
   method: string,
   value?: SmartContractAcceptedValue
 ) {
-  return await window.signerMakeTx({ ...getTxRequestProps(), method, value })
+  const { appAddress, gateway, forwarderAddress, accessToken } =
+    getTxRequestProps()
+
+  const signTransaction = window.transactionSinger.create({
+    appAddress,
+    provider,
+    forwarderAddress,
+  })
+
+  await signTransaction({ gateway, accessToken, method, value })
 }
 
-export default signerMakeTx
+function hashJson(data: any) {
+  return window.transactionSinger.hashJson(data)
+}
+
+async function generateLoginInfo() {
+  const gateway = getEnvApi()
+  return await window.transactionSinger.generateLoginInfo({
+    provider,
+    gateway,
+  })
+}
+
+export { signTransaction, hashJson, generateLoginInfo }
 
 export type { SmartContractRequestParams }
