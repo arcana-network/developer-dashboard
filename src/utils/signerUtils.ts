@@ -1,8 +1,6 @@
 import store from '@/store'
 import getEnvApi from '@/utils/get-env-api'
 
-const provider = window.arcana.provider
-
 type SmartContractRequestParams = {
   appAddress: string
   provider?: string
@@ -38,6 +36,7 @@ async function signTransaction(
 ) {
   const { appAddress, gateway, forwarderAddress, accessToken } =
     getTxRequestProps()
+  const provider = window.arcana.provider
 
   const signTransaction = window.transactionSinger.create({
     appAddress,
@@ -53,6 +52,7 @@ function hashJson(data: any) {
 }
 
 async function generateLoginInfo() {
+  const provider = window.arcana.provider
   const gateway = getEnvApi()
   return await window.transactionSinger.generateLoginInfo({
     provider,
