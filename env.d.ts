@@ -10,7 +10,14 @@ declare global {
   import type { SmartContractRequestParams } from '@/utils/signerMakeTx'
 
   interface Window {
-    signerMakeTx: (data: SmartContractRequestParams) => Promise<string>
+    transactionSinger: {
+      create: (data: any) => (data: any) => Promise<string>
+      generateLoginInfo: (data: any) => Promise<any>
+      hashJson: (data: any) => string
+    }
+    arcana: {
+      provider: any
+    }
   }
 }
 
