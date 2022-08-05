@@ -1,16 +1,15 @@
 <script lang="ts" setup>
 import { SocialLoginType } from '@arcana/auth-core'
 import { onMounted } from '@vue/runtime-core'
-import { Wallet } from 'ethers'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
-import { loginUser, getNonce } from '@/services/gateway.service'
+import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import useArcanaAuth from '@/use/arcanaAuth'
-import signWithPrivateKey from '@/utils/signWithPrivateKey'
+import { generateLoginInfo } from '@/utils/signerUtils'
 
 const router = useRouter()
 const route = useRoute()
@@ -39,33 +38,27 @@ async function fetchAndStoreDetails() {
 }
 
 async function fetchAndStoreUserInfo() {
-  const { userInfo, privateKey } = await arcanaAuth.fetchUserDetails()
-  const wallet = new Wallet(privateKey)
-  const nonce = await getNonce(wallet.address)
-  store.commit('showLoader', 'Signing In...')
-  const signature = await signWithPrivateKey(privateKey, nonce.data)
+  const userInfo = await arcanaAuth.fetchUserDetails()
+  const loginInfo = await generateLoginInfo()
   const access_token = await loginUser({
-    signature,
+    signature: loginInfo.signature,
     email: userInfo.id,
-    address: wallet.address,
+    address: loginInfo.address,
   })
   store.dispatch('updateAccessToken', access_token.data.token)
-  store.dispatch('updateKeys', {
-    privateKey,
-  })
-  store.dispatch('updateWalletAddress', wallet.address)
+  store.dispatch('updateWalletAddress', loginInfo.address)
   store.dispatch('updateUserInfo', {
     email: userInfo.id,
     name: userInfo.name || '',
   })
 
-  if (nonce.data === 0) {
+  if (loginInfo.nonce === 0) {
     addUserToMailchimp(userInfo.id)
   }
 }
 
 onMounted(async () => {
-  if (arcanaAuth.isLoggedIn()) {
+  if (await arcanaAuth.isLoggedIn()) {
     await fetchAndStoreDetails()
   }
 })
