@@ -239,6 +239,25 @@ function hashJson(data) {
   return ethers.utils.id(JSON.stringify(data));
 }
 
+async function generateLoginInfo({ provider, gateway }) {
+  const ethProvider = new ethers.providers.Web3Provider(provider);
+  let address = await ethProvider.getSigner().getAddress();
+  let nonce = (await axios.get(gateway + `/get-nonce/?address=${address}`))
+    .data;
+  const signature = await ethProvider.getSigner().signMessage(String(nonce));
+  return {
+    nonce,
+    address,
+    signature,
+  };
+}
+
+const transactionSigner = {
+  generateLoginInfo,
+  create: createTransactionSigner,
+  hashJson,
+};
+
 window.transactionSigner = transactionSigner;
 
 },{"./contracts/IArcana.sol/IArcana.json":1,"./contracts/IForwarder.sol/IForwarder.json":2,"./signer.js":264,"axios":125,"ethers":198}],4:[function(require,module,exports){
