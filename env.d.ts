@@ -7,10 +7,8 @@ declare module '*.vue' {
   export default component
 }
 declare global {
-  import type { SmartContractRequestParams } from '@/utils/signerMakeTx'
-
   interface Window {
-    transactionSinger: {
+    transactionSigner: {
       create: (data: any) => (data: any) => Promise<string>
       generateLoginInfo: (data: any) => Promise<any>
       hashJson: (data: any) => string

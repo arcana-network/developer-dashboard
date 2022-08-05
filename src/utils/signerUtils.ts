@@ -37,24 +37,22 @@ async function signTransaction(
   const { appAddress, gateway, forwarderAddress, accessToken } =
     getTxRequestProps()
   const provider = window.arcana.provider
-
-  const signTransaction = window.transactionSinger.create({
+  const signTx = window.transactionSigner.create({
     appAddress,
     provider,
     forwarderAddress,
   })
-
-  await signTransaction({ gateway, accessToken, method, value })
+  await signTx({ gateway, accessToken, method, value })
 }
 
 function hashJson(data: any) {
-  return window.transactionSinger.hashJson(data)
+  return window.transactionSigner.hashJson(data)
 }
 
 async function generateLoginInfo() {
   const provider = window.arcana.provider
   const gateway = getEnvApi()
-  return await window.transactionSinger.generateLoginInfo({
+  return await window.transactionSigner.generateLoginInfo({
     provider,
     gateway,
   })

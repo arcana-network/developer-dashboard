@@ -204,11 +204,16 @@ const axios = require("axios");
 const sign = require("./signer.js").sign;
 
 function createTransactionSigner({ appAddress, provider, forwarderAddress }) {
-  const arcanaContract = new ethers.Contract(appAddress, arcana.abi, provider);
+  const ethProvider = new ethers.providers.Web3Provider(provider);
+  const arcanaContract = new ethers.Contract(
+    appAddress,
+    arcana.abi,
+    ethProvider
+  );
   const forwarderContract = new ethers.Contract(
     forwarderAddress,
     forwarder.abi,
-    provider
+    ethProvider
   );
 
   return async function signTransaction({
@@ -218,7 +223,7 @@ function createTransactionSigner({ appAddress, provider, forwarderAddress }) {
     value,
   }) {
     const req = await sign(
-      provider,
+      ethProvider,
       arcanaContract,
       forwarderContract,
       method,
@@ -229,7 +234,7 @@ function createTransactionSigner({ appAddress, provider, forwarderAddress }) {
         Authorization: "Bearer " + accessToken,
       },
     });
-    const tx = await provider.getTransaction(res.data.txHash);
+    const tx = await ethProvider.getTransaction(res.data.txHash);
     await tx.wait();
     return res.data;
   };
