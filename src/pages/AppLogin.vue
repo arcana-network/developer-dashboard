@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { SocialLoginType } from '@arcana/auth-core'
 import { onMounted } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
 import { useStore } from 'vuex'
@@ -16,7 +15,7 @@ const route = useRoute()
 const store = useStore()
 const arcanaAuth = useArcanaAuth()
 
-async function launchLogin(type: SocialLoginType) {
+async function launchLogin(type: string) {
   store.commit('showLoader', `Signing with ${type}`)
   await arcanaAuth.loginWithSocial(type)
   await fetchAndStoreDetails()
@@ -97,7 +96,7 @@ onMounted(async () => {
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.google)"
+                @click.stop="launchLogin('google')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -109,7 +108,7 @@ onMounted(async () => {
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.github)"
+                @click.stop="launchLogin('github')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -126,7 +125,7 @@ onMounted(async () => {
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.twitch)"
+                @click.stop="launchLogin('twitch')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -138,7 +137,7 @@ onMounted(async () => {
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.discord)"
+                @click.stop="launchLogin('discord')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
