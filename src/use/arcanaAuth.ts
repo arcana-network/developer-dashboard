@@ -25,7 +25,7 @@ function useArcanaAuth() {
   }
 
   async function loginWithSocial(type: string) {
-    if (!isLoggedIn()) {
+    if (!(await isLoggedIn())) {
       await authInstance.loginWithSocial(type)
     }
   }
