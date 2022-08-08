@@ -8,6 +8,7 @@ import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
 import useArcanaAuth from '@/use/arcanaAuth'
+import { createTransactionSigner } from '@/utils/signerUtils'
 
 const store = useStore()
 const route = useRoute()
@@ -31,6 +32,7 @@ onBeforeMount(async () => {
   store.commit('showLoader', 'Fetching app configuration...')
   if (!store.getters.appName && store.getters.accessToken) {
     await store.dispatch('fetchAppConfig')
+    createTransactionSigner()
   }
   store.commit('hideLoader')
 })

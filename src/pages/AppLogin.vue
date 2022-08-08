@@ -8,7 +8,7 @@ import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import useArcanaAuth from '@/use/arcanaAuth'
-import { generateLoginInfo } from '@/utils/signerUtils'
+import { createTransactionSigner, generateLoginInfo } from '@/utils/signerUtils'
 
 const router = useRouter()
 const route = useRoute()
@@ -25,6 +25,7 @@ async function fetchAndStoreDetails() {
   store.commit('showLoader', 'Fetching user info...')
   await fetchAndStoreUserInfo()
   await store.dispatch('fetchAppConfig')
+  createTransactionSigner()
   store.commit('hideLoader')
 
   if (route.params.redirectTo) {
