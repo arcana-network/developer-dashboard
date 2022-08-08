@@ -7,9 +7,26 @@ declare module '*.vue' {
   export default component
 }
 declare global {
+  type SmartContractAcceptedValue =
+    | (string | undefined | number)[]
+    | (string | undefined)[][]
+
+  type TransactionSignerParams = {
+    appAddress: string
+    provider: any
+    forwarderAddress: string
+    gateway: string
+    accessToken: string
+  }
+
   interface Window {
     transactionSigner: {
-      create: (data: any) => (data: any) => Promise<string>
+      createTransactionSigner: (
+        data: TransactionSignerParams
+      ) => (
+        method: string,
+        value: SmartContractAcceptedValue
+      ) => Promise<string>
       generateLoginInfo: (data: any) => Promise<any>
       hashJson: (data: any) => string
     }
