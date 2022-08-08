@@ -11,6 +11,11 @@ type SmartContractRequestParams = {
   value?: string
 }
 
+let signTransaction: (
+  method: string,
+  value?: globalThis.SmartContractAcceptedValue
+) => Promise<string>
+
 function getTxRequestProps(): SmartContractRequestParams {
   let appAddress: string = store.getters.appAddress
 
@@ -26,23 +31,17 @@ function getTxRequestProps(): SmartContractRequestParams {
   }
 }
 
-type SmartContractAcceptedValue =
-  | (string | undefined | number)[]
-  | (string | undefined)[][]
-
-async function signTransaction(
-  method: string,
-  value?: SmartContractAcceptedValue
-) {
+async function createTransactionSigner() {
   const { appAddress, gateway, forwarderAddress, accessToken } =
     getTxRequestProps()
   const provider = window.arcana.provider
-  const signTx = window.transactionSigner.create({
+  signTransaction = window.transactionSigner.createTransactionSigner({
     appAddress,
     provider,
     forwarderAddress,
+    gateway,
+    accessToken,
   })
-  await signTx({ gateway, accessToken, method, value })
 }
 
 function hashJson(data: any) {
@@ -58,6 +57,6 @@ async function generateLoginInfo() {
   })
 }
 
-export { signTransaction, hashJson, generateLoginInfo }
+export { createTransactionSigner, signTransaction, hashJson, generateLoginInfo }
 
 export type { SmartContractRequestParams }
