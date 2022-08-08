@@ -9,7 +9,11 @@ import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
-import { updateApp, type AppConfig } from '@/services/gateway.service'
+import {
+  updateApp,
+  type AppConfig,
+  type AppConfigCred,
+} from '@/services/gateway.service'
 import {
   setAppConfig,
   setDefaultLimit,
@@ -27,7 +31,9 @@ const store = useStore()
 const toast = useToast()
 const route = useRoute()
 
-currentTab.value = String(route.name).replace('Settings', '').toLowerCase()
+currentTab.value = String(route.name)
+  .replace('Settings', '')
+  .toLowerCase() as ConfigureTabType
 
 let currentConfig: AppConfig = store.getters.appConfigRequestBody
 
@@ -81,7 +87,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
 
   try {
     store.commit('showLoader', 'Updating app config in smart contract...')
-    await setAppConfig(app.name, app.cred)
+    await setAppConfig(app.name as string, app.cred as AppConfigCred[])
     toast.success('Client IDs saved in blockchain')
   } catch (e) {
     handleSmartContractErrors('Client IDs', e)
