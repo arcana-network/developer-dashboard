@@ -222,7 +222,7 @@ function createTransactionSigner({
     ethProvider
   );
 
-  return async function signTransaction({ method, value }) {
+  return async function signTransaction(method, value) {
     const req = await sign(
       ethProvider,
       arcanaContract,
