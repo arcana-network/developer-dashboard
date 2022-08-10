@@ -1,5 +1,10 @@
 import store from '@/store'
+import { useAuthStore } from '@/stores/auth.store'
+import { useUrlStore } from '@/stores/url.store'
 import getEnvApi from '@/utils/get-env-api'
+
+const urlStore = useUrlStore()
+const authStore = useAuthStore()
 
 type SmartContractRequestParams = {
   privateKey: string
@@ -20,12 +25,12 @@ function getTxRequestProps(): SmartContractRequestParams {
   }
 
   return {
-    privateKey: store.getters.keys.privateKey,
+    privateKey: authStore.privateKey,
     appAddress,
-    rpc: store.getters.rpcUrl,
+    rpc: urlStore.rpcUrl,
     gateway: getEnvApi(),
-    forwarderAddress: store.getters.forwarder,
-    accessToken: store.getters.accessToken,
+    forwarderAddress: urlStore.forwarder,
+    accessToken: authStore.accessToken,
   }
 }
 

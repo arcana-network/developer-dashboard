@@ -9,6 +9,7 @@ import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import { loginUser, getNonce } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
+import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import signWithPrivateKey from '@/utils/signWithPrivateKey'
@@ -16,6 +17,7 @@ import signWithPrivateKey from '@/utils/signWithPrivateKey'
 const router = useRouter()
 const route = useRoute()
 const store = useStore()
+const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
 
@@ -51,15 +53,13 @@ async function fetchAndStoreUserInfo() {
     email: userInfo.id,
     address: wallet.address,
   })
-  store.dispatch('updateAccessToken', access_token.data.token)
-  store.dispatch('updateKeys', {
-    privateKey,
-  })
-  store.dispatch('updateWalletAddress', wallet.address)
-  store.dispatch('updateUserInfo', {
-    email: userInfo.id,
-    name: userInfo.name || '',
-  })
+  authStore.updateKeys(privateKey)
+  authStore.updateAccessToken(access_token.data.token)
+  authStore.updateWalletAddress(wallet.address)
+  authStore.updateUserInfo(
+    userInfo.name as string,
+    userInfo.email || userInfo.id
+  )
 
   if (nonce.data === 0) {
     addUserToMailchimp(userInfo.id)

@@ -44,3 +44,5 @@ export const useToastStore = defineStore('toast', {
     },
   },
 })
+
+export type { ToastMessage }

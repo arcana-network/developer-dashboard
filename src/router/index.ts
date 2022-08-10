@@ -6,7 +6,10 @@ import {
 } from 'vue-router'
 
 import store from '@/store'
+import { useAuthStore } from '@/stores/auth.store'
 import constants from '@/utils/constants'
+
+const authStore = useAuthStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppConfigure = () => import('@/pages/AppConfigure.vue')
@@ -138,10 +141,10 @@ const router: Router = createRouter({
 router.beforeEach((to, from, next) => {
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
-    !store.getters.accessToken
+    !authStore.accessToken
   ) {
     router.push({ name: 'Login', params: { redirectTo: String(to.name) } })
-  } else if (to.name === 'Login' && store.getters.accessToken) {
+  } else if (to.name === 'Login' && authStore.accessToken) {
     router.push({ name: 'Dashboard' })
   } else if (
     to.path.includes('/app') &&

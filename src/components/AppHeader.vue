@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import AccountUserIcon from '@/assets/iconography/account-user.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
@@ -9,11 +8,12 @@ import ArcanaFavicon from '@/assets/iconography/arcana-favicon.svg'
 import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VHeader from '@/components/lib/VHeader/VHeader.vue'
+import { useAuthStore } from '@/stores/auth.store'
 import constants from '@/utils/constants'
 
 const route = useRoute()
 const router = useRouter()
-const store = useStore()
+const authStore = useAuthStore()
 const canShowBanner = ref(true)
 const hideHeader = ref(false)
 
@@ -53,7 +53,7 @@ const menuItems = computed(() => {
 })
 
 const loggedInUser = {
-  name: store.getters.userInfo.name,
+  name: authStore.name,
   action() {
     router.push('/profile')
   },

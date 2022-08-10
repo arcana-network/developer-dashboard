@@ -7,6 +7,7 @@ import AppFooter from '@/components/AppFooter.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
+import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useUrlStore } from '@/stores/url.store'
 import useArcanaAuth from '@/use/arcanaAuth'
@@ -14,10 +15,11 @@ import useArcanaAuth from '@/use/arcanaAuth'
 const store = useStore()
 const loaderStore = useLoaderStore()
 const urlStore = useUrlStore()
+const authStore = useAuthStore()
 const route = useRoute()
 const arcanaAuth = useArcanaAuth()
-const isLoading = computed(() => store.getters.isLoading)
-const loadingMessage = computed(() => store.getters.loadingMessage)
+const isLoading = computed(() => loaderStore.isLoading)
+const loadingMessage = computed(() => loaderStore.message)
 const isAuthLoaded = ref(false)
 
 onBeforeMount(async () => {
@@ -32,7 +34,7 @@ onBeforeMount(async () => {
   }
 
   loaderStore.showLoader('Fetching app configuration...')
-  if (!store.getters.appName && store.getters.accessToken) {
+  if (!store.getters.appName && authStore.accessToken) {
     await store.dispatch('fetchAppConfig')
   }
   loaderStore.hideLoader()

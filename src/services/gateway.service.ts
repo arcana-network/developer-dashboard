@@ -1,8 +1,11 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
 import store from '@/store'
+import { useAuthStore } from '@/stores/auth.store'
 import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
+
+const authStore = useAuthStore()
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
@@ -41,7 +44,7 @@ type AppConfig = {
 const gatewayAuthorizedInstance = axios.create()
 gatewayAuthorizedInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    config.headers.Authorization = `Bearer ${store.getters.accessToken}`
+    config.headers.Authorization = `Bearer ${authStore.accessToken}`
     return config
   }
 )

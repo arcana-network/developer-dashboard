@@ -3,8 +3,7 @@ import { computed } from 'vue'
 
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import type { ToastMessage } from '@/store/toast.store'
-import { useToastStore } from '@/stores/toast.store'
+import { useToastStore, type ToastMessage } from '@/stores/toast.store'
 
 const toastStore = useToastStore()
 

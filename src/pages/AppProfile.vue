@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -9,10 +8,11 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { fetchProfile, updateOrganization } from '@/services/gateway.service'
+import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
-const store = useStore()
+const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const { logout } = useArcanaAuth()
@@ -32,9 +32,9 @@ const organisationDetails: Ref<OrganizationDetails> = ref({
   country: '',
 })
 const name = ref('')
-name.value = store.getters.userInfo.name
+name.value = authStore.name
 const email = ref('')
-email.value = store.getters.userInfo.email
+email.value = authStore.email
 const router = useRouter()
 
 let organisationDetailsResetState: OrganizationDetails
@@ -81,9 +81,9 @@ onBeforeMount(() => {
 function onLogout() {
   logout()
   localStorage.clear()
-  store.dispatch('resetSettings')
-  store.dispatch('resetAuth')
-  store.dispatch('resetStore')
+  // store.dispatch('resetSettings')
+  authStore.$reset()
+  // store.dispatch('resetStore')
   router.push({ name: 'Login' })
 }
 
