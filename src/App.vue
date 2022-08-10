@@ -8,10 +8,12 @@ import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
 import { useLoaderStore } from '@/stores/loader.store'
+import { useUrlStore } from '@/stores/url.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
 const store = useStore()
 const loaderStore = useLoaderStore()
+const urlStore = useUrlStore()
 const route = useRoute()
 const arcanaAuth = useArcanaAuth()
 const isLoading = computed(() => store.getters.isLoading)
@@ -26,8 +28,7 @@ onBeforeMount(async () => {
   if (!store.getters['forwarder'] || !store.getters['rpc']) {
     const configResponse = await getConfig()
     const config = configResponse.data
-    store.commit('updateForwarder', config?.Forwarder)
-    store.commit('updateRpcUrl', config?.RPC_URL)
+    urlStore.updateUrls(config?.Forwarder, config?.RPC_URL)
   }
 
   loaderStore.showLoader('Fetching app configuration...')
