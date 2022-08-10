@@ -25,11 +25,13 @@ import {
   fetchStats,
   type Duration,
 } from '@/services/gateway.service'
+import { useLoaderStore } from '@/stores/loader.store'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
 const store = useStore()
+const loaderStore = useLoaderStore()
 const toast = useToast()
 
 const appId = computed(() => {
@@ -83,9 +85,9 @@ onMounted(async () => {
     })
   }
   if (store.getters.appId) {
-    store.commit('showLoader', 'Fetching App statistics...')
+    loaderStore.showLoader('Fetching App statistics...')
     await fetchAndPopulateStatistics()
-    store.commit('hideLoader')
+    loaderStore.hideLoader()
   }
 })
 

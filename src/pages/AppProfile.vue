@@ -9,9 +9,11 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { fetchProfile, updateOrganization } from '@/services/gateway.service'
+import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
 const store = useStore()
+const loaderStore = useLoaderStore()
 const toast = useToast()
 const { logout } = useArcanaAuth()
 
@@ -46,7 +48,7 @@ async function onUpdateOrganization() {
   organisationDetails.value.sizeErrorMessage = ''
 
   try {
-    store.commit('showLoader', 'Updating Profile details...')
+    loaderStore.showLoader('Updating Profile details...')
     await updateOrganization({
       name: organisationDetails.value.name,
       size,
@@ -61,7 +63,7 @@ async function onUpdateOrganization() {
       'An error occurred while saving the profile details. Please try again or contact support'
     )
   } finally {
-    store.commit('hideLoader')
+    loaderStore.hideLoader()
   }
 }
 

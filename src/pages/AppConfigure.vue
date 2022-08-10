@@ -16,6 +16,7 @@ import {
   setDefaultLimit,
   enableUiMode,
 } from '@/services/smart-contract.service'
+import { useLoaderStore } from '@/stores/loader.store'
 import {
   WalletMode,
   type ConfigureTab,
@@ -25,10 +26,13 @@ import {
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
 const store = useStore()
+const loaderStore = useLoaderStore()
 const toast = useToast()
 const route = useRoute()
 
-currentTab.value = String(route.name).replace('Settings', '').toLowerCase()
+currentTab.value = String(route.name)
+  .replace('Settings', '')
+  .toLowerCase() as ConfigureTabType
 
 let currentConfig: AppConfig = store.getters.appConfigRequestBody
 
@@ -38,7 +42,7 @@ function switchTab(tab: ConfigureTab) {
 }
 
 async function handleSave() {
-  store.commit('showLoader', 'Saving app config...')
+  loaderStore.showLoader('Saving app config...')
   const appConfigRequestBody: AppConfig = store.getters.appConfigRequestBody
   const updatedApp = (await updateApp(appConfigRequestBody)).data
   store.commit(
@@ -47,14 +51,14 @@ async function handleSave() {
   )
   await updateSmartContractTransactions(appConfigRequestBody)
   currentConfig = store.getters.appConfigRequestBody
-  store.commit('hideLoader')
+  loaderStore.hideLoader()
   toast.success('App configuration updated')
 }
 
 async function updateSmartContractTransactions(app: AppConfig) {
   try {
     if (app.name !== currentConfig.name) {
-      store.commit('showLoader', 'Updating app name in smart contract...')
+      loaderStore.showLoader('Updating app name in smart contract...')
       await setAppName(app.name)
       toast.success('App name saved in blockchain')
     }
@@ -69,7 +73,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
       app.bandwidth_limit !== currentConfig.bandwidth_limit
 
     if (hasStorageLimitChanged || hasBandwidthLimitChanged) {
-      store.commit('showLoader', 'Updating user limits in smart contract...')
+      loaderStore.showLoader('Updating user limits in smart contract...')
       await setDefaultLimit(app.storage_limit, app.bandwidth_limit)
       toast.success('User limits saved in blockchain')
     }
@@ -78,7 +82,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
   }
 
   try {
-    store.commit('showLoader', 'Updating social auth in smart contract...')
+    loaderStore.showLoader('Updating social auth in smart contract...')
     await setClientIds(app.cred)
     toast.success('Client IDs saved in blockchain')
   } catch (e) {
@@ -90,14 +94,14 @@ async function updateSmartContractTransactions(app: AppConfig) {
       app.wallet_type === WalletMode.UI &&
       currentConfig.wallet_type === WalletMode.NoUI
     ) {
-      store.commit('showLoader', 'Enabling UI Mode in smart contract...')
+      loaderStore.showLoader('Enabling UI Mode in smart contract...')
       await enableUiMode()
       toast.success('UI mode saved in blockchain')
     }
   } catch (e) {
     handleSmartContractErrors('UI mode', e)
   }
-  store.commit('hideLoader')
+  loaderStore.hideLoader()
 }
 
 function handleSmartContractErrors(type: string, error: unknown) {

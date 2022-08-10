@@ -11,6 +11,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { createApp, type AppConfig } from '@/services/gateway.service'
+import { useLoaderStore } from '@/stores/loader.store'
 import {
   RegionMapping,
   regions,
@@ -19,12 +20,13 @@ import {
 } from '@/utils/constants'
 
 const store = useStore()
+const loaderStore = useLoaderStore()
 const router = useRouter()
 const appName: ComputedRef<string> = computed(() => store.getters.appName)
 const hasAppNameError: Ref<boolean> = ref(false)
-const selectedRegion: ComputedRef<Region | undefined> = computed(() => {
+const selectedRegion: ComputedRef<Region> = computed(() => {
   const storageRegion: StorageRegion = store.getters.storageRegion
-  return regions.find((region) => region.value === storageRegion)
+  return regions.find((region) => region.value === storageRegion) as Region
 })
 
 function handleRegionChange(option: Region) {
@@ -40,7 +42,7 @@ async function handleCreateApp() {
     hasAppNameError.value = true
     return
   }
-  store.commit('showLoader', 'Creating App...')
+  loaderStore.showLoader('Creating App...')
   hasAppNameError.value = false
   const app: AppConfig = (
     await createApp({
@@ -50,7 +52,7 @@ async function handleCreateApp() {
   ).data
   store.commit('updateAppId', app.ID)
   await store.dispatch('fetchAppConfig')
-  store.commit('hideLoader')
+  loaderStore.hideLoader()
   router.push({ name: 'GeneralSettings' })
 }
 </script>

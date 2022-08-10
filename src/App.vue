@@ -7,9 +7,11 @@ import AppFooter from '@/components/AppFooter.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
+import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
 const store = useStore()
+const loaderStore = useLoaderStore()
 const route = useRoute()
 const arcanaAuth = useArcanaAuth()
 const isLoading = computed(() => store.getters.isLoading)
@@ -17,7 +19,7 @@ const loadingMessage = computed(() => store.getters.loadingMessage)
 const isAuthLoaded = ref(false)
 
 onBeforeMount(async () => {
-  store.commit('showLoader', 'Initializing Arcana Auth SDK...')
+  loaderStore.showLoader('Initializing Arcana Auth SDK...')
   await arcanaAuth.init()
   isAuthLoaded.value = true
 
@@ -28,11 +30,11 @@ onBeforeMount(async () => {
     store.commit('updateRpcUrl', config?.RPC_URL)
   }
 
-  store.commit('showLoader', 'Fetching app configuration...')
+  loaderStore.showLoader('Fetching app configuration...')
   if (!store.getters.appName && store.getters.accessToken) {
     await store.dispatch('fetchAppConfig')
   }
-  store.commit('hideLoader')
+  loaderStore.hideLoader()
 })
 </script>
 

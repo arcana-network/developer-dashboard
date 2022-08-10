@@ -9,25 +9,27 @@ import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import { loginUser, getNonce } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
+import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import signWithPrivateKey from '@/utils/signWithPrivateKey'
 
 const router = useRouter()
 const route = useRoute()
 const store = useStore()
+const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
 
 async function launchLogin(type: SocialLoginType) {
-  store.commit('showLoader', `Signing with ${type}`)
+  loaderStore.showLoader(`Signing with ${type}`)
   await arcanaAuth.loginWithSocial(type)
   await fetchAndStoreDetails()
 }
 
 async function fetchAndStoreDetails() {
-  store.commit('showLoader', 'Fetching user info...')
+  loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
   await store.dispatch('fetchAppConfig')
-  store.commit('hideLoader')
+  loaderStore.hideLoader()
 
   if (route.params.redirectTo) {
     router.push({ name: String(route.params.redirectTo) })
@@ -42,7 +44,7 @@ async function fetchAndStoreUserInfo() {
   const { userInfo, privateKey } = await arcanaAuth.fetchUserDetails()
   const wallet = new Wallet(privateKey)
   const nonce = await getNonce(wallet.address)
-  store.commit('showLoader', 'Signing In...')
+  loaderStore.showLoader('Signing In...')
   const signature = await signWithPrivateKey(privateKey, nonce.data)
   const access_token = await loginUser({
     signature,
