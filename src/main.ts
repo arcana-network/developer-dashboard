@@ -1,5 +1,6 @@
 import { Integrations } from '@sentry/tracing'
 import { init as SentryInit, vueRouterInstrumentation } from '@sentry/vue'
+import { createPinia } from 'pinia'
 import VWave from 'v-wave'
 import { createApp } from 'vue'
 import VueGtag from 'vue-gtag'
@@ -35,6 +36,7 @@ SentryInit({
   tracesSampleRate: 1.0,
 })
 app.use(router)
+app.use(createPinia())
 app.use(store)
 app.use(VWave)
 
