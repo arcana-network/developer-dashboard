@@ -49,11 +49,18 @@ declare global {
         method: string,
         value?: SmartContractAcceptedValue
       ) => Promise<string>
-      generateLoginInfo: (data: any) => Promise<any>
+      generateLoginInfo: (data: {
+        provider: ArcanaProvider
+        gateway: string
+      }) => Promise<{
+        nonce: number
+        signature: string
+        address: string
+      }>
       hashJson: (data: any) => string
     }
     arcana: {
-      provider: any
+      provider: ArcanaProvider
     }
   }
 }
