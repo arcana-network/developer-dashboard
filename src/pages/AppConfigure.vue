@@ -88,7 +88,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
   try {
     store.commit('showLoader', 'Updating app config in smart contract...')
     await setAppConfig(app.name as string, app.cred as AppConfigCred[])
-    toast.success('Client IDs saved in blockchain')
+    toast.success('App config saved in blockchain')
   } catch (e) {
     handleSmartContractErrors('Client IDs', e)
   }
