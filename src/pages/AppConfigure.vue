@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import ConfigureFooter from '@/components/app-configure/ConfigureFooter.vue'
 import ConfigureHeader from '@/components/app-configure/ConfigureHeader.vue'
@@ -16,6 +15,7 @@ import {
   setDefaultLimit,
   enableUiMode,
 } from '@/services/smart-contract.service'
+import { useAppStore } from '@/stores/app.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import {
   WalletMode,
@@ -25,7 +25,7 @@ import {
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
-const store = useStore()
+const appStore = useAppStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const route = useRoute()
@@ -34,7 +34,7 @@ currentTab.value = String(route.name)
   .replace('Settings', '')
   .toLowerCase() as ConfigureTabType
 
-let currentConfig: AppConfig = store.getters.appConfigRequestBody
+let currentConfig = appStore.appConfigRequestBody
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
@@ -43,14 +43,13 @@ function switchTab(tab: ConfigureTab) {
 
 async function handleSave() {
   loaderStore.showLoader('Saving app config...')
-  const appConfigRequestBody: AppConfig = store.getters.appConfigRequestBody
+  const appConfigRequestBody = appStore.appConfigRequestBody
   const updatedApp = (await updateApp(appConfigRequestBody)).data
-  store.commit(
-    'updateWalletUIModeFromGateway',
+  appStore.updateWalletUIModeFromGateway(
     updatedApp.app.wallet_type === WalletMode.UI
   )
   await updateSmartContractTransactions(appConfigRequestBody)
-  currentConfig = store.getters.appConfigRequestBody
+  currentConfig = appStore.appConfigRequestBody
   loaderStore.hideLoader()
   toast.success('App configuration updated')
 }
@@ -112,7 +111,7 @@ function handleSmartContractErrors(type: string, error: unknown) {
 }
 
 function handleCancel() {
-  store.dispatch('fetchAppConfig')
+  appStore.fetchAppConfig()
   router.push({ name: 'Dashboard' })
 }
 </script>

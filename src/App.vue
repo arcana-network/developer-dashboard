@@ -1,18 +1,18 @@
 <script lang="ts" setup>
 import { onBeforeMount, ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { useStore } from 'vuex'
 
 import AppFooter from '@/components/AppFooter.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { getConfig } from '@/services/gateway.service'
+import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useUrlStore } from '@/stores/url.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
-const store = useStore()
+const appStore = useAppStore()
 const loaderStore = useLoaderStore()
 const urlStore = useUrlStore()
 const authStore = useAuthStore()
@@ -27,15 +27,15 @@ onBeforeMount(async () => {
   await arcanaAuth.init()
   isAuthLoaded.value = true
 
-  if (!store.getters['forwarder'] || !store.getters['rpc']) {
+  if (!urlStore.forwarder || !urlStore.rpcUrl) {
     const configResponse = await getConfig()
     const config = configResponse.data
     urlStore.updateUrls(config?.Forwarder, config?.RPC_URL)
   }
 
   loaderStore.showLoader('Fetching app configuration...')
-  if (!store.getters.appName && authStore.accessToken) {
-    await store.dispatch('fetchAppConfig')
+  if (!appStore.appName && authStore.accessToken) {
+    await appStore.fetchAppConfig()
   }
   loaderStore.hideLoader()
 })

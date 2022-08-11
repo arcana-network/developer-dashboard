@@ -3,12 +3,12 @@ import { SocialLoginType } from '@arcana/auth-core'
 import { onMounted } from '@vue/runtime-core'
 import { Wallet } from 'ethers'
 import { useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import { loginUser, getNonce } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
+import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
@@ -16,7 +16,7 @@ import signWithPrivateKey from '@/utils/signWithPrivateKey'
 
 const router = useRouter()
 const route = useRoute()
-const store = useStore()
+const appStore = useAppStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
@@ -30,7 +30,7 @@ async function launchLogin(type: SocialLoginType) {
 async function fetchAndStoreDetails() {
   loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
-  await store.dispatch('fetchAppConfig')
+  await appStore.fetchAppConfig()
   loaderStore.hideLoader()
 
   if (route.params.redirectTo) {

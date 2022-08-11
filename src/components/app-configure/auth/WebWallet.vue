@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue'
 
 import CloseIcon from '@/assets/iconography/close.svg'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -9,9 +8,10 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useAppStore } from '@/stores/app.store'
 import constants from '@/utils/constants'
 
-const store = useStore()
+const appStore = useAppStore()
 
 type Theme = {
   label: string
@@ -29,34 +29,32 @@ const availableThemes: Theme[] = [
   },
 ]
 
-const selectedTheme: ComputedRef<Theme | undefined> = computed(() => {
+const selectedTheme = computed(() => {
   return availableThemes.find(
-    (theme) => theme.value === store.getters.selectedTheme
+    (theme) => theme.value === appStore.auth.wallet.selectedTheme
   )
 })
 
-const walletWebsiteDomain: ComputedRef<string> = computed(
-  () => store.getters.walletWebsiteDomain
-)
-const hasUIMode: ComputedRef<boolean> = computed(() => store.getters.hasUIMode)
-const hasUIModeInGateway: ComputedRef<boolean> = computed(
-  () => store.getters.hasUIModeInGateway
+const walletWebsiteDomain = computed(() => appStore.auth.wallet.websiteDomain)
+const hasUIMode = computed(() => appStore.auth.wallet.hasUIMode)
+const hasUIModeInGateway = computed(
+  () => appStore.auth.wallet.hasUIModeInGateway
 )
 
 function handleThemeChange(theme: Theme) {
-  store.commit('updateSelectedTheme', theme.value)
+  appStore.updateSelectedTheme(theme.value)
 }
 
 function handleWebsiteDomainUpdate(value: string) {
-  store.commit('updateWalletWebsiteDomain', value)
+  appStore.updateWalletWebsiteDomain(value)
 }
 
 function handleClearWebsiteDomain() {
-  store.commit('updateWalletWebsiteDomain', '')
+  appStore.updateWalletWebsiteDomain('')
 }
 
 function handleUIModeUpdate(value: boolean) {
-  store.commit('updateWalletUIMode', value)
+  appStore.updateWalletUIMode(value)
 }
 </script>
 

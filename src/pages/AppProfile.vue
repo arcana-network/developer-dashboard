@@ -81,9 +81,6 @@ onBeforeMount(() => {
 function onLogout() {
   logout()
   localStorage.clear()
-  // store.dispatch('resetSettings')
-  authStore.$reset()
-  // store.dispatch('resetStore')
   router.push({ name: 'Login' })
 }
 

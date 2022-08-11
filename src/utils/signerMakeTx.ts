@@ -1,10 +1,11 @@
-import store from '@/store'
+import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useUrlStore } from '@/stores/url.store'
 import getEnvApi from '@/utils/get-env-api'
 
 const urlStore = useUrlStore()
 const authStore = useAuthStore()
+const appStore = useAppStore()
 
 type SmartContractRequestParams = {
   privateKey: string
@@ -18,7 +19,7 @@ type SmartContractRequestParams = {
 }
 
 function getTxRequestProps(): SmartContractRequestParams {
-  let appAddress: string = store.getters.appAddress
+  let appAddress: string = appStore.appAddress
 
   if (!appAddress.startsWith('0x')) {
     appAddress = `0x${appAddress}`

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import ConfirmDeletePopup from '@/components/app-configure/general/ConfirmDeletePopup.vue'
 import DeleteTimerPopup from '@/components/app-configure/general/DeleteTimerPopup.vue'
@@ -11,10 +10,11 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { useToast } from '@/components/lib/VToast'
 import { deleteApp } from '@/services/gateway.service'
+import { useAppStore } from '@/stores/app.store'
 import { useLoaderStore } from '@/stores/loader.store'
 
 const router = useRouter()
-const store = useStore()
+const appStore = useAppStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 
@@ -31,7 +31,7 @@ async function handleAppDeletion() {
   loaderStore.showLoader('Deleting App...')
   try {
     await deleteApp()
-    store.dispatch('resetSettings')
+    appStore.$reset()
     toast.success('App deleted successfully')
     router.push({ name: 'CreateApp' })
   } catch (e) {

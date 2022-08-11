@@ -1,5 +1,7 @@
 import { AuthProvider, SocialLoginType } from '@arcana/auth-core'
-import { useStore } from 'vuex'
+
+import { useAppStore } from '@/stores/app.store'
+import { useAuthStore } from '@/stores/auth.store'
 
 const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
@@ -7,7 +9,8 @@ const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 let authInstance: AuthProvider
 
 function useArcanaAuth() {
-  const store = useStore()
+  const authStore = useAuthStore()
+  const appStore = useAppStore()
 
   async function init() {
     if (!authInstance) {
@@ -36,16 +39,13 @@ function useArcanaAuth() {
     return authInstance.getUserInfo()
   }
 
-  function handleRedirect() {
-    AuthProvider.handleRedirectPage(window.location)
-  }
-
   async function logout() {
     await authInstance.logout()
-    store.dispatch('resetStore')
+    appStore.$reset()
+    authStore.$reset()
   }
 
-  async function getPublicKey(email) {
+  async function getPublicKey(email: string) {
     return await authInstance.getPublicKey({
       verifier: SocialLoginType.google,
       id: email,
@@ -54,7 +54,6 @@ function useArcanaAuth() {
 
   return {
     init,
-    handleRedirect,
     isLoggedIn,
     loginWithSocial,
     logout,

@@ -1,13 +1,12 @@
 <script lang="ts" setup>
-import { useStore } from 'vuex'
-
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { regions, type StorageRegion, DOCS_URL } from '@/utils/constants'
+import { useAppStore } from '@/stores/app.store'
+import { regions, DOCS_URL } from '@/utils/constants'
 
-const store = useStore()
-const storageRegion: StorageRegion = store.getters.storageRegion
+const appStore = useAppStore()
+const storageRegion = appStore.store.region
 const selectedRegion = regions.find((region) => region.value === storageRegion)
 </script>
 

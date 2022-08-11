@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-import { computed, ref, type ComputedRef, type Ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -11,6 +10,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { createApp, type AppConfig } from '@/services/gateway.service'
+import { useAppStore } from '@/stores/app.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import {
   RegionMapping,
@@ -19,22 +19,22 @@ import {
   type StorageRegion,
 } from '@/utils/constants'
 
-const store = useStore()
+const appStore = useAppStore()
 const loaderStore = useLoaderStore()
 const router = useRouter()
-const appName: ComputedRef<string> = computed(() => store.getters.appName)
-const hasAppNameError: Ref<boolean> = ref(false)
-const selectedRegion: ComputedRef<Region> = computed(() => {
-  const storageRegion: StorageRegion = store.getters.storageRegion
+const appName = computed(() => appStore.appName)
+const hasAppNameError = ref(false)
+const selectedRegion = computed(() => {
+  const storageRegion: StorageRegion = appStore.store.region
   return regions.find((region) => region.value === storageRegion) as Region
 })
 
 function handleRegionChange(option: Region) {
-  store.commit('updateStorageRegion', option.value)
+  appStore.updateStorageRegion(option.value)
 }
 
 function handleAppNameChange(appName: string) {
-  store.commit('updateAppName', appName)
+  appStore.updateAppName(appName)
 }
 
 async function handleCreateApp() {
@@ -50,8 +50,9 @@ async function handleCreateApp() {
       region: RegionMapping[selectedRegion.value.value],
     })
   ).data
-  store.commit('updateAppId', app.ID)
-  await store.dispatch('fetchAppConfig')
+  appStore.appId = String(app.ID)
+
+  await appStore.fetchAppConfig()
   loaderStore.hideLoader()
   router.push({ name: 'GeneralSettings' })
 }

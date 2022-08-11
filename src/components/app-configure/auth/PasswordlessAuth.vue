@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import { computed, type ComputedRef } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useAppStore } from '@/stores/app.store'
 import constants from '@/utils/constants'
 
-const store = useStore()
-const javascriptOrigin: ComputedRef<string> = computed(
-  () => store.getters.passwordlessAuth.javascriptOrigin
+const appStore = useAppStore()
+const javascriptOrigin = computed(
+  () => appStore.auth.passwordless.javascriptOrigin
 )
-const redirectUri: ComputedRef<string> = computed(
-  () => store.getters.passwordlessAuth.redirectUri
-)
+const redirectUri = computed(() => appStore.auth.passwordless.redirectUri)
 
 function handleJavascriptOriginUpdate(value: string) {
-  store.commit('updatePasswordlessAuthJavascriptOrigin', value)
+  appStore.updatePasswordlessAuthJavascriptOrigin(value)
 }
 
 function handleRedirectUriUpdate(value: string) {
-  store.commit('updatePasswordlessAuthRedirectUri', value)
+  appStore.updatePasswordlessAuthRedirectUri(value)
 }
 </script>
 

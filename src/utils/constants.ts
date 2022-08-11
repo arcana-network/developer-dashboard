@@ -28,7 +28,7 @@ type ChainOption<T> = {
   value: T
 }
 
-const chains: readonly ChainOption<Chain>[] = [
+const chains: ChainOption<Chain>[] = [
   {
     label: 'None',
     value: 'none',

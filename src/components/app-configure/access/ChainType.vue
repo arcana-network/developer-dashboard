@@ -1,20 +1,18 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
+import { useAppStore } from '@/stores/app.store'
 import { chains, type Chain, type ChainOption } from '@/utils/constants'
 
-const store = useStore()
-const selectedChain: ComputedRef<ChainOption<Chain> | undefined> = computed(
-  () => {
-    return chains.find((chain) => chain.value === store.getters.selectedChain)
-  }
-)
+const appStore = useAppStore()
+const selectedChain = computed(() => {
+  return chains.find((chain) => chain.value === appStore.access.selectedChain)
+})
 
 function handleSelectedChainChange(chain: ChainOption<Chain>) {
-  store.commit('updateSelectedChain', chain.value)
+  appStore.updateSelectedChain(chain.value)
 }
 </script>
 

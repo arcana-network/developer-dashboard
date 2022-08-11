@@ -7,7 +7,6 @@ import VueGtag from 'vue-gtag'
 
 import App from '@/App.vue'
 import router from '@/router'
-import store from '@/store'
 import constants from '@/utils/constants'
 
 import 'vue3-circle-progress/dist/circle-progress.css'
@@ -37,7 +36,6 @@ SentryInit({
 })
 app.use(router)
 app.use(createPinia())
-app.use(store)
 app.use(VWave)
 
 if (import.meta.env.PROD) {

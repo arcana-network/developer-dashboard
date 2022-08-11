@@ -1,11 +1,12 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
-import store from '@/store'
+import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore()
+const appStore = useAppStore()
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
@@ -76,7 +77,7 @@ function createApp(
 
 function updateApp(updatedAppConfig: AppConfig) {
   return gatewayAuthorizedInstance.patch(
-    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`,
+    `${getEnvApi('v2')}/app/?id=${appStore.appId}`,
     updatedAppConfig
   )
 }
@@ -91,19 +92,19 @@ function fetchApp(appId?: number) {
 
 function fetchStats() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/overview/?id=${store.getters.appId}`
+    `${getEnvApi()}/overview/?id=${appStore.appId}`
   )
 }
 
 function fetchPeriodicUsage(period: Duration = 'month') {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/app-usage/?id=${store.getters.appId}&period=${period}`
+    `${getEnvApi()}/app-usage/?id=${appStore.appId}&period=${period}`
   )
 }
 
 function deleteApp() {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`
+    `${getEnvApi('v2')}/app/?id=${appStore.appId}`
   )
 }
 
@@ -131,29 +132,25 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
 
 function fetchAllUsers() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details/?id=${store.getters.appId}`
+    `${getEnvApi()}/user-details/?id=${appStore.appId}`
   )
 }
 
 function searchUsers(address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${
-      store.getters.appId
-    }&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
   )
 }
 
 function fetchAllUserTransactions(address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${
-      store.getters.appId
-    }&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
   )
 }
 
 function fetchMonthlyUsers() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/no-of-users/?id=${store.getters.appId}`
+    `${getEnvApi()}/no-of-users/?id=${appStore.appId}`
   )
 }
 
@@ -181,7 +178,7 @@ function getThemeLogo(
   mode: 'dark' | 'light',
   orientation: 'horizontal' | 'vertical'
 ) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${store.getters.appId}/logo`
+  const logoFetchUrl = `${getEnvApi('v2')}/app/${appStore.appId}/logo`
   return {
     mode,
     orientation,
@@ -197,7 +194,7 @@ function uploadThemeLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
     formData,
     {
       params: { type: mode, orientation },
@@ -210,7 +207,7 @@ function removeThemeLogo(
   orientation?: 'horizontal' | 'vertical'
 ) {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
     {
       params: { type: mode, orientation },
     }
