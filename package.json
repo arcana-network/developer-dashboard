@@ -42,8 +42,7 @@
     "vue": "^3.0.5",
     "vue-gtag": "^2.0.1",
     "vue-router": "^4.0.10",
-    "vue3-circle-progress": "^1.0.6",
-    "vuex": "^4.0.2"
+    "vue3-circle-progress": "^1.0.6"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^4.0.3",
