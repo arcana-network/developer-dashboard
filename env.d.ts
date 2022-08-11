@@ -7,17 +7,10 @@ declare module '*.vue' {
   export default component
 }
 declare global {
-  import type { ArcanaProvider } from '@arcana/auth'
-
-  type SmartContractAcceptedValue = (string | undefined | number)[]
-
-  type TransactionSignerParams = {
-    appAddress: string
-    provider: ArcanaProvider
-    forwarderAddress: string
-    gateway: string
-    accessToken: string
-  }
+  import type {
+    TransactionSignerParams,
+    SmartContractAcceptedValue,
+  } from '@/utils/signerUtils'
 
   interface ImportMetaEnv {
     PROD: boolean
@@ -49,10 +42,7 @@ declare global {
         method: string,
         value?: SmartContractAcceptedValue
       ) => Promise<string>
-      generateLoginInfo: (data: {
-        provider: ArcanaProvider
-        gateway: string
-      }) => Promise<{
+      generateLoginInfo: (data: { provider: any; gateway: string }) => Promise<{
         nonce: number
         signature: string
         address: string
@@ -60,7 +50,7 @@ declare global {
       hashJson: (data: any) => string
     }
     arcana: {
-      provider: ArcanaProvider
+      provider: any
     }
   }
 }

@@ -1,6 +1,16 @@
 import store from '@/store'
 import getEnvApi from '@/utils/get-env-api'
 
+type SmartContractAcceptedValue = (string | undefined | number)[]
+
+type TransactionSignerParams = {
+  appAddress: string
+  provider: any
+  forwarderAddress: string
+  gateway: string
+  accessToken: string
+}
+
 type SmartContractRequestParams = {
   appAddress: string
   provider?: string
@@ -13,7 +23,7 @@ type SmartContractRequestParams = {
 
 let signTransaction: (
   method: string,
-  value?: globalThis.SmartContractAcceptedValue
+  value?: SmartContractAcceptedValue
 ) => Promise<string>
 
 function getTransactionRequestProps(): SmartContractRequestParams {
@@ -59,4 +69,8 @@ async function generateLoginInfo() {
 
 export { createTransactionSigner, signTransaction, hashJson, generateLoginInfo }
 
-export type { SmartContractRequestParams }
+export type {
+  SmartContractRequestParams,
+  SmartContractAcceptedValue,
+  TransactionSignerParams,
+}
