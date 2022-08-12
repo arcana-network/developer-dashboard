@@ -1,5 +1,11 @@
-import store from '@/store'
+import { useAppStore } from '@/stores/app.store'
+import { useAuthStore } from '@/stores/auth.store'
+import { useUrlStore } from '@/stores/url.store'
 import getEnvApi from '@/utils/get-env-api'
+
+const appStore = useAppStore()
+const urlStore = useUrlStore()
+const authStore = useAuthStore()
 
 type SmartContractAcceptedValue = (string | undefined | number)[]
 
@@ -27,7 +33,7 @@ let signTransaction: (
 ) => Promise<string>
 
 function getTransactionRequestProps(): SmartContractRequestParams {
-  let appAddress: string = store.getters.appAddress
+  let appAddress: string = appStore.appAddress
 
   if (!appAddress.startsWith('0x')) {
     appAddress = `0x${appAddress}`
@@ -36,8 +42,8 @@ function getTransactionRequestProps(): SmartContractRequestParams {
   return {
     appAddress,
     gateway: getEnvApi(),
-    forwarderAddress: store.getters.forwarder,
-    accessToken: store.getters.accessToken,
+    forwarderAddress: urlStore.forwarder,
+    accessToken: authStore.accessToken,
   }
 }
 
