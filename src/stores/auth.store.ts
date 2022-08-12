@@ -5,7 +5,6 @@ interface AuthState {
   accessToken: string
   name: string
   walletAddress: string
-  privateKey: string
 }
 
 export const useAuthStore = defineStore('auth', {
@@ -14,7 +13,6 @@ export const useAuthStore = defineStore('auth', {
     accessToken: '',
     name: '',
     walletAddress: '',
-    privateKey: '',
   }),
   actions: {
     updateAccessToken(access_token: string) {
@@ -26,9 +24,6 @@ export const useAuthStore = defineStore('auth', {
     updateUserInfo(name: string, email: string) {
       this.name = name
       this.email = email
-    },
-    updateKeys(privateKey: string) {
-      this.privateKey = privateKey
     },
   },
 })
