@@ -7,7 +7,7 @@ import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(pinia)
-const appStore = useAppStore(pinia)
+const appStore = useAppStore()
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 

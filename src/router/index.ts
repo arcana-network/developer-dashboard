@@ -5,13 +5,12 @@ import {
   type RouteRecordRaw,
 } from 'vue-router'
 
-import pinia from '@/stores'
 import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import constants from '@/utils/constants'
 
-const authStore = useAuthStore(pinia)
-const appStore = useAppStore(pinia)
+const authStore = useAuthStore()
+const appStore = useAppStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppConfigure = () => import('@/pages/AppConfigure.vue')
