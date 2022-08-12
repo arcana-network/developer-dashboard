@@ -11,7 +11,7 @@ import type {
   SocialAuthState,
   SocialAuthVerifier,
   SocialAuthField,
-} from '@/store/app.store'
+} from '@/stores/app.store'
 import { useAppStore } from '@/stores/app.store'
 import constants, { socialLogins } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'

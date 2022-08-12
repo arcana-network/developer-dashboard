@@ -1,6 +1,6 @@
 import bytes from 'bytes'
 
-import type { UserLimitState, SocialAuthOption } from '@/store/app.store'
+import type { UserLimitState, SocialAuthOption } from '@/stores/app.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,

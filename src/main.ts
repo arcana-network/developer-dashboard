@@ -1,12 +1,12 @@
 import { Integrations } from '@sentry/tracing'
 import { init as SentryInit, vueRouterInstrumentation } from '@sentry/vue'
-import { createPinia } from 'pinia'
 import VWave from 'v-wave'
 import { createApp } from 'vue'
 import VueGtag from 'vue-gtag'
 
 import App from '@/App.vue'
 import router from '@/router'
+import pinia from '@/stores'
 import constants from '@/utils/constants'
 
 import 'vue3-circle-progress/dist/circle-progress.css'
@@ -34,8 +34,9 @@ SentryInit({
   ],
   tracesSampleRate: 1.0,
 })
+
+app.use(pinia)
 app.use(router)
-app.use(createPinia())
 app.use(VWave)
 
 if (import.meta.env.PROD) {
