@@ -8,10 +8,13 @@ import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
-import { updateApp, type AppConfig } from '@/services/gateway.service'
 import {
-  setAppName,
-  setClientIds,
+  updateApp,
+  type AppConfig,
+  type AppConfigCred,
+} from '@/services/gateway.service'
+import {
+  setAppConfig,
   setDefaultLimit,
   enableUiMode,
 } from '@/services/smart-contract.service'
@@ -56,16 +59,6 @@ async function handleSave() {
 
 async function updateSmartContractTransactions(app: AppConfig) {
   try {
-    if (app.name !== currentConfig.name) {
-      loaderStore.showLoader('Updating app name in smart contract...')
-      await setAppName(app.name)
-      toast.success('App name saved in blockchain')
-    }
-  } catch (e) {
-    handleSmartContractErrors('App name', e)
-  }
-
-  try {
     const hasStorageLimitChanged =
       app.storage_limit !== currentConfig.storage_limit
     const hasBandwidthLimitChanged =
@@ -81,14 +74,6 @@ async function updateSmartContractTransactions(app: AppConfig) {
   }
 
   try {
-    loaderStore.showLoader('Updating social auth in smart contract...')
-    await setClientIds(app.cred)
-    toast.success('Client IDs saved in blockchain')
-  } catch (e) {
-    handleSmartContractErrors('Client IDs', e)
-  }
-
-  try {
     if (
       app.wallet_type === WalletMode.UI &&
       currentConfig.wallet_type === WalletMode.NoUI
@@ -100,6 +85,15 @@ async function updateSmartContractTransactions(app: AppConfig) {
   } catch (e) {
     handleSmartContractErrors('UI mode', e)
   }
+
+  try {
+    loaderStore.showLoader('Updating app config in smart contract...')
+    await setAppConfig(app.name as string, app.cred as AppConfigCred[])
+    toast.success('App config saved in blockchain')
+  } catch (e) {
+    handleSmartContractErrors('App Config', e)
+  }
+
   loaderStore.hideLoader()
 }
 

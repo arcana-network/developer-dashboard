@@ -1,18 +1,16 @@
 <script lang="ts" setup>
-import { SocialLoginType } from '@arcana/auth-core'
 import { onMounted } from '@vue/runtime-core'
-import { Wallet } from 'ethers'
 import { useRoute, useRouter } from 'vue-router'
 
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
-import { loginUser, getNonce } from '@/services/gateway.service'
+import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
-import signWithPrivateKey from '@/utils/signWithPrivateKey'
+import { createTransactionSigner, generateLoginInfo } from '@/utils/signerUtils'
 
 const router = useRouter()
 const route = useRoute()
@@ -21,7 +19,7 @@ const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
 
-async function launchLogin(type: SocialLoginType) {
+async function launchLogin(type: string) {
   loaderStore.showLoader(`Signing with ${type}`)
   await arcanaAuth.loginWithSocial(type)
   await fetchAndStoreDetails()
@@ -30,9 +28,8 @@ async function launchLogin(type: SocialLoginType) {
 async function fetchAndStoreDetails() {
   loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
+  createTransactionSigner()
   await appStore.fetchAppConfig()
-  loaderStore.hideLoader()
-
   if (route.params.redirectTo) {
     router.push({ name: String(route.params.redirectTo) })
   } else {
@@ -40,34 +37,32 @@ async function fetchAndStoreDetails() {
       name: 'Dashboard',
     })
   }
+  loaderStore.hideLoader()
 }
 
 async function fetchAndStoreUserInfo() {
-  const { userInfo, privateKey } = await arcanaAuth.fetchUserDetails()
-  const wallet = new Wallet(privateKey)
-  const nonce = await getNonce(wallet.address)
   loaderStore.showLoader('Signing In...')
-  const signature = await signWithPrivateKey(privateKey, nonce.data)
+  const userInfo = await arcanaAuth.fetchUserDetails()
+  const loginInfo = await generateLoginInfo()
   const access_token = await loginUser({
-    signature,
+    signature: loginInfo.signature,
     email: userInfo.id,
-    address: wallet.address,
+    address: loginInfo.address,
   })
-  authStore.updateKeys(privateKey)
   authStore.updateAccessToken(access_token.data.token)
-  authStore.updateWalletAddress(wallet.address)
+  authStore.updateWalletAddress(loginInfo.address)
   authStore.updateUserInfo(
     userInfo.name as string,
     userInfo.email || userInfo.id
   )
 
-  if (nonce.data === 0) {
+  if (loginInfo.nonce === 0) {
     addUserToMailchimp(userInfo.id)
   }
 }
 
 onMounted(async () => {
-  if (arcanaAuth.isLoggedIn()) {
+  if (await arcanaAuth.isLoggedIn()) {
     await fetchAndStoreDetails()
   }
 })
@@ -106,7 +101,7 @@ onMounted(async () => {
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.google)"
+                @click.stop="launchLogin('google')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -118,7 +113,7 @@ onMounted(async () => {
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.github)"
+                @click.stop="launchLogin('github')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -135,7 +130,7 @@ onMounted(async () => {
             >
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.twitch)"
+                @click.stop="launchLogin('twitch')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img
@@ -147,7 +142,7 @@ onMounted(async () => {
               </v-card-button>
               <v-card-button
                 class="sso-button"
-                @click.stop="launchLogin(SocialLoginType.discord)"
+                @click.stop="launchLogin('discord')"
               >
                 <div class="flex" style="align-items: center; padding: 0.2em 0">
                   <img

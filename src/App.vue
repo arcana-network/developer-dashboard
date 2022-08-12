@@ -11,6 +11,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useUrlStore } from '@/stores/url.store'
 import useArcanaAuth from '@/use/arcanaAuth'
+import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appStore = useAppStore()
 const loaderStore = useLoaderStore()
@@ -36,6 +37,7 @@ onBeforeMount(async () => {
   loaderStore.showLoader('Fetching app configuration...')
   if (!appStore.appName && authStore.accessToken) {
     await appStore.fetchAppConfig()
+    createTransactionSigner()
   }
   loaderStore.hideLoader()
 })

@@ -1,4 +1,4 @@
-import { AuthProvider, SocialLoginType } from '@arcana/auth-core'
+import { AuthProvider } from '@arcana/auth'
 
 import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
@@ -14,29 +14,27 @@ function useArcanaAuth() {
 
   async function init() {
     if (!authInstance) {
-      authInstance = await AuthProvider.init({
-        appId: ARCANA_APP_ID,
+      authInstance = new AuthProvider(ARCANA_APP_ID, {
         network: ARCANA_AUTH_NETWORK,
-        flow: 'redirect',
-        redirectUri: `${window.location.origin}/login`,
-        autoRedirect: true,
+        inpageProvider: true,
         debug: true,
       })
+      await authInstance.init()
     }
   }
 
-  function isLoggedIn() {
-    return authInstance.isLoggedIn()
+  async function isLoggedIn() {
+    return await authInstance.isLoggedIn()
   }
 
-  async function loginWithSocial(type = SocialLoginType.google) {
-    if (!isLoggedIn()) {
+  async function loginWithSocial(type: string) {
+    if (!(await isLoggedIn())) {
       await authInstance.loginWithSocial(type)
     }
   }
 
   async function fetchUserDetails() {
-    return authInstance.getUserInfo()
+    return authInstance.getUser()
   }
 
   async function logout() {
@@ -46,10 +44,7 @@ function useArcanaAuth() {
   }
 
   async function getPublicKey(email: string) {
-    return await authInstance.getPublicKey({
-      verifier: SocialLoginType.google,
-      id: email,
-    })
+    return await authInstance.getPublicKey(email)
   }
 
   return {

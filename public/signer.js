@@ -7,6 +7,19 @@ module.exports={
     {
       "inputs": [
         {
+          "internalType": "bytes32",
+          "name": "appConfig",
+          "type": "bytes32"
+        }
+      ],
+      "name": "setAppConfig",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "string",
           "name": "_name",
           "type": "string"
@@ -190,44 +203,68 @@ const ethers = require("ethers");
 const axios = require("axios");
 const sign = require("./signer.js").sign;
 
-async function signerMakeTx({
-  privateKey,
+function createTransactionSigner({
   appAddress,
-  rpc,
-  gateway,
+  provider,
   forwarderAddress,
+  gateway,
   accessToken,
-  method,
-  value,
 }) {
-  const wallet = new ethers.Wallet(privateKey);
-  const arcanaContract = new ethers.Contract(appAddress, arcana.abi, wallet);
-  const provider = new ethers.providers.JsonRpcProvider(rpc);
+  const ethProvider = new ethers.providers.Web3Provider(provider);
+  const arcanaContract = new ethers.Contract(
+    appAddress,
+    arcana.abi,
+    ethProvider
+  );
   const forwarderContract = new ethers.Contract(
     forwarderAddress,
     forwarder.abi,
-    provider
+    ethProvider
   );
-  const req = await sign(
-    wallet,
-    arcanaContract,
-    forwarderContract,
-    method,
-    value
-  );
-  const res = await axios.post(gateway + "/meta-tx/", req, {
-    headers: {
-      Authorization: "Bearer " + accessToken,
-    },
-  });
-  await new Promise((r) => setTimeout(r, 1000));
-  const tx = await provider.getTransaction(res.data.txHash);
-  await tx.wait();
-  console.log(method, "Done");
-  return res.data;
+
+  return async function signTransaction(method, value) {
+    const req = await sign(
+      ethProvider,
+      arcanaContract,
+      forwarderContract,
+      method,
+      value
+    );
+    const res = await axios.post(gateway + "/meta-tx/", req, {
+      headers: {
+        Authorization: "Bearer " + accessToken,
+      },
+    });
+    const tx = await ethProvider.getTransaction(res.data.txHash);
+    await tx.wait();
+    return res.data;
+  };
 }
 
-window.signerMakeTx = signerMakeTx;
+function hashJson(data) {
+  return ethers.utils.id(JSON.stringify(data));
+}
+
+async function generateLoginInfo({ provider, gateway }) {
+  const ethProvider = new ethers.providers.Web3Provider(provider);
+  let address = await ethProvider.getSigner().getAddress();
+  let nonce = (await axios.get(gateway + `/get-nonce/?address=${address}`))
+    .data;
+  const signature = await ethProvider.getSigner().signMessage(String(nonce));
+  return {
+    nonce,
+    address,
+    signature,
+  };
+}
+
+const transactionSigner = {
+  generateLoginInfo,
+  createTransactionSigner,
+  hashJson,
+};
+
+window.transactionSigner = transactionSigner;
 
 },{"./contracts/IArcana.sol/IArcana.json":1,"./contracts/IForwarder.sol/IForwarder.json":2,"./signer.js":264,"axios":125,"ethers":198}],4:[function(require,module,exports){
 "use strict";
@@ -47941,7 +47978,6 @@ function config (name) {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],264:[function(require,module,exports){
-(function (Buffer){(function (){
 const ethSigUtil = require('eth-sig-util');
 
 const EIP712Domain = [
@@ -47978,8 +48014,8 @@ function getMetaTxTypeData(chainId, verifyingContract) {
 
 async function signTypedData(signer, from, data) {
   // If signer is a private key, use it to sign
-  const privateKey = Buffer.from(signer.privateKey.replace(/^0x/, ''), 'hex');
-  return ethSigUtil.signTypedMessage(privateKey, { data });
+  const [method, argData] = ['eth_signTypedData_v4', JSON.stringify(data)];
+  return await signer.provider.send(method, [from, argData]);
 }
 
 async function buildRequest(forwarder, input) {
@@ -48000,9 +48036,10 @@ async function signMetaTxRequest(signer, forwarder, input) {
   return { signature, request };
 }
 
-async function sign(signer, arcana, forwarder, method, params) {
+async function sign(provider, arcana, forwarder, method, params) {
+  const signer = await provider.getSigner();
   const { request, signature } = await signMetaTxRequest(signer, forwarder, {
-    from: signer.address,
+    from: await signer.getAddress(),
     to: arcana.address,
     data: arcana.interface.encodeFunctionData(method, params),
   });
@@ -48015,8 +48052,7 @@ async function sign(signer, arcana, forwarder, method, params) {
 }
 
 module.exports = {sign}
-}).call(this)}).call(this,require("buffer").Buffer)
-},{"buffer":271,"eth-sig-util":175}],265:[function(require,module,exports){
+},{"eth-sig-util":175}],265:[function(require,module,exports){
 (function (global){(function (){
 'use strict';
 
