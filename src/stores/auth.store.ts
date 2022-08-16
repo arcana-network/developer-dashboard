@@ -15,8 +15,8 @@ export const useAuthStore = defineStore('auth', {
     walletAddress: '',
   }),
   actions: {
-    updateAccessToken(access_token: string) {
-      this.accessToken = access_token
+    updateAccessToken(accessToken: string) {
+      this.accessToken = accessToken
     },
     updateWalletAddress(walletAddress: string) {
       this.walletAddress = walletAddress
