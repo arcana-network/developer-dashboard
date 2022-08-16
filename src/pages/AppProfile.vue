@@ -78,8 +78,8 @@ onBeforeMount(() => {
   })
 })
 
-function onLogout() {
-  logout()
+async function onLogout() {
+  await logout()
   localStorage.clear()
   router.push({ name: 'Login' })
 }

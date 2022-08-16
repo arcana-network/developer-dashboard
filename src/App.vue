@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref, computed } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import AppFooter from '@/components/AppFooter.vue'
@@ -17,8 +17,6 @@ const loaderStore = useLoaderStore()
 const authStore = useAuthStore()
 const route = useRoute()
 const arcanaAuth = useArcanaAuth()
-const isLoading = computed(() => loaderStore.isLoading)
-const loadingMessage = computed(() => loaderStore.message)
 const isAuthLoaded = ref(false)
 
 onBeforeMount(async () => {
@@ -46,8 +44,8 @@ onBeforeMount(async () => {
     </router-view>
     <AppFooter v-if="isAuthLoaded && !route.path.includes('/configure/')" />
     <FullScreenLoader
-      v-if="isLoading || !isAuthLoaded"
-      :message="loadingMessage"
+      v-if="loaderStore.isLoading || !isAuthLoaded"
+      :message="loaderStore.message"
     />
     <VToast />
   </div>

@@ -32,8 +32,8 @@ const bandwidthLimitKind = computed(() => {
     : 'Limited'
 })
 
-const storageLimit = computed(() => appStore.store.userLimits.storage)
-const bandwidthLimit = computed(() => appStore.store.userLimits.bandwidth)
+const storageLimit = appStore.store.userLimits.storage
+const bandwidthLimit = appStore.store.userLimits.bandwidth
 
 const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
   computed(() => {

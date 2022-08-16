@@ -34,9 +34,7 @@ const appStore = useAppStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 
-const appId = computed(() => {
-  return appStore.appId
-})
+const appId = appStore.appId
 const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
@@ -51,9 +49,7 @@ const isConfigured = computed(() => {
   return !!appStore.appId
 })
 const liveEnv = ref(false)
-const appName = computed(() => {
-  return appStore.appName
-})
+const appName = appStore.appName
 const storageUsed = ref('0 B')
 const bandwidthUsed = ref('0 B')
 const storageUsedPercentage = ref(0)

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToastStore, type ToastMessage } from '@/stores/toast.store'
 
 const toastStore = useToastStore()
 
-const toastMessages = computed(() => toastStore.messages)
+const toastMessages = toastStore.messages
 
 function handleCloseToast(toastMessage: ToastMessage) {
   toastStore.removeToast(toastMessage)
