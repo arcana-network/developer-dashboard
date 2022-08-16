@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-const TOAST_TIMEOUT = 5600
+const TOAST_TIMEOUT = 3000
 
 type ToastMessageType = 'success' | 'error'
 
