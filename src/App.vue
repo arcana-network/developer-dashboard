@@ -5,17 +5,15 @@ import { useRoute } from 'vue-router'
 import AppFooter from '@/components/AppFooter.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
-import { getConfig } from '@/services/gateway.service'
+import { fetchAndStoreConfig } from '@/services/gateway.service'
 import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
-import { useUrlStore } from '@/stores/url.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appStore = useAppStore()
 const loaderStore = useLoaderStore()
-const urlStore = useUrlStore()
 const authStore = useAuthStore()
 const route = useRoute()
 const arcanaAuth = useArcanaAuth()
@@ -28,11 +26,7 @@ onBeforeMount(async () => {
   await arcanaAuth.init()
   isAuthLoaded.value = true
 
-  if (!urlStore.forwarder || !urlStore.rpcUrl) {
-    const configResponse = await getConfig()
-    const config = configResponse.data
-    urlStore.updateUrls(config?.Forwarder, config?.RPC_URL)
-  }
+  await fetchAndStoreConfig()
 
   loaderStore.showLoader('Fetching app configuration...')
   if (!appStore.appName && authStore.accessToken) {

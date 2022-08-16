@@ -9,6 +9,8 @@ import getEnvApi from '@/utils/get-env-api'
 const authStore = useAuthStore(store)
 const appStore = useAppStore()
 
+let forwarder: string, rpcUrl: string
+
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
 type AppConfigCred = {
@@ -109,8 +111,17 @@ function deleteApp() {
   )
 }
 
+async function fetchAndStoreConfig() {
+  const config = (await axios.get(`${getEnvApi()}/get-config/`)).data
+  forwarder = config?.Forwarder
+  rpcUrl = config?.RPC_URL
+}
+
 function getConfig() {
-  return axios.get(`${getEnvApi()}/get-config/`)
+  return {
+    forwarder,
+    rpcUrl,
+  }
 }
 
 function fetchProfile() {
@@ -224,6 +235,7 @@ export {
   fetchStats,
   fetchPeriodicUsage,
   getConfig,
+  fetchAndStoreConfig,
   fetchProfile,
   updateOrganization,
   fetchAllUsers,
