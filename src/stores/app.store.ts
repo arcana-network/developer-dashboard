@@ -7,6 +7,7 @@ import {
   fetchApp,
   getThemeLogo,
 } from '@/services/gateway.service'
+import calculateUserLimits from '@/utils/calculateUserLimits'
 import {
   defaultUserLimit,
   unlimitedUserLimit,
@@ -115,25 +116,6 @@ interface AppState {
       bandwidth: UserLimitState
     }
     region: StorageRegion
-  }
-}
-
-function calculateUserLimits(userLimit: number): UserLimitState {
-  if (userLimit < MAX_DATA_TRANSFER_BYTES) {
-    const isUnder1GB = userLimit < bytes('1 GB')
-
-    const calculatedUserLimit = bytes(userLimit, {
-      unitSeparator: ' ',
-      unit: isUnder1GB ? 'MB' : 'GB',
-    })
-
-    const [value, unit] = calculatedUserLimit.split(' ') as [
-      number,
-      UserLimitUnit
-    ]
-    return { value, unit, isUnlimited: false }
-  } else {
-    return { isUnlimited: true }
   }
 }
 
