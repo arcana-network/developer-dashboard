@@ -9,6 +9,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import {
+  getAppConfigRequestBody,
   updateApp,
   type AppConfig,
   type AppConfigCred,
@@ -37,7 +38,7 @@ currentTab.value = String(route.name)
   .replace('Settings', '')
   .toLowerCase() as ConfigureTabType
 
-let currentConfig = appStore.appConfigRequestBody
+let currentConfig = getAppConfigRequestBody()
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
@@ -46,13 +47,13 @@ function switchTab(tab: ConfigureTab) {
 
 async function handleSave() {
   loaderStore.showLoader('Saving app config...')
-  const appConfigRequestBody = appStore.appConfigRequestBody
+  const appConfigRequestBody = getAppConfigRequestBody()
   const updatedApp = (await updateApp(appConfigRequestBody)).data
   appStore.updateWalletUIModeFromGateway(
     updatedApp.app.wallet_type === WalletMode.UI
   )
   await updateSmartContractTransactions(appConfigRequestBody)
-  currentConfig = appStore.appConfigRequestBody
+  currentConfig = appConfigRequestBody
   loaderStore.hideLoader()
   toast.success('App configuration updated')
 }

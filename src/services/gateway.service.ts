@@ -1,9 +1,15 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import bytes from 'bytes'
 
 import store from '@/stores'
 import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
-import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
+import {
+  ChainMapping,
+  MAX_DATA_TRANSFER_BYTES,
+  RegionMapping,
+  WalletMode,
+} from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(store)
@@ -83,6 +89,69 @@ function updateApp(updatedAppConfig: AppConfig) {
     `${getEnvApi('v2')}/app/?id=${appStore.appId}`,
     updatedAppConfig
   )
+}
+
+function getAppConfigRequestBody(): AppConfig {
+  let storage_limit: number, bandwidth_limit: number
+
+  const storageLimit = appStore.store.userLimits.storage
+  const bandwidthLimit = appStore.store.userLimits.bandwidth
+  if (storageLimit.isUnlimited) {
+    storage_limit = MAX_DATA_TRANSFER_BYTES
+  } else {
+    storage_limit = bytes(`${storageLimit.value} ${storageLimit.unit}`)
+  }
+
+  if (bandwidthLimit.isUnlimited) {
+    bandwidth_limit = MAX_DATA_TRANSFER_BYTES
+  } else {
+    bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
+  }
+
+  const socialAuth = appStore.auth.social
+  const cred: {
+    verifier: string
+    clientId?: string
+    clientSecret?: string
+    redirectURL?: string
+    origin?: string
+  }[] = socialAuth.map((authType) => {
+    return {
+      verifier: authType.verifier,
+      clientId: authType.clientId,
+      clientSecret: authType.clientSecret,
+      redirectURL: authType.redirectUri,
+    }
+  })
+
+  if (
+    appStore.auth.passwordless.javascriptOrigin &&
+    appStore.auth.passwordless.redirectUri
+  ) {
+    cred.push({
+      verifier: 'passwordless',
+      origin: appStore.auth.passwordless.javascriptOrigin,
+      redirectURL: appStore.auth.passwordless.redirectUri,
+    })
+  }
+
+  const wallet_type = appStore.auth.wallet.hasUIMode
+    ? WalletMode.UI
+    : WalletMode.NoUI
+
+  return {
+    name: appStore.appName,
+    address: appStore.appAddress,
+    storage_limit,
+    bandwidth_limit,
+    cred,
+    aggregate_login: true,
+    chain: ChainMapping[appStore.access.selectedChain],
+    region: RegionMapping[appStore.store.region],
+    theme: appStore.auth.wallet.selectedTheme,
+    wallet_domain: appStore.auth.wallet.websiteDomain,
+    wallet_type,
+  }
 }
 
 function fetchAllApps() {
@@ -227,6 +296,7 @@ function removeThemeLogo(
 }
 
 export {
+  getAppConfigRequestBody,
   createApp,
   updateApp,
   deleteApp,
