@@ -1,16 +1,15 @@
 <script lang="ts" setup>
-import { useStore } from 'vuex'
-
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
+import { useAppStore } from '@/stores/app.store'
 import copyToClipboard from '@/utils/copyToClipboard'
 
-const store = useStore()
+const appStore = useAppStore()
 const toast = useToast()
 
-const redirectUri = store.getters.redirectUri
+const redirectUri = appStore.auth.redirectUri
 
 async function copyRedirectUri() {
   try {

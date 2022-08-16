@@ -1,8 +1,21 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import bytes from 'bytes'
 
-import store from '@/store'
-import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
+import store from '@/stores'
+import { useAppStore } from '@/stores/app.store'
+import { useAuthStore } from '@/stores/auth.store'
+import {
+  ChainMapping,
+  MAX_DATA_TRANSFER_BYTES,
+  RegionMapping,
+  WalletMode,
+} from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
+
+const authStore = useAuthStore(store)
+const appStore = useAppStore()
+
+let forwarder: string, rpcUrl: string
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
@@ -41,7 +54,7 @@ type AppConfig = {
 const gatewayAuthorizedInstance = axios.create()
 gatewayAuthorizedInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    config.headers.Authorization = `Bearer ${store.getters.accessToken}`
+    config.headers.Authorization = `Bearer ${authStore.accessToken}`
     return config
   }
 )
@@ -73,9 +86,72 @@ function createApp(
 
 function updateApp(updatedAppConfig: AppConfig) {
   return gatewayAuthorizedInstance.patch(
-    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`,
+    `${getEnvApi('v2')}/app/?id=${appStore.appId}`,
     updatedAppConfig
   )
+}
+
+function getAppConfigRequestBody(): AppConfig {
+  let storage_limit: number, bandwidth_limit: number
+
+  const storageLimit = appStore.store.userLimits.storage
+  const bandwidthLimit = appStore.store.userLimits.bandwidth
+  if (storageLimit.isUnlimited) {
+    storage_limit = MAX_DATA_TRANSFER_BYTES
+  } else {
+    storage_limit = bytes(`${storageLimit.value} ${storageLimit.unit}`)
+  }
+
+  if (bandwidthLimit.isUnlimited) {
+    bandwidth_limit = MAX_DATA_TRANSFER_BYTES
+  } else {
+    bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
+  }
+
+  const socialAuth = appStore.auth.social
+  const cred: {
+    verifier: string
+    clientId?: string
+    clientSecret?: string
+    redirectURL?: string
+    origin?: string
+  }[] = socialAuth.map((authType) => {
+    return {
+      verifier: authType.verifier,
+      clientId: authType.clientId,
+      clientSecret: authType.clientSecret,
+      redirectURL: authType.redirectUri,
+    }
+  })
+
+  if (
+    appStore.auth.passwordless.javascriptOrigin &&
+    appStore.auth.passwordless.redirectUri
+  ) {
+    cred.push({
+      verifier: 'passwordless',
+      origin: appStore.auth.passwordless.javascriptOrigin,
+      redirectURL: appStore.auth.passwordless.redirectUri,
+    })
+  }
+
+  const wallet_type = appStore.auth.wallet.hasUIMode
+    ? WalletMode.UI
+    : WalletMode.NoUI
+
+  return {
+    name: appStore.appName,
+    address: appStore.appAddress,
+    storage_limit,
+    bandwidth_limit,
+    cred,
+    aggregate_login: true,
+    chain: ChainMapping[appStore.access.selectedChain],
+    region: RegionMapping[appStore.store.region],
+    theme: appStore.auth.wallet.selectedTheme,
+    wallet_domain: appStore.auth.wallet.websiteDomain,
+    wallet_type,
+  }
 }
 
 function fetchAllApps() {
@@ -88,24 +164,33 @@ function fetchApp(appId?: number) {
 
 function fetchStats() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/overview/?id=${store.getters.appId}`
+    `${getEnvApi()}/overview/?id=${appStore.appId}`
   )
 }
 
 function fetchPeriodicUsage(period: Duration = 'month') {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/app-usage/?id=${store.getters.appId}&period=${period}`
+    `${getEnvApi()}/app-usage/?id=${appStore.appId}&period=${period}`
   )
 }
 
 function deleteApp() {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`
+    `${getEnvApi('v2')}/app/?id=${appStore.appId}`
   )
 }
 
+async function fetchAndStoreConfig() {
+  const config = (await axios.get(`${getEnvApi()}/get-config/`)).data
+  forwarder = config?.Forwarder
+  rpcUrl = config?.RPC_URL
+}
+
 function getConfig() {
-  return axios.get(`${getEnvApi()}/get-config/`)
+  return {
+    forwarder,
+    rpcUrl,
+  }
 }
 
 function fetchProfile() {
@@ -128,29 +213,25 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
 
 function fetchAllUsers() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details/?id=${store.getters.appId}`
+    `${getEnvApi()}/user-details/?id=${appStore.appId}`
   )
 }
 
 function searchUsers(address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${
-      store.getters.appId
-    }&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
   )
 }
 
 function fetchAllUserTransactions(address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${
-      store.getters.appId
-    }&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
   )
 }
 
 function fetchMonthlyUsers() {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/no-of-users/?id=${store.getters.appId}`
+    `${getEnvApi()}/no-of-users/?id=${appStore.appId}`
   )
 }
 
@@ -178,7 +259,7 @@ function getThemeLogo(
   mode: 'dark' | 'light',
   orientation: 'horizontal' | 'vertical'
 ) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${store.getters.appId}/logo`
+  const logoFetchUrl = `${getEnvApi('v2')}/app/${appStore.appId}/logo`
   return {
     mode,
     orientation,
@@ -194,7 +275,7 @@ function uploadThemeLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
     formData,
     {
       params: { type: mode, orientation },
@@ -207,7 +288,7 @@ function removeThemeLogo(
   orientation?: 'horizontal' | 'vertical'
 ) {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
     {
       params: { type: mode, orientation },
     }
@@ -215,6 +296,7 @@ function removeThemeLogo(
 }
 
 export {
+  getAppConfigRequestBody,
   createApp,
   updateApp,
   deleteApp,
@@ -223,6 +305,7 @@ export {
   fetchStats,
   fetchPeriodicUsage,
   getConfig,
+  fetchAndStoreConfig,
   fetchProfile,
   updateOrganization,
   fetchAllUsers,

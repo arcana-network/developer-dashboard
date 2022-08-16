@@ -1,33 +1,35 @@
 <script lang="ts" setup>
 import { onMounted } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
+import { useAppStore } from '@/stores/app.store'
+import { useAuthStore } from '@/stores/auth.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { createTransactionSigner, generateLoginInfo } from '@/utils/signerUtils'
 
 const router = useRouter()
 const route = useRoute()
-const store = useStore()
+const appStore = useAppStore()
+const authStore = useAuthStore()
+const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
 
 async function launchLogin(type: string) {
-  store.commit('showLoader', `Signing with ${type}`)
+  loaderStore.showLoader(`Signing with ${type}`)
   await arcanaAuth.loginWithSocial(type)
   await fetchAndStoreDetails()
 }
 
 async function fetchAndStoreDetails() {
-  store.commit('showLoader', 'Fetching user info...')
+  loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
-  await store.dispatch('fetchAppConfig')
   createTransactionSigner()
-  store.commit('hideLoader')
-
+  await appStore.fetchAppConfig()
   if (route.params.redirectTo) {
     router.push({ name: String(route.params.redirectTo) })
   } else {
@@ -35,9 +37,11 @@ async function fetchAndStoreDetails() {
       name: 'Dashboard',
     })
   }
+  loaderStore.hideLoader()
 }
 
 async function fetchAndStoreUserInfo() {
+  loaderStore.showLoader('Signing In...')
   const userInfo = await arcanaAuth.fetchUserDetails()
   const loginInfo = await generateLoginInfo()
   const access_token = await loginUser({
@@ -45,12 +49,12 @@ async function fetchAndStoreUserInfo() {
     email: userInfo.id,
     address: loginInfo.address,
   })
-  store.dispatch('updateAccessToken', access_token.data.token)
-  store.dispatch('updateWalletAddress', loginInfo.address)
-  store.dispatch('updateUserInfo', {
-    email: userInfo.id,
-    name: userInfo.name || '',
-  })
+  authStore.updateAccessToken(access_token.data.token)
+  authStore.updateWalletAddress(loginInfo.address)
+  authStore.updateUserInfo(
+    userInfo.name as string,
+    userInfo.email || userInfo.id
+  )
 
   if (loginInfo.nonce === 0) {
     addUserToMailchimp(userInfo.id)

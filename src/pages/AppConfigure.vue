@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, type Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import ConfigureFooter from '@/components/app-configure/ConfigureFooter.vue'
 import ConfigureHeader from '@/components/app-configure/ConfigureHeader.vue'
@@ -10,6 +9,7 @@ import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import {
+  getAppConfigRequestBody,
   updateApp,
   type AppConfig,
   type AppConfigCred,
@@ -19,6 +19,8 @@ import {
   setDefaultLimit,
   enableUiMode,
 } from '@/services/smart-contract.service'
+import { useAppStore } from '@/stores/app.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import {
   WalletMode,
   type ConfigureTab,
@@ -27,7 +29,8 @@ import {
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
-const store = useStore()
+const appStore = useAppStore()
+const loaderStore = useLoaderStore()
 const toast = useToast()
 const route = useRoute()
 
@@ -35,7 +38,7 @@ currentTab.value = String(route.name)
   .replace('Settings', '')
   .toLowerCase() as ConfigureTabType
 
-let currentConfig: AppConfig = store.getters.appConfigRequestBody
+let currentConfig = getAppConfigRequestBody()
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
@@ -43,16 +46,15 @@ function switchTab(tab: ConfigureTab) {
 }
 
 async function handleSave() {
-  store.commit('showLoader', 'Saving app config...')
-  const appConfigRequestBody: AppConfig = store.getters.appConfigRequestBody
+  loaderStore.showLoader('Saving app config...')
+  const appConfigRequestBody = getAppConfigRequestBody()
   const updatedApp = (await updateApp(appConfigRequestBody)).data
-  store.commit(
-    'updateWalletUIModeFromGateway',
+  appStore.updateWalletUIModeFromGateway(
     updatedApp.app.wallet_type === WalletMode.UI
   )
   await updateSmartContractTransactions(appConfigRequestBody)
-  currentConfig = store.getters.appConfigRequestBody
-  store.commit('hideLoader')
+  currentConfig = appConfigRequestBody
+  loaderStore.hideLoader()
   toast.success('App configuration updated')
 }
 
@@ -64,7 +66,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
       app.bandwidth_limit !== currentConfig.bandwidth_limit
 
     if (hasStorageLimitChanged || hasBandwidthLimitChanged) {
-      store.commit('showLoader', 'Updating user limits in smart contract...')
+      loaderStore.showLoader('Updating user limits in smart contract...')
       await setDefaultLimit(app.storage_limit, app.bandwidth_limit)
       toast.success('User limits saved in blockchain')
     }
@@ -77,7 +79,7 @@ async function updateSmartContractTransactions(app: AppConfig) {
       app.wallet_type === WalletMode.UI &&
       currentConfig.wallet_type === WalletMode.NoUI
     ) {
-      store.commit('showLoader', 'Enabling UI Mode in smart contract...')
+      loaderStore.showLoader('Enabling UI Mode in smart contract...')
       await enableUiMode()
       toast.success('UI mode saved in blockchain')
     }
@@ -86,14 +88,14 @@ async function updateSmartContractTransactions(app: AppConfig) {
   }
 
   try {
-    store.commit('showLoader', 'Updating app config in smart contract...')
+    loaderStore.showLoader('Updating app config in smart contract...')
     await setAppConfig(app.name as string, app.cred as AppConfigCred[])
     toast.success('App config saved in blockchain')
   } catch (e) {
-    handleSmartContractErrors('Client IDs', e)
+    handleSmartContractErrors('App Config', e)
   }
 
-  store.commit('hideLoader')
+  loaderStore.hideLoader()
 }
 
 function handleSmartContractErrors(type: string, error: unknown) {
@@ -104,7 +106,7 @@ function handleSmartContractErrors(type: string, error: unknown) {
 }
 
 function handleCancel() {
-  store.dispatch('fetchAppConfig')
+  appStore.fetchAppConfig()
   router.push({ name: 'Dashboard' })
 }
 </script>

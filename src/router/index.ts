@@ -5,8 +5,12 @@ import {
   type RouteRecordRaw,
 } from 'vue-router'
 
-import store from '@/store'
+import { useAppStore } from '@/stores/app.store'
+import { useAuthStore } from '@/stores/auth.store'
 import constants from '@/utils/constants'
+
+const authStore = useAuthStore()
+const appStore = useAppStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppConfigure = () => import('@/pages/AppConfigure.vue')
@@ -38,7 +42,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: 'Home',
     path: '/',
-    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+    redirect: appStore.appId ? '/app/dashboard' : '/app/create',
   },
   {
     name: 'Signup',
@@ -52,7 +56,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/app',
-    redirect: store.getters.appId ? '/app/dashboard' : '/app/create',
+    redirect: appStore.appId ? '/app/dashboard' : '/app/create',
   },
   {
     name: 'Dashboard',
@@ -138,18 +142,18 @@ const router: Router = createRouter({
 router.beforeEach((to, from, next) => {
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
-    !store.getters.accessToken
+    !authStore.accessToken
   ) {
     router.push({ name: 'Login', params: { redirectTo: String(to.name) } })
-  } else if (to.name === 'Login' && store.getters.accessToken) {
+  } else if (to.name === 'Login' && authStore.accessToken) {
     router.push({ name: 'Dashboard' })
   } else if (
     to.path.includes('/app') &&
     to.name !== 'CreateApp' &&
-    !store.getters.appId
+    !appStore.appId
   ) {
     router.push({ name: 'CreateApp' })
-  } else if (to.name === 'CreateApp' && store.getters.appId) {
+  } else if (to.name === 'CreateApp' && appStore.appId) {
     router.push({ name: 'Dashboard' })
   }
   return next()

@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useStore } from 'vuex'
-
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import type { ToastMessage } from '@/store/toast.store'
+import { useToastStore, type ToastMessage } from '@/stores/toast.store'
 
-const store = useStore()
+const toastStore = useToastStore()
 
-const toastMessages = computed(() => store.getters.toastMessages)
+const toastMessages = toastStore.messages
 
 function handleCloseToast(toastMessage: ToastMessage) {
-  store.dispatch('closeToast', toastMessage)
+  toastStore.removeToast(toastMessage)
 }
 </script>
 

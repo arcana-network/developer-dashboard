@@ -1,13 +1,10 @@
 import bytes from 'bytes'
 
-import type { UserLimitState, SocialAuthOption } from '@/store/app.store'
+import type { UserLimitState, SocialAuthOption } from '@/stores/app.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  tracingOrigins: [
-    import.meta.env.VITE_SENTRY_TRACING_ORIGINS.split(','),
-    /^\//,
-  ],
+  tracingOrigins: [import.meta.env.VITE_SENTRY_TRACING_ORIGINS, /^\//],
 }
 
 const api = {
@@ -28,7 +25,7 @@ type ChainOption<T> = {
   value: T
 }
 
-const chains: readonly ChainOption<Chain>[] = [
+const chains: ChainOption<Chain>[] = [
   {
     label: 'None',
     value: 'none',

@@ -1,14 +1,14 @@
-import { useStore } from 'vuex'
+import { useToastStore } from '@/stores/toast.store'
 
 function useToast() {
-  const store = useStore()
+  const toastStore = useToastStore()
 
   function success(message: string) {
-    store.dispatch('showSuccessToast', message)
+    toastStore.showSuccessToast(message)
   }
 
   function error(message: string) {
-    store.dispatch('showErrorToast', message)
+    toastStore.showErrorToast(message)
   }
 
   return {

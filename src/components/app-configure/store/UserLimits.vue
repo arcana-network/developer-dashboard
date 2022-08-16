@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import { computed, type ComputedRef } from 'vue'
-import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
@@ -9,8 +8,9 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import type {
   UserLimitParam,
   UserLimitTarget,
-  UserLimitState,
-} from '@/store/app.store'
+  UserLimitUnit,
+} from '@/stores/app.store'
+import { useAppStore } from '@/stores/app.store'
 import {
   userLimitOptions,
   storageValues,
@@ -20,35 +20,27 @@ import {
 
 type UserLimitKind = 'Unlimited' | 'Limited'
 
-const store = useStore()
+const appStore = useAppStore()
 
-const storageLimitKind: ComputedRef<UserLimitKind> = computed(() => {
-  if (store.getters.storageLimit.isUnlimited) {
-    return 'Unlimited'
-  }
-  return 'Limited'
+const storageLimitKind = computed(() => {
+  return appStore.store.userLimits.storage.isUnlimited ? 'Unlimited' : 'Limited'
 })
 
-const bandwidthLimitKind: ComputedRef<UserLimitKind> = computed(() => {
-  if (store.getters.bandwidthLimit.isUnlimited) {
-    return 'Unlimited'
-  }
-  return 'Limited'
+const bandwidthLimitKind = computed(() => {
+  return appStore.store.userLimits.bandwidth.isUnlimited
+    ? 'Unlimited'
+    : 'Limited'
 })
 
-const storageLimit: ComputedRef<UserLimitState> = computed(
-  () => store.getters.storageLimit
-)
-const bandwidthLimit: ComputedRef<UserLimitState> = computed(
-  () => store.getters.bandwidthLimit
-)
+const storageLimit = appStore.store.userLimits.storage
+const bandwidthLimit = appStore.store.userLimits.bandwidth
 
 const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
   computed(() => {
-    if (!store.getters.bandwidthLimit.isUnlimited) {
+    if (!appStore.store.userLimits.bandwidth.isUnlimited) {
       return bandwidthUnits.find(
         (bandwidthUnit) =>
-          bandwidthUnit.value === store.getters.bandwidthLimit.unit
+          bandwidthUnit.value === appStore.store.userLimits.bandwidth.unit
       )
     } else {
       return undefined
@@ -57,11 +49,11 @@ const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
 
 function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
   const isUnlimited: boolean = value === 'Unlimited' ? true : false
-  return store.commit('updateUserLimit', { type, isUnlimited })
+  appStore.toggleUserLimit({ type, isUnlimited })
 }
 
-function handleUserLimitFieldChange({ type, field, value }: UserLimitParam) {
-  return store.commit('updateUserLimitField', { type, field, value })
+function handleUserLimitFieldChange({ type, unit, value }: UserLimitParam) {
+  appStore.updateUserLimit(type, value, unit)
 }
 </script>
 
@@ -104,8 +96,8 @@ function handleUserLimitFieldChange({ type, field, value }: UserLimitParam) {
                   @update:model-value="
                     handleUserLimitFieldChange({
                       type: 'storage',
-                      field: 'value',
                       value: $event,
+                      unit: storageLimit.unit as UserLimitUnit,
                     })
                   "
                 />
@@ -119,8 +111,8 @@ function handleUserLimitFieldChange({ type, field, value }: UserLimitParam) {
                   @update:model-value="
                     handleUserLimitFieldChange({
                       type: 'storage',
-                      field: 'unit',
-                      value: $event,
+                      value: storageLimit.value as number,
+                      unit: $event,
                     })
                   "
                 />
@@ -153,8 +145,8 @@ function handleUserLimitFieldChange({ type, field, value }: UserLimitParam) {
                   @update:model-value="
                     handleUserLimitFieldChange({
                       type: 'bandwidth',
-                      field: 'value',
                       value: $event,
+                      unit: bandwidthLimit.unit as UserLimitUnit,
                     })
                   "
                 />
@@ -169,8 +161,8 @@ function handleUserLimitFieldChange({ type, field, value }: UserLimitParam) {
                   @update:model-value="
                     handleUserLimitFieldChange({
                       type: 'bandwidth',
-                      field: 'unit',
-                      value: $event.value,
+                      value: bandwidthLimit.value as number,
+                      unit: $event.value,
                     })
                   "
                 />

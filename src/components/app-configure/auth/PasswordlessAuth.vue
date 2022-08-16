@@ -1,26 +1,18 @@
 <script setup lang="ts">
-import { computed, type ComputedRef } from 'vue'
-import { useStore } from 'vuex'
-
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useAppStore } from '@/stores/app.store'
 import constants from '@/utils/constants'
 
-const store = useStore()
-const javascriptOrigin: ComputedRef<string> = computed(
-  () => store.getters.passwordlessAuth.javascriptOrigin
-)
-const redirectUri: ComputedRef<string> = computed(
-  () => store.getters.passwordlessAuth.redirectUri
-)
+const appStore = useAppStore()
 
 function handleJavascriptOriginUpdate(value: string) {
-  store.commit('updatePasswordlessAuthJavascriptOrigin', value)
+  appStore.updatePasswordlessAuthJavascriptOrigin(value)
 }
 
 function handleRedirectUriUpdate(value: string) {
-  store.commit('updatePasswordlessAuthRedirectUri', value)
+  appStore.updatePasswordlessAuthRedirectUri(value)
 }
 </script>
 
@@ -51,7 +43,7 @@ function handleRedirectUriUpdate(value: string) {
         <label for="passwordless-javascript-origin">JavaScript Origin</label>
         <VTextField
           id="passwordless-javascript-origin"
-          :model-value="javascriptOrigin"
+          :model-value="appStore.auth.passwordless.javascriptOrigin"
           class="passwordless-input"
           no-message
           @update:model-value="handleJavascriptOriginUpdate"
@@ -67,7 +59,7 @@ function handleRedirectUriUpdate(value: string) {
         <label for="passwordless-redirect-uri">Redirect URI</label>
         <VTextField
           id="passwordless-redirect-uri"
-          :model-value="redirectUri"
+          :model-value="appStore.auth.passwordless.redirectUri"
           class="passwordless-input"
           no-message
           @update:model-value="handleRedirectUriUpdate"

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef } from 'vue'
-import { useStore } from 'vuex'
+import { computed } from 'vue'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -12,11 +11,12 @@ import type {
   SocialAuthState,
   SocialAuthVerifier,
   SocialAuthField,
-} from '@/store/app.store'
+} from '@/stores/app.store'
+import { useAppStore } from '@/stores/app.store'
 import constants, { socialLogins } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
-const store = useStore()
+const appStore = useAppStore()
 
 const socialAuthFields: SocialAuthField[] = [
   'clientId',
@@ -24,9 +24,7 @@ const socialAuthFields: SocialAuthField[] = [
   'redirectUri',
 ]
 
-const socialAuth: ComputedRef<SocialAuthState[]> = computed(
-  () => store.getters.socialAuth
-)
+const socialAuth = computed(() => appStore.auth.social)
 
 function getSocialAuth(
   verifier: SocialAuthVerifier
@@ -35,7 +33,7 @@ function getSocialAuth(
 }
 
 function handleCloseClick(verifier: SocialAuthVerifier) {
-  store.commit('removeSocialAuth', verifier)
+  appStore.removeSocialAuth(verifier)
 }
 
 function handleFieldUpdate(
@@ -49,12 +47,12 @@ function handleFieldUpdate(
       .filter((el) => el !== field)
       .every((authField) => !existingAuth[authField])
     if (!value && areOtherFieldsEmpty) {
-      store.commit('removeSocialAuth', verifier)
+      appStore.removeSocialAuth(verifier)
     } else {
-      store.commit('updateSocialAuth', { verifier, field, value })
+      appStore.updateSocialAuth({ verifier, field, value })
     }
   } else {
-    store.commit('addSocialAuth', { verifier, field, value })
+    appStore.addSocialAuth({ verifier, field, value })
   }
 }
 </script>

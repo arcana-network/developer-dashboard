@@ -4,7 +4,6 @@ import type { Chart } from 'chart.js'
 import moment from 'moment'
 import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import ArrowRightIcon from '@/assets/iconography/arrow-right.svg'
 import CheckIcon from '@/assets/iconography/check.svg'
@@ -25,16 +24,17 @@ import {
   fetchStats,
   type Duration,
 } from '@/services/gateway.service'
+import { useAppStore } from '@/stores/app.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
-const store = useStore()
+const appStore = useAppStore()
+const loaderStore = useLoaderStore()
 const toast = useToast()
 
-const appId = computed(() => {
-  return store.getters.appId
-})
+const appId = appStore.appId
 const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
@@ -46,12 +46,10 @@ const actions = ref({
 })
 const totalUsers = ref(0)
 const isConfigured = computed(() => {
-  return !!store.getters.appId
+  return !!appStore.appId
 })
 const liveEnv = ref(false)
-const appName = computed(() => {
-  return store.getters.appName
-})
+const appName = appStore.appName
 const storageUsed = ref('0 B')
 const bandwidthUsed = ref('0 B')
 const storageUsedPercentage = ref(0)
@@ -82,10 +80,10 @@ onMounted(async () => {
       ...chartUtils.getInitialUsageChartConfig(),
     })
   }
-  if (store.getters.appId) {
-    store.commit('showLoader', 'Fetching App statistics...')
+  if (appStore.appId) {
+    loaderStore.showLoader('Fetching App statistics...')
     await fetchAndPopulateStatistics()
-    store.commit('hideLoader')
+    loaderStore.hideLoader()
   }
 })
 
@@ -265,7 +263,7 @@ function goToUsers() {
 watch(
   () => durationSelected.value,
   () => {
-    if (store.getters.appId) {
+    if (appStore.appId) {
       fetchAndPopulateCharts()
     }
   }

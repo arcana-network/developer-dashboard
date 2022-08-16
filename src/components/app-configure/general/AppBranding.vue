@@ -1,16 +1,16 @@
 <script lang="ts" setup>
 import bytes from 'bytes'
 import { reactive } from 'vue'
-import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
+import { useAppStore } from '@/stores/app.store'
 import getEnvApi from '@/utils/get-env-api'
 
-const store = useStore()
+const appStore = useAppStore()
 const toast = useToast()
 
 type OrientationOption = {
@@ -32,24 +32,24 @@ type ThemeLogo = {
 const themeLogos: ThemeLogo = reactive({
   dark: {
     vertical: {
-      logo: store.getters.logos.dark.vertical,
+      logo: appStore.logos.dark.vertical,
       isLoading: false,
       hasError: false,
     },
     horizontal: {
-      logo: store.getters.logos.dark.horizontal,
+      logo: appStore.logos.dark.horizontal,
       isLoading: false,
       hasError: false,
     },
   },
   light: {
     vertical: {
-      logo: store.getters.logos.light.vertical,
+      logo: appStore.logos.light.vertical,
       isLoading: false,
       hasError: false,
     },
     horizontal: {
-      logo: store.getters.logos.light.horizontal,
+      logo: appStore.logos.light.horizontal,
       isLoading: false,
       hasError: false,
     },
@@ -70,10 +70,10 @@ async function handleFileChange(
     await uploadThemeLogo(files[0], mode, orientation)
     toast.success('Logo uploaded successfully')
     const logoUrl = `${getEnvApi('v2')}/app/${
-      store.getters.appId
+      appStore.appId
     }/logo?type=${mode}&orientation=${orientation}`
     themeLogos[mode][orientation].logo = logoUrl
-    store.commit('updateLogo', { mode, orientation, url: logoUrl })
+    appStore.updateLogo({ mode, orientation, url: logoUrl })
   } catch (e) {
     console.error(e)
     toast.error("Couldn't upload logo. Please try again or contact support")
