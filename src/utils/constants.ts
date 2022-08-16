@@ -4,10 +4,7 @@ import type { UserLimitState, SocialAuthOption } from '@/stores/app.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  tracingOrigins: [
-    import.meta.env.VITE_SENTRY_TRACING_ORIGINS.split(','),
-    /^\//,
-  ],
+  tracingOrigins: [import.meta.env.VITE_SENTRY_TRACING_ORIGINS, /^\//],
 }
 
 const api = {

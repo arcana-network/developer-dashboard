@@ -1,12 +1,12 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 
-import pinia from '@/stores'
+import store from '@/stores'
 import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
-const authStore = useAuthStore(pinia)
+const authStore = useAuthStore(store)
 const appStore = useAppStore()
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
