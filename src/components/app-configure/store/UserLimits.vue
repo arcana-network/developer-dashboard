@@ -202,14 +202,7 @@ function handleUserLimitFieldChange({ type, unit, value }: UserLimitParam) {
 </style>
 
 <style>
-.limits-type-dropdown-trigger {
-  padding-top: 1.25rem !important;
-  padding-bottom: 1.25rem !important;
-}
-
 .usage-unit-dropdown-trigger {
-  padding-top: 1.25rem !important;
-  padding-bottom: 1.25rem !important;
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
 }

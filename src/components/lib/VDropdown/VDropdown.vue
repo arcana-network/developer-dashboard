@@ -131,11 +131,11 @@ watch(
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.25rem 2rem;
+  padding: 1rem 2rem;
   font-family: var(--font-body);
-  font-size: 1.1em;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.25em;
+  line-height: 1.5;
   color: var(--text-white);
   cursor: pointer;
   background: linear-gradient(141.48deg, #1a1a1a -4.56%, #151515 135.63%);
@@ -176,11 +176,11 @@ watch(
 .custom-option {
   position: relative;
   display: block;
-  padding: 1.25rem 2rem;
+  padding: 0.875rem 2rem;
   font-family: var(--font-body);
-  font-size: 1.1em;
+  font-size: 1rem;
   font-weight: 400;
-  line-height: 1.2em;
+  line-height: 1.5;
   color: var(--text-grey);
   cursor: pointer;
   background: linear-gradient(143.36deg, #0f0f0f -4.7%, #000 115.05%);
@@ -197,8 +197,8 @@ watch(
 
 .arrow {
   position: relative;
-  width: 15px;
-  height: 15px;
+  width: 1rem;
+  height: 1rem;
 }
 
 .arrow::before,
