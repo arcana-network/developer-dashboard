@@ -35,9 +35,11 @@ const selectedTheme = computed(() => {
   )
 })
 
-const walletWebsiteDomain = appStore.auth.wallet.websiteDomain
-const hasUIMode = appStore.auth.wallet.hasUIMode
-const hasUIModeInGateway = appStore.auth.wallet.hasUIModeInGateway
+const walletWebsiteDomain = computed(() => appStore.auth.wallet.websiteDomain)
+const hasUIMode = computed(() => appStore.auth.wallet.hasUIMode)
+const hasUIModeInGateway = computed(
+  () => appStore.auth.wallet.hasUIModeInGateway
+)
 
 function handleThemeChange(theme: Theme) {
   appStore.updateSelectedTheme(theme.value)
