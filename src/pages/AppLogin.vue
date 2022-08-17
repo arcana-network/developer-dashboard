@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { onMounted } from '@vue/runtime-core'
+import { onMounted, ref } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
 
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
-import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
+import VButton from '@/components/lib/VButton/VButton.vue'
+import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import { useAppStore } from '@/stores/app.store'
@@ -11,6 +12,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { createTransactionSigner, generateLoginInfo } from '@/utils/signerUtils'
+import { isValidEmail } from '@/utils/validation'
 
 const router = useRouter()
 const route = useRoute()
@@ -18,10 +20,16 @@ const appStore = useAppStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
+const email = ref('')
+const hasValidEmail = ref(true)
 
 async function launchLogin(type: string) {
   loaderStore.showLoader(`Signing with ${type}`)
-  await arcanaAuth.loginWithSocial(type)
+  if (type === 'passwordless') {
+    await arcanaAuth.loginWithLink(email.value)
+  } else {
+    await arcanaAuth.loginWithSocial(type)
+  }
   await fetchAndStoreDetails()
 }
 
@@ -52,13 +60,17 @@ async function fetchAndStoreUserInfo() {
   authStore.updateAccessToken(access_token.data.token)
   authStore.updateWalletAddress(loginInfo.address)
   authStore.updateUserInfo(
-    userInfo.name as string,
+    (userInfo.name as string) || 'User',
     userInfo.email || userInfo.id
   )
 
   if (loginInfo.nonce === 0) {
     addUserToMailchimp(userInfo.id)
   }
+}
+
+function validateEmail() {
+  hasValidEmail.value = !email.value || isValidEmail(email.value)
 }
 
 onMounted(async () => {
@@ -71,90 +83,66 @@ onMounted(async () => {
 <template>
   <div>
     <main class="flex">
-      <landing-descriptor />
-      <section class="signin-container">
-        <img
-          src="@/assets/logo.svg"
-          alt="Arcana Logo"
-          style="margin: auto; margin-bottom: 2em"
-          class="laptop-remove"
-        />
-        <div>
-          <h1 style="text-align: center">Welcome To Arcana</h1>
-          <h5
-            style="
-              margin-top: 2vh;
-              margin-right: 2vw;
-              margin-left: 2vw;
-              text-align: center;
-            "
-          >
-            Let’s get started
-          </h5>
-        </div>
-        <section style="margin-top: 6vh">
-          <h3 style="padding: 1em">Continue With:</h3>
-          <div class="flex column" style="margin-top: 4vh">
-            <div
-              class="flex wrap"
-              style="gap: 1em; justify-content: space-between"
-            >
-              <v-card-button
-                class="sso-button"
-                @click.stop="launchLogin('google')"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/google-sso.svg"
-                  />
-                  <span class="body-1">Google</span>
-                </div>
-              </v-card-button>
-              <v-card-button
-                class="sso-button"
-                @click.stop="launchLogin('github')"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/github-sso.svg"
-                  />
-                  <span class="body-1">Github</span>
-                </div>
-              </v-card-button>
-            </div>
-            <div
-              class="flex wrap"
-              style="gap: 1em; justify-content: space-between; margin-top: 2em"
-            >
-              <v-card-button
-                class="sso-button"
-                @click.stop="launchLogin('twitch')"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/twitch-sso.svg"
-                  />
-                  <span class="body-1">Twitch</span>
-                </div>
-              </v-card-button>
-              <v-card-button
-                class="sso-button"
-                @click.stop="launchLogin('discord')"
-              >
-                <div class="flex" style="align-items: center; padding: 0.2em 0">
-                  <img
-                    style="margin-right: 1em"
-                    src="@/assets/discord-sso.svg"
-                  />
-                  <span class="body-1">Discord</span>
-                </div>
-              </v-card-button>
-            </div>
+      <LandingDescriptor />
+      <section class="signin-section">
+        <div class="signin-container">
+          <img
+            src="@/assets/logo.svg"
+            alt="Arcana Logo"
+            style="margin: auto; margin-bottom: 2em"
+            class="laptop-remove"
+          />
+          <div>
+            <h1>Welcome</h1>
+            <h5 class="login-description">
+              We’ll email you a magic link for a password-free sign in.
+            </h5>
           </div>
-        </section>
+          <div class="passwordless-container flex column flex-center">
+            <VTextField
+              v-model.trim="email"
+              label="Email"
+              class="passwordless-email"
+              message="Invalid Email"
+              :message-type="hasValidEmail ? '' : 'error'"
+              @update:model-value="validateEmail"
+              @keyup.enter="
+                email && hasValidEmail ? launchLogin('passwordless') : void 0
+              "
+            />
+            <VButton
+              label="SEND LINK"
+              class="passwordless-button"
+              :disabled="!email || !hasValidEmail"
+              @click.stop="launchLogin('passwordless')"
+            />
+          </div>
+          <section class="social-links-container">
+            <span class="body-1" style="vertical-align: middle"
+              >Or sign in with
+            </span>
+            <img
+              class="sso"
+              src="@/assets/google-sso.svg"
+              @click.stop="launchLogin('google')"
+            />
+            <img
+              class="sso"
+              src="@/assets/github-sso.svg"
+              @click.stop="launchLogin('github')"
+            />
+            <img
+              class="sso"
+              src="@/assets/twitch-sso.svg"
+              @click.stop="launchLogin('twitch')"
+            />
+            <img
+              class="sso"
+              src="@/assets/discord-sso.svg"
+              @click.stop="launchLogin('discord')"
+            />
+          </section>
+        </div>
       </section>
     </main>
   </div>
@@ -162,8 +150,16 @@ onMounted(async () => {
 
 <style scoped>
 h1 {
+  font-size: 2.25rem;
   font-weight: 700;
+  text-align: center;
   letter-spacing: unset;
+}
+
+.login-description {
+  margin-top: 1rem;
+  font-size: 1.25rem;
+  text-align: center;
 }
 
 .sso-button {
@@ -186,12 +182,15 @@ h1 {
   line-height: 1.8em;
 }
 
-.signin-container {
+.signin-section {
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  place-items: center;
+  width: 100%;
+}
+
+.signin-container {
   width: 50%;
-  max-width: 532px;
-  margin: 16vh auto 0;
+  max-width: 640px;
 }
 
 @media only screen and (max-width: 1023px) {
@@ -208,19 +207,40 @@ h1 {
   }
 }
 
-.sso {
-  display: inline-block;
-  vertical-align: middle;
-  cursor: pointer;
+.passwordless-container {
+  margin-top: 1.875rem;
 }
 
-.sso img {
-  width: 28px;
+.passwordless-email {
+  width: 100%;
+  max-width: 25rem;
+}
+
+.passwordless-button {
+  width: 100%;
+  max-width: 18rem;
+  margin-top: 0.875rem;
+}
+
+.social-links-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 3.75rem;
+}
+
+.sso {
+  display: inline-block;
+  margin-left: 2rem;
+  vertical-align: middle;
+  cursor: pointer;
   transition: opacity 0.4s;
 }
 
-.sso:hover img,
-.sso img:hover {
+.sso + .sso {
+  margin-left: 1.25rem;
+}
+
+.sso:hover {
   opacity: 0.8;
 }
 </style>

@@ -118,6 +118,7 @@ function onIconClicked(ev) {
         :class="{ strong }"
         :style="inputStyle"
         @input="onInput"
+        @keyup.enter.prevent=""
       />
       <img
         v-if="icon"
