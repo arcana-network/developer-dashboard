@@ -95,7 +95,7 @@ onMounted(async () => {
           <div>
             <h1>Welcome</h1>
             <h5 class="login-description">
-              We’ll email you a magic link for a password-free sign in.
+              We’ll email you a login link for a password-free sign in.
             </h5>
           </div>
           <div class="passwordless-container flex column flex-center">
