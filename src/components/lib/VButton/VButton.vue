@@ -100,7 +100,7 @@ a {
   min-width: 9em;
   padding: 0.8em 1em;
   font-family: var(--font-body);
-  font-size: 1.125em;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.5;
   text-align: center;
