@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { onMounted, ref } from '@vue/runtime-core'
+import { onMounted, ref, computed } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
 
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import { useAppStore } from '@/stores/app.store'
@@ -21,13 +22,15 @@ const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
 const email = ref('')
-const hasValidEmail = ref(true)
+const hasValidEmail = computed(() => isValidEmail(email.value))
 
 async function launchLogin(type: string) {
-  loaderStore.showLoader(`Signing with ${type}`)
   if (type === 'passwordless') {
+    if (!hasValidEmail.value) return
+    loaderStore.showLoader(`Sending login link to your email`)
     await arcanaAuth.loginWithLink(email.value)
   } else {
+    loaderStore.showLoader(`Signing with ${type}`)
     await arcanaAuth.loginWithSocial(type)
   }
   await fetchAndStoreDetails()
@@ -69,10 +72,6 @@ async function fetchAndStoreUserInfo() {
   }
 }
 
-function validateEmail() {
-  hasValidEmail.value = !email.value || isValidEmail(email.value)
-}
-
 onMounted(async () => {
   if (await arcanaAuth.isLoggedIn()) {
     await fetchAndStoreDetails()
@@ -89,8 +88,7 @@ onMounted(async () => {
           <img
             src="@/assets/logo.svg"
             alt="Arcana Logo"
-            style="margin: auto; margin-bottom: 2em"
-            class="laptop-remove"
+            class="laptop-remove arcana-logo"
           />
           <div>
             <h1>Welcome</h1>
@@ -98,49 +96,55 @@ onMounted(async () => {
               We’ll email you a login link for a password-free sign in.
             </h5>
           </div>
-          <div class="passwordless-container flex column flex-center">
+          <form
+            class="passwordless-container flex column flex-center"
+            @submit.prevent="launchLogin('passwordless')"
+          >
             <VTextField
               v-model.trim="email"
               label="Email"
+              placeholder="Enter your email"
               class="passwordless-email"
-              message="Invalid Email"
-              :message-type="hasValidEmail ? '' : 'error'"
-              @update:model-value="validateEmail"
-              @keyup.enter="
-                email && hasValidEmail ? launchLogin('passwordless') : void 0
-              "
             />
             <VButton
               label="SEND LINK"
               class="passwordless-button"
-              :disabled="!email || !hasValidEmail"
-              @click.stop="launchLogin('passwordless')"
+              type="submit"
+              :disabled="!hasValidEmail"
             />
-          </div>
+          </form>
           <section class="social-links-container">
-            <span class="body-1" style="vertical-align: middle"
+            <span class="body-1" style="margin-top: 4px; vertical-align: middle"
               >Or sign in with
             </span>
-            <img
-              class="sso"
-              src="@/assets/google-sso.svg"
-              @click.stop="launchLogin('google')"
-            />
-            <img
-              class="sso"
-              src="@/assets/github-sso.svg"
-              @click.stop="launchLogin('github')"
-            />
-            <img
-              class="sso"
-              src="@/assets/twitch-sso.svg"
-              @click.stop="launchLogin('twitch')"
-            />
-            <img
-              class="sso"
-              src="@/assets/discord-sso.svg"
-              @click.stop="launchLogin('discord')"
-            />
+            <VTooltip title="Sign in with Google">
+              <img
+                class="sso"
+                src="@/assets/google-sso.svg"
+                @click.stop="launchLogin('google')"
+              />
+            </VTooltip>
+            <VTooltip title="Sign in with Github">
+              <img
+                class="sso"
+                src="@/assets/github-sso.svg"
+                @click.stop="launchLogin('github')"
+              />
+            </VTooltip>
+            <VTooltip title="Sign in with Twitch">
+              <img
+                class="sso"
+                src="@/assets/twitch-sso.svg"
+                @click.stop="launchLogin('twitch')"
+              />
+            </VTooltip>
+            <VTooltip title="Sign in with Discord">
+              <img
+                class="sso"
+                src="@/assets/discord-sso.svg"
+                @click.stop="launchLogin('discord')"
+              />
+            </VTooltip>
           </section>
         </div>
       </section>
@@ -198,6 +202,11 @@ h1 {
     width: 80%;
     min-width: 340px;
     margin: 5vh auto;
+  }
+
+  .arcana-logo {
+    display: inherit;
+    margin: auto auto 2rem;
   }
 }
 
