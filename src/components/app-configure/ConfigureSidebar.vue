@@ -4,7 +4,7 @@ import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { CONFIGURE_TABS, type ConfigureTabType } from '@/utils/constants'
 
-interface ConfigureProps {
+type ConfigureProps = {
   currentTab?: ConfigureTabType
 }
 

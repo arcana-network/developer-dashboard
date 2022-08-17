@@ -5,7 +5,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VCircularProgress from '@/components/lib/VCircularProgress/VCircularProgress.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 
-interface FileUploadProps {
+type FileUploadProps = {
   placeholder?: string
   value?: string
   multiple?: boolean
