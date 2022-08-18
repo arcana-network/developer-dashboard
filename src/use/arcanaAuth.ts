@@ -33,6 +33,12 @@ function useArcanaAuth() {
     }
   }
 
+  async function loginWithLink(email: string) {
+    if (!(await isLoggedIn())) {
+      await authInstance.loginWithLink(email)
+    }
+  }
+
   async function fetchUserDetails() {
     return authInstance.getUser()
   }
@@ -51,6 +57,7 @@ function useArcanaAuth() {
     init,
     isLoggedIn,
     loginWithSocial,
+    loginWithLink,
     logout,
     fetchUserDetails,
     getPublicKey,

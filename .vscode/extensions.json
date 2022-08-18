@@ -4,8 +4,8 @@
     // Vue and TypeScript support
     // ===
 
-    "johnsoncodehk.volar",
-    "johnsoncodehk.vscode-typescript-vue-plugin",
+    "Vue.volar",
+    "Vue.vscode-typescript-vue-plugin",
 
     // ===
     // Linters and formatters
