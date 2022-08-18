@@ -28,8 +28,8 @@ async function launchLogin(type: string) {
 async function fetchAndStoreDetails() {
   loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
-  createTransactionSigner()
   await appStore.fetchAppConfig()
+  createTransactionSigner()
   if (route.params.redirectTo) {
     router.push({ name: String(route.params.redirectTo) })
   } else {
