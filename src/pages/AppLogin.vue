@@ -197,25 +197,6 @@ h1 {
   max-width: 640px;
 }
 
-@media only screen and (max-width: 1023px) {
-  .signin-container {
-    width: 80%;
-    min-width: 340px;
-    margin: 5vh auto;
-  }
-
-  .arcana-logo {
-    display: inherit;
-    margin: auto auto 2rem;
-  }
-}
-
-@media only screen and (max-width: 399px) {
-  .signin-container {
-    width: 90%;
-  }
-}
-
 .passwordless-container {
   margin-top: 1.875rem;
 }
@@ -251,5 +232,32 @@ h1 {
 
 .sso:hover {
   opacity: 0.8;
+}
+
+@media only screen and (max-width: 1023px) {
+  .signin-container {
+    width: 80%;
+    min-width: 340px;
+    margin: 5vh auto;
+  }
+
+  .arcana-logo {
+    display: inherit;
+    margin: auto auto 2rem;
+  }
+
+  .sso {
+    margin-left: 1.25rem;
+  }
+
+  .sso + .sso {
+    margin-left: 0.75rem;
+  }
+}
+
+@media only screen and (max-width: 399px) {
+  .signin-container {
+    width: 90%;
+  }
 }
 </style>
