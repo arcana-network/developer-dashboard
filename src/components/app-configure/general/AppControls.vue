@@ -33,7 +33,7 @@ async function handleAppDeletion() {
     await deleteApp()
     appStore.$reset()
     toast.success('App deleted successfully')
-    router.push({ name: 'CreateApp' })
+    router.push({ name: 'CreateApp', params: { appId: appStore.appId } })
   } catch (e) {
     console.error(e)
     toast.error(

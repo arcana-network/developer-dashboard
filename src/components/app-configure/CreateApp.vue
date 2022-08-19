@@ -54,7 +54,7 @@ async function handleCreateApp() {
 
   await appStore.fetchAppConfig()
   loaderStore.hideLoader()
-  router.push({ name: 'GeneralSettings' })
+  router.push({ name: 'GeneralSettings', params: { appId: appStore.appId } })
 }
 </script>
 

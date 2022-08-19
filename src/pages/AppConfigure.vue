@@ -42,7 +42,10 @@ let currentConfig = getAppConfigRequestBody()
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
-  router.replace({ name: `${tab.label}Settings` })
+  router.replace({
+    name: `${tab.label}Settings`,
+    params: { appId: appStore.appId },
+  })
 }
 
 async function handleSave() {
@@ -107,7 +110,7 @@ function handleSmartContractErrors(type: string, error: unknown) {
 
 function handleCancel() {
   appStore.fetchAppConfig()
-  router.push({ name: 'Dashboard' })
+  router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
 }
 </script>
 

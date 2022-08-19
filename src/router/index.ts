@@ -42,7 +42,7 @@ const routes: RouteRecordRaw[] = [
   {
     name: 'Home',
     path: '/',
-    redirect: appStore.appId ? '/app/dashboard' : '/app/create',
+    redirect: '/apps',
   },
   {
     name: 'Signup',
@@ -55,12 +55,14 @@ const routes: RouteRecordRaw[] = [
     redirect: '/login',
   },
   {
-    path: '/app',
-    redirect: appStore.appId ? '/app/dashboard' : '/app/create',
+    path: '/apps',
+    redirect: appStore.appId
+      ? `/apps/${appStore.appId}/dashboard`
+      : '/apps/create',
   },
   {
     name: 'Dashboard',
-    path: '/app/dashboard',
+    path: '/apps/:appId/dashboard',
     component: AppDashboard,
     meta: {
       requiresAuth: true,
@@ -68,7 +70,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'Configure',
-    path: '/app/configure',
+    path: '/apps/:appId/configure',
     component: AppConfigure,
     meta: {
       requiresAuth: true,
@@ -76,7 +78,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        redirect: '/app/configure/general',
+        redirect: `/apps/${appStore.appId}/configure/general`,
       },
       {
         name: 'GeneralSettings',
@@ -102,7 +104,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'CreateApp',
-    path: '/app/create',
+    path: '/apps/create',
     component: CreateApp,
     meta: {
       requiresAuth: true,
@@ -110,7 +112,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'Users',
-    path: '/app/users',
+    path: '/apps/:appId/users',
     component: AppUsers,
     meta: {
       requiresAuth: true,
@@ -146,7 +148,7 @@ router.beforeEach((to, from, next) => {
   ) {
     router.push({ name: 'Login', params: { redirectTo: String(to.name) } })
   } else if (to.name === 'Login' && authStore.accessToken) {
-    router.push({ name: 'Dashboard' })
+    router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
   } else if (
     to.path.includes('/app') &&
     to.name !== 'CreateApp' &&
@@ -154,7 +156,7 @@ router.beforeEach((to, from, next) => {
   ) {
     router.push({ name: 'CreateApp' })
   } else if (to.name === 'CreateApp' && appStore.appId) {
-    router.push({ name: 'Dashboard' })
+    router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
   }
   return next()
 })
