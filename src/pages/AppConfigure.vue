@@ -26,6 +26,7 @@ import {
   type ConfigureTab,
   type ConfigureTabType,
 } from '@/utils/constants'
+import { createTransactionSigner } from '@/utils/signerUtils'
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
@@ -107,6 +108,7 @@ function handleSmartContractErrors(type: string, error: unknown) {
 
 function handleCancel() {
   appStore.fetchAppConfig()
+  createTransactionSigner()
   router.push({ name: 'Dashboard' })
 }
 </script>

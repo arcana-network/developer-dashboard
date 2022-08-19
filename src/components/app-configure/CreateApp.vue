@@ -18,6 +18,7 @@ import {
   type Region,
   type StorageRegion,
 } from '@/utils/constants'
+import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appStore = useAppStore()
 const loaderStore = useLoaderStore()
@@ -53,6 +54,7 @@ async function handleCreateApp() {
   appStore.appId = String(app.ID)
 
   await appStore.fetchAppConfig()
+  createTransactionSigner()
   loaderStore.hideLoader()
   router.push({ name: 'GeneralSettings' })
 }
