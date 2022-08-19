@@ -42,7 +42,7 @@ let currentConfig = getAppConfigRequestBody()
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
-  router.replace({
+  router.push({
     name: `${tab.label}Settings`,
     params: { appId: appStore.appId },
   })
