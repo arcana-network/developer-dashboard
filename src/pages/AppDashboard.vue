@@ -233,7 +233,7 @@ function generateInitialChartValuesForYear() {
 }
 
 function goToConfigure() {
-  router.push({ name: 'GeneralSettings' })
+  router.push({ name: 'GeneralSettings', params: { appId: appStore.appId } })
 }
 
 const SmartContractIcon = ref(CopyIcon)
@@ -257,7 +257,7 @@ async function copyAppId() {
 }
 
 function goToUsers() {
-  router.push({ name: 'Users' })
+  router.push({ name: 'Users', params: { appId: appStore.appId } })
 }
 
 watch(

@@ -46,6 +46,7 @@ async function fetchAndStoreDetails() {
   } else {
     router.push({
       name: 'Dashboard',
+      params: { appId: appStore.appId },
     })
   }
   loaderStore.hideLoader()
