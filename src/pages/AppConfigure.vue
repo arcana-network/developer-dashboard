@@ -26,7 +26,6 @@ import {
   type ConfigureTab,
   type ConfigureTabType,
 } from '@/utils/constants'
-import { createTransactionSigner } from '@/utils/signerUtils'
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
