@@ -108,7 +108,6 @@ function handleSmartContractErrors(type: string, error: unknown) {
 
 function handleCancel() {
   appStore.fetchAppConfig()
-  createTransactionSigner()
   router.push({ name: 'Dashboard' })
 }
 </script>
