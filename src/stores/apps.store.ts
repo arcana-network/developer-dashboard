@@ -110,7 +110,7 @@ const useAppsStore = defineStore('apps', {
   }),
   getters: {
     apps: (state) => {
-      return state.appIds.map((id) => state.appsById[id])
+      return state.appIds.map((id) => ({ id, ...state.appsById[id] }))
     },
     app: (state) => {
       return (id: number) => state.appsById[id]

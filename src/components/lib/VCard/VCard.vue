@@ -52,13 +52,9 @@ const classes = computed(() => {
 <style scoped>
 .card {
   display: flex;
-  background: radial-gradient(
-    134.5% 939.99% at -23.59% -12.9%,
-    #262626 0%,
-    rgb(26 26 26 / 86.3%) 31.41%,
-    rgb(32 32 32 / 49%) 100%
-  );
-  border-radius: 20px;
+  color: var(--text-white);
+  background: #262626;
+  border-radius: 10px;
 }
 
 .card.elevated {
