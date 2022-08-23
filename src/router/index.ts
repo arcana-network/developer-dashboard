@@ -18,6 +18,7 @@ const AppProfile = () => import('@/pages/AppProfile.vue')
 const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
+const ManageApps = () => import('@/pages/ManageApps.vue')
 
 const GeneralSettings = () =>
   import('@/components/app-configure/general/GeneralSettings.vue')
@@ -55,10 +56,12 @@ const routes: RouteRecordRaw[] = [
     redirect: '/login',
   },
   {
+    name: 'ManageApps',
     path: '/apps',
-    redirect: appStore.appId
-      ? `/apps/${appStore.appId}/dashboard`
-      : '/apps/create',
+    component: ManageApps,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     name: 'Dashboard',
@@ -77,8 +80,9 @@ const routes: RouteRecordRaw[] = [
     },
     children: [
       {
+        name: 'ConfigSettings',
         path: '',
-        redirect: `/apps/${appStore.appId}/config/general`,
+        redirect: (route) => `/apps/${route.params.appId}/config/general`,
       },
       {
         name: 'GeneralSettings',
@@ -148,15 +152,7 @@ router.beforeEach((to, from, next) => {
   ) {
     router.push({ name: 'Login', params: { redirectTo: String(to.name) } })
   } else if (to.name === 'Login' && authStore.accessToken) {
-    router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
-  } else if (
-    to.path.includes('/app') &&
-    to.name !== 'CreateApp' &&
-    !appStore.appId
-  ) {
-    router.push({ name: 'CreateApp' })
-  } else if (to.name === 'CreateApp' && appStore.appId) {
-    router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
+    router.push({ name: 'ManageApps' })
   }
   return next()
 })
