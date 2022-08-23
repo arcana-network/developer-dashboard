@@ -154,11 +154,11 @@ function getAppConfigRequestBody(): AppConfig {
   }
 }
 
-function fetchAllApps() {
+function fetchAllApps(): Promise<AxiosResponse<AppConfig[]>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
-function fetchApp(appId?: number) {
+function fetchApp(appId: number): Promise<AxiosResponse<AppConfig>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
