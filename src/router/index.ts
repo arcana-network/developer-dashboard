@@ -150,7 +150,10 @@ router.beforeEach((to, from, next) => {
     to.matched.some((record) => record.meta.requiresAuth) &&
     !authStore.accessToken
   ) {
-    router.push({ name: 'Login', params: { redirectTo: String(to.name) } })
+    router.push({
+      name: 'Login',
+      params: { redirectTo: String(to.name), ...to.params },
+    })
   } else if (to.name === 'Login' && authStore.accessToken) {
     router.push({ name: 'ManageApps' })
   }
