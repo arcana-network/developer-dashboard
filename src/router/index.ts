@@ -70,7 +70,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     name: 'Configure',
-    path: '/apps/:appId/configure',
+    path: '/apps/:appId/config',
     component: AppConfigure,
     meta: {
       requiresAuth: true,
@@ -78,7 +78,7 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        redirect: `/apps/${appStore.appId}/configure/general`,
+        redirect: `/apps/${appStore.appId}/config/general`,
       },
       {
         name: 'GeneralSettings',
