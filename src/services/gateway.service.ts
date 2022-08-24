@@ -162,15 +162,13 @@ function fetchApp(appId: number): Promise<AxiosResponse<AppConfig>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
-function fetchStats() {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/overview/?id=${appStore.appId}`
-  )
+function fetchStats(appId: number) {
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/overview/?id=${appId}`)
 }
 
-function fetchPeriodicUsage(period: Duration = 'month') {
+function fetchPeriodicUsage(appId: number, period: Duration = 'month') {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/app-usage/?id=${appStore.appId}&period=${period}`
+    `${getEnvApi()}/app-usage/?id=${appId}&period=${period}`
   )
 }
 

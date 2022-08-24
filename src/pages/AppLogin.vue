@@ -51,7 +51,7 @@ async function fetchAndStoreDetails() {
     })
   } else {
     router.push({
-      name: 'Dashboard',
+      name: 'ManageApps',
       params: { appId: appStore.appId },
     })
   }

@@ -2,8 +2,8 @@
 import bytes from 'bytes'
 import type { Chart } from 'chart.js'
 import moment from 'moment'
-import { computed, onMounted, ref, watch, type Ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, ref, watch, type Ref } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 import ArrowRightIcon from '@/assets/iconography/arrow-right.svg'
 import CheckIcon from '@/assets/iconography/check.svg'
@@ -13,7 +13,6 @@ import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VIconButton from '@/components/lib/VIconButton/VIconButton.vue'
-import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
@@ -24,17 +23,20 @@ import {
   fetchStats,
   type Duration,
 } from '@/services/gateway.service'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import chartUtils from '@/utils/chart'
+import { MAX_ALLOWED_APP_LIMIT } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
-const appStore = useAppStore()
+const route = useRoute()
+const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
+const liveEnv = false
 
-const appId = appStore.appId
+const appId = Number(route.params.appId)
 const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
@@ -45,11 +47,7 @@ const actions = ref({
   delete: 0,
 })
 const totalUsers = ref(0)
-const isConfigured = computed(() => {
-  return !!appStore.appId
-})
-const liveEnv = ref(false)
-const appName = appStore.appName
+const appName = appsStore.app(appId).name
 const storageUsed = ref('0 B')
 const bandwidthUsed = ref('0 B')
 const storageUsedPercentage = ref(0)
@@ -62,7 +60,6 @@ let storageData: number[] = []
 let bandwidthData: number[] = []
 const currentDate = moment()
 const quarters = ['Jan-Mar', 'Apr-Jun', 'Jul-Sept', 'Oct-Dec']
-const MAX_ALLOWED_APP_LIMIT: number = bytes('5 GB')
 
 let StorageChart: Chart
 let BandwidthChart: Chart
@@ -80,7 +77,7 @@ onMounted(async () => {
       ...chartUtils.getInitialUsageChartConfig(),
     })
   }
-  if (appStore.appId) {
+  if (appId) {
     loaderStore.showLoader('Fetching App statistics...')
     await fetchAndPopulateStatistics()
     loaderStore.hideLoader()
@@ -97,12 +94,12 @@ async function fetchAndPopulateStatistics() {
 }
 
 async function fetchAndPopulateCharts() {
-  const periodicUsage = await fetchPeriodicUsage(durationSelected.value)
+  const periodicUsage = await fetchPeriodicUsage(appId, durationSelected.value)
   updateChart(periodicUsage.data)
 }
 
 async function fetchAndPopulateUsersAndActions() {
-  const stats = await fetchStats()
+  const stats = await fetchStats(Number(route.params.appId))
   totalUsers.value = stats.data.no_of_users
   actions.value = {
     download: stats.data.actions?.download,
@@ -233,7 +230,7 @@ function generateInitialChartValuesForYear() {
 }
 
 function goToConfigure() {
-  router.push({ name: 'GeneralSettings', params: { appId: appStore.appId } })
+  router.push({ name: 'GeneralSettings', params: { appId } })
 }
 
 const SmartContractIcon = ref(CopyIcon)
@@ -243,7 +240,7 @@ async function copyAppId() {
   try {
     SmartContractIcon.value = CheckIcon
     smartContractTooltip.value = 'Copied'
-    await copyToClipboard(appId.value)
+    await copyToClipboard(String(appId))
     toast.success('App ID copied')
   } catch (e) {
     console.error(e)
@@ -257,15 +254,13 @@ async function copyAppId() {
 }
 
 function goToUsers() {
-  router.push({ name: 'Users', params: { appId: appStore.appId } })
+  router.push({ name: 'Users', params: { appId } })
 }
 
 watch(
   () => durationSelected.value,
   () => {
-    if (appStore.appId) {
-      fetchAndPopulateCharts()
-    }
+    fetchAndPopulateCharts()
   }
 )
 </script>
@@ -273,7 +268,7 @@ watch(
 <template>
   <div>
     <app-header />
-    <main v-if="isConfigured" class="container">
+    <main class="container">
       <section class="flex dashboard-heading flex-wrap">
         <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
           {{ appName }}
@@ -353,7 +348,7 @@ watch(
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
           App ID:
         </span>
-        <v-tooltip :title="appId" class="">
+        <v-tooltip :title="String(appId)" class="">
           <div
             style="width: 6em; font-weight: 500; color: var(--text-white)"
             class="body-1 text-ellipsis cursor-pointer"
@@ -434,7 +429,7 @@ watch(
           <v-card
             class="flex overview-card tablet-remove"
             variant="elevated"
-            style="flex-grow: 1; gap: 1.5em; cursor: not-allowed; opacity: 0.5"
+            style="flex-grow: 1; gap: 1.5em"
           >
             <div class="card-icon">
               <img
@@ -514,6 +509,7 @@ watch(
             <v-progress-bar
               style="width: 95%"
               :percentage="storageUsedPercentage || 1"
+              class="limits-progress"
             />
             <div
               id="storageChartContainer"
@@ -559,6 +555,7 @@ watch(
               style="width: 95%"
               :percentage="bandwidthUsedPercentage || 1"
               state="error"
+              class="limits-progress"
             />
             <div
               id="bandwidthChartContainer"
@@ -627,58 +624,6 @@ watch(
           </div>
         </div>
       </v-card>
-    </main>
-    <main v-else>
-      <v-overlay>
-        <div
-          class="flex column"
-          style="
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            color: var(--text-white);
-          "
-        >
-          <h1
-            style="
-              font-size: 4em;
-              font-weight: 700;
-              color: #13a3fd;
-              letter-spacing: unset;
-            "
-          >
-            Getting Started!
-          </h1>
-          <h2
-            style="
-              margin-top: 1.1em;
-              font-size: 1.875em;
-              font-weight: 500;
-              text-align: center;
-            "
-          >
-            Create and Configure your Application
-          </h2>
-          <h4 class="testnet-disclaimer popup">
-            <b>Note</b>: Use with caution. This is an Alpha testnet release with
-            all features being experimental. Please do not upload important data
-            without backups or use it in production.
-          </h4>
-          <h5 class="testnet-disclaimer popup">
-            <b>Disclaimer</b>: The platform is provided in an "as is" basis
-            without any express or implied warranty of any kind including
-            warranties of merchantability or fitness of purpose. In no event
-            will Arcana Networks or its subsidiaries be held responsible for any
-            damages. BY CLICKING "Configure" below, you accept the same.
-          </h5>
-          <v-button
-            label="CONFIGURE"
-            style="margin-top: 1.2em"
-            :action="goToConfigure"
-          />
-        </div>
-      </v-overlay>
     </main>
   </div>
 </template>
@@ -797,6 +742,10 @@ h5.testnet-disclaimer.popup {
 
 .tutorials-pane {
   overflow-x: auto;
+}
+
+.limits-progress {
+  height: 1rem;
 }
 
 @media only screen and (min-width: 1024px) {

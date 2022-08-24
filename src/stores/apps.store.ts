@@ -57,7 +57,7 @@ type SocialAuthState = {
 
 type Theme = 'light' | 'dark'
 
-type App = {
+type AppConfig = {
   name: string
   address: string
   logos: {
@@ -99,7 +99,7 @@ type App = {
 interface AppState {
   appIds: number[]
   appsById: {
-    [key: number]: App
+    [key: number]: AppConfig
   }
 }
 
@@ -117,7 +117,7 @@ const useAppsStore = defineStore('apps', {
     },
   },
   actions: {
-    updateApp(appId: number, appDetails: App) {
+    updateApp(appId: number, appDetails: AppConfig) {
       this.appsById[appId] = appDetails
     },
     async fetchAndStoreAllApps() {
@@ -244,4 +244,5 @@ export type {
   SocialAuthOption,
   SocialAuthVerifier,
   Theme,
+  AppConfig,
 }
