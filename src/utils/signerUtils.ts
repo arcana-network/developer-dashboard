@@ -31,9 +31,9 @@ let signTransaction: (
   value?: SmartContractAcceptedValue
 ) => Promise<string>
 
-function getTransactionRequestProps(): SmartContractRequestParams {
-  let appAddress: string = appStore.appAddress
-
+function getTransactionRequestProps(
+  appAddress: string
+): SmartContractRequestParams {
   if (!appAddress.startsWith('0x')) {
     appAddress = `0x${appAddress}`
   }
@@ -48,9 +48,9 @@ function getTransactionRequestProps(): SmartContractRequestParams {
   }
 }
 
-async function createTransactionSigner() {
+async function createTransactionSigner(address: string) {
   const { appAddress, gateway, forwarderAddress, accessToken } =
-    getTransactionRequestProps()
+    getTransactionRequestProps(address)
   const provider = window.arcana.provider
   signTransaction = window.transactionSigner.createTransactionSigner({
     appAddress,

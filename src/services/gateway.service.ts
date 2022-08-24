@@ -64,9 +64,14 @@ type CreateAppRequestBody = {
   region: number
 }
 
+type CreateAppResponse = {
+  app: AppConfig
+  txHash: string
+}
+
 function createApp(
   config: CreateAppRequestBody
-): Promise<AxiosResponse<AppConfig>> {
+): Promise<AxiosResponse<CreateAppResponse>> {
   const defaultAppConfig: AppConfig = {
     name: config.name,
     region: config.region,

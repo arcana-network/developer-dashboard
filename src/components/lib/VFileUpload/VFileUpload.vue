@@ -52,7 +52,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <VCard v-if="props.value" variant="elevated" class="file-upload-card">
+  <VCard v-if="props.value" variant="depressed" class="file-upload-card">
     <VStack gap="2rem" justify="space-between" class="flex-grow">
       <span class="body-1 text-ellipsis" :title="props.value">{{
         props.value
@@ -66,7 +66,7 @@ onBeforeUnmount(() => {
   </VCard>
   <VCard
     v-else
-    variant="elevated"
+    variant="depressed"
     class="file-upload-card cursor-pointer"
     @click.stop="handleUploadClick"
   >

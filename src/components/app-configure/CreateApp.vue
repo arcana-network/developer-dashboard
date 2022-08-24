@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -9,33 +9,29 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import { createApp, type AppConfig } from '@/services/gateway.service'
-import { useAppStore } from '@/stores/app.store'
+import { createApp } from '@/services/gateway.service'
+import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import calculateUserLimits from '@/utils/calculateUserLimits'
 import {
   RegionMapping,
   regions,
+  WalletMode,
   type Region,
   type StorageRegion,
+  api,
 } from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
-const appStore = useAppStore()
-const loaderStore = useLoaderStore()
 const router = useRouter()
-const appName = computed(() => appStore.appName)
+const loaderStore = useLoaderStore()
+const appsStore = useAppsStore()
+const appName = ref('')
 const hasAppNameError = ref(false)
-const selectedRegion = computed(() => {
-  const storageRegion: StorageRegion = appStore.store.region
-  return regions.find((region) => region.value === storageRegion) as Region
-})
+const selectedRegion = ref(regions[0])
 
 function handleRegionChange(option: Region) {
-  appStore.updateStorageRegion(option.value)
-}
-
-function handleAppNameChange(appName: string) {
-  appStore.updateAppName(appName)
+  selectedRegion.value = option
 }
 
 async function handleCreateApp() {
@@ -45,18 +41,54 @@ async function handleCreateApp() {
   }
   loaderStore.showLoader('Creating App...')
   hasAppNameError.value = false
-  const app: AppConfig = (
+  const app = (
     await createApp({
       name: appName.value,
       region: RegionMapping[selectedRegion.value.value],
     })
-  ).data
-  appStore.appId = String(app.ID)
+  ).data.app
 
-  await appStore.fetchAppConfig()
-  createTransactionSigner()
+  appsStore.addApp(app.ID as number, {
+    name: app.name as string,
+    address: app.address as string,
+    logos: {
+      dark: {
+        horizontal: '',
+        vertical: '',
+      },
+      light: {
+        horizontal: '',
+        vertical: '',
+      },
+    },
+    access: {
+      selectedChain: 'none',
+    },
+    store: {
+      region: RegionMapping[app.region] as StorageRegion,
+      userLimits: {
+        storage: calculateUserLimits(app.storage_limit),
+        bandwidth: calculateUserLimits(app.bandwidth_limit),
+      },
+    },
+    auth: {
+      social: [],
+      passwordless: {
+        javascriptOrigin: '',
+        redirectUri: '',
+      },
+      wallet: {
+        hasUIMode: app.wallet_type === WalletMode.UI,
+        hasUIModeInGateway: app.wallet_type === WalletMode.UI,
+        websiteDomain: app.wallet_domain,
+        selectedTheme: app.theme as Theme,
+      },
+      redirectUri: `${api.verify}/${app.ID}/`,
+    },
+  })
+  createTransactionSigner(app.address as string)
   loaderStore.hideLoader()
-  router.push({ name: 'GeneralSettings', params: { appId: appStore.appId } })
+  router.push({ name: 'GeneralSettings', params: { appId: app.ID } })
 }
 </script>
 
@@ -68,11 +100,10 @@ async function handleCreateApp() {
       <VStack direction="column" gap="1rem">
         <label class="app-name-label">Enter App Name</label>
         <VTextField
-          :model-value="appName"
+          v-model="appName"
           class="app-name-input"
           :message-type="hasAppNameError ? 'error' : ''"
           message="App Name cannot be empty"
-          @update:model-value="handleAppNameChange"
         />
       </VStack>
       <VStack direction="column" gap="1rem" align="start">

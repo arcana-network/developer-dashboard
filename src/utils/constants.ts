@@ -156,8 +156,8 @@ enum ChainMapping {
 }
 
 enum RegionMapping {
-  asia = 1,
-  europe = 4,
+  'asia' = 1,
+  'europe' = 4,
   'north-america' = 5,
 }
 

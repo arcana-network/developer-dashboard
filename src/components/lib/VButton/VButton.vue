@@ -127,7 +127,7 @@ button.primary:hover:not(:disabled) {
 }
 
 button.secondary {
-  padding: calc(0.75rem - 2px);
+  padding: calc(0.625rem - 2px);
   color: var(--text-white);
   background: linear-gradient(var(--dark-theme-bg), var(--dark-theme-bg))
       padding-box,

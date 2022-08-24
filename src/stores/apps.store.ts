@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 
 import {
+  createApp,
   fetchAllApps,
   fetchApp,
   getThemeLogo,
@@ -120,6 +121,10 @@ const useAppsStore = defineStore('apps', {
     updateApp(appId: number, appDetails: AppConfig) {
       this.appsById[appId] = appDetails
     },
+    async addApp(appId: number, appDetails: AppConfig) {
+      this.appIds.push(appId)
+      this.appsById[appId] = { ...appDetails }
+    },
     async fetchAndStoreAllApps() {
       const apps = (await fetchAllApps()).data
       apps.forEach((app) => {
@@ -184,7 +189,9 @@ const useAppsStore = defineStore('apps', {
         selectedTheme: app.theme as Theme,
       }
       appConfig.auth.redirectUri = `${api.verify}/${app.ID}/`
-      appConfig.access.selectedChain = ChainMapping[app.chain] as Chain
+      appConfig.access.selectedChain = app.chain
+        ? (ChainMapping[app.chain] as Chain)
+        : 'none'
       appConfig.store = {
         region: RegionMapping[app.region] as StorageRegion,
         userLimits: {

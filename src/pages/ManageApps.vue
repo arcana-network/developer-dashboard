@@ -110,12 +110,12 @@ onBeforeMount(() => {
           <VCard variant="depressed" gap="6px" class="stats-card">
             <VStack direction="column" align="center">
               <span class="stats-title">Total Users</span>
-              <span class="stats-number">450</span>
+              <span class="stats-number">{{ app.noOfUsers }}</span>
             </VStack>
             <VSeperator vertical class="stats-separator" />
             <VStack direction="column" align="center">
               <span class="stats-title">No of Files</span>
-              <span class="stats-number">20K</span>
+              <span class="stats-number">{{ app.noOfFiles }}</span>
             </VStack>
             <VSeperator vertical class="stats-separator" />
             <VStack direction="column" align="center">
@@ -147,7 +147,7 @@ onBeforeMount(() => {
               />
             </VStack>
           </VStack>
-          <VStack gap="1rem" style="margin-top: auto">
+          <VStack gap="1rem" style="width: 100%; margin-top: auto">
             <VButton
               variant="secondary"
               label="Delete"
@@ -158,6 +158,7 @@ onBeforeMount(() => {
               variant="secondary"
               label="Pause"
               class="app-action-button pause-button"
+              disabled
               @click.stop="pauseApp(app.id)"
             />
           </VStack>
@@ -168,6 +169,10 @@ onBeforeMount(() => {
 </template>
 
 <style scoped>
+.container {
+  margin-bottom: 4rem;
+}
+
 .back-icon {
   width: 2.25rem;
 }
@@ -182,7 +187,7 @@ onBeforeMount(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(20rem, 40vw, 28rem);
+  width: clamp(18rem, 30vw, 26rem);
   height: 31rem;
   cursor: pointer;
 }
@@ -202,7 +207,7 @@ onBeforeMount(() => {
 }
 
 .app-action-button {
-  width: 12rem;
+  width: 100%;
   text-transform: uppercase;
 }
 
@@ -262,6 +267,7 @@ onBeforeMount(() => {
   font-family: var(--font-title);
   font-size: 0.75rem;
   font-weight: 600;
+  color: var(--text-grey);
 }
 
 .limit-indicator {
