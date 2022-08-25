@@ -218,21 +218,21 @@ function fetchAllUsers(appId: number) {
   )
 }
 
-function searchUsers(address: string) {
+function searchUsers(appId: number, address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchAllUserTransactions(address: string) {
+function fetchAllUserTransactions(appId: number, address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchMonthlyUsers() {
+function fetchMonthlyUsers(appId: number) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/no-of-users/?id=${appStore.appId}`
+    `${getEnvApi()}/no-of-users/?id=${appId}`
   )
 }
 

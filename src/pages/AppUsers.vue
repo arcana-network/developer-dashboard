@@ -45,9 +45,10 @@ const walletAddress = ref('')
 const showDetails = ref(false)
 const userLog: Ref<UserLog> = ref({})
 const userTransactions: Ref<UserTransaction[]> = ref([])
+const appId = Number(route.params.appId)
 
 function fetchUsers() {
-  fetchAllUsers(Number(route.params.appId)).then((response) => {
+  fetchAllUsers(appId).then((response) => {
     if (response.data instanceof Array) {
       users.value = response.data.map((user) => {
         return {
@@ -64,7 +65,7 @@ function fetchUsers() {
 }
 
 function generateMonthlyUsersChart() {
-  fetchMonthlyUsers().then((response) => {
+  fetchMonthlyUsers(appId).then((response) => {
     const currentMonth = moment()
     let monthLabels: string[] = []
     let monthAliases: { month: number; year: number }[] = []
@@ -117,7 +118,7 @@ onBeforeMount(() => {
 })
 
 function fetchUserLogsApi(address: string, index: number) {
-  fetchAllUserTransactions(address).then((response) => {
+  fetchAllUserTransactions(appId, address).then((response) => {
     users.value[index].email = response.data.email
     if (response.data.transaction instanceof Array) {
       userLog.value = users.value[index]
@@ -147,7 +148,7 @@ function truncate(address: string) {
 
 function searchUsersByWalletAddress() {
   if (walletAddress.value.trim()) {
-    searchUsers(walletAddress.value).then((response) => {
+    searchUsers(appId, walletAddress.value).then((response) => {
       if (response.data?.usage?.address) {
         const user = response.data.usage
         users.value = [
