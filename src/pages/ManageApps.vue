@@ -14,6 +14,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import { fetchStats } from '@/services/gateway.service'
 import { useAppsStore, type AppConfig } from '@/stores/apps.store'
 import { MAX_ALLOWED_APP_LIMIT } from '@/utils/constants'
+import { createTransactionSigner } from '@/utils/signerUtils'
 
 const router = useRouter()
 const appsStore = useAppsStore()
@@ -34,6 +35,7 @@ const showDeletePopup = ref(false)
 const appToDelete = ref(0)
 
 function goToDashboard(appId: number) {
+  createTransactionSigner(appsStore.app(appId).address)
   router.push({ name: 'Dashboard', params: { appId } })
 }
 
