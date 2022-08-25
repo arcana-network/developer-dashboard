@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
+import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
@@ -93,7 +94,7 @@ async function handleCreateApp() {
 </script>
 
 <template>
-  <section name="create-app" class="create-app-section">
+  <VOverlay>
     <VCard variant="popup" class="create-app-modal-card">
       <h2 class="create-app-title">Create New App</h2>
       <VSeperator />
@@ -136,19 +137,10 @@ async function handleCreateApp() {
         @click.stop="handleCreateApp"
       />
     </VCard>
-  </section>
+  </VOverlay>
 </template>
 
 <style scoped>
-.create-app-section {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgb(10 10 10 / 72%);
-}
-
 .create-app-modal-card {
   position: fixed;
   top: 50%;

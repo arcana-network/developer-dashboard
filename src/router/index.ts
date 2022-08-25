@@ -26,7 +26,6 @@ const StoreSettings = () =>
   import('@/components/app-configure/store/StoreSettings.vue')
 const AccessSettings = () =>
   import('@/components/app-configure/access/AccessSettings.vue')
-const CreateApp = () => import('@/components/app-configure/CreateApp.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -108,14 +107,6 @@ const routes: RouteRecordRaw[] = [
         component: AccessSettings,
       },
     ],
-  },
-  {
-    name: 'CreateApp',
-    path: '/apps/create',
-    component: CreateApp,
-    meta: {
-      requiresAuth: true,
-    },
   },
   {
     name: 'Users',

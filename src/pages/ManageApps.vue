@@ -3,7 +3,9 @@ import bytes from 'bytes'
 import { onBeforeMount, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import CreateApp from '@/components/app-configure/CreateApp.vue'
 import AppDelete from '@/components/app-configure/general/AppDelete.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
@@ -27,15 +29,12 @@ type AppData = AppConfig & {
 }
 
 const apps: Ref<AppData[]> = ref(appsStore.apps)
+const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
 const appToDelete = ref(0)
 
 function goToDashboard(appId: number) {
   router.push({ name: 'Dashboard', params: { appId } })
-}
-
-function createNewApp() {
-  router.push({ name: 'CreateApp' })
 }
 
 function calculateLimitUsedPercent(limitUsed: number) {
@@ -82,102 +81,114 @@ appsStore.$subscribe(() => {
 </script>
 
 <template>
-  <VStack direction="column" gap="2rem" class="container">
-    <VStack gap="2rem">
-      <img
-        src="@/assets/iconography/back.svg"
-        class="cursor-pointer back-icon"
-        alt="Go Back"
-        @click.stop="router.back()"
-      />
-      <h1>MANAGE APPS</h1>
-    </VStack>
-    <div class="body-1 description">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Lectus magna fringilla
-      urna porttitor rhoncus dolor purus non.
-    </div>
-    <VStack gap="1.25rem" wrap>
-      <VCard class="app-card" @click.stop="createNewApp()">
-        <VStack direction="column" gap="1.25rem" align="center">
-          <img src="@/assets/iconography/plus-circle-outline.svg" />
-          <span class="body-1 font-500">Create New App</span>
+  <div>
+    <AppHeader />
+    <main>
+      <VStack direction="column" gap="2rem" class="container">
+        <VStack gap="2rem">
+          <img
+            src="@/assets/iconography/back.svg"
+            class="cursor-pointer back-icon"
+            alt="Go Back"
+            @click.stop="router.back()"
+          />
+          <h1>MANAGE APPS</h1>
         </VStack>
-      </VCard>
-      <VCard
-        v-for="app in apps"
-        :key="`app-${app.id}`"
-        class="app-card"
-        @click.stop="goToDashboard(app.id)"
-      >
-        <VStack direction="column" align="center" class="app-container">
-          <img src="@/assets/dapp-fallback.svg" class="app-logo" />
-          <span class="sub-heading-3 app-name">{{ app.name }}</span>
-          <VCard variant="depressed" gap="6px" class="stats-card">
-            <VStack direction="column" align="center">
-              <span class="stats-title">Total Users</span>
-              <span class="stats-number">{{ app.noOfUsers }}</span>
-            </VStack>
-            <VSeperator vertical class="stats-separator" />
-            <VStack direction="column" align="center">
-              <span class="stats-title">No of Files</span>
-              <span class="stats-number">{{ app.noOfFiles }}</span>
-            </VStack>
-            <VSeperator vertical class="stats-separator" />
-            <VStack direction="column" align="center">
-              <span class="stats-title">Estimated Cost</span>
-              <span class="stats-number">$0</span>
+        <div class="body-1 description">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+          eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus
+          magna fringilla urna porttitor rhoncus dolor purus non.
+        </div>
+        <VStack gap="1.25rem" wrap>
+          <VCard
+            class="app-card"
+            @click.stop="canCreateApp = true"
+            @cancel="canCreateApp = false"
+          >
+            <VStack direction="column" gap="1.25rem" align="center">
+              <img src="@/assets/iconography/plus-circle-outline.svg" />
+              <span class="body-1 font-500">Create New App</span>
             </VStack>
           </VCard>
-          <VStack gap="1.25rem" class="limit-indicator-container">
-            <VStack direction="column" class="flex-grow">
-              <span class="limit-title">Storage</span>
-              <span class="limit-details">
-                {{ bytes(app.storageUsed as number, {decimalPlaces: 2}) }} of
-                300 GB used
-              </span>
-              <VProgressBar
-                :percentage="app.storageUsedPercent"
-                :state="getProgressState(app.storageUsedPercent as number)"
-                class="limit-indicator"
-              />
+          <VCard
+            v-for="app in apps"
+            :key="`app-${app.id}`"
+            class="app-card"
+            @click.stop="goToDashboard(app.id)"
+          >
+            <VStack direction="column" align="center" class="app-container">
+              <img src="@/assets/dapp-fallback.svg" class="app-logo" />
+              <span class="sub-heading-3 app-name">{{ app.name }}</span>
+              <VCard variant="depressed" gap="6px" class="stats-card">
+                <VStack direction="column" align="center">
+                  <span class="stats-title">Total Users</span>
+                  <span class="stats-number">{{ app.noOfUsers }}</span>
+                </VStack>
+                <VSeperator vertical class="stats-separator" />
+                <VStack direction="column" align="center">
+                  <span class="stats-title">No of Files</span>
+                  <span class="stats-number">{{ app.noOfFiles }}</span>
+                </VStack>
+                <VSeperator vertical class="stats-separator" />
+                <VStack direction="column" align="center">
+                  <span class="stats-title">Estimated Cost</span>
+                  <span class="stats-number">$0</span>
+                </VStack>
+              </VCard>
+              <VStack gap="1.25rem" class="limit-indicator-container">
+                <VStack direction="column" class="flex-grow">
+                  <span class="limit-title">Storage</span>
+                  <span class="limit-details">
+                    {{ bytes(app.storageUsed as number, {decimalPlaces: 2}) }}
+                    of 300 GB used
+                  </span>
+                  <VProgressBar
+                    :percentage="app.storageUsedPercent"
+                    :state="getProgressState(app.storageUsedPercent as number)"
+                    class="limit-indicator"
+                  />
+                </VStack>
+                <VStack direction="column" class="flex-grow">
+                  <span class="limit-title">Bandwidth</span>
+                  <span class="limit-details">
+                    {{ bytes(app.bandwidthUsed as number, {decimalPlaces: 2}) }}
+                    of 300 GB used
+                  </span>
+                  <VProgressBar
+                    :percentage="app.bandwidthUsedPercent"
+                    :state="getProgressState(app.bandwidthUsedPercent as number)"
+                    class="limit-indicator"
+                  />
+                </VStack>
+              </VStack>
+              <VStack gap="1rem" style="width: 100%; margin-top: auto">
+                <VButton
+                  variant="secondary"
+                  label="Delete"
+                  class="app-action-button delete-button"
+                  @click.stop="handleDelete(app.id)"
+                />
+                <VButton
+                  variant="secondary"
+                  label="Pause"
+                  class="app-action-button pause-button"
+                  disabled
+                />
+              </VStack>
             </VStack>
-            <VStack direction="column" class="flex-grow">
-              <span class="limit-title">Bandwidth</span>
-              <span class="limit-details">
-                {{ bytes(app.bandwidthUsed as number, {decimalPlaces: 2}) }} of
-                300 GB used
-              </span>
-              <VProgressBar
-                :percentage="app.bandwidthUsedPercent"
-                :state="getProgressState(app.bandwidthUsedPercent as number)"
-                class="limit-indicator"
-              />
-            </VStack>
-          </VStack>
-          <VStack gap="1rem" style="width: 100%; margin-top: auto">
-            <VButton
-              variant="secondary"
-              label="Delete"
-              class="app-action-button delete-button"
-              @click.stop="handleDelete(app.id)"
-            />
-            <VButton
-              variant="secondary"
-              label="Pause"
-              class="app-action-button pause-button"
-              disabled
-            />
-          </VStack>
+          </VCard>
         </VStack>
-      </VCard>
-    </VStack>
-    <AppDelete
-      v-if="showDeletePopup"
-      :app-id="appToDelete"
-      @close="showDeletePopup = false"
-    />
-  </VStack>
+        <AppDelete
+          v-if="showDeletePopup"
+          :app-id="appToDelete"
+          @close="showDeletePopup = false"
+        />
+      </VStack>
+    </main>
+    <Transition name="fade" mode="out-in">
+      <CreateApp v-if="canCreateApp" />
+    </Transition>
+  </div>
 </template>
 
 <style scoped>
