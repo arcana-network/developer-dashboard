@@ -195,7 +195,7 @@ appsStore.$subscribe(() => {
 
 <style scoped>
 .container {
-  margin-bottom: 4rem;
+  margin-block: 2rem;
 }
 
 .back-icon {
