@@ -164,18 +164,18 @@ const useAppsStore = defineStore('apps', {
           logos: {
             dark: {
               horizontal: app.logo?.dark_horizontal
-                ? getThemeLogo('dark', 'horizontal').url
+                ? getThemeLogo(appId, 'dark', 'horizontal').url
                 : '',
               vertical: app.logo?.dark_vertical
-                ? getThemeLogo('dark', 'vertical').url
+                ? getThemeLogo(appId, 'dark', 'vertical').url
                 : '',
             },
             light: {
               horizontal: app.logo?.light_horizontal
-                ? getThemeLogo('light', 'horizontal').url
+                ? getThemeLogo(appId, 'light', 'horizontal').url
                 : '',
               vertical: app.logo?.dark_horizontal
-                ? getThemeLogo('light', 'vertical').url
+                ? getThemeLogo(appId, 'light', 'vertical').url
                 : '',
             },
           },
@@ -206,18 +206,18 @@ const useAppsStore = defineStore('apps', {
       appConfig.logos = {
         dark: {
           horizontal: app.logo?.dark_horizontal
-            ? getThemeLogo('dark', 'horizontal').url
+            ? getThemeLogo(appId, 'dark', 'horizontal').url
             : '',
           vertical: app.logo?.dark_vertical
-            ? getThemeLogo('dark', 'vertical').url
+            ? getThemeLogo(appId, 'dark', 'vertical').url
             : '',
         },
         light: {
           horizontal: app.logo?.light_horizontal
-            ? getThemeLogo('light', 'horizontal').url
+            ? getThemeLogo(appId, 'light', 'horizontal').url
             : '',
           vertical: app.logo?.dark_horizontal
-            ? getThemeLogo('light', 'vertical').url
+            ? getThemeLogo(appId, 'light', 'vertical').url
             : '',
         },
       }

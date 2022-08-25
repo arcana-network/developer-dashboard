@@ -89,9 +89,9 @@ function createApp(
   )
 }
 
-function updateApp(updatedAppConfig: AppConfig) {
+function updateApp(appId: number, updatedAppConfig: AppConfig) {
   return gatewayAuthorizedInstance.patch(
-    `${getEnvApi('v2')}/app/?id=${appStore.appId}`,
+    `${getEnvApi('v2')}/app/?id=${appId}`,
     updatedAppConfig
   )
 }
@@ -257,10 +257,11 @@ function loginUser({
 }
 
 function getThemeLogo(
+  appId: number,
   mode: 'dark' | 'light',
   orientation: 'horizontal' | 'vertical'
 ) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${appStore.appId}/logo`
+  const logoFetchUrl = `${getEnvApi('v2')}/app/${appId}/logo`
   return {
     mode,
     orientation,
@@ -269,6 +270,7 @@ function getThemeLogo(
 }
 
 function uploadThemeLogo(
+  appId: number,
   file: File,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
@@ -276,7 +278,7 @@ function uploadThemeLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo`,
     formData,
     {
       params: { type: mode, orientation },
@@ -285,11 +287,12 @@ function uploadThemeLogo(
 }
 
 function removeThemeLogo(
+  appId: number,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
 ) {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo`,
     {
       params: { type: mode, orientation },
     }

@@ -19,7 +19,7 @@ import {
   setDefaultLimit,
   enableUiMode,
 } from '@/services/smart-contract.service'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import {
   WalletMode,
@@ -29,10 +29,11 @@ import {
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
-const appStore = useAppStore()
+const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const route = useRoute()
+const appId = Number(route.params.appId)
 
 currentTab.value = String(route.name)
   .replace('Settings', '')
@@ -44,17 +45,18 @@ function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
   router.push({
     name: `${tab.label}Settings`,
-    params: { appId: appStore.appId },
+    params: { appId },
   })
 }
 
 async function handleSave() {
   loaderStore.showLoader('Saving app config...')
   const appConfigRequestBody = getAppConfigRequestBody()
-  const updatedApp = (await updateApp(appConfigRequestBody)).data
-  appStore.updateWalletUIModeFromGateway(
+  const updatedApp = (await updateApp(appId, appConfigRequestBody)).data
+  const currentApp = appsStore.app(appId)
+  currentApp.auth.wallet.hasUIModeInGateway =
     updatedApp.app.wallet_type === WalletMode.UI
-  )
+  appsStore.updateApp(appId, currentApp)
   await updateSmartContractTransactions(appConfigRequestBody)
   currentConfig = appConfigRequestBody
   loaderStore.hideLoader()
@@ -109,8 +111,8 @@ function handleSmartContractErrors(type: string, error: unknown) {
 }
 
 function handleCancel() {
-  appStore.fetchAppConfig()
-  router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
+  appsStore.fetchAndStoreAppConfig(appId)
+  router.back()
 }
 </script>
 
