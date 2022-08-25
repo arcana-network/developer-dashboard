@@ -177,10 +177,8 @@ function fetchPeriodicUsage(appId: number, period: Duration = 'month') {
   )
 }
 
-function deleteApp() {
-  return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/?id=${appStore.appId}`
-  )
+function deleteApp(appId: number) {
+  return gatewayAuthorizedInstance.delete(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
 async function fetchAndStoreConfig() {
@@ -214,9 +212,9 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
   })
 }
 
-function fetchAllUsers() {
+function fetchAllUsers(appId: number) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details/?id=${appStore.appId}`
+    `${getEnvApi()}/user-details/?id=${appId}`
   )
 }
 

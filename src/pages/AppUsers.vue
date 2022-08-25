@@ -2,6 +2,7 @@
 import bytes from 'bytes'
 import moment from 'moment'
 import { ref, onBeforeMount, type Ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import SearchIcon from '@/assets/iconography/search.svg'
 import AppHeader from '@/components/AppHeader.vue'
@@ -25,14 +26,28 @@ type User = {
   email: string
 }
 
-let users: Ref<User[]> = ref([])
-let walletAddress = ref('')
-let showDetails = ref(false)
-let userLog = ref({})
-let userTransactions = ref([])
+type UserLog = {
+  email?: string
+  walletAddress?: string
+  storage?: number
+  bandwidth?: number
+  actionCount?: number
+}
+
+type UserTransaction = {
+  type: string
+  date: string
+}
+
+const route = useRoute()
+const users: Ref<User[]> = ref([])
+const walletAddress = ref('')
+const showDetails = ref(false)
+const userLog: Ref<UserLog> = ref({})
+const userTransactions: Ref<UserTransaction[]> = ref([])
 
 function fetchUsers() {
-  fetchAllUsers().then((response) => {
+  fetchAllUsers(Number(route.params.appId)).then((response) => {
     if (response.data instanceof Array) {
       users.value = response.data.map((user) => {
         return {
@@ -51,8 +66,8 @@ function fetchUsers() {
 function generateMonthlyUsersChart() {
   fetchMonthlyUsers().then((response) => {
     const currentMonth = moment()
-    let monthLabels = []
-    let monthAliases = []
+    let monthLabels: string[] = []
+    let monthAliases: { month: number; year: number }[] = []
 
     for (let i = 12 - 1; i >= 0; i--) {
       const date = currentMonth.clone().subtract(i, 'months')
@@ -142,6 +157,7 @@ function searchUsersByWalletAddress() {
             storage: user.storage,
             bandwidth: user.bandwidth,
             actionCount: user.action_count,
+            email: user.email,
           },
         ]
       } else {
@@ -289,7 +305,7 @@ function convertToBytes(value: number) {
               Storage
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ convertToBytes(userLog.storage) }}
+              {{ convertToBytes(userLog.storage as number) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -297,7 +313,7 @@ function convertToBytes(value: number) {
               Bandwidth
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ convertToBytes(userLog.bandwidth) }}
+              {{ convertToBytes(userLog.bandwidth as number) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -325,7 +341,7 @@ function convertToBytes(value: number) {
                 <tbody>
                   <tr
                     v-for="transaction in userTransactions"
-                    :key="transaction"
+                    :key="`${transaction.date}-${transaction.type}`"
                   >
                     <td>{{ transaction.type }}</td>
                     <td>{{ getDate(transaction.date) }}</td>

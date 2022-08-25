@@ -121,9 +121,13 @@ const useAppsStore = defineStore('apps', {
     updateApp(appId: number, appDetails: AppConfig) {
       this.appsById[appId] = appDetails
     },
-    async addApp(appId: number, appDetails: AppConfig) {
+    addApp(appId: number, appDetails: AppConfig) {
       this.appIds.push(appId)
       this.appsById[appId] = { ...appDetails }
+    },
+    deleteApp(appId: number) {
+      this.appIds = this.appIds.filter((id) => id !== appId)
+      delete this.appsById[appId]
     },
     async fetchAndStoreAllApps() {
       const apps = (await fetchAllApps()).data

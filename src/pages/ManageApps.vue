@@ -3,6 +3,7 @@ import bytes from 'bytes'
 import { onBeforeMount, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import AppDelete from '@/components/app-configure/general/AppDelete.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
@@ -26,14 +27,8 @@ type AppData = AppConfig & {
 }
 
 const apps: Ref<AppData[]> = ref(appsStore.apps)
-
-function deleteApp(appId: number) {
-  alert('Delete App ' + appId)
-}
-
-function pauseApp(appId: number) {
-  alert('Pause App ' + appId)
-}
+const showDeletePopup = ref(false)
+const appToDelete = ref(0)
 
 function goToDashboard(appId: number) {
   router.push({ name: 'Dashboard', params: { appId } })
@@ -57,10 +52,14 @@ function getProgressState(limitUsedPercent: number) {
   return 'warn'
 }
 
+function handleDelete(appId: number) {
+  showDeletePopup.value = true
+  appToDelete.value = appId
+}
+
 onBeforeMount(() => {
   apps.value.forEach(async (app) => {
     const stats = (await fetchStats(app.id)).data
-    console.log(stats)
     app.noOfUsers = stats.no_of_users
     app.noOfFiles = stats.actions.upload - stats.actions.delete
     app.storageUsed = stats.actions.storage
@@ -127,7 +126,8 @@ onBeforeMount(() => {
             <VStack direction="column" class="flex-grow">
               <span class="limit-title">Storage</span>
               <span class="limit-details">
-                {{ bytes(app.storageUsed as number) }} of 300 GB used
+                {{ bytes(app.storageUsed as number, {decimalPlaces: 2}) }} of
+                300 GB used
               </span>
               <VProgressBar
                 :percentage="app.storageUsedPercent"
@@ -138,7 +138,8 @@ onBeforeMount(() => {
             <VStack direction="column" class="flex-grow">
               <span class="limit-title">Bandwidth</span>
               <span class="limit-details">
-                {{ bytes(app.bandwidthUsed as number) }} of 300 GB used
+                {{ bytes(app.bandwidthUsed as number, {decimalPlaces: 2}) }} of
+                300 GB used
               </span>
               <VProgressBar
                 :percentage="app.bandwidthUsedPercent"
@@ -152,19 +153,23 @@ onBeforeMount(() => {
               variant="secondary"
               label="Delete"
               class="app-action-button delete-button"
-              @click.stop="deleteApp(app.id)"
+              @click.stop="handleDelete(app.id)"
             />
             <VButton
               variant="secondary"
               label="Pause"
               class="app-action-button pause-button"
               disabled
-              @click.stop="pauseApp(app.id)"
             />
           </VStack>
         </VStack>
       </VCard>
     </VStack>
+    <AppDelete
+      v-if="showDeletePopup"
+      :app-id="appToDelete"
+      @close="showDeletePopup = false"
+    />
   </VStack>
 </template>
 

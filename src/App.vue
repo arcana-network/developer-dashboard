@@ -6,13 +6,13 @@ import AppFooter from '@/components/AppFooter.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { fetchAndStoreConfig } from '@/services/gateway.service'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
-const appStore = useAppStore()
+const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const authStore = useAuthStore()
 const route = useRoute()
@@ -27,9 +27,11 @@ onBeforeMount(async () => {
   await fetchAndStoreConfig()
 
   loaderStore.showLoader('Fetching app configuration...')
-  if (!appStore.appName && authStore.accessToken) {
-    await appStore.fetchAppConfig()
-    createTransactionSigner()
+  if (authStore.accessToken && route.params.appId) {
+    const appId = Number(route.params.appId)
+    await appsStore.fetchAndStoreAppConfig(appId)
+    const app = appsStore.app(appId)
+    createTransactionSigner(app.address)
   }
   loaderStore.hideLoader()
 })
