@@ -3,7 +3,7 @@ import bytes from 'bytes'
 import type { Chart } from 'chart.js'
 import moment from 'moment'
 import { onMounted, ref, watch, type Ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 import ArrowRightIcon from '@/assets/iconography/arrow-right.svg'
 import CheckIcon from '@/assets/iconography/check.svg'
@@ -25,18 +25,18 @@ import {
 } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
 import { MAX_ALLOWED_APP_LIMIT } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
-const route = useRoute()
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const liveEnv = false
+const appId = useAppId()
 
-const appId = Number(route.params.appId)
 const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
@@ -99,7 +99,7 @@ async function fetchAndPopulateCharts() {
 }
 
 async function fetchAndPopulateUsersAndActions() {
-  const stats = await fetchStats(Number(route.params.appId))
+  const stats = await fetchStats(appId)
   totalUsers.value = stats.data.no_of_users
   actions.value = {
     download: stats.data.actions?.download,

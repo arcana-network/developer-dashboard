@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import bytes from 'bytes'
 import { reactive } from 'vue'
-import { useRoute } from 'vue-router'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
@@ -9,12 +8,12 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import getEnvApi from '@/utils/get-env-api'
 
 const appsStore = useAppsStore()
 const toast = useToast()
-const route = useRoute()
-const appId = Number(route.params.appId)
+const appId = useAppId()
 const currentApp = appsStore.app(appId)
 
 type OrientationOption = {

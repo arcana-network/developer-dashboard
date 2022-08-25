@@ -2,7 +2,6 @@
 import bytes from 'bytes'
 import moment from 'moment'
 import { ref, onBeforeMount, type Ref } from 'vue'
-import { useRoute } from 'vue-router'
 
 import SearchIcon from '@/assets/iconography/search.svg'
 import AppHeader from '@/components/AppHeader.vue'
@@ -15,6 +14,7 @@ import {
   fetchAllUserTransactions,
   fetchMonthlyUsers,
 } from '@/services/gateway.service'
+import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
 
 type User = {
@@ -39,13 +39,12 @@ type UserTransaction = {
   date: string
 }
 
-const route = useRoute()
 const users: Ref<User[]> = ref([])
 const walletAddress = ref('')
 const showDetails = ref(false)
 const userLog: Ref<UserLog> = ref({})
 const userTransactions: Ref<UserTransaction[]> = ref([])
-const appId = Number(route.params.appId)
+const appId = useAppId()
 
 function fetchUsers() {
   fetchAllUsers(appId).then((response) => {

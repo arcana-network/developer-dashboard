@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { useRoute } from 'vue-router'
 
 import AppDelete from '@/components/app-configure/general/AppDelete.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
+import { useAppId } from '@/use/getAppId'
 
-const route = useRoute()
+const appId = useAppId()
 const showDeletePopup = ref(false)
 </script>
 
@@ -23,7 +23,7 @@ const showDeletePopup = ref(false)
     </SettingCard>
     <AppDelete
       v-if="showDeletePopup"
-      :app-id="Number(route.params.appId)"
+      :app-id="appId"
       @close="showDeletePopup = false"
     />
   </section>

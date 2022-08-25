@@ -10,6 +10,7 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
+import { useAppId } from '@/use/getAppId'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appsStore = useAppsStore()
@@ -18,6 +19,7 @@ const authStore = useAuthStore()
 const route = useRoute()
 const arcanaAuth = useArcanaAuth()
 const isAuthLoaded = ref(false)
+const appId = useAppId()
 
 onBeforeMount(async () => {
   loaderStore.showLoader('Initializing Arcana Auth SDK...')
@@ -27,8 +29,7 @@ onBeforeMount(async () => {
   await fetchAndStoreConfig()
 
   loaderStore.showLoader('Fetching app configuration...')
-  if (authStore.accessToken && route.params.appId) {
-    const appId = Number(route.params.appId)
+  if (authStore.accessToken && appId) {
     await appsStore.fetchAndStoreAppConfig(appId)
     const app = appsStore.app(appId)
     createTransactionSigner(app.address)

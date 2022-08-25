@@ -21,6 +21,7 @@ import {
 } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { useAppId } from '@/use/getAppId'
 import {
   WalletMode,
   type ConfigureTab,
@@ -33,7 +34,7 @@ const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const route = useRoute()
-const appId = Number(route.params.appId)
+const appId = useAppId()
 
 currentTab.value = String(route.name)
   .replace('Settings', '')
