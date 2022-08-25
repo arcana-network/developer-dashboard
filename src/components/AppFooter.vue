@@ -91,6 +91,7 @@ const socialLinks = [
 <style scoped>
 footer {
   position: sticky;
+  top: 100vh;
   right: 0;
   bottom: 0;
   left: 0;
