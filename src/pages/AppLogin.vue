@@ -13,7 +13,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { useAppId } from '@/use/getAppId'
-import { generateLoginInfo } from '@/utils/signerUtils'
+import { createTransactionSigner, generateLoginInfo } from '@/utils/signerUtils'
 import { isValidEmail } from '@/utils/validation'
 
 const router = useRouter()
@@ -45,6 +45,7 @@ async function fetchAndStoreDetails() {
   if (route.params.redirectTo) {
     if (appId) {
       await appsStore.fetchAndStoreAppConfig(appId)
+      createTransactionSigner(appsStore.app(appId).address)
     }
     router.push({
       name: String(route.params.redirectTo),
