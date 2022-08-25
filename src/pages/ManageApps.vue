@@ -57,7 +57,7 @@ function handleDelete(appId: number) {
   appToDelete.value = appId
 }
 
-onBeforeMount(() => {
+function fetchAppDetails() {
   apps.value.forEach(async (app) => {
     const stats = (await fetchStats(app.id)).data
     app.noOfUsers = stats.no_of_users
@@ -71,6 +71,13 @@ onBeforeMount(() => {
       app.bandwidthUsed as number
     )
   })
+}
+
+onBeforeMount(fetchAppDetails)
+
+appsStore.$subscribe(() => {
+  apps.value = appsStore.apps
+  fetchAppDetails()
 })
 </script>
 
