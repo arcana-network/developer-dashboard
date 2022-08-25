@@ -8,17 +8,19 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore, type Theme } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import constants from '@/utils/constants'
 
-const appStore = useAppStore()
+const appsStore = useAppsStore()
+const appId = useAppId()
 
-type Theme = {
+type ThemeData = {
   label: string
-  value: 'light' | 'dark'
+  value: Theme
 }
 
-const availableThemes: Theme[] = [
+const availableThemes: ThemeData[] = [
   {
     label: 'Light Mode',
     value: 'light',
@@ -31,30 +33,34 @@ const availableThemes: Theme[] = [
 
 const selectedTheme = computed(() => {
   return availableThemes.find(
-    (theme) => theme.value === appStore.auth.wallet.selectedTheme
+    (theme) => theme.value === appsStore.app(appId).auth.wallet.selectedTheme
   )
 })
 
-const walletWebsiteDomain = computed(() => appStore.auth.wallet.websiteDomain)
-const hasUIMode = computed(() => appStore.auth.wallet.hasUIMode)
+const walletWebsiteDomain = computed(
+  () => appsStore.app(appId).auth.wallet.websiteDomain
+)
+const hasUIMode = computed(() => appsStore.app(appId).auth.wallet.hasUIMode)
 const hasUIModeInGateway = computed(
-  () => appStore.auth.wallet.hasUIModeInGateway
+  () => appsStore.app(appId).auth.wallet.hasUIModeInGateway
 )
 
-function handleThemeChange(theme: Theme) {
-  appStore.updateSelectedTheme(theme.value)
+function handleThemeChange(theme: ThemeData) {
+  const app = appsStore.app(appId)
+  app.auth.wallet.selectedTheme = theme.value
+  appsStore.updateApp(appId, app)
 }
 
 function handleWebsiteDomainUpdate(value: string) {
-  appStore.updateWalletWebsiteDomain(value)
-}
-
-function handleClearWebsiteDomain() {
-  appStore.updateWalletWebsiteDomain('')
+  const app = appsStore.app(appId)
+  app.auth.wallet.websiteDomain = value
+  appsStore.updateApp(appId, app)
 }
 
 function handleUIModeUpdate(value: boolean) {
-  appStore.updateWalletUIMode(value)
+  const app = appsStore.app(appId)
+  app.auth.wallet.hasUIMode = value
+  appsStore.updateApp(appId, app)
 }
 </script>
 
@@ -86,7 +92,7 @@ function handleUIModeUpdate(value: boolean) {
             :model-value="walletWebsiteDomain"
             clickable-icon
             @update:model-value="handleWebsiteDomainUpdate"
-            @icon-clicked="handleClearWebsiteDomain"
+            @icon-clicked="handleWebsiteDomainUpdate('')"
           />
         </VStack>
         <VStack direction="column" gap="1rem">

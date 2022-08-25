@@ -11,12 +11,15 @@ import type {
   SocialAuthState,
   SocialAuthVerifier,
   SocialAuthField,
-} from '@/stores/app.store'
-import { useAppStore } from '@/stores/app.store'
+  AppConfig,
+} from '@/stores/apps.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import constants, { socialLogins } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
-const appStore = useAppStore()
+const appsStore = useAppsStore()
+const appId = useAppId()
 
 const socialAuthFields: SocialAuthField[] = [
   'clientId',
@@ -24,16 +27,27 @@ const socialAuthFields: SocialAuthField[] = [
   'redirectUri',
 ]
 
-const socialAuth = computed(() => appStore.auth.social)
+const socialAuth = computed(() => appsStore.app(appId).auth.social)
 
-function getSocialAuth(
-  verifier: SocialAuthVerifier
-): SocialAuthState | undefined {
-  return socialAuth.value.find((auth) => auth.verifier === verifier)
+function getSocialAuth(verifier: SocialAuthVerifier): {
+  index: number
+  existingAuth: SocialAuthState | undefined
+} {
+  const index = socialAuth.value.findIndex((auth) => auth.verifier === verifier)
+  return {
+    index,
+    existingAuth: socialAuth.value[index],
+  }
+}
+
+function removeSocialAuth(app: AppConfig, verifier: string) {
+  return app.auth.social.filter((auth) => auth.verifier !== verifier)
 }
 
 function handleCloseClick(verifier: SocialAuthVerifier) {
-  appStore.removeSocialAuth(verifier)
+  const app = appsStore.app(appId)
+  app.auth.social = removeSocialAuth(app, verifier)
+  appsStore.updateApp(appId, app)
 }
 
 function handleFieldUpdate(
@@ -41,19 +55,25 @@ function handleFieldUpdate(
   field: SocialAuthField,
   value: string
 ) {
-  const existingAuth = getSocialAuth(verifier)
+  const { index: exisitingAuthIndex, existingAuth } = getSocialAuth(verifier)
+  const app = appsStore.app(appId)
+
   if (existingAuth) {
-    const areOtherFieldsEmpty: boolean = socialAuthFields
+    const areOtherFieldsEmpty = socialAuthFields
       .filter((el) => el !== field)
       .every((authField) => !existingAuth[authField])
     if (!value && areOtherFieldsEmpty) {
-      appStore.removeSocialAuth(verifier)
+      app.auth.social = removeSocialAuth(app, verifier)
     } else {
-      appStore.updateSocialAuth({ verifier, field, value })
+      app.auth.social[exisitingAuthIndex][field] = value
     }
   } else {
-    appStore.addSocialAuth({ verifier, field, value })
+    app.auth.social.push({
+      verifier,
+      [field]: value,
+    })
   }
+  appsStore.updateApp(appId, app)
 }
 </script>
 
@@ -90,7 +110,9 @@ function handleFieldUpdate(
         <VSeperator vertical class="social-auth-separator" />
         <VStack gap="1.25rem" class="social-auth-input-container">
           <VTextField
-            :model-value="getSocialAuth(socialLogin.verifier)?.clientId"
+            :model-value="
+              getSocialAuth(socialLogin.verifier).existingAuth?.clientId
+            "
             no-message
             class="social-auth-input"
             placeholder="Client ID"
@@ -98,7 +120,7 @@ function handleFieldUpdate(
             clickable-icon
             @icon-clicked="
               copyToClipboard(
-                getSocialAuth(socialLogin.verifier)?.clientId || ''
+                getSocialAuth(socialLogin.verifier).existingAuth?.clientId || ''
               )
             "
             @update:model-value="
@@ -107,7 +129,9 @@ function handleFieldUpdate(
           ></VTextField>
           <VTextField
             v-if="socialLogin.hasClientSecret"
-            :model-value="getSocialAuth(socialLogin.verifier)?.clientSecret"
+            :model-value="
+              getSocialAuth(socialLogin.verifier).existingAuth?.clientSecret
+            "
             no-message
             class="social-auth-input"
             placeholder="Client Secret"
@@ -117,7 +141,9 @@ function handleFieldUpdate(
           ></VTextField>
           <VTextField
             v-if="socialLogin.hasRedirectUri"
-            :model-value="getSocialAuth(socialLogin.verifier)?.redirectUri"
+            :model-value="
+              getSocialAuth(socialLogin.verifier).existingAuth?.redirectUri
+            "
             no-message
             class="social-auth-input"
             placeholder="Redirect URI"

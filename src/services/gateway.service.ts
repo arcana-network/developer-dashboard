@@ -2,7 +2,7 @@ import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import bytes from 'bytes'
 
 import store from '@/stores'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
@@ -13,7 +13,7 @@ import {
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(store)
-const appStore = useAppStore()
+const appsStore = useAppsStore()
 
 let forwarder: string, rpcUrl: string
 
@@ -69,6 +69,14 @@ type CreateAppResponse = {
   txHash: string
 }
 
+type Cred = {
+  verifier: string
+  clientId?: string
+  clientSecret?: string
+  redirectURL?: string
+  origin?: string
+}
+
 function createApp(
   config: CreateAppRequestBody
 ): Promise<AxiosResponse<CreateAppResponse>> {
@@ -96,11 +104,12 @@ function updateApp(appId: number, updatedAppConfig: AppConfig) {
   )
 }
 
-function getAppConfigRequestBody(): AppConfig {
+function getAppConfigRequestBody(appId: number): AppConfig {
   let storage_limit: number, bandwidth_limit: number
+  const app = appsStore.app(appId)
 
-  const storageLimit = appStore.store.userLimits.storage
-  const bandwidthLimit = appStore.store.userLimits.bandwidth
+  const storageLimit = app.store.userLimits.storage
+  const bandwidthLimit = app.store.userLimits.bandwidth
   if (storageLimit.isUnlimited) {
     storage_limit = MAX_DATA_TRANSFER_BYTES
   } else {
@@ -113,14 +122,8 @@ function getAppConfigRequestBody(): AppConfig {
     bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
   }
 
-  const socialAuth = appStore.auth.social
-  const cred: {
-    verifier: string
-    clientId?: string
-    clientSecret?: string
-    redirectURL?: string
-    origin?: string
-  }[] = socialAuth.map((authType) => {
+  const { social, passwordless, wallet } = app.auth
+  const cred: Cred[] = social.map((authType) => {
     return {
       verifier: authType.verifier,
       clientId: authType.clientId,
@@ -129,32 +132,28 @@ function getAppConfigRequestBody(): AppConfig {
     }
   })
 
-  if (
-    appStore.auth.passwordless.javascriptOrigin &&
-    appStore.auth.passwordless.redirectUri
-  ) {
+  const { javascriptOrigin, redirectUri } = passwordless
+  if (javascriptOrigin && redirectUri) {
     cred.push({
       verifier: 'passwordless',
-      origin: appStore.auth.passwordless.javascriptOrigin,
-      redirectURL: appStore.auth.passwordless.redirectUri,
+      origin: javascriptOrigin,
+      redirectURL: redirectUri,
     })
   }
 
-  const wallet_type = appStore.auth.wallet.hasUIMode
-    ? WalletMode.UI
-    : WalletMode.NoUI
+  const wallet_type = wallet.hasUIMode ? WalletMode.UI : WalletMode.NoUI
 
   return {
-    name: appStore.appName,
-    address: appStore.appAddress,
+    name: app.name,
+    address: app.address,
     storage_limit,
     bandwidth_limit,
     cred,
     aggregate_login: true,
-    chain: ChainMapping[appStore.access.selectedChain],
-    region: RegionMapping[appStore.store.region],
-    theme: appStore.auth.wallet.selectedTheme,
-    wallet_domain: appStore.auth.wallet.websiteDomain,
+    chain: ChainMapping[app.access.selectedChain],
+    region: RegionMapping[app.store.region],
+    theme: wallet.selectedTheme,
+    wallet_domain: wallet.websiteDomain,
     wallet_type,
   }
 }

@@ -33,6 +33,6 @@ const selectedNetwork = ref('Testnet')
 }
 
 .container {
-  margin: 2rem auto;
+  margin: 1rem auto;
 }
 </style>

@@ -40,7 +40,7 @@ currentTab.value = String(route.name)
   .replace('Settings', '')
   .toLowerCase() as ConfigureTabType
 
-let currentConfig = getAppConfigRequestBody()
+let currentConfig = getAppConfigRequestBody(appId)
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
@@ -52,7 +52,7 @@ function switchTab(tab: ConfigureTab) {
 
 async function handleSave() {
   loaderStore.showLoader('Saving app config...')
-  const appConfigRequestBody = getAppConfigRequestBody()
+  const appConfigRequestBody = getAppConfigRequestBody(appId)
   const updatedApp = (await updateApp(appId, appConfigRequestBody)).data
   const currentApp = appsStore.app(appId)
   currentApp.auth.wallet.hasUIModeInGateway =
@@ -139,6 +139,6 @@ function handleCancel() {
 }
 
 .configure-footer {
-  margin-top: 4rem;
+  margin-top: 8rem;
 }
 </style>

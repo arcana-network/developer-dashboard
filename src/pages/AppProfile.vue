@@ -251,11 +251,11 @@ function resetOrganisationDetails() {
 }
 
 .heading {
-  margin-top: 1.2em;
+  margin-top: 2rem;
 }
 
 .personal-details {
-  margin-top: 4em;
+  margin-top: 3rem;
 }
 
 .overflow-ellipsis {

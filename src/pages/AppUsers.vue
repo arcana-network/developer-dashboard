@@ -177,13 +177,13 @@ function convertToBytes(value: number) {
 <template>
   <div>
     <app-header />
-    <main class="container" style="margin-top: 4vh">
+    <main class="container" style="margin-top: 2rem">
       <h1>USERS</h1>
       <div
         class="flex sm-column"
-        style="gap: 1em; justify-content: space-between; margin-top: 4vh"
+        style="gap: 1em; justify-content: space-between; margin-top: 2rem"
       >
-        <h4>USER DETAILS</h4>
+        <h4 class="user-details-title">USER DETAILS</h4>
         <v-text-field
           v-model="walletAddress"
           :icon="SearchIcon"
@@ -198,7 +198,7 @@ function convertToBytes(value: number) {
       <v-card
         variant="elevated"
         class="flex column users-table-card"
-        style="margin-top: 4vh"
+        style="margin-top: 1rem"
       >
         <div class="table-container">
           <table class="table-head">
@@ -228,7 +228,7 @@ function convertToBytes(value: number) {
           <h4 v-else>No records found</h4>
         </div>
       </v-card>
-      <div class="flex column" style="gap: 2em; margin-top: 4em">
+      <div class="flex column" style="gap: 1rem; margin-top: 3rem">
         <h4>NUMBER OF USERS</h4>
         <v-card variant="elevated" style="height: 240px; padding: 2em">
           <canvas id="numberOfUsersChart" height="100%"></canvas>
@@ -289,7 +289,7 @@ function convertToBytes(value: number) {
             gap: 4vh;
             justify-content: space-between;
             padding: 0 2vh;
-            margin-bottom: 2vh;
+            margin-bottom: 1rem;
           "
         >
           <div class="flex column" style="gap: 1vh">
@@ -432,6 +432,11 @@ tbody tr:active {
   color: var(--text-white);
   background: rgb(255 255 255 / 10%);
   box-shadow: unset;
+}
+
+.user-details-title {
+  display: flex;
+  align-items: center;
 }
 
 @media only screen and (max-width: 767px) {

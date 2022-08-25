@@ -3,12 +3,10 @@ import { computed } from 'vue'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
-import { useAppStore } from '@/stores/app.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import { chains, type Chain, type ChainOption } from '@/utils/constants'
 
-const appStore = useAppStore()
 const appsStore = useAppsStore()
 const appId = useAppId()
 const selectedChain = computed(() => {
@@ -18,7 +16,9 @@ const selectedChain = computed(() => {
 })
 
 function handleSelectedChainChange(chain: ChainOption<Chain>) {
-  appStore.updateSelectedChain(chain.value)
+  const app = appsStore.app(appId)
+  app.access.selectedChain = chain.value
+  appsStore.updateApp(appId, app)
 }
 </script>
 

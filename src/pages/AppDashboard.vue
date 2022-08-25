@@ -78,6 +78,7 @@ onMounted(async () => {
     })
   }
   if (appId) {
+    await appsStore.fetchAndStoreAppConfig(appId)
     loaderStore.showLoader('Fetching App statistics...')
     await fetchAndPopulateStatistics()
     loaderStore.hideLoader()
@@ -369,8 +370,8 @@ watch(
           />
         </v-tooltip>
       </div>
-      <section style="margin-top: 8vh; color: var(--text-white)">
-        <h2 style="margin-bottom: 2vh">OVERVIEW</h2>
+      <section style="margin-top: 2rem; color: var(--text-white)">
+        <h2 style="margin-bottom: 1rem">OVERVIEW</h2>
         <div
           class="flex flex-wrap justify-space-between"
           style="gap: 1em; margin-top: 20px"
@@ -448,7 +449,7 @@ watch(
       <v-card
         class="column usage-container"
         variant="elevated"
-        style="align-items: stretch; margin: 6vh auto"
+        style="align-items: stretch; margin: 2rem auto"
       >
         <div class="flex flex-wrap duration" style="margin-bottom: 1em">
           <v-card-button
@@ -579,7 +580,7 @@ watch(
         </div>
         <div
           class="flex flex-wrap"
-          style="align-content: stretch; margin-top: 3vh"
+          style="align-content: stretch; margin-top: 1.5rem"
         >
           <div class="flex action-container">
             <div class="flex column action" style="flex-grow: 1">
@@ -630,7 +631,7 @@ watch(
 
 <style scoped>
 .container {
-  margin-top: 4vh;
+  margin-top: 2rem;
 }
 
 .testnet-disclaimer {
@@ -776,7 +777,7 @@ h5.testnet-disclaimer.popup {
 
 @media only screen and (max-width: 1023px) {
   .tablet-margin {
-    margin-top: 2vh;
+    margin-top: 1rem;
   }
 
   .configure-btn {

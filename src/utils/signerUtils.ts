@@ -1,9 +1,7 @@
 import { getConfig } from '@/services/gateway.service'
-import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import getEnvApi from '@/utils/get-env-api'
 
-const appStore = useAppStore()
 const authStore = useAuthStore()
 
 type SmartContractAcceptedValue = (string | undefined | number)[]

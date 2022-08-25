@@ -3,13 +3,15 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import copyToClipboard from '@/utils/copyToClipboard'
 
-const appStore = useAppStore()
 const toast = useToast()
+const appsStore = useAppsStore()
+const appId = useAppId()
 
-const redirectUri = appStore.auth.redirectUri
+const redirectUri = appsStore.app(appId).auth.redirectUri
 
 async function copyRedirectUri() {
   try {

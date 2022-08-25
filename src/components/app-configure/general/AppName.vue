@@ -1,13 +1,20 @@
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 
-const appStore = useAppStore()
-const appName = appStore.appName
+const appsStore = useAppsStore()
+const appId = useAppId()
+
+const appName = computed(() => appsStore.app(appId).name)
 
 function onAppNameChange(appName: string) {
-  appStore.updateAppName(appName)
+  const app = appsStore.app(appId)
+  app.name = appName
+  appsStore.updateApp(appId, app)
 }
 </script>
 
