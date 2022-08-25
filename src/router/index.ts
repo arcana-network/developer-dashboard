@@ -70,6 +70,11 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
+    name: 'AppDetails',
+    path: '/apps/:appId',
+    redirect: (route) => `/apps/${route.params.appId}/dashboard`,
+  },
+  {
     name: 'Configure',
     path: '/apps/:appId/config',
     component: AppConfigure,

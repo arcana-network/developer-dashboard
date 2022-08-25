@@ -57,7 +57,7 @@ const menuItems = computed(() => {
 const loggedInUser = {
   name: authStore.name,
   action() {
-    router.push({ name: 'Profile' })
+    router.push({ name: 'Profile', params: { appId } })
   },
 }
 

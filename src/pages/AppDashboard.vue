@@ -2,7 +2,7 @@
 import bytes from 'bytes'
 import type { Chart } from 'chart.js'
 import moment from 'moment'
-import { onMounted, ref, watch, type Ref } from 'vue'
+import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ArrowRightIcon from '@/assets/iconography/arrow-right.svg'
@@ -60,6 +60,25 @@ let storageData: number[] = []
 let bandwidthData: number[] = []
 const currentDate = moment()
 const quarters = ['Jan-Mar', 'Apr-Jun', 'Jul-Sept', 'Oct-Dec']
+const storageProgressState = computed(() => {
+  if (storageUsedPercentage.value <= 50) {
+    return 'success'
+  }
+  if (storageUsedPercentage.value > 75) {
+    return 'error'
+  }
+  return 'warn'
+})
+
+const bandwidthProgressState = computed(() => {
+  if (bandwidthUsedPercentage.value <= 50) {
+    return 'success'
+  }
+  if (bandwidthUsedPercentage.value > 75) {
+    return 'error'
+  }
+  return 'warn'
+})
 
 let StorageChart: Chart
 let BandwidthChart: Chart
@@ -510,6 +529,7 @@ watch(
             <v-progress-bar
               style="width: 95%"
               :percentage="storageUsedPercentage || 1"
+              :state="storageProgressState"
               class="limits-progress"
             />
             <div
@@ -555,7 +575,7 @@ watch(
             <v-progress-bar
               style="width: 95%"
               :percentage="bandwidthUsedPercentage || 1"
-              state="error"
+              :state="bandwidthProgressState"
               class="limits-progress"
             />
             <div
