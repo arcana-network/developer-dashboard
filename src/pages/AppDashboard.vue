@@ -27,7 +27,10 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
-import { MAX_ALLOWED_APP_LIMIT } from '@/utils/constants'
+import {
+  MAX_ALLOWED_APP_LIMIT,
+  MAX_ALLOWED_APP_LIMIT_IN_BYTES,
+} from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
@@ -52,8 +55,8 @@ const storageUsed = ref('0 B')
 const bandwidthUsed = ref('0 B')
 const storageUsedPercentage = ref(0)
 const bandwidthUsedPercentage = ref(0)
-const storageRemaining = ref('5 GB')
-const bandwidthRemaining = ref('5 GB')
+const storageRemaining = ref(MAX_ALLOWED_APP_LIMIT)
+const bandwidthRemaining = ref(MAX_ALLOWED_APP_LIMIT)
 let labels: string[] = []
 let labelAliases: (string | number)[] = []
 let storageData: number[] = []
@@ -134,8 +137,8 @@ async function fetchAndPopulateUsersAndActions() {
   storageUsed.value = bytes(storage, {
     unitSeparator: ' ',
   })
-  storageUsedPercentage.value = (storage / MAX_ALLOWED_APP_LIMIT) * 100
-  storageRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT - storage, {
+  storageUsedPercentage.value = (storage / MAX_ALLOWED_APP_LIMIT_IN_BYTES) * 100
+  storageRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT_IN_BYTES - storage, {
     unitSeparator: ' ',
   })
 
@@ -143,8 +146,9 @@ async function fetchAndPopulateUsersAndActions() {
   bandwidthUsed.value = bytes(bandwidth, {
     unitSeparator: ' ',
   })
-  bandwidthUsedPercentage.value = (bandwidth / MAX_ALLOWED_APP_LIMIT) * 100
-  bandwidthRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT - bandwidth, {
+  bandwidthUsedPercentage.value =
+    (bandwidth / MAX_ALLOWED_APP_LIMIT_IN_BYTES) * 100
+  bandwidthRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT_IN_BYTES - bandwidth, {
     unitSeparator: ' ',
   })
 }

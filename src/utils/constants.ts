@@ -167,7 +167,8 @@ enum WalletMode {
 }
 
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
-const MAX_ALLOWED_APP_LIMIT = bytes('5 GB')
+const MAX_ALLOWED_APP_LIMIT = '5GB'
+const MAX_ALLOWED_APP_LIMIT_IN_BYTES = bytes(MAX_ALLOWED_APP_LIMIT)
 
 const constants = {
   sentry,
@@ -206,6 +207,7 @@ export {
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   MAX_ALLOWED_APP_LIMIT,
+  MAX_ALLOWED_APP_LIMIT_IN_BYTES,
   DOCS_URL,
 }
 

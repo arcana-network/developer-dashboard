@@ -13,7 +13,10 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { fetchStats } from '@/services/gateway.service'
 import { useAppsStore, type AppConfig } from '@/stores/apps.store'
-import { MAX_ALLOWED_APP_LIMIT } from '@/utils/constants'
+import {
+  MAX_ALLOWED_APP_LIMIT,
+  MAX_ALLOWED_APP_LIMIT_IN_BYTES,
+} from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const router = useRouter()
@@ -40,7 +43,7 @@ function goToDashboard(appId: number) {
 }
 
 function calculateLimitUsedPercent(limitUsed: number) {
-  return limitUsed / MAX_ALLOWED_APP_LIMIT / 100
+  return (limitUsed / MAX_ALLOWED_APP_LIMIT_IN_BYTES) * 100
 }
 
 function getProgressState(limitUsedPercent: number) {
@@ -142,7 +145,7 @@ appsStore.$subscribe(() => {
                   <span class="limit-title">Storage</span>
                   <span class="limit-details">
                     {{ bytes(app.storageUsed as number, {decimalPlaces: 2}) }}
-                    of 300 GB used
+                    of {{ MAX_ALLOWED_APP_LIMIT }} used
                   </span>
                   <VProgressBar
                     :percentage="app.storageUsedPercent"
@@ -154,7 +157,7 @@ appsStore.$subscribe(() => {
                   <span class="limit-title">Bandwidth</span>
                   <span class="limit-details">
                     {{ bytes(app.bandwidthUsed as number, {decimalPlaces: 2}) }}
-                    of 300 GB used
+                    of {{ MAX_ALLOWED_APP_LIMIT }} used
                   </span>
                   <VProgressBar
                     :percentage="app.bandwidthUsedPercent"
