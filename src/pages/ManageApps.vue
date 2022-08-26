@@ -212,7 +212,7 @@ appsStore.$subscribe(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(18rem, 30vw, 26rem);
+  width: clamp(20rem, 30vw, 25rem);
   height: 31rem;
   cursor: pointer;
 }
