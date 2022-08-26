@@ -53,7 +53,7 @@ onBeforeUnmount(() => {
 
 <template>
   <VCard v-if="props.value" variant="depressed" class="file-upload-card">
-    <VStack gap="2rem" justify="space-between" class="flex-grow">
+    <VStack gap="2rem" justify="space-between" align="center" class="flex-grow">
       <span class="body-1 text-ellipsis" :title="props.value">{{
         props.value
       }}</span>
@@ -70,7 +70,7 @@ onBeforeUnmount(() => {
     class="file-upload-card cursor-pointer"
     @click.stop="handleUploadClick"
   >
-    <VStack gap="2rem" justify="space-between" class="flex-grow">
+    <VStack gap="2rem" justify="space-between" align="center" class="flex-grow">
       <span class="body-1 text-ellipsis">
         {{ props.placeholder }}
       </span>
@@ -82,7 +82,7 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .file-upload-card {
-  padding: 1.25rem 1rem 1.25rem 2rem;
+  padding: 0.875rem 1rem 0.875rem 2rem;
   border-radius: 10px;
 }
 
