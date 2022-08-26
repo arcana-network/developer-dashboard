@@ -30,6 +30,7 @@ const appsStore = useAppsStore()
 const appName = ref('')
 const hasAppNameError = ref(false)
 const selectedRegion = ref(regions[0])
+const emit = defineEmits(['close'])
 
 function handleRegionChange(option: Region) {
   selectedRegion.value = option
@@ -40,6 +41,7 @@ async function handleCreateApp() {
     hasAppNameError.value = true
     return
   }
+  emit('close')
   loaderStore.showLoader('Creating App...')
   hasAppNameError.value = false
   const app = (

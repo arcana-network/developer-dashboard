@@ -188,7 +188,7 @@ appsStore.$subscribe(() => {
       </VStack>
     </main>
     <Transition name="fade" mode="out-in">
-      <CreateApp v-if="canCreateApp" />
+      <CreateApp v-if="canCreateApp" @close="canCreateApp = false" />
     </Transition>
   </div>
 </template>
