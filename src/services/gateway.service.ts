@@ -2,13 +2,14 @@ import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import bytes from 'bytes'
 
 import store from '@/stores'
-import { useAppsStore } from '@/stores/apps.store'
+import { useAppsStore, type AppId, type Theme } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
   MAX_DATA_TRANSFER_BYTES,
   RegionMapping,
   WalletMode,
+  type SocialAuthVerifier,
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
@@ -20,7 +21,7 @@ let forwarder: string, rpcUrl: string
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
 type AppConfigCred = {
-  verifier: string
+  verifier: SocialAuthVerifier | 'passwordless'
   clientId?: string
   clientSecret?: string
   redirectURL?: string
@@ -36,19 +37,19 @@ type AppConfigThemeLogo = {
 }
 
 type AppConfig = {
-  ID?: number
-  name?: string
-  address?: string
-  cred?: AppConfigCred[]
-  aggregate_login?: boolean
+  ID: AppId
+  name: string
+  address: string
+  cred: AppConfigCred[]
+  aggregate_login: boolean
   bandwidth_limit: number
   storage_limit: number
   chain: number
   region: number
-  theme?: string
-  wallet_type?: number
+  theme: Theme
+  wallet_type: number
   wallet_domain?: string
-  logo?: AppConfigThemeLogo
+  logo: AppConfigThemeLogo
 }
 
 const gatewayAuthorizedInstance = axios.create()
@@ -70,7 +71,7 @@ type CreateAppResponse = {
 }
 
 type Cred = {
-  verifier: string
+  verifier: SocialAuthVerifier | 'passwordless'
   clientId?: string
   clientSecret?: string
   redirectURL?: string
@@ -80,16 +81,9 @@ type Cred = {
 function createApp(
   config: CreateAppRequestBody
 ): Promise<AxiosResponse<CreateAppResponse>> {
-  const defaultAppConfig: AppConfig = {
+  const defaultAppConfig = {
     name: config.name,
     region: config.region,
-    chain: ChainMapping.ethereum,
-    cred: [],
-    storage_limit: MAX_DATA_TRANSFER_BYTES,
-    bandwidth_limit: MAX_DATA_TRANSFER_BYTES,
-    aggregate_login: true,
-    theme: 'dark',
-    wallet_domain: '',
   }
   return gatewayAuthorizedInstance.post(
     `${getEnvApi('v2')}/app/`,
@@ -97,14 +91,14 @@ function createApp(
   )
 }
 
-function updateApp(appId: number, updatedAppConfig: AppConfig) {
+function updateApp(appId: AppId, updatedAppConfig: AppConfig) {
   return gatewayAuthorizedInstance.patch(
     `${getEnvApi('v2')}/app/?id=${appId}`,
     updatedAppConfig
   )
 }
 
-function getAppConfigRequestBody(appId: number): AppConfig {
+function getAppConfigRequestBody(appId: AppId): Omit<AppConfig, 'ID' | 'logo'> {
   let storage_limit: number, bandwidth_limit: number
   const app = appsStore.app(appId)
 
@@ -162,21 +156,21 @@ function fetchAllApps(): Promise<AxiosResponse<AppConfig[]>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
-function fetchApp(appId: number): Promise<AxiosResponse<AppConfig>> {
+function fetchApp(appId: AppId): Promise<AxiosResponse<AppConfig>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
-function fetchStats(appId: number) {
+function fetchStats(appId: AppId) {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/overview/?id=${appId}`)
 }
 
-function fetchPeriodicUsage(appId: number, period: Duration = 'month') {
+function fetchPeriodicUsage(appId: AppId, period: Duration = 'month') {
   return gatewayAuthorizedInstance.get(
     `${getEnvApi()}/app-usage/?id=${appId}&period=${period}`
   )
 }
 
-function deleteApp(appId: number) {
+function deleteApp(appId: AppId) {
   return gatewayAuthorizedInstance.delete(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
@@ -211,25 +205,25 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
   })
 }
 
-function fetchAllUsers(appId: number) {
+function fetchAllUsers(appId: AppId) {
   return gatewayAuthorizedInstance.get(
     `${getEnvApi()}/user-details/?id=${appId}`
   )
 }
 
-function searchUsers(appId: number, address: string) {
+function searchUsers(appId: AppId, address: string) {
   return gatewayAuthorizedInstance.get(
     `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchAllUserTransactions(appId: number, address: string) {
+function fetchAllUserTransactions(appId: AppId, address: string) {
   return gatewayAuthorizedInstance.get(
     `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchMonthlyUsers(appId: number) {
+function fetchMonthlyUsers(appId: AppId) {
   return gatewayAuthorizedInstance.get(
     `${getEnvApi()}/no-of-users/?id=${appId}`
   )
@@ -256,7 +250,7 @@ function loginUser({
 }
 
 function getThemeLogo(
-  appId: number,
+  appId: AppId,
   mode: 'dark' | 'light',
   orientation: 'horizontal' | 'vertical'
 ) {
@@ -269,7 +263,7 @@ function getThemeLogo(
 }
 
 function uploadThemeLogo(
-  appId: number,
+  appId: AppId,
   file: File,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
@@ -286,7 +280,7 @@ function uploadThemeLogo(
 }
 
 function removeThemeLogo(
-  appId: number,
+  appId: AppId,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
 ) {

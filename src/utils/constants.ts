@@ -1,6 +1,6 @@
 import bytes from 'bytes'
 
-import type { UserLimitState, SocialAuthOption } from '@/stores/apps.store'
+import type { UserLimitState } from '@/stores/apps.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -109,6 +109,30 @@ const bandwidthUnits: BandwidthLimitUnit[] = [
   },
 ]
 
+type SocialAuthVerifier =
+  | 'google'
+  | 'twitter'
+  | 'twitch'
+  | 'reddit'
+  | 'github'
+  | 'discord'
+
+type SocialAuthVerifierLabel =
+  | 'Google'
+  | 'Twitter'
+  | 'Twitch'
+  | 'Reddit'
+  | 'GitHub'
+  | 'Discord'
+
+type SocialAuthOption = {
+  name: SocialAuthVerifierLabel
+  verifier: SocialAuthVerifier
+  hasClientSecret: boolean
+  hasRedirectUri: boolean
+  documentation: string
+}
+
 const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Google',
@@ -132,7 +156,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     documentation: 'https://discord.com/developers/applications',
   },
   {
-    name: 'Github',
+    name: 'GitHub',
     verifier: 'github',
     hasClientSecret: true,
     hasRedirectUri: false,
@@ -195,13 +219,6 @@ export {
   defaultUserLimit,
   socialLogins,
   regions,
-  type Region,
-  type StorageRegion,
-  type ConfigureTab,
-  type ConfigureTabType,
-  type Chain,
-  type ChainOption,
-  type BandwidthLimitUnit,
   ChainMapping,
   RegionMapping,
   WalletMode,
@@ -209,6 +226,18 @@ export {
   MAX_ALLOWED_APP_LIMIT,
   MAX_ALLOWED_APP_LIMIT_IN_BYTES,
   DOCS_URL,
+}
+
+export type {
+  Region,
+  StorageRegion,
+  ConfigureTab,
+  ConfigureTabType,
+  Chain,
+  ChainOption,
+  BandwidthLimitUnit,
+  SocialAuthVerifier,
+  SocialAuthVerifierLabel,
 }
 
 export default constants

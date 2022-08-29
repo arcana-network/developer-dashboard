@@ -7,19 +7,20 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import type {
-  SocialAuthState,
-  SocialAuthVerifier,
-  SocialAuthField,
-  AppConfig,
-} from '@/stores/apps.store'
+import type { SocialAuthState, AppConfig } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import constants, { socialLogins } from '@/utils/constants'
+import {
+  socialLogins,
+  DOCS_URL,
+  type SocialAuthVerifier,
+} from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
+
+type SocialAuthField = 'clientId' | 'clientSecret' | 'redirectUri'
 
 const socialAuthFields: SocialAuthField[] = [
   'clientId',
@@ -86,11 +87,7 @@ function handleFieldUpdate(
         authentication mechanisms. Arcana securely manages public-private key
         pair for each authenticated user using distributed key generation.
         <br />
-        <a
-          :href="`${constants.DOCS_URL}/docs/dkg`"
-          target="_blank"
-          class="learn-more"
-        >
+        <a :href="`${DOCS_URL}/docs/dkg`" target="_blank" class="learn-more">
           Learn More...
         </a>
       </template>

@@ -23,7 +23,6 @@ const router = useRouter()
 const appsStore = useAppsStore()
 
 type AppData = AppConfig & {
-  id: number
   noOfUsers?: number
   noOfFiles?: number
   storageUsed?: number

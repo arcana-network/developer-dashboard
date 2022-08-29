@@ -5,11 +5,7 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import type {
-  UserLimitParam,
-  UserLimitTarget,
-  UserLimitUnit,
-} from '@/stores/apps.store'
+import type { UserLimitTarget, UserLimitUnit } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import {
@@ -22,6 +18,12 @@ import {
 } from '@/utils/constants'
 
 type UserLimitKind = 'Unlimited' | 'Limited'
+
+type UserLimitParam = {
+  type: UserLimitTarget
+  value: number
+  unit: UserLimitUnit
+}
 
 const appsStore = useAppsStore()
 const appId = useAppId()

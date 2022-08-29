@@ -1,6 +1,8 @@
 import { useRoute } from 'vue-router'
 
-function useAppId() {
+import type { AppId } from '@/stores/apps.store'
+
+function useAppId(): AppId {
   const route = useRoute()
   return Number(route.params.appId)
 }
