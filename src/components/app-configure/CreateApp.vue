@@ -17,7 +17,6 @@ import calculateUserLimits from '@/utils/calculateUserLimits'
 import {
   RegionMapping,
   regions,
-  WalletMode,
   type Region,
   type StorageRegion,
   api,
@@ -98,6 +97,11 @@ async function handleCreateApp() {
 
 <template>
   <VOverlay>
+    <img
+      src="@/assets/iconography/close.svg"
+      class="close-btn"
+      @click.stop="emit('close')"
+    />
     <VCard variant="popup" class="create-app-modal-card">
       <h2 class="create-app-title">Create New App</h2>
       <VSeperator />
@@ -179,5 +183,13 @@ async function handleCreateApp() {
 
 .region-dropdown {
   width: 100%;
+}
+
+.close-btn {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 1.5rem;
+  cursor: pointer;
 }
 </style>
