@@ -47,7 +47,7 @@ type AppConfig = {
   chain: number
   region: number
   theme: Theme
-  wallet_type: number
+  wallet_type: WalletMode.NoUI | WalletMode.UI
   wallet_domain?: string
   logo: AppConfigThemeLogo
 }
@@ -78,6 +78,8 @@ type Cred = {
   origin?: string
 }
 
+type AppConfigRequiredProps = Omit<AppConfig, 'ID' | 'logo'>
+
 function createApp(
   config: CreateAppRequestBody
 ): Promise<AxiosResponse<CreateAppResponse>> {
@@ -91,14 +93,14 @@ function createApp(
   )
 }
 
-function updateApp(appId: AppId, updatedAppConfig: AppConfig) {
+function updateApp(appId: AppId, updatedAppConfig: AppConfigRequiredProps) {
   return gatewayAuthorizedInstance.patch(
     `${getEnvApi('v2')}/app/?id=${appId}`,
     updatedAppConfig
   )
 }
 
-function getAppConfigRequestBody(appId: AppId): Omit<AppConfig, 'ID' | 'logo'> {
+function getAppConfigRequestBody(appId: AppId): AppConfigRequiredProps {
   let storage_limit: number, bandwidth_limit: number
   const app = appsStore.app(appId)
 
@@ -135,7 +137,7 @@ function getAppConfigRequestBody(appId: AppId): Omit<AppConfig, 'ID' | 'logo'> {
     })
   }
 
-  const wallet_type = wallet.hasUIMode ? WalletMode.UI : WalletMode.NoUI
+  const wallet_type = wallet.walletType
 
   return {
     name: app.name,
@@ -152,7 +154,9 @@ function getAppConfigRequestBody(appId: AppId): Omit<AppConfig, 'ID' | 'logo'> {
   }
 }
 
-function fetchAllApps(): Promise<AxiosResponse<AppConfig[]>> {
+function fetchAllApps(): Promise<
+  AxiosResponse<(AppConfig & { CreatedAt: string })[]>
+> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
@@ -318,4 +322,5 @@ export {
   type AppConfigCred,
   type AppConfigThemeLogo,
   type Duration,
+  type AppConfigRequiredProps,
 }

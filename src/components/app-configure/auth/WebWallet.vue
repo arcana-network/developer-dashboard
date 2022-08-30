@@ -10,7 +10,7 @@ import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import constants from '@/utils/constants'
+import constants, { WalletMode } from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
@@ -40,10 +40,8 @@ const selectedTheme = computed(() => {
 const walletWebsiteDomain = computed(
   () => appsStore.app(appId).auth.wallet.websiteDomain
 )
-const hasUIMode = computed(() => appsStore.app(appId).auth.wallet.hasUIMode)
-const hasUIModeInGateway = computed(
-  () => appsStore.app(appId).auth.wallet.hasUIModeInGateway
-)
+const hasUIMode = computed(() => appsStore.hasUiMode(appId))
+const hasUIModeInGateway = computed(() => appsStore.hasUiModeInGateway(appId))
 
 function handleThemeChange(theme: ThemeData) {
   const app = appsStore.app(appId)
@@ -59,7 +57,7 @@ function handleWebsiteDomainUpdate(value: string) {
 
 function handleUIModeUpdate(value: boolean) {
   const app = appsStore.app(appId)
-  app.auth.wallet.hasUIMode = value
+  app.auth.wallet.walletType = value ? WalletMode.UI : WalletMode.NoUI
   appsStore.updateApp(appId, app)
 }
 </script>

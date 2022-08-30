@@ -51,7 +51,8 @@ async function handleCreateApp() {
     })
   ).data.app
 
-  appsStore.addApp(app.ID as number, {
+  appsStore.addApp(app.ID, {
+    id: app.ID,
     name: app.name as string,
     address: app.address as string,
     logos: {
@@ -81,15 +82,15 @@ async function handleCreateApp() {
         redirectUri: '',
       },
       wallet: {
-        hasUIMode: app.wallet_type === WalletMode.UI,
-        hasUIModeInGateway: app.wallet_type === WalletMode.UI,
+        walletType: app.wallet_type,
+        walletTypeInGateway: app.wallet_type,
         websiteDomain: app.wallet_domain,
         selectedTheme: app.theme as Theme,
       },
       redirectUri: `${api.verify}/${app.ID}/`,
     },
   })
-  createTransactionSigner(app.address as string)
+  createTransactionSigner(app.address)
   loaderStore.hideLoader()
   router.push({ name: 'GeneralSettings', params: { appId: app.ID } })
 }

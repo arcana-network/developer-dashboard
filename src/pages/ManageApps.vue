@@ -41,16 +41,16 @@ function goToDashboard(appId: number) {
   router.push({ name: 'Dashboard', params: { appId } })
 }
 
-function calculateLimitUsedPercent(limitUsed: number) {
+function calculatePercentageLimitUsed(limitUsed: number) {
   return (limitUsed / MAX_ALLOWED_APP_LIMIT_IN_BYTES) * 100
 }
 
 function getProgressState(limitUsedPercent: number) {
-  if (limitUsedPercent > 70) {
-    return 'error'
-  }
   if (limitUsedPercent <= 50) {
     return 'success'
+  }
+  if (limitUsedPercent > 70) {
+    return 'error'
   }
   return 'warn'
 }
@@ -67,10 +67,10 @@ function fetchAppDetails() {
     app.noOfFiles = stats.actions.upload - stats.actions.delete
     app.storageUsed = stats.actions.storage
     app.bandwidthUsed = stats.actions.bandwidth
-    app.storageUsedPercent = calculateLimitUsedPercent(
+    app.storageUsedPercent = calculatePercentageLimitUsed(
       app.storageUsed as number
     )
-    app.bandwidthUsedPercent = calculateLimitUsedPercent(
+    app.bandwidthUsedPercent = calculatePercentageLimitUsed(
       app.bandwidthUsed as number
     )
   })

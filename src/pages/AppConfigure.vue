@@ -11,8 +11,8 @@ import { useToast } from '@/components/lib/VToast'
 import {
   getAppConfigRequestBody,
   updateApp,
-  type AppConfig,
   type AppConfigCred,
+  type AppConfigRequiredProps,
 } from '@/services/gateway.service'
 import {
   setAppConfig,
@@ -55,8 +55,7 @@ async function handleSave() {
   const appConfigRequestBody = getAppConfigRequestBody(appId)
   const updatedApp = (await updateApp(appId, appConfigRequestBody)).data
   const currentApp = appsStore.app(appId)
-  currentApp.auth.wallet.hasUIModeInGateway =
-    updatedApp.app.wallet_type === WalletMode.UI
+  currentApp.auth.wallet.walletTypeInGateway = updatedApp.app.wallet_type
   appsStore.updateApp(appId, currentApp)
   await updateSmartContractTransactions(appConfigRequestBody)
   currentConfig = appConfigRequestBody
@@ -64,7 +63,7 @@ async function handleSave() {
   toast.success('App configuration updated')
 }
 
-async function updateSmartContractTransactions(app: AppConfig) {
+async function updateSmartContractTransactions(app: AppConfigRequiredProps) {
   try {
     const hasStorageLimitChanged =
       app.storage_limit !== currentConfig.storage_limit

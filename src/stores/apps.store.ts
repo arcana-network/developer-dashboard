@@ -36,8 +36,12 @@ type PasswordlessAuth = {
   redirectUri?: string
 }
 
+type AppId = number
+
+type WalletModeKind = WalletMode.NoUI | WalletMode.UI
+
 type App = {
-  id: number
+  id: AppId
   name: string
   address: string
   logos: {
@@ -59,8 +63,8 @@ type App = {
     wallet: {
       websiteDomain?: string
       selectedTheme: Theme
-      hasUIMode: boolean
-      hasUIModeInGateway: boolean
+      walletType: WalletModeKind
+      walletTypeInGateway: WalletModeKind
     }
     redirectUri: string
   }
@@ -72,8 +76,6 @@ type App = {
     region: StorageRegion
   }
 }
-
-type AppId = number
 
 type AppState = {
   appIds: AppId[]
@@ -94,13 +96,21 @@ const useAppsStore = defineStore('apps', {
     app: (state) => {
       return (id: AppId) => state.appsById[id]
     },
+    hasUiMode: (state) => {
+      return (id: AppId) =>
+        state.appsById[id].auth.wallet.walletType === WalletMode.UI
+    },
+    hasUiModeInGateway: (state) => {
+      return (id: AppId) =>
+        state.appsById[id].auth.wallet.walletTypeInGateway === WalletMode.UI
+    },
   },
   actions: {
     updateApp(appId: AppId, appDetails: App) {
       this.appsById[appId] = appDetails
     },
     addApp(appId: AppId, appDetails: App) {
-      this.appIds.push(appId)
+      this.appIds.unshift(appId)
       this.appsById[appId] = { ...appDetails }
     },
     deleteApp(appId: AppId) {
@@ -109,11 +119,16 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAllApps() {
       const apps = (await fetchAllApps()).data
+      apps.sort(
+        (app1, app2) => Date.parse(app2.CreatedAt) - Date.parse(app1.CreatedAt)
+      )
+      const appConfigPromises: Promise<void>[] = []
       apps.forEach((app) => {
         const appId = app.ID
         this.appIds.push(appId)
-        this.fetchAndStoreAppConfig(appId)
+        appConfigPromises.push(this.fetchAndStoreAppConfig(appId))
       })
+      await Promise.all(appConfigPromises)
     },
     async fetchAndStoreAppConfig(appId: AppId) {
       const app = (await fetchApp(appId)).data
@@ -140,8 +155,8 @@ const useAppsStore = defineStore('apps', {
         name: app.name,
         auth: {
           wallet: {
-            hasUIMode: app.wallet_type === WalletMode.UI,
-            hasUIModeInGateway: app.wallet_type === WalletMode.UI,
+            walletType: app.wallet_type,
+            walletTypeInGateway: app.wallet_type,
             websiteDomain: app.wallet_domain,
             selectedTheme: app.theme,
           },
