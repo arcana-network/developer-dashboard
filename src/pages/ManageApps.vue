@@ -3,6 +3,7 @@ import bytes from 'bytes'
 import { onBeforeMount, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import CreateApp from '@/components/app-configure/CreateApp.vue'
 import AppDelete from '@/components/app-configure/general/AppDelete.vue'
 import AppHeader from '@/components/AppHeader.vue'
@@ -12,7 +13,7 @@ import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { fetchStats } from '@/services/gateway.service'
-import { useAppsStore, type AppConfig } from '@/stores/apps.store'
+import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
 import {
   MAX_ALLOWED_APP_LIMIT,
   MAX_ALLOWED_APP_LIMIT_IN_BYTES,
@@ -53,7 +54,7 @@ function getProgressState(limitUsedPercent: number) {
   return 'warn'
 }
 
-function handleDelete(appId: number) {
+function handleDelete(appId: AppId) {
   showDeletePopup.value = true
   appToDelete.value = appId
 }
@@ -72,6 +73,12 @@ function fetchAppDetails() {
       app.bandwidthUsed as number
     )
   })
+}
+
+function getImageUrl(appId: AppId) {
+  const appLogos = appsStore.app(appId).logos
+  console.log({ appLogos })
+  return appLogos.dark.vertical || appLogos.light.vertical || AppFallbackLogo
 }
 
 onBeforeMount(fetchAppDetails)
@@ -119,7 +126,7 @@ appsStore.$subscribe(() => {
             @click.stop="goToDashboard(app.id)"
           >
             <VStack direction="column" align="center" class="app-container">
-              <img src="@/assets/dapp-fallback.svg" class="app-logo" />
+              <img :src="getImageUrl(app.id)" class="app-logo" />
               <span class="sub-heading-3 app-name">{{ app.name }}</span>
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center">
@@ -223,7 +230,11 @@ appsStore.$subscribe(() => {
 }
 
 .app-logo {
+  width: 5.5rem;
+  height: 5.5rem;
   margin-top: 0.75rem;
+  background: var(--primary-dark);
+  border-radius: 50%;
 }
 
 .app-name {

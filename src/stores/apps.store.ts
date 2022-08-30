@@ -189,7 +189,7 @@ const useAppsStore = defineStore('apps', {
             horizontal: app.logo?.light_horizontal
               ? getThemeLogo(appId, 'light', 'horizontal').url
               : '',
-            vertical: app.logo?.dark_horizontal
+            vertical: app.logo?.light_vertical
               ? getThemeLogo(appId, 'light', 'vertical').url
               : '',
           },
