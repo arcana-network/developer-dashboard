@@ -17,7 +17,6 @@ import {
   MAX_ALLOWED_APP_LIMIT,
   MAX_ALLOWED_APP_LIMIT_IN_BYTES,
 } from '@/utils/constants'
-import { createTransactionSigner } from '@/utils/signerUtils'
 
 const router = useRouter()
 const appsStore = useAppsStore()
@@ -37,8 +36,7 @@ const showDeletePopup = ref(false)
 const appToDelete = ref(0)
 
 function goToDashboard(appId: number) {
-  createTransactionSigner(appsStore.app(appId).address)
-  router.push({ name: 'Dashboard', params: { appId } })
+  router.push({ name: 'AppDetails', params: { appId } })
 }
 
 function calculatePercentageLimitUsed(limitUsed: number) {

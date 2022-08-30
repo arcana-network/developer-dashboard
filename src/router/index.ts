@@ -17,6 +17,7 @@ const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 const ManageApps = () => import('@/pages/ManageApps.vue')
+const AppDetails = () => import('@/pages/AppDetails.vue')
 
 const GeneralSettings = () =>
   import('@/components/app-configure/general/GeneralSettings.vue')
@@ -61,60 +62,61 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: 'Dashboard',
-    path: '/apps/:appId/dashboard',
-    component: AppDashboard,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
     name: 'AppDetails',
     path: '/apps/:appId',
-    redirect: (route) => `/apps/${route.params.appId}/dashboard`,
-  },
-  {
-    name: 'Configure',
-    path: '/apps/:appId/config',
-    component: AppConfigure,
-    meta: {
-      requiresAuth: true,
-    },
+    component: AppDetails,
+    props: true,
+    redirect: { name: 'Dashboard' },
     children: [
       {
-        name: 'ConfigSettings',
-        path: '',
-        redirect: (route) => `/apps/${route.params.appId}/config/general`,
+        name: 'Dashboard',
+        path: 'dashboard',
+        component: AppDashboard,
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
-        name: 'GeneralSettings',
-        path: 'general',
-        component: GeneralSettings,
+        name: 'Configure',
+        path: 'config',
+        component: AppConfigure,
+        meta: {
+          requiresAuth: true,
+        },
+        props: true,
+        redirect: { name: 'GeneralSettings' },
+        children: [
+          {
+            name: 'GeneralSettings',
+            path: 'general',
+            component: GeneralSettings,
+          },
+          {
+            name: 'AuthSettings',
+            path: 'auth',
+            component: AuthSettings,
+          },
+          {
+            name: 'StoreSettings',
+            path: 'store',
+            component: StoreSettings,
+          },
+          {
+            name: 'AccessSettings',
+            path: 'access',
+            component: AccessSettings,
+          },
+        ],
       },
       {
-        name: 'AuthSettings',
-        path: 'auth',
-        component: AuthSettings,
-      },
-      {
-        name: 'StoreSettings',
-        path: 'store',
-        component: StoreSettings,
-      },
-      {
-        name: 'AccessSettings',
-        path: 'access',
-        component: AccessSettings,
+        name: 'Users',
+        path: '/apps/:appId/users',
+        component: AppUsers,
+        meta: {
+          requiresAuth: true,
+        },
       },
     ],
-  },
-  {
-    name: 'Users',
-    path: '/apps/:appId/users',
-    component: AppUsers,
-    meta: {
-      requiresAuth: true,
-    },
   },
   {
     name: 'Profile',
