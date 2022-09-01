@@ -9,11 +9,13 @@ import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VHeader from '@/components/lib/VHeader/VHeader.vue'
 import { useAuthStore } from '@/stores/auth.store'
+import { useAppId } from '@/use/getAppId'
 import constants from '@/utils/constants'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+const appId = useAppId()
 const canShowBanner = ref(true)
 const hideHeader = ref(false)
 
@@ -25,14 +27,14 @@ const menuItems = computed(() => {
     {
       label: 'Dashboard',
       action() {
-        router.push({ name: 'Dashboard' })
+        router.push({ name: 'Dashboard', params: { appId } })
       },
       selected: false,
     },
     {
       label: 'Users',
       action() {
-        router.push({ name: 'Users' })
+        router.push({ name: 'Users', params: { appId } })
       },
       selected: false,
     },
@@ -55,7 +57,7 @@ const menuItems = computed(() => {
 const loggedInUser = {
   name: authStore.name,
   action() {
-    router.push('/profile')
+    router.push({ name: 'Profile', params: { appId } })
   },
 }
 

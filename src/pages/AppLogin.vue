@@ -8,16 +8,16 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
-import { createTransactionSigner, generateLoginInfo } from '@/utils/signerUtils'
+import { generateLoginInfo } from '@/utils/signerUtils'
 import { isValidEmail } from '@/utils/validation'
 
 const router = useRouter()
 const route = useRoute()
-const appStore = useAppStore()
+const appsStore = useAppsStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
@@ -39,14 +39,14 @@ async function launchLogin(type: string) {
 async function fetchAndStoreDetails() {
   loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
-  await appStore.fetchAppConfig()
-  createTransactionSigner()
+  await appsStore.fetchAndStoreAllApps()
   if (route.params.redirectTo) {
-    router.push({ name: String(route.params.redirectTo) })
-  } else {
     router.push({
-      name: 'Dashboard',
+      name: String(route.params.redirectTo),
+      params: route.params,
     })
+  } else {
+    router.push({ name: 'ManageApps' })
   }
   loaderStore.hideLoader()
 }

@@ -1,6 +1,6 @@
 import bytes from 'bytes'
 
-import type { UserLimitUnit, UserLimitState } from '@/stores/app.store'
+import type { UserLimitUnit, UserLimitState } from '@/stores/apps.store'
 import { MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
 
 export default function calculateUserLimits(userLimit: number): UserLimitState {

@@ -14,6 +14,7 @@ import {
   fetchAllUserTransactions,
   fetchMonthlyUsers,
 } from '@/services/gateway.service'
+import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
 
 type User = {
@@ -25,14 +26,28 @@ type User = {
   email: string
 }
 
-let users: Ref<User[]> = ref([])
-let walletAddress = ref('')
-let showDetails = ref(false)
-let userLog = ref({})
-let userTransactions = ref([])
+type UserLog = {
+  email?: string
+  walletAddress?: string
+  storage?: number
+  bandwidth?: number
+  actionCount?: number
+}
+
+type UserTransaction = {
+  type: string
+  date: string
+}
+
+const users: Ref<User[]> = ref([])
+const walletAddress = ref('')
+const showDetails = ref(false)
+const userLog: Ref<UserLog> = ref({})
+const userTransactions: Ref<UserTransaction[]> = ref([])
+const appId = useAppId()
 
 function fetchUsers() {
-  fetchAllUsers().then((response) => {
+  fetchAllUsers(appId).then((response) => {
     if (response.data instanceof Array) {
       users.value = response.data.map((user) => {
         return {
@@ -49,10 +64,10 @@ function fetchUsers() {
 }
 
 function generateMonthlyUsersChart() {
-  fetchMonthlyUsers().then((response) => {
+  fetchMonthlyUsers(appId).then((response) => {
     const currentMonth = moment()
-    let monthLabels = []
-    let monthAliases = []
+    let monthLabels: string[] = []
+    let monthAliases: { month: number; year: number }[] = []
 
     for (let i = 12 - 1; i >= 0; i--) {
       const date = currentMonth.clone().subtract(i, 'months')
@@ -102,7 +117,7 @@ onBeforeMount(() => {
 })
 
 function fetchUserLogsApi(address: string, index: number) {
-  fetchAllUserTransactions(address).then((response) => {
+  fetchAllUserTransactions(appId, address).then((response) => {
     users.value[index].email = response.data.email
     if (response.data.transaction instanceof Array) {
       userLog.value = users.value[index]
@@ -132,7 +147,7 @@ function truncate(address: string) {
 
 function searchUsersByWalletAddress() {
   if (walletAddress.value.trim()) {
-    searchUsers(walletAddress.value).then((response) => {
+    searchUsers(appId, walletAddress.value).then((response) => {
       if (response.data?.usage?.address) {
         const user = response.data.usage
         users.value = [
@@ -142,6 +157,7 @@ function searchUsersByWalletAddress() {
             storage: user.storage,
             bandwidth: user.bandwidth,
             actionCount: user.action_count,
+            email: user.email,
           },
         ]
       } else {
@@ -161,13 +177,13 @@ function convertToBytes(value: number) {
 <template>
   <div>
     <app-header />
-    <main class="container" style="margin-top: 4vh">
+    <main class="container" style="margin-top: 2rem">
       <h1>USERS</h1>
       <div
         class="flex sm-column"
-        style="gap: 1em; justify-content: space-between; margin-top: 4vh"
+        style="gap: 1em; justify-content: space-between; margin-top: 2rem"
       >
-        <h4>USER DETAILS</h4>
+        <h4 class="user-details-title">USER DETAILS</h4>
         <v-text-field
           v-model="walletAddress"
           :icon="SearchIcon"
@@ -182,7 +198,7 @@ function convertToBytes(value: number) {
       <v-card
         variant="elevated"
         class="flex column users-table-card"
-        style="margin-top: 4vh"
+        style="margin-top: 1rem"
       >
         <div class="table-container">
           <table class="table-head">
@@ -212,7 +228,7 @@ function convertToBytes(value: number) {
           <h4 v-else>No records found</h4>
         </div>
       </v-card>
-      <div class="flex column" style="gap: 2em; margin-top: 4em">
+      <div class="flex column" style="gap: 1rem; margin-top: 3rem">
         <h4>NUMBER OF USERS</h4>
         <v-card variant="elevated" style="height: 240px; padding: 2em">
           <canvas id="numberOfUsersChart" height="100%"></canvas>
@@ -273,7 +289,7 @@ function convertToBytes(value: number) {
             gap: 4vh;
             justify-content: space-between;
             padding: 0 2vh;
-            margin-bottom: 2vh;
+            margin-bottom: 1rem;
           "
         >
           <div class="flex column" style="gap: 1vh">
@@ -289,7 +305,7 @@ function convertToBytes(value: number) {
               Storage
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ convertToBytes(userLog.storage) }}
+              {{ convertToBytes(userLog.storage as number) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -297,7 +313,7 @@ function convertToBytes(value: number) {
               Bandwidth
             </span>
             <span class="sub-heading-3" style="color: var(--text-white)">
-              {{ convertToBytes(userLog.bandwidth) }}
+              {{ convertToBytes(userLog.bandwidth as number) }}
             </span>
           </div>
           <div class="flex column" style="gap: 1vh">
@@ -325,7 +341,7 @@ function convertToBytes(value: number) {
                 <tbody>
                   <tr
                     v-for="transaction in userTransactions"
-                    :key="transaction"
+                    :key="`${transaction.date}-${transaction.type}`"
                   >
                     <td>{{ transaction.type }}</td>
                     <td>{{ getDate(transaction.date) }}</td>
@@ -416,6 +432,11 @@ tbody tr:active {
   color: var(--text-white);
   background: rgb(255 255 255 / 10%);
   box-shadow: unset;
+}
+
+.user-details-title {
+  display: flex;
+  align-items: center;
 }
 
 @media only screen and (max-width: 767px) {

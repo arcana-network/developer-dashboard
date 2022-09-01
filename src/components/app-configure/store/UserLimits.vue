@@ -1,46 +1,50 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef } from 'vue'
+import { computed, type ComputedRef, ref } from 'vue'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import type {
-  UserLimitParam,
-  UserLimitTarget,
-  UserLimitUnit,
-} from '@/stores/app.store'
-import { useAppStore } from '@/stores/app.store'
+import type { UserLimitTarget, UserLimitUnit } from '@/stores/apps.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import {
   userLimitOptions,
   storageValues,
   bandwidthUnits,
   type BandwidthLimitUnit,
+  defaultUserLimit,
+  unlimitedUserLimit,
 } from '@/utils/constants'
 
 type UserLimitKind = 'Unlimited' | 'Limited'
 
-const appStore = useAppStore()
+type UserLimitParam = {
+  type: UserLimitTarget
+  value: number
+  unit: UserLimitUnit
+}
+
+const appsStore = useAppsStore()
+const appId = useAppId()
+const userLimits = ref(appsStore.app(appId).store.userLimits)
+
+const storageLimit = computed(() => userLimits.value.storage)
+const bandwidthLimit = computed(() => userLimits.value.bandwidth)
 
 const storageLimitKind = computed(() => {
-  return appStore.store.userLimits.storage.isUnlimited ? 'Unlimited' : 'Limited'
+  return storageLimit.value.isUnlimited ? 'Unlimited' : 'Limited'
 })
 
 const bandwidthLimitKind = computed(() => {
-  return appStore.store.userLimits.bandwidth.isUnlimited
-    ? 'Unlimited'
-    : 'Limited'
+  return bandwidthLimit.value.isUnlimited ? 'Unlimited' : 'Limited'
 })
-
-const storageLimit = appStore.store.userLimits.storage
-const bandwidthLimit = appStore.store.userLimits.bandwidth
 
 const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
   computed(() => {
-    if (!appStore.store.userLimits.bandwidth.isUnlimited) {
+    if (!bandwidthLimit.value.isUnlimited) {
       return bandwidthUnits.find(
-        (bandwidthUnit) =>
-          bandwidthUnit.value === appStore.store.userLimits.bandwidth.unit
+        (bandwidthUnit) => bandwidthUnit.value === bandwidthLimit.value.unit
       )
     } else {
       return undefined
@@ -48,13 +52,28 @@ const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
   })
 
 function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
-  const isUnlimited: boolean = value === 'Unlimited' ? true : false
-  appStore.toggleUserLimit({ type, isUnlimited })
+  const app = appsStore.app(appId)
+  if (value === 'Unlimited') {
+    app.store.userLimits[type] = { ...unlimitedUserLimit }
+  } else {
+    app.store.userLimits[type] = { ...defaultUserLimit }
+  }
+  appsStore.updateApp(appId, app)
 }
 
 function handleUserLimitFieldChange({ type, unit, value }: UserLimitParam) {
-  appStore.updateUserLimit(type, value, unit)
+  const app = appsStore.app(appId)
+  app.store.userLimits[type] = {
+    isUnlimited: false,
+    value,
+    unit,
+  }
+  appsStore.updateApp(appId, app)
 }
+
+appsStore.$subscribe(() => {
+  userLimits.value = appsStore.app(appId).store.userLimits
+})
 </script>
 
 <template>

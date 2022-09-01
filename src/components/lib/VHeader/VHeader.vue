@@ -278,6 +278,8 @@ header section {
 }
 
 .menu-item {
+  display: flex;
+  align-items: center;
   font-family: var(--font-title);
   font-size: 1.125em;
   font-weight: 700;
@@ -289,9 +291,13 @@ header section {
 .logo,
 .menu-item,
 .notification-icon {
-  padding: 2em 1em;
+  padding: 1.25rem 1rem;
   cursor: pointer;
   transition: opacity 0.3s;
+}
+
+.logo img {
+  vertical-align: middle;
 }
 
 .notification-icon {

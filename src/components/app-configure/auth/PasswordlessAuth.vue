@@ -1,18 +1,22 @@
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import constants from '@/utils/constants'
 
-const appStore = useAppStore()
+const appsStore = useAppsStore()
+const appId = useAppId()
 
-function handleJavascriptOriginUpdate(value: string) {
-  appStore.updatePasswordlessAuthJavascriptOrigin(value)
-}
+const passwordless = computed(() => appsStore.app(appId).auth.passwordless)
 
-function handleRedirectUriUpdate(value: string) {
-  appStore.updatePasswordlessAuthRedirectUri(value)
+function handleUpdate(type: 'javascriptOrigin' | 'redirectUri', value: string) {
+  const app = appsStore.app(appId)
+  app.auth.passwordless[type] = value
+  appsStore.updateApp(appId, app)
 }
 </script>
 
@@ -43,10 +47,10 @@ function handleRedirectUriUpdate(value: string) {
         <label for="passwordless-javascript-origin">JavaScript Origin</label>
         <VTextField
           id="passwordless-javascript-origin"
-          :model-value="appStore.auth.passwordless.javascriptOrigin"
+          :model-value="passwordless.javascriptOrigin"
           class="passwordless-input"
           no-message
-          @update:model-value="handleJavascriptOriginUpdate"
+          @update:model-value="handleUpdate('javascriptOrigin', $event)"
         />
       </VStack>
       <VStack
@@ -59,10 +63,10 @@ function handleRedirectUriUpdate(value: string) {
         <label for="passwordless-redirect-uri">Redirect URI</label>
         <VTextField
           id="passwordless-redirect-uri"
-          :model-value="appStore.auth.passwordless.redirectUri"
+          :model-value="passwordless.redirectUri"
           class="passwordless-input"
           no-message
-          @update:model-value="handleRedirectUriUpdate"
+          @update:model-value="handleUpdate('redirectUri', $event)"
         />
       </VStack>
     </SettingCard>
