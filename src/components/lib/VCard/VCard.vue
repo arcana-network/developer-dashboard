@@ -52,13 +52,9 @@ const classes = computed(() => {
 <style scoped>
 .card {
   display: flex;
-  background: radial-gradient(
-    134.5% 939.99% at -23.59% -12.9%,
-    #262626 0%,
-    rgb(26 26 26 / 86.3%) 31.41%,
-    rgb(32 32 32 / 49%) 100%
-  );
-  border-radius: 20px;
+  color: var(--text-white);
+  background: #262626;
+  border-radius: 10px;
 }
 
 .card.elevated {
@@ -68,8 +64,8 @@ const classes = computed(() => {
 .card.depressed {
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   border-radius: 10px;
-  box-shadow: inset -2px -2px 4px rgb(57 57 57 / 44%),
-    inset 5px 5px 10px rgb(11 11 11 / 50%);
+  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
+    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
 }
 
 .card.popup {

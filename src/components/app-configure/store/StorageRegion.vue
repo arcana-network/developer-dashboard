@@ -2,11 +2,14 @@
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import { regions, DOCS_URL } from '@/utils/constants'
 
-const appStore = useAppStore()
-const storageRegion = appStore.store.region
+const appsStore = useAppsStore()
+const appId = useAppId()
+
+const storageRegion = appsStore.app(appId).store.region
 const selectedRegion = regions.find((region) => region.value === storageRegion)
 </script>
 

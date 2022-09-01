@@ -7,14 +7,17 @@ import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import getEnvApi from '@/utils/get-env-api'
 
-const appStore = useAppStore()
+const appsStore = useAppsStore()
 const toast = useToast()
+const appId = useAppId()
+const currentApp = appsStore.app(appId)
 
 type OrientationOption = {
-  logo: string
+  logo?: string
   isLoading: boolean
   hasError: boolean
 }
@@ -32,24 +35,24 @@ type ThemeLogo = {
 const themeLogos: ThemeLogo = reactive({
   dark: {
     vertical: {
-      logo: appStore.logos.dark.vertical,
+      logo: currentApp.logos.dark.vertical,
       isLoading: false,
       hasError: false,
     },
     horizontal: {
-      logo: appStore.logos.dark.horizontal,
+      logo: currentApp.logos.dark.horizontal,
       isLoading: false,
       hasError: false,
     },
   },
   light: {
     vertical: {
-      logo: appStore.logos.light.vertical,
+      logo: currentApp.logos.light.vertical,
       isLoading: false,
       hasError: false,
     },
     horizontal: {
-      logo: appStore.logos.light.horizontal,
+      logo: currentApp.logos.light.horizontal,
       isLoading: false,
       hasError: false,
     },
@@ -67,13 +70,14 @@ async function handleFileChange(
   themeLogos[mode][orientation].hasError = false
   themeLogos[mode][orientation].isLoading = true
   try {
-    await uploadThemeLogo(files[0], mode, orientation)
+    await uploadThemeLogo(appId, files[0], mode, orientation)
     toast.success('Logo uploaded successfully')
-    const logoUrl = `${getEnvApi('v2')}/app/${
-      appStore.appId
-    }/logo?type=${mode}&orientation=${orientation}`
+    const logoUrl = `${getEnvApi(
+      'v2'
+    )}/app/${appId}/logo?type=${mode}&orientation=${orientation}`
     themeLogos[mode][orientation].logo = logoUrl
-    appStore.updateLogo({ mode, orientation, url: logoUrl })
+    currentApp.logos[mode][orientation] = logoUrl
+    appsStore.updateApp(appId, currentApp)
   } catch (e) {
     console.error(e)
     toast.error("Couldn't upload logo. Please try again or contact support")
@@ -88,7 +92,7 @@ async function handleFileRemove(
 ) {
   themeLogos[mode][orientation].isLoading = true
   try {
-    await removeThemeLogo(mode, orientation)
+    await removeThemeLogo(appId, mode, orientation)
     toast.success('Logo removed successfully')
     themeLogos[mode][orientation].logo = ''
   } catch (e) {

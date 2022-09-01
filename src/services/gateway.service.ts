@@ -2,25 +2,26 @@ import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import bytes from 'bytes'
 
 import store from '@/stores'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore, type AppId, type Theme } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
   MAX_DATA_TRANSFER_BYTES,
   RegionMapping,
   WalletMode,
+  type SocialAuthVerifier,
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(store)
-const appStore = useAppStore()
+const appsStore = useAppsStore()
 
 let forwarder: string, rpcUrl: string
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
 type AppConfigCred = {
-  verifier: string
+  verifier: SocialAuthVerifier | 'passwordless'
   clientId?: string
   clientSecret?: string
   redirectURL?: string
@@ -36,19 +37,19 @@ type AppConfigThemeLogo = {
 }
 
 type AppConfig = {
-  ID?: number
-  name?: string
-  address?: string
-  cred?: AppConfigCred[]
-  aggregate_login?: boolean
+  ID: AppId
+  name: string
+  address: string
+  cred: AppConfigCred[]
+  aggregate_login: boolean
   bandwidth_limit: number
   storage_limit: number
   chain: number
   region: number
-  theme?: string
-  wallet_type?: number
+  theme: Theme
+  wallet_type: WalletMode.NoUI | WalletMode.UI
   wallet_domain?: string
-  logo?: AppConfigThemeLogo
+  logo: AppConfigThemeLogo
 }
 
 const gatewayAuthorizedInstance = axios.create()
@@ -64,19 +65,27 @@ type CreateAppRequestBody = {
   region: number
 }
 
+type CreateAppResponse = {
+  app: AppConfig
+  txHash: string
+}
+
+type Cred = {
+  verifier: SocialAuthVerifier | 'passwordless'
+  clientId?: string
+  clientSecret?: string
+  redirectURL?: string
+  origin?: string
+}
+
+type AppConfigRequiredProps = Omit<AppConfig, 'ID' | 'logo'>
+
 function createApp(
   config: CreateAppRequestBody
-): Promise<AxiosResponse<AppConfig>> {
-  const defaultAppConfig: AppConfig = {
+): Promise<AxiosResponse<CreateAppResponse>> {
+  const defaultAppConfig = {
     name: config.name,
     region: config.region,
-    chain: ChainMapping.ethereum,
-    cred: [],
-    storage_limit: MAX_DATA_TRANSFER_BYTES,
-    bandwidth_limit: MAX_DATA_TRANSFER_BYTES,
-    aggregate_login: true,
-    theme: 'dark',
-    wallet_domain: '',
   }
   return gatewayAuthorizedInstance.post(
     `${getEnvApi('v2')}/app/`,
@@ -84,18 +93,19 @@ function createApp(
   )
 }
 
-function updateApp(updatedAppConfig: AppConfig) {
+function updateApp(appId: AppId, updatedAppConfig: AppConfigRequiredProps) {
   return gatewayAuthorizedInstance.patch(
-    `${getEnvApi('v2')}/app/?id=${appStore.appId}`,
+    `${getEnvApi('v2')}/app/?id=${appId}`,
     updatedAppConfig
   )
 }
 
-function getAppConfigRequestBody(): AppConfig {
+function getAppConfigRequestBody(appId: AppId): AppConfigRequiredProps {
   let storage_limit: number, bandwidth_limit: number
+  const app = appsStore.app(appId)
 
-  const storageLimit = appStore.store.userLimits.storage
-  const bandwidthLimit = appStore.store.userLimits.bandwidth
+  const storageLimit = app.store.userLimits.storage
+  const bandwidthLimit = app.store.userLimits.bandwidth
   if (storageLimit.isUnlimited) {
     storage_limit = MAX_DATA_TRANSFER_BYTES
   } else {
@@ -108,14 +118,8 @@ function getAppConfigRequestBody(): AppConfig {
     bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
   }
 
-  const socialAuth = appStore.auth.social
-  const cred: {
-    verifier: string
-    clientId?: string
-    clientSecret?: string
-    redirectURL?: string
-    origin?: string
-  }[] = socialAuth.map((authType) => {
+  const { social, passwordless, wallet } = app.auth
+  const cred: Cred[] = social.map((authType) => {
     return {
       verifier: authType.verifier,
       clientId: authType.clientId,
@@ -124,60 +128,54 @@ function getAppConfigRequestBody(): AppConfig {
     }
   })
 
-  if (
-    appStore.auth.passwordless.javascriptOrigin &&
-    appStore.auth.passwordless.redirectUri
-  ) {
+  const { javascriptOrigin, redirectUri } = passwordless
+  if (javascriptOrigin && redirectUri) {
     cred.push({
       verifier: 'passwordless',
-      origin: appStore.auth.passwordless.javascriptOrigin,
-      redirectURL: appStore.auth.passwordless.redirectUri,
+      origin: javascriptOrigin,
+      redirectURL: redirectUri,
     })
   }
 
-  const wallet_type = appStore.auth.wallet.hasUIMode
-    ? WalletMode.UI
-    : WalletMode.NoUI
+  const wallet_type = wallet.walletType
 
   return {
-    name: appStore.appName,
-    address: appStore.appAddress,
+    name: app.name,
+    address: app.address,
     storage_limit,
     bandwidth_limit,
     cred,
     aggregate_login: true,
-    chain: ChainMapping[appStore.access.selectedChain],
-    region: RegionMapping[appStore.store.region],
-    theme: appStore.auth.wallet.selectedTheme,
-    wallet_domain: appStore.auth.wallet.websiteDomain,
+    chain: ChainMapping[app.access.selectedChain],
+    region: RegionMapping[app.store.region],
+    theme: wallet.selectedTheme,
+    wallet_domain: wallet.websiteDomain,
     wallet_type,
   }
 }
 
-function fetchAllApps() {
+function fetchAllApps(): Promise<
+  AxiosResponse<(AppConfig & { CreatedAt: string })[]>
+> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
-function fetchApp(appId?: number) {
+function fetchApp(appId: AppId): Promise<AxiosResponse<AppConfig>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
-function fetchStats() {
+function fetchStats(appId: AppId) {
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/overview/?id=${appId}`)
+}
+
+function fetchPeriodicUsage(appId: AppId, period: Duration = 'month') {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/overview/?id=${appStore.appId}`
+    `${getEnvApi()}/app-usage/?id=${appId}&period=${period}`
   )
 }
 
-function fetchPeriodicUsage(period: Duration = 'month') {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/app-usage/?id=${appStore.appId}&period=${period}`
-  )
-}
-
-function deleteApp() {
-  return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/?id=${appStore.appId}`
-  )
+function deleteApp(appId: AppId) {
+  return gatewayAuthorizedInstance.delete(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
 async function fetchAndStoreConfig() {
@@ -211,27 +209,27 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
   })
 }
 
-function fetchAllUsers() {
+function fetchAllUsers(appId: AppId) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details/?id=${appStore.appId}`
+    `${getEnvApi()}/user-details/?id=${appId}`
   )
 }
 
-function searchUsers(address: string) {
+function searchUsers(appId: AppId, address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchAllUserTransactions(address: string) {
+function fetchAllUserTransactions(appId: AppId, address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${appStore.appId}&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchMonthlyUsers() {
+function fetchMonthlyUsers(appId: AppId) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/no-of-users/?id=${appStore.appId}`
+    `${getEnvApi()}/no-of-users/?id=${appId}`
   )
 }
 
@@ -256,10 +254,11 @@ function loginUser({
 }
 
 function getThemeLogo(
+  appId: AppId,
   mode: 'dark' | 'light',
   orientation: 'horizontal' | 'vertical'
 ) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${appStore.appId}/logo`
+  const logoFetchUrl = `${getEnvApi('v2')}/app/${appId}/logo`
   return {
     mode,
     orientation,
@@ -268,6 +267,7 @@ function getThemeLogo(
 }
 
 function uploadThemeLogo(
+  appId: AppId,
   file: File,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
@@ -275,7 +275,7 @@ function uploadThemeLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo`,
     formData,
     {
       params: { type: mode, orientation },
@@ -284,11 +284,12 @@ function uploadThemeLogo(
 }
 
 function removeThemeLogo(
+  appId: AppId,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
 ) {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/${appStore.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo`,
     {
       params: { type: mode, orientation },
     }
@@ -321,4 +322,5 @@ export {
   type AppConfigCred,
   type AppConfigThemeLogo,
   type Duration,
+  type AppConfigRequiredProps,
 }

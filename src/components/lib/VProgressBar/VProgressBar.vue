@@ -39,14 +39,11 @@ progress,
 progress::-webkit-progress-bar,
 .progress {
   min-width: 7.5em;
-  height: 1em;
+  height: 100%;
   color: #8fff00;
-  background: linear-gradient(143.36deg, #000 115.05%, #c6c6c6 -4.7%);
-  border-radius: 999px;
-  box-shadow: inset -2px -2px 4px rgb(80 80 80 / 10%),
-    inset 5px 5px 5px rgb(0 0 0 / 21%),
-    inset -10px -26px 33px -28px rgb(255 255 255 / 10%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  border-radius: 100px;
+  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%);
   appearance: none;
 }
 

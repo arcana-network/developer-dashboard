@@ -1,9 +1,7 @@
 import { getConfig } from '@/services/gateway.service'
-import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import getEnvApi from '@/utils/get-env-api'
 
-const appStore = useAppStore()
 const authStore = useAuthStore()
 
 type SmartContractAcceptedValue = (string | undefined | number)[]
@@ -31,9 +29,9 @@ let signTransaction: (
   value?: SmartContractAcceptedValue
 ) => Promise<string>
 
-function getTransactionRequestProps(): SmartContractRequestParams {
-  let appAddress: string = appStore.appAddress
-
+function getTransactionRequestProps(
+  appAddress: string
+): SmartContractRequestParams {
   if (!appAddress.startsWith('0x')) {
     appAddress = `0x${appAddress}`
   }
@@ -48,9 +46,9 @@ function getTransactionRequestProps(): SmartContractRequestParams {
   }
 }
 
-async function createTransactionSigner() {
+async function createTransactionSigner(address: string) {
   const { appAddress, gateway, forwarderAddress, accessToken } =
-    getTransactionRequestProps()
+    getTransactionRequestProps(address)
   const provider = window.arcana.provider
   signTransaction = window.transactionSigner.createTransactionSigner({
     appAddress,

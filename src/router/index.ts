@@ -5,12 +5,10 @@ import {
   type RouteRecordRaw,
 } from 'vue-router'
 
-import { useAppStore } from '@/stores/app.store'
 import { useAuthStore } from '@/stores/auth.store'
 import constants from '@/utils/constants'
 
 const authStore = useAuthStore()
-const appStore = useAppStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppConfigure = () => import('@/pages/AppConfigure.vue')
@@ -18,6 +16,8 @@ const AppProfile = () => import('@/pages/AppProfile.vue')
 const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
+const ManageApps = () => import('@/pages/ManageApps.vue')
+const AppDetails = () => import('@/pages/AppDetails.vue')
 
 const GeneralSettings = () =>
   import('@/components/app-configure/general/GeneralSettings.vue')
@@ -27,7 +27,6 @@ const StoreSettings = () =>
   import('@/components/app-configure/store/StoreSettings.vue')
 const AccessSettings = () =>
   import('@/components/app-configure/access/AccessSettings.vue')
-const CreateApp = () => import('@/components/app-configure/CreateApp.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -55,68 +54,69 @@ const routes: RouteRecordRaw[] = [
     redirect: '/login',
   },
   {
+    name: 'ManageApps',
     path: '/apps',
-    redirect: appStore.appId
-      ? `/apps/${appStore.appId}/dashboard`
-      : '/apps/create',
-  },
-  {
-    name: 'Dashboard',
-    path: '/apps/:appId/dashboard',
-    component: AppDashboard,
+    component: ManageApps,
     meta: {
       requiresAuth: true,
     },
   },
   {
-    name: 'Configure',
-    path: '/apps/:appId/configure',
-    component: AppConfigure,
-    meta: {
-      requiresAuth: true,
-    },
+    name: 'AppDetails',
+    path: '/apps/:appId',
+    component: AppDetails,
+    props: true,
+    redirect: { name: 'Dashboard' },
     children: [
       {
-        path: '',
-        redirect: `/apps/${appStore.appId}/configure/general`,
+        name: 'Dashboard',
+        path: 'dashboard',
+        component: AppDashboard,
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
-        name: 'GeneralSettings',
-        path: 'general',
-        component: GeneralSettings,
+        name: 'Configure',
+        path: 'config',
+        component: AppConfigure,
+        meta: {
+          requiresAuth: true,
+        },
+        props: true,
+        redirect: { name: 'GeneralSettings' },
+        children: [
+          {
+            name: 'GeneralSettings',
+            path: 'general',
+            component: GeneralSettings,
+          },
+          {
+            name: 'AuthSettings',
+            path: 'auth',
+            component: AuthSettings,
+          },
+          {
+            name: 'StoreSettings',
+            path: 'store',
+            component: StoreSettings,
+          },
+          {
+            name: 'AccessSettings',
+            path: 'access',
+            component: AccessSettings,
+          },
+        ],
       },
       {
-        name: 'AuthSettings',
-        path: 'auth',
-        component: AuthSettings,
-      },
-      {
-        name: 'StoreSettings',
-        path: 'store',
-        component: StoreSettings,
-      },
-      {
-        name: 'AccessSettings',
-        path: 'access',
-        component: AccessSettings,
+        name: 'Users',
+        path: '/apps/:appId/users',
+        component: AppUsers,
+        meta: {
+          requiresAuth: true,
+        },
       },
     ],
-  },
-  {
-    name: 'CreateApp',
-    path: '/apps/create',
-    component: CreateApp,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    name: 'Users',
-    path: '/apps/:appId/users',
-    component: AppUsers,
-    meta: {
-      requiresAuth: true,
-    },
   },
   {
     name: 'Profile',
@@ -146,17 +146,12 @@ router.beforeEach((to, from, next) => {
     to.matched.some((record) => record.meta.requiresAuth) &&
     !authStore.accessToken
   ) {
-    router.push({ name: 'Login', params: { redirectTo: String(to.name) } })
+    router.push({
+      name: 'Login',
+      params: { redirectTo: String(to.name), ...to.params },
+    })
   } else if (to.name === 'Login' && authStore.accessToken) {
-    router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
-  } else if (
-    to.path.includes('/app') &&
-    to.name !== 'CreateApp' &&
-    !appStore.appId
-  ) {
-    router.push({ name: 'CreateApp' })
-  } else if (to.name === 'CreateApp' && appStore.appId) {
-    router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
+    router.push({ name: 'ManageApps' })
   }
   return next()
 })

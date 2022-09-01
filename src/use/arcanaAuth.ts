@@ -1,6 +1,6 @@
 import { AuthProvider } from '@arcana/auth'
 
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 
 const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID
@@ -10,7 +10,7 @@ let authInstance: AuthProvider
 
 function useArcanaAuth() {
   const authStore = useAuthStore()
-  const appStore = useAppStore()
+  const appsStore = useAppsStore()
 
   async function init() {
     if (!authInstance) {
@@ -45,7 +45,7 @@ function useArcanaAuth() {
 
   async function logout() {
     await authInstance.logout()
-    appStore.$reset()
+    appsStore.$reset()
     authStore.$reset()
   }
 

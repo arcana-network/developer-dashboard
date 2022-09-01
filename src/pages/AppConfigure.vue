@@ -11,16 +11,17 @@ import { useToast } from '@/components/lib/VToast'
 import {
   getAppConfigRequestBody,
   updateApp,
-  type AppConfig,
   type AppConfigCred,
+  type AppConfigRequiredProps,
 } from '@/services/gateway.service'
 import {
   setAppConfig,
   setDefaultLimit,
   enableUiMode,
 } from '@/services/smart-contract.service'
-import { useAppStore } from '@/stores/app.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { useAppId } from '@/use/getAppId'
 import {
   WalletMode,
   type ConfigureTab,
@@ -29,39 +30,40 @@ import {
 
 const currentTab: Ref<ConfigureTabType> = ref('general')
 const router = useRouter()
-const appStore = useAppStore()
+const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const route = useRoute()
+const appId = useAppId()
 
 currentTab.value = String(route.name)
   .replace('Settings', '')
   .toLowerCase() as ConfigureTabType
 
-let currentConfig = getAppConfigRequestBody()
+let currentConfig = getAppConfigRequestBody(appId)
 
 function switchTab(tab: ConfigureTab) {
   currentTab.value = tab.type
   router.push({
     name: `${tab.label}Settings`,
-    params: { appId: appStore.appId },
+    params: { appId },
   })
 }
 
 async function handleSave() {
   loaderStore.showLoader('Saving app config...')
-  const appConfigRequestBody = getAppConfigRequestBody()
-  const updatedApp = (await updateApp(appConfigRequestBody)).data
-  appStore.updateWalletUIModeFromGateway(
-    updatedApp.app.wallet_type === WalletMode.UI
-  )
+  const appConfigRequestBody = getAppConfigRequestBody(appId)
+  const updatedApp = (await updateApp(appId, appConfigRequestBody)).data
+  const currentApp = appsStore.app(appId)
+  currentApp.auth.wallet.walletTypeInGateway = updatedApp.app.wallet_type
+  appsStore.updateApp(appId, currentApp)
   await updateSmartContractTransactions(appConfigRequestBody)
   currentConfig = appConfigRequestBody
   loaderStore.hideLoader()
   toast.success('App configuration updated')
 }
 
-async function updateSmartContractTransactions(app: AppConfig) {
+async function updateSmartContractTransactions(app: AppConfigRequiredProps) {
   try {
     const hasStorageLimitChanged =
       app.storage_limit !== currentConfig.storage_limit
@@ -109,8 +111,8 @@ function handleSmartContractErrors(type: string, error: unknown) {
 }
 
 function handleCancel() {
-  appStore.fetchAppConfig()
-  router.push({ name: 'Dashboard', params: { appId: appStore.appId } })
+  appsStore.fetchAndStoreAppConfig(appId)
+  router.back()
 }
 </script>
 
@@ -136,6 +138,6 @@ function handleCancel() {
 }
 
 .configure-footer {
-  margin-top: 4rem;
+  margin-top: 8rem;
 }
 </style>
