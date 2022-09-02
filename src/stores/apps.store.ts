@@ -160,7 +160,7 @@ const useAppsStore = defineStore('apps', {
             websiteDomain: app.wallet_domain,
             selectedTheme: app.theme,
           },
-          redirectUri: `${api.verify}/${app.ID}/`,
+          redirectUri: `${api.verify}/${appId}/`,
           social: socialAuth,
           passwordless: passwordlessAuth,
         },
