@@ -2,7 +2,12 @@ import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import bytes from 'bytes'
 
 import store from '@/stores'
-import { useAppsStore, type AppId, type Theme } from '@/stores/apps.store'
+import {
+  useAppsStore,
+  type AppId,
+  type Theme,
+  type AppConfig as AppState,
+} from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
@@ -93,17 +98,17 @@ function createApp(
   )
 }
 
-function updateApp(appId: AppId, updatedAppConfig: AppConfigRequiredProps) {
+function updateApp(appId: AppId, updatedAppConfig: AppState) {
+  const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
   return gatewayAuthorizedInstance.patch(
     `${getEnvApi('v2')}/app/?id=${appId}`,
-    updatedAppConfig
+    appConfigRequestBody
   )
 }
 
-function getAppConfigRequestBody(appId: AppId): AppConfigRequiredProps {
+function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
+  console.log(app)
   let storage_limit: number, bandwidth_limit: number
-  const app = appsStore.app(appId)
-
   const storageLimit = app.store.userLimits.storage
   const bandwidthLimit = app.store.userLimits.bandwidth
   if (storageLimit.isUnlimited) {
