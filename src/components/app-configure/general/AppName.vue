@@ -1,33 +1,55 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { ref } from 'vue'
 
+import ConfigureFooter from '@/components/app-configure/ConfigureFooter.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
+import { updateApp } from '@/services/gateway.service'
+import { setAppConfig } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
+const loaderStore = useLoaderStore()
+const toast = useToast()
 
-const appName = computed(() => appsStore.app(appId).name)
+const appName = ref(appsStore.app(appId).name)
 
-function onAppNameChange(appName: string) {
+async function handleSave() {
   const app = appsStore.app(appId)
-  app.name = appName
-  appsStore.updateApp(appId, app)
+  if (appName.value && appName.value !== app.name) {
+    try {
+      loaderStore.showLoader('Saving app name...')
+      await updateApp(appId, { ...app, name: appName.value })
+      toast.success('Updated app name')
+      loaderStore.showLoader('Updating app config in smart contract...')
+      await setAppConfig(app.name, app.auth.social)
+      toast.success('App config saved in blockchain')
+      app.name = appName.value
+    } catch (e) {
+      toast.error('Error occured while updating the app name.')
+    } finally {
+      loaderStore.hideLoader()
+    }
+  }
+}
+
+function handleCancel() {
+  appName.value = appsStore.app(appId).name
 }
 </script>
 
 <template>
   <section name="configure-app-name">
     <SettingCard>
-      <template #title>Enter App Name</template>
-      <VTextField
-        :model-value="appName"
-        class="app-name-input"
-        no-message
-        @update:model-value="onAppNameChange"
-      />
+      <template #title>App Name</template>
+      <form @submit.prevent="handleSave">
+        <VTextField v-model.trim="appName" class="app-name-input" no-message />
+        <ConfigureFooter @cancel="handleCancel" />
+      </form>
     </SettingCard>
   </section>
 </template>
