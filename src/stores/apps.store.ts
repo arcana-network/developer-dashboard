@@ -141,11 +141,11 @@ const useAppsStore = defineStore('apps', {
               verifier: authDetail.verifier,
               clientId: authDetail.clientId,
               clientSecret: authDetail.clientSecret,
-              redirectUri: authDetail.redirectURL,
+              redirectUri: authDetail.redirectUrl,
             })
           } else {
             passwordlessAuth.javascriptOrigin = authDetail.origin || ''
-            passwordlessAuth.redirectUri = authDetail.redirectURL || ''
+            passwordlessAuth.redirectUri = authDetail.redirectUrl || ''
           }
         })
       }
@@ -158,7 +158,7 @@ const useAppsStore = defineStore('apps', {
             walletType: app.wallet_type,
             walletTypeInGateway: app.wallet_type,
             websiteDomain: app.wallet_domain,
-            selectedTheme: app.theme,
+            selectedTheme: app.theme || 'dark',
           },
           redirectUri: `${api.verify}/${appId}/`,
           social: socialAuth,
