@@ -10,6 +10,14 @@ defineProps({
     type: String,
     default: 'CANCEL',
   },
+  saveDisabled: {
+    type: Boolean,
+    default: false,
+  },
+  cancelDisabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['cancel', 'save'])
@@ -21,6 +29,7 @@ const emit = defineEmits(['cancel', 'save'])
       v-wave
       :label="cancelLabel"
       variant="secondary"
+      :disabled="cancelDisabled"
       @click.stop="emit('cancel')"
     />
     <VButton
@@ -28,6 +37,7 @@ const emit = defineEmits(['cancel', 'save'])
       type="submit"
       :label="saveLabel"
       variant="primary"
+      :disabled="saveDisabled"
       @click.stop="emit('save')"
     />
   </div>

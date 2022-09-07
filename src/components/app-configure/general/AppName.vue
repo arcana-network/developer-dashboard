@@ -48,7 +48,7 @@ function handleCancel() {
       <template #title>App Name</template>
       <form @submit.prevent="handleSave">
         <VTextField v-model.trim="appName" class="app-name-input" no-message />
-        <ConfigureFooter @cancel="handleCancel" />
+        <ConfigureFooter save-disabled cancel-disabled @cancel="handleCancel" />
       </form>
     </SettingCard>
   </section>
