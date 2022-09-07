@@ -2,12 +2,7 @@ import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import bytes from 'bytes'
 
 import store from '@/stores'
-import {
-  useAppsStore,
-  type AppId,
-  type Theme,
-  type AppConfig as AppState,
-} from '@/stores/apps.store'
+import type { AppId, Theme, AppConfig as AppState } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
@@ -19,7 +14,6 @@ import {
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(store)
-const appsStore = useAppsStore()
 
 let forwarder: string, rpcUrl: string
 
@@ -107,7 +101,6 @@ function updateApp(appId: AppId, updatedAppConfig: AppState) {
 }
 
 function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
-  console.log(app)
   let storage_limit: number, bandwidth_limit: number
   const storageLimit = app.store.userLimits.storage
   const bandwidthLimit = app.store.userLimits.bandwidth
