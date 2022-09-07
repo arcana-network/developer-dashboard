@@ -77,7 +77,6 @@ function fetchAppDetails() {
 
 function getImageUrl(appId: AppId) {
   const appLogos = appsStore.app(appId).logos
-  console.log({ appLogos })
   return appLogos.dark.vertical || appLogos.light.vertical || AppFallbackLogo
 }
 
