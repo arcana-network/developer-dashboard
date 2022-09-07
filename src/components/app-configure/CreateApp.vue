@@ -84,7 +84,7 @@ async function handleCreateApp() {
         walletType: app.wallet_type,
         walletTypeInGateway: app.wallet_type,
         websiteDomain: app.wallet_domain,
-        selectedTheme: app.theme as Theme,
+        selectedTheme: app.theme || 'dark',
       },
       redirectUri: `${api.verify}/${app.ID}/`,
     },

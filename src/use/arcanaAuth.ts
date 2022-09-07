@@ -16,7 +16,6 @@ function useArcanaAuth() {
     if (!authInstance) {
       authInstance = new AuthProvider(ARCANA_APP_ID, {
         network: ARCANA_AUTH_NETWORK,
-        inpageProvider: true,
         debug: true,
       })
       await authInstance.init()
@@ -29,7 +28,7 @@ function useArcanaAuth() {
 
   async function loginWithSocial(type: string) {
     if (!(await isLoggedIn())) {
-      await authInstance.loginWithSocial(type)
+      return await authInstance.loginWithSocial(type)
     }
   }
 
