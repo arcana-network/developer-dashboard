@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { computed, ref } from 'vue'
 
-import ConfigureFooter from '@/components/app-configure/ConfigureFooter.vue'
+import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -63,7 +63,7 @@ function handleCancel() {
       <template #title>App Name</template>
       <form @submit.prevent="handleSave">
         <VTextField v-model.trim="appName" class="app-name-input" no-message />
-        <ConfigureFooter
+        <ConfigureActionButtons
           :save-disabled="isSaveDisabled"
           :cancel-disabled="isCancelDisabled"
           @cancel="handleCancel"
