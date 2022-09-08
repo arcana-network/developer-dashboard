@@ -28,7 +28,7 @@ async function copyRedirectUri() {
     <SettingCard>
       <template #title>Redirect URI</template>
       <template #controls>
-        <VCard variant="elevated" class="redirect-uri-card">
+        <VCard variant="depressed" class="redirect-uri-card">
           <VStack
             align="center"
             justify="space-between"
