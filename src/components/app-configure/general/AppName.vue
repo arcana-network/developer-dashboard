@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 import ConfigureFooter from '@/components/app-configure/ConfigureFooter.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -15,12 +15,27 @@ const appsStore = useAppsStore()
 const appId = useAppId()
 const loaderStore = useLoaderStore()
 const toast = useToast()
+const isSaveDisabled = computed(
+  () => !isValidAppName() || hasSameAppName(appsStore.app(appId).name)
+)
+
+const isCancelDisabled = computed(() =>
+  hasSameAppName(appsStore.app(appId).name)
+)
 
 const appName = ref(appsStore.app(appId).name)
 
+function isValidAppName() {
+  return !!appName.value
+}
+
+function hasSameAppName(appNameInStore: string) {
+  return appName.value === appNameInStore
+}
+
 async function handleSave() {
   const app = appsStore.app(appId)
-  if (appName.value && appName.value !== app.name) {
+  if (isValidAppName() && hasSameAppName(app.name)) {
     try {
       loaderStore.showLoader('Saving app name...')
       await updateApp(appId, { ...app, name: appName.value })
@@ -48,7 +63,11 @@ function handleCancel() {
       <template #title>App Name</template>
       <form @submit.prevent="handleSave">
         <VTextField v-model.trim="appName" class="app-name-input" no-message />
-        <ConfigureFooter save-disabled cancel-disabled @cancel="handleCancel" />
+        <ConfigureFooter
+          :save-disabled="isSaveDisabled"
+          :cancel-disabled="isCancelDisabled"
+          @cancel="handleCancel"
+        />
       </form>
     </SettingCard>
   </section>

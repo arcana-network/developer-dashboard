@@ -11,7 +11,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { createApp } from '@/services/gateway.service'
-import { useAppsStore, type Theme } from '@/stores/apps.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import calculateUserLimits from '@/utils/calculateUserLimits'
 import {

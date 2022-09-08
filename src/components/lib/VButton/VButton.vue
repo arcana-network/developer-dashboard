@@ -119,7 +119,7 @@ button.primary {
 button.primary:disabled {
   color: var(--text-grey);
   cursor: not-allowed;
-  background: linear-gradient(to bottom, #4e4e4e, #2b2b2b);
+  background: linear-gradient(180deg, #4e4e4e -4.5%, #3d3d3d 100.1%);
 }
 
 button.primary:hover:not(:disabled) {
@@ -136,9 +136,10 @@ button.secondary {
 }
 
 button.secondary:disabled {
-  color: #8d8d8d;
+  color: #808080;
   cursor: not-allowed;
-  border: 3px solid #8d8d8d;
+  background: linear-gradient(#262626, #262626) padding-box,
+    linear-gradient(180deg, #4e4e4e 0%, #3d3d3d 100%) border-box;
 }
 
 button.secondary:hover:not(:disabled) {
