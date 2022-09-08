@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -15,27 +15,20 @@ const appsStore = useAppsStore()
 const appId = useAppId()
 const loaderStore = useLoaderStore()
 const toast = useToast()
-const isSaveDisabled = computed(
-  () => !isValidAppName() || hasSameAppName(appsStore.app(appId).name)
-)
 
-const isCancelDisabled = computed(() =>
-  hasSameAppName(appsStore.app(appId).name)
-)
-
-const appName = ref(appsStore.app(appId).name)
+const app = appsStore.app(appId)
+const appName = ref(app.name)
 
 function isValidAppName() {
   return !!appName.value
 }
 
-function hasSameAppName(appNameInStore: string) {
-  return appName.value === appNameInStore
+function hasSameAppName() {
+  return appName.value === app.name
 }
 
 async function handleSave() {
-  const app = appsStore.app(appId)
-  if (isValidAppName() && hasSameAppName(app.name)) {
+  if (isValidAppName() && hasSameAppName()) {
     try {
       loaderStore.showLoader('Saving app name...')
       await updateApp(appId, { ...app, name: appName.value })
@@ -53,7 +46,7 @@ async function handleSave() {
 }
 
 function handleCancel() {
-  appName.value = appsStore.app(appId).name
+  appName.value = app.name
 }
 </script>
 
@@ -62,10 +55,15 @@ function handleCancel() {
     <SettingCard>
       <template #title>App Name</template>
       <form @submit.prevent="handleSave">
-        <VTextField v-model.trim="appName" class="app-name-input" no-message />
+        <VTextField
+          v-model.trim="appName"
+          class="app-name-input"
+          :message-type="!isValidAppName() ? 'error' : ''"
+          message="App name cannot be empty"
+        />
         <ConfigureActionButtons
-          :save-disabled="isSaveDisabled"
-          :cancel-disabled="isCancelDisabled"
+          :save-disabled="!isValidAppName() || hasSameAppName()"
+          :cancel-disabled="hasSameAppName()"
           @cancel="handleCancel"
         />
       </form>
