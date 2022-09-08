@@ -27,6 +27,7 @@ const emit = defineEmits(['cancel', 'save'])
   <div class="footer flex flex-wrap">
     <VButton
       v-wave
+      type="button"
       :label="cancelLabel"
       variant="secondary"
       :disabled="cancelDisabled"
