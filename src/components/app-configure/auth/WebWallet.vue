@@ -105,7 +105,7 @@ async function handleSave() {
     <SettingCard>
       <template #title>Wallet</template>
       <form @submit.prevent="handleSave">
-        <VStack direction="column" gap="2rem">
+        <VStack direction="column" gap="1rem">
           <VStack direction="column" gap="1rem" class="flex-grow">
             <h3 class="text-uppercase">Website Domain</h3>
             <div class="body-1">
@@ -133,7 +133,7 @@ async function handleSave() {
               @blur="isEdited = true"
             />
           </VStack>
-          <VStack direction="column" gap="1rem">
+          <VStack direction="column" gap="1rem" style="margin-bottom: 1rem">
             <VStack justify="space-between">
               <h3 class="text-uppercase">UI Mode</h3>
               <VStack align="center" gap="0.625rem">

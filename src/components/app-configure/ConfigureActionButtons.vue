@@ -49,7 +49,7 @@ const emit = defineEmits(['cancel', 'save'])
   display: flex;
   gap: 2rem;
   justify-content: flex-end;
-  margin-top: 1.25rem;
+  margin-top: 1rem;
 }
 
 @media only screen and (max-width: 767px) {

@@ -73,6 +73,7 @@ function handleCancel() {
 
 <style scoped>
 .app-name-input {
-  max-width: 24rem;
+  width: 100%;
+  max-width: 22rem;
 }
 </style>
