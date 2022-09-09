@@ -32,13 +32,13 @@ async function handleSave() {
     try {
       loaderStore.showLoader('Saving app name...')
       await updateApp(appId, { ...app, name: appName.value })
-      toast.success('Updated app name')
-      loaderStore.showLoader('Updating app config in smart contract...')
+      toast.success('Saved app name')
+      loaderStore.showLoader('Saving app config in smart contract...')
       await setAppConfig(app.name, app.auth.social)
       toast.success('App config saved in blockchain')
       app.name = appName.value
     } catch (e) {
-      toast.error('Error occured while updating the app name.')
+      toast.error('Error occured while saving the app name.')
     } finally {
       loaderStore.hideLoader()
     }

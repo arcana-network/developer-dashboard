@@ -25,14 +25,14 @@ const passwordless = reactive({ ...app.auth.passwordless })
 async function handleSave() {
   if (passwordless) {
     try {
-      loaderStore.showLoader('Saving app name...')
+      loaderStore.showLoader('Saving passwordless config...')
       const { auth } = app
       auth.passwordless = passwordless
       await updateApp(appId, { ...app, ...auth })
-      toast.success('Updated app name')
+      toast.success('Saved passwordless config')
       app.auth.passwordless = passwordless
     } catch (e) {
-      toast.error('Error occured while updating the passwordless credentials.')
+      toast.error('Error occured while updating the passwordless config.')
     } finally {
       loaderStore.hideLoader()
     }
