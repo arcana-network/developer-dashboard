@@ -11,7 +11,7 @@ import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { updateApp } from '@/services/gateway.service'
-import { setAppConfig } from '@/services/smart-contract.service'
+import { enableUiMode } from '@/services/smart-contract.service'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
@@ -87,7 +87,7 @@ async function handleSave() {
     toast.success('Saved wallet config')
     if (auth.wallet.walletType !== app.auth.wallet.walletType) {
       loaderStore.showLoader('Enabling UI mode in smart contract...')
-      await setAppConfig(app.name, app.auth.social)
+      await enableUiMode()
       toast.success('UI mode enabled in blockchain')
     }
     app.auth.wallet = auth.wallet

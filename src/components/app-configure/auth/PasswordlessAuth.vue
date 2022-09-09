@@ -32,7 +32,7 @@ async function handleSave() {
       toast.success('Saved passwordless config')
       app.auth.passwordless = passwordless
     } catch (e) {
-      toast.error('Error occured while updating the passwordless config.')
+      toast.error('Error occured while saving the passwordless config.')
     } finally {
       loaderStore.hideLoader()
       isEdited.value = false

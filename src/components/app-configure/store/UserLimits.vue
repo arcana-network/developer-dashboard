@@ -7,8 +7,12 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
+import { updateApp } from '@/services/gateway.service'
+import { setDefaultLimit } from '@/services/smart-contract.service'
 import type { UserLimitTarget, UserLimitUnit } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import {
   userLimitOptions,
@@ -17,6 +21,7 @@ import {
   type BandwidthLimitUnit,
   defaultUserLimit,
   unlimitedUserLimit,
+  MAX_DATA_TRANSFER_BYTES,
 } from '@/utils/constants'
 
 type UserLimitKind = 'Unlimited' | 'Limited'
@@ -26,11 +31,13 @@ const MAX_BYTES = bytes('99GB')
 
 const appsStore = useAppsStore()
 const appId = useAppId()
+const loaderStore = useLoaderStore()
+const toast = useToast()
 const app = appsStore.app(appId)
-const userLimits = app.store.userLimits
+const isEdited = ref(false)
 
-const storageLimit = ref(userLimits.storage)
-const bandwidthLimit = ref(userLimits.bandwidth)
+const storageLimit = ref({ ...app.store.userLimits.storage })
+const bandwidthLimit = ref({ ...app.store.userLimits.bandwidth })
 
 const storageLimitKind: Ref<UserLimitKind> = ref(
   storageLimit.value.isUnlimited ? 'Unlimited' : 'Limited'
@@ -48,12 +55,29 @@ const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
   )
 
 function updateBandwidthUnit(unit: BandwidthLimitUnit) {
-  console.log(unit)
   bandwidthLimit.value.unit = unit.value
 }
 
+function isLimitValid(type: UserLimitTarget) {
+  let limit: {
+    isUnlimited: boolean
+    value?: number
+    unit?: UserLimitUnit
+  }
+  if (type === 'storage') {
+    limit = storageLimit.value
+  } else {
+    limit = bandwidthLimit.value
+  }
+  if (limit.isUnlimited) {
+    return true
+  } else {
+    const storageInBytes = bytes(`${limit.value}${limit.unit}`)
+    return storageInBytes >= MIN_BYTES && storageInBytes <= MAX_BYTES
+  }
+}
+
 function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
-  console.log(type, value)
   if (value === 'Unlimited') {
     if (type === 'storage') {
       storageLimit.value = unlimitedUserLimit
@@ -68,6 +92,59 @@ function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
     }
   }
 }
+
+function handleCancel() {
+  const { storage, bandwidth } = app.store.userLimits
+  storageLimit.value = { ...storage }
+  bandwidthLimit.value = { ...bandwidth }
+  storageLimitKind.value = storage.isUnlimited ? 'Unlimited' : 'Limited'
+  bandwidthLimitKind.value = bandwidth.isUnlimited ? 'Unlimited' : 'Limited'
+  isEdited.value = false
+}
+
+function convertUserLimits() {
+  let storage: number
+  let bandwidth: number
+
+  if (storageLimit.value.isUnlimited) {
+    storage = MAX_DATA_TRANSFER_BYTES
+  } else {
+    storage = bytes(`${storageLimit.value.value}${storageLimit.value.unit}`)
+  }
+
+  if (bandwidthLimit.value.isUnlimited) {
+    bandwidth = MAX_DATA_TRANSFER_BYTES
+  } else {
+    bandwidth = bytes(
+      `${bandwidthLimit.value.value}${bandwidthLimit.value.unit}`
+    )
+  }
+
+  return { storage, bandwidth }
+}
+
+async function handleSave() {
+  try {
+    loaderStore.showLoader('Saving user limits...')
+    const { store } = app
+    store.userLimits = {
+      storage: storageLimit.value,
+      bandwidth: bandwidthLimit.value,
+    }
+    await updateApp(appId, { ...app, ...store })
+    toast.success('Saved user limits')
+    loaderStore.showLoader('Saving user limits in smart contract...')
+    const { storage, bandwidth } = convertUserLimits()
+    await setDefaultLimit(storage, bandwidth)
+    toast.success('User limits saved in blockchain')
+    app.store.userLimits = store.userLimits
+  } catch (e) {
+    toast.error('Error occured while saving the user limits.')
+  } finally {
+    loaderStore.hideLoader()
+    isEdited.value = false
+  }
+}
 </script>
 
 <template>
@@ -78,7 +155,7 @@ function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
         >You can configure the maximum storage and bandwidth consumption limits
         per user. Or you can use the "Unlimited" default.</template
       >
-      <form @submit.prevent="">
+      <form @submit.prevent="handleSave">
         <VStack direction="column" gap="2rem" class="flex-grow">
           <VStack
             class="limits-input-container"
@@ -110,6 +187,7 @@ function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
                       no-message
                       class="usage-value-textfield"
                       placeholder="value"
+                      @blur="isEdited = true"
                     />
                     <VDropdown
                       v-model="storageLimit.unit"
@@ -119,6 +197,12 @@ function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
                       trigger-class="usage-unit-dropdown-trigger"
                       :disabled="storageLimitKind === 'Unlimited'"
                     />
+                  </div>
+                  <div
+                    v-show="isEdited && !isLimitValid('storage')"
+                    class="message"
+                  >
+                    Invalid value - Value must be in between 1 MB and 99 GB
                   </div>
                 </VStack>
               </VStack>
@@ -147,6 +231,7 @@ function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
                       no-message
                       class="usage-value-textfield"
                       placeholder="value"
+                      @blur="isEdited = true"
                     />
                     <VDropdown
                       :model-value="bandwidthLimitUnit"
@@ -159,11 +244,25 @@ function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
                       @update:model-value="updateBandwidthUnit($event)"
                     />
                   </div>
+                  <div
+                    v-show="isEdited && !isLimitValid('bandwidth')"
+                    class="message"
+                  >
+                    Invalid value - Value must be in between 1 MB and 99 GB
+                  </div>
                 </VStack>
               </VStack>
             </VStack>
           </VStack>
-          <ConfigureActionButtons />
+          <ConfigureActionButtons
+            :save-disabled="
+              !isLimitValid('storage') || !isLimitValid('bandwidth')
+            "
+            :cancel-disabled="
+              !isLimitValid('storage') || !isLimitValid('bandwidth')
+            "
+            @cancel="handleCancel"
+          />
         </VStack>
       </form>
     </SettingCard>
@@ -187,6 +286,16 @@ function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
 
 .usage-unit-dropdown {
   min-width: 10rem;
+}
+
+.message {
+  max-width: 16rem;
+  margin: 5px 20px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #ee193f;
 }
 
 @media screen and (min-width: 1024px) {
