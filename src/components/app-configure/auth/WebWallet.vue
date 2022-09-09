@@ -2,6 +2,7 @@
 import { computed } from 'vue'
 
 import CloseIcon from '@/assets/iconography/close.svg'
+import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
@@ -66,118 +67,123 @@ function handleUIModeUpdate(value: boolean) {
   <section name="web-wallet">
     <SettingCard>
       <template #title>Wallet</template>
-      <VStack direction="column" gap="3rem">
-        <VStack direction="column" gap="1rem" class="flex-grow">
-          <h3 class="text-uppercase">Website Domain</h3>
-          <div class="body-1">
-            Set your website domain here. It is used for security reasons by the
-            server, to restrict Arcana wallet from loading anywhere else other
-            than the domain you specify. We use frame-ancestor CSP to restrict
-            domains.
-            <br />
-            <a
-              href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
-              target="_blank"
-              class="learn-more"
-            >
-              Learn More...
-            </a>
-          </div>
-          <VTextField
-            class="web-wallet-input"
-            :icon="walletWebsiteDomain ? CloseIcon : ''"
-            no-message
-            :model-value="walletWebsiteDomain"
-            clickable-icon
-            @update:model-value="handleWebsiteDomainUpdate"
-            @icon-clicked="handleWebsiteDomainUpdate('')"
-          />
-        </VStack>
-        <VStack direction="column" gap="1rem">
-          <VStack justify="space-between">
-            <h3 class="text-uppercase">UI Mode</h3>
-            <VStack align="center" gap="0.625rem">
-              <span class="body-1 font-300" :class="{ 'font-700': !hasUIMode }"
-                >Disable</span
+      <form>
+        <VStack direction="column" gap="2rem">
+          <VStack direction="column" gap="1rem" class="flex-grow">
+            <h3 class="text-uppercase">Website Domain</h3>
+            <div class="body-1">
+              Set your website domain here. It is used for security reasons by
+              the server, to restrict Arcana wallet from loading anywhere else
+              other than the domain you specify. We use frame-ancestor CSP to
+              restrict domains.
+              <br />
+              <a
+                href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
+                target="_blank"
+                class="learn-more"
               >
-              <VSwitch
-                :model-value="hasUIMode"
-                class="ui-mode-switch"
-                :disabled="hasUIModeInGateway"
-                @update:model-value="handleUIModeUpdate"
-              />
-              <span class="body-1 font-300" :class="{ 'font-700': hasUIMode }"
-                >Enable</span
-              >
-            </VStack>
-          </VStack>
-          <div class="body-1">
-            Configure dApp user experience while signing blockchain transactions
-            for storage operations by selecting the appropriate Arcana wallet UI
-            mode.
-            <br />
-            <a
-              :href="`${constants.DOCS_URL}/docs/arcanawallet#arcana-wallet-ui-modes`"
-              target="_blank"
-              class="learn-more"
-            >
-              Learn More...
-            </a>
-          </div>
-          <VStack
-            v-if="hasUIMode"
-            direction="column"
-            gap="0.75rem"
-            align="start"
-            style="margin-top: 1rem"
-          >
-            <h4 class="text-grey">Choose Theme</h4>
-            <VDropdown
-              :options="availableThemes"
-              display-field="label"
-              :model-value="selectedTheme"
-              class="theme-dropdown"
-              @update:model-value="handleThemeChange"
+                Learn More...
+              </a>
+            </div>
+            <VTextField
+              class="web-wallet-input"
+              :icon="walletWebsiteDomain ? CloseIcon : ''"
+              no-message
+              :model-value="walletWebsiteDomain"
+              clickable-icon
+              @update:model-value="handleWebsiteDomainUpdate"
+              @icon-clicked="handleWebsiteDomainUpdate('')"
             />
           </VStack>
-        </VStack>
-        <VStack v-if="hasUIMode" direction="column" gap="1rem">
-          <h3 class="text-uppercase">Preview Interface</h3>
-          <VStack gap="2.5rem" wrap>
-            <VStack direction="column" gap="0.625rem">
-              <h4>Desktop</h4>
-              <img
-                v-if="selectedTheme?.value === 'light'"
-                src="@/assets/web-wallet-preview-desktop-light.png"
-                alt="Web wallet desktop preview"
-                class="web-wallet-desktop-preview"
-              />
-              <img
-                v-else
-                src="@/assets/web-wallet-preview-desktop-dark.png"
-                alt="Web wallet desktop preview"
-                class="web-wallet-desktop-preview"
-              />
+          <VStack direction="column" gap="1rem">
+            <VStack justify="space-between">
+              <h3 class="text-uppercase">UI Mode</h3>
+              <VStack align="center" gap="0.625rem">
+                <span
+                  class="body-1 font-300"
+                  :class="{ 'font-700': !hasUIMode }"
+                  >Disable</span
+                >
+                <VSwitch
+                  :model-value="hasUIMode"
+                  class="ui-mode-switch"
+                  :disabled="hasUIModeInGateway"
+                  @update:model-value="handleUIModeUpdate"
+                />
+                <span class="body-1 font-300" :class="{ 'font-700': hasUIMode }"
+                  >Enable</span
+                >
+              </VStack>
             </VStack>
-            <VSeperator vertical />
-            <VStack direction="column" gap="0.625rem">
-              <h4>Mobile</h4>
-              <img
-                v-if="selectedTheme?.value === 'light'"
-                src="@/assets/web-wallet-preview-mobile-light.png"
-                alt="Web wallet mobile preview"
-                class="web-wallet-mobile-preview"
-              />
-              <img
-                v-else
-                src="@/assets/web-wallet-preview-mobile-dark.png"
-                alt="Web wallet mobile preview"
-                class="web-wallet-mobile-preview"
+            <div class="body-1">
+              Configure dApp user experience while signing blockchain
+              transactions for storage operations by selecting the appropriate
+              Arcana wallet UI mode.
+              <br />
+              <a
+                :href="`${constants.DOCS_URL}/docs/arcanawallet#arcana-wallet-ui-modes`"
+                target="_blank"
+                class="learn-more"
+              >
+                Learn More...
+              </a>
+            </div>
+            <VStack
+              v-if="hasUIMode"
+              direction="column"
+              gap="0.75rem"
+              align="start"
+              style="margin-top: 1rem"
+            >
+              <h4 class="text-grey">Choose Theme</h4>
+              <VDropdown
+                :options="availableThemes"
+                display-field="label"
+                :model-value="selectedTheme"
+                class="theme-dropdown"
+                @update:model-value="handleThemeChange"
               />
             </VStack>
           </VStack>
+          <VStack v-if="hasUIMode" direction="column" gap="1rem">
+            <h3 class="text-uppercase">Preview Interface</h3>
+            <VStack gap="2.5rem" wrap>
+              <VStack direction="column" gap="0.625rem">
+                <h4>Desktop</h4>
+                <img
+                  v-if="selectedTheme?.value === 'light'"
+                  src="@/assets/web-wallet-preview-desktop-light.png"
+                  alt="Web wallet desktop preview"
+                  class="web-wallet-desktop-preview"
+                />
+                <img
+                  v-else
+                  src="@/assets/web-wallet-preview-desktop-dark.png"
+                  alt="Web wallet desktop preview"
+                  class="web-wallet-desktop-preview"
+                />
+              </VStack>
+              <VSeperator vertical />
+              <VStack direction="column" gap="0.625rem">
+                <h4>Mobile</h4>
+                <img
+                  v-if="selectedTheme?.value === 'light'"
+                  src="@/assets/web-wallet-preview-mobile-light.png"
+                  alt="Web wallet mobile preview"
+                  class="web-wallet-mobile-preview"
+                />
+                <img
+                  v-else
+                  src="@/assets/web-wallet-preview-mobile-dark.png"
+                  alt="Web wallet mobile preview"
+                  class="web-wallet-mobile-preview"
+                />
+              </VStack>
+            </VStack>
+          </VStack>
+          <ConfigureActionButtons />
         </VStack>
-      </VStack>
+      </form>
     </SettingCard>
   </section>
 </template>
