@@ -1,6 +1,8 @@
 <script lang="ts" setup>
-import { computed, type ComputedRef, ref } from 'vue'
+import bytes from 'bytes'
+import { computed, ref, type ComputedRef, type Ref } from 'vue'
 
+import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
@@ -19,61 +21,53 @@ import {
 
 type UserLimitKind = 'Unlimited' | 'Limited'
 
-type UserLimitParam = {
-  type: UserLimitTarget
-  value: number
-  unit: UserLimitUnit
-}
+const MIN_BYTES = bytes('1MB')
+const MAX_BYTES = bytes('99GB')
 
 const appsStore = useAppsStore()
 const appId = useAppId()
-const userLimits = ref(appsStore.app(appId).store.userLimits)
+const app = appsStore.app(appId)
+const userLimits = app.store.userLimits
 
-const storageLimit = computed(() => userLimits.value.storage)
-const bandwidthLimit = computed(() => userLimits.value.bandwidth)
+const storageLimit = ref(userLimits.storage)
+const bandwidthLimit = ref(userLimits.bandwidth)
 
-const storageLimitKind = computed(() => {
-  return storageLimit.value.isUnlimited ? 'Unlimited' : 'Limited'
-})
+const storageLimitKind: Ref<UserLimitKind> = ref(
+  storageLimit.value.isUnlimited ? 'Unlimited' : 'Limited'
+)
 
-const bandwidthLimitKind = computed(() => {
-  return bandwidthLimit.value.isUnlimited ? 'Unlimited' : 'Limited'
-})
+const bandwidthLimitKind: Ref<UserLimitKind> = ref(
+  bandwidthLimit.value.isUnlimited ? 'Unlimited' : 'Limited'
+)
 
 const bandwidthLimitUnit: ComputedRef<BandwidthLimitUnit | undefined> =
-  computed(() => {
-    if (!bandwidthLimit.value.isUnlimited) {
-      return bandwidthUnits.find(
-        (bandwidthUnit) => bandwidthUnit.value === bandwidthLimit.value.unit
-      )
-    } else {
-      return undefined
-    }
-  })
+  computed(() =>
+    bandwidthUnits.find(
+      (bandwidthUnit) => bandwidthUnit.value === bandwidthLimit.value.unit
+    )
+  )
+
+function updateBandwidthUnit(unit: BandwidthLimitUnit) {
+  console.log(unit)
+  bandwidthLimit.value.unit = unit.value
+}
 
 function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
-  const app = appsStore.app(appId)
+  console.log(type, value)
   if (value === 'Unlimited') {
-    app.store.userLimits[type] = { ...unlimitedUserLimit }
+    if (type === 'storage') {
+      storageLimit.value = unlimitedUserLimit
+    } else {
+      bandwidthLimit.value = unlimitedUserLimit
+    }
   } else {
-    app.store.userLimits[type] = { ...defaultUserLimit }
+    if (type === 'storage') {
+      storageLimit.value = defaultUserLimit
+    } else {
+      bandwidthLimit.value = defaultUserLimit
+    }
   }
-  appsStore.updateApp(appId, app)
 }
-
-function handleUserLimitFieldChange({ type, unit, value }: UserLimitParam) {
-  const app = appsStore.app(appId)
-  app.store.userLimits[type] = {
-    isUnlimited: false,
-    value,
-    unit,
-  }
-  appsStore.updateApp(appId, app)
-}
-
-appsStore.$subscribe(() => {
-  userLimits.value = appsStore.app(appId).store.userLimits
-})
 </script>
 
 <template>
@@ -84,112 +78,94 @@ appsStore.$subscribe(() => {
         >You can configure the maximum storage and bandwidth consumption limits
         per user. Or you can use the "Unlimited" default.</template
       >
-      <VStack
-        class="limits-input-container"
-        md-direction="column"
-        gap="2rem"
-        wrap
-      >
-        <VStack direction="column" gap="0.75rem" align="start">
-          <h4>Storage</h4>
-          <VStack gap="1.25rem" wrap class="width-100">
-            <VDropdown
-              :options="userLimitOptions"
-              :model-value="storageLimitKind"
-              class="limits-type-dropdown"
-              trigger-class="limits-type-dropdown-trigger"
-              @update:model-value="handleIsUnlimitedChange('storage', $event)"
-            />
-            <VStack direction="column" class="flex-grow">
-              <div class="input-group">
-                <VTextField
-                  id="storage-user-limit"
-                  type="number"
-                  min="1"
-                  max="1024"
-                  :disabled="storageLimitKind === 'Unlimited'"
-                  :model-value="storageLimit.value"
-                  no-message
-                  class="usage-value-textfield"
-                  placeholder="value"
-                  @update:model-value="
-                    handleUserLimitFieldChange({
-                      type: 'storage',
-                      value: $event,
-                      unit: storageLimit.unit as UserLimitUnit,
-                    })
-                  "
-                />
+      <form @submit.prevent="">
+        <VStack direction="column" gap="2rem" class="flex-grow">
+          <VStack
+            class="limits-input-container"
+            md-direction="column"
+            gap="2rem"
+            wrap
+          >
+            <VStack direction="column" gap="0.75rem" align="start">
+              <h4>Storage</h4>
+              <VStack gap="1.25rem" wrap class="width-100">
                 <VDropdown
-                  :options="storageValues"
-                  placeholder="unit"
-                  :model-value="storageLimit.unit"
-                  class="usage-unit-dropdown"
-                  trigger-class="usage-unit-dropdown-trigger"
-                  :disabled="storageLimitKind === 'Unlimited'"
+                  v-model="storageLimitKind"
+                  :options="userLimitOptions"
+                  class="limits-type-dropdown"
+                  trigger-class="limits-type-dropdown-trigger"
                   @update:model-value="
-                    handleUserLimitFieldChange({
-                      type: 'storage',
-                      value: storageLimit.value as number,
-                      unit: $event,
-                    })
+                    handleIsUnlimitedChange('storage', $event)
                   "
                 />
-              </div>
+                <VStack direction="column" class="flex-grow">
+                  <div class="input-group">
+                    <VTextField
+                      id="storage-user-limit"
+                      v-model="storageLimit.value"
+                      type="number"
+                      min="1"
+                      max="1024"
+                      :disabled="storageLimitKind === 'Unlimited'"
+                      no-message
+                      class="usage-value-textfield"
+                      placeholder="value"
+                    />
+                    <VDropdown
+                      v-model="storageLimit.unit"
+                      :options="storageValues"
+                      placeholder="unit"
+                      class="usage-unit-dropdown"
+                      trigger-class="usage-unit-dropdown-trigger"
+                      :disabled="storageLimitKind === 'Unlimited'"
+                    />
+                  </div>
+                </VStack>
+              </VStack>
+            </VStack>
+            <VStack direction="column" gap="0.75rem" align="start">
+              <h4>Bandwidth</h4>
+              <VStack gap="1.25rem" wrap class="width-100">
+                <VDropdown
+                  v-model="bandwidthLimitKind"
+                  :options="userLimitOptions"
+                  class="limits-type-dropdown"
+                  trigger-class="limits-type-dropdown-trigger"
+                  @update:model-value="
+                    handleIsUnlimitedChange('bandwidth', $event)
+                  "
+                />
+                <VStack direction="column" class="flex-grow">
+                  <div class="input-group">
+                    <VTextField
+                      id="bandwidth-user-limit"
+                      v-model="bandwidthLimit.value"
+                      type="number"
+                      min="1"
+                      max="1024"
+                      :disabled="bandwidthLimitKind === 'Unlimited'"
+                      no-message
+                      class="usage-value-textfield"
+                      placeholder="value"
+                    />
+                    <VDropdown
+                      :model-value="bandwidthLimitUnit"
+                      :options="bandwidthUnits"
+                      display-field="label"
+                      placeholder="unit"
+                      class="usage-unit-dropdown"
+                      trigger-class="usage-unit-dropdown-trigger"
+                      :disabled="bandwidthLimitKind === 'Unlimited'"
+                      @update:model-value="updateBandwidthUnit($event)"
+                    />
+                  </div>
+                </VStack>
+              </VStack>
             </VStack>
           </VStack>
+          <ConfigureActionButtons />
         </VStack>
-        <VStack direction="column" gap="0.75rem" align="start">
-          <h4>Bandwidth</h4>
-          <VStack gap="1.25rem" wrap class="width-100">
-            <VDropdown
-              :options="userLimitOptions"
-              :model-value="bandwidthLimitKind"
-              class="limits-type-dropdown"
-              trigger-class="limits-type-dropdown-trigger"
-              @update:model-value="handleIsUnlimitedChange('bandwidth', $event)"
-            />
-            <VStack direction="column" class="flex-grow">
-              <div class="input-group">
-                <VTextField
-                  id="bandwidth-user-limit"
-                  type="number"
-                  min="1"
-                  max="1024"
-                  :disabled="bandwidthLimitKind === 'Unlimited'"
-                  :model-value="bandwidthLimit.value"
-                  no-message
-                  class="usage-value-textfield"
-                  placeholder="value"
-                  @update:model-value="
-                    handleUserLimitFieldChange({
-                      type: 'bandwidth',
-                      value: $event,
-                      unit: bandwidthLimit.unit as UserLimitUnit,
-                    })
-                  "
-                />
-                <VDropdown
-                  :options="bandwidthUnits"
-                  :model-value="bandwidthLimitUnit"
-                  display-field="label"
-                  placeholder="unit"
-                  class="usage-unit-dropdown"
-                  trigger-class="usage-unit-dropdown-trigger"
-                  :disabled="bandwidthLimitKind === 'Unlimited'"
-                  @update:model-value="
-                    handleUserLimitFieldChange({
-                      type: 'bandwidth',
-                      value: bandwidthLimit.value as number,
-                      unit: $event.value,
-                    })
-                  "
-                />
-              </div>
-            </VStack>
-          </VStack>
-        </VStack>
-      </VStack>
+      </form>
     </SettingCard>
   </section>
 </template>
@@ -206,7 +182,7 @@ appsStore.$subscribe(() => {
 }
 
 .usage-value-textfield {
-  width: calc(100% - 10rem);
+  width: 8rem;
 }
 
 .usage-unit-dropdown {
