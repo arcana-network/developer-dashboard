@@ -80,15 +80,15 @@ function isLimitValid(type: UserLimitTarget) {
 function handleIsUnlimitedChange(type: UserLimitTarget, value: UserLimitKind) {
   if (value === 'Unlimited') {
     if (type === 'storage') {
-      storageLimit.value = unlimitedUserLimit
+      storageLimit.value = { ...unlimitedUserLimit }
     } else {
-      bandwidthLimit.value = unlimitedUserLimit
+      bandwidthLimit.value = { ...unlimitedUserLimit }
     }
   } else {
     if (type === 'storage') {
-      storageLimit.value = defaultUserLimit
+      storageLimit.value = { ...defaultUserLimit }
     } else {
-      bandwidthLimit.value = defaultUserLimit
+      bandwidthLimit.value = { ...defaultUserLimit }
     }
   }
 }
@@ -126,10 +126,10 @@ function convertUserLimits() {
 async function handleSave() {
   try {
     loaderStore.showLoader('Saving user limits...')
-    const { store } = app
+    const store = { ...app.store }
     store.userLimits = {
-      storage: storageLimit.value,
-      bandwidth: bandwidthLimit.value,
+      storage: { ...storageLimit.value },
+      bandwidth: { ...bandwidthLimit.value },
     }
     await updateApp(appId, { ...app, ...store })
     toast.success('Saved user limits')
@@ -144,6 +144,27 @@ async function handleSave() {
     loaderStore.hideLoader()
     isEdited.value = false
   }
+}
+
+function hasSameValuesInStore() {
+  const { storage, bandwidth } = app.store.userLimits
+  const hasSameStorageValues =
+    storage.isUnlimited === storageLimit.value.isUnlimited &&
+    storage.value === storageLimit.value.value &&
+    storage.unit === storageLimit.value.unit
+  const hasSameBandwidthValues =
+    bandwidth.isUnlimited === bandwidthLimit.value.isUnlimited &&
+    bandwidth.value === bandwidthLimit.value.value &&
+    bandwidth.unit === bandwidthLimit.value.unit
+  return hasSameStorageValues && hasSameBandwidthValues
+}
+
+function isButtonDisabled() {
+  return (
+    !isLimitValid('storage') ||
+    !isLimitValid('bandwidth') ||
+    hasSameValuesInStore()
+  )
 }
 </script>
 
@@ -255,12 +276,8 @@ async function handleSave() {
             </VStack>
           </VStack>
           <ConfigureActionButtons
-            :save-disabled="
-              !isLimitValid('storage') || !isLimitValid('bandwidth')
-            "
-            :cancel-disabled="
-              !isLimitValid('storage') || !isLimitValid('bandwidth')
-            "
+            :save-disabled="isButtonDisabled()"
+            :cancel-disabled="isButtonDisabled()"
             @cancel="handleCancel"
           />
         </VStack>
