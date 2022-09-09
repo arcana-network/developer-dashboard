@@ -35,6 +35,7 @@ async function handleSave() {
       toast.error('Error occured while updating the passwordless config.')
     } finally {
       loaderStore.hideLoader()
+      isEdited.value = false
     }
   }
 }
@@ -43,6 +44,7 @@ function handleCancel() {
   const { javascriptOrigin, redirectUri } = app.auth.passwordless
   passwordless.javascriptOrigin = javascriptOrigin
   passwordless.redirectUri = redirectUri
+  isEdited.value = false
 }
 
 function isValidJavascriptOrigin() {
@@ -92,7 +94,7 @@ function hasSameValuesInStore() {
             >
             <VTextField
               id="passwordless-javascript-origin"
-              v-model="passwordless.javascriptOrigin"
+              v-model.trim="passwordless.javascriptOrigin"
               class="passwordless-input"
               :message-type="
                 isEdited &&
@@ -115,7 +117,7 @@ function hasSameValuesInStore() {
             <label for="passwordless-redirect-uri">Redirect URI</label>
             <VTextField
               id="passwordless-redirect-uri"
-              v-model="passwordless.redirectUri"
+              v-model.trim="passwordless.redirectUri"
               class="passwordless-input"
               :message-type="
                 isEdited &&

@@ -16,6 +16,7 @@ import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import constants, { WalletMode } from '@/utils/constants'
+import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
@@ -23,6 +24,7 @@ const loaderStore = useLoaderStore()
 const toast = useToast()
 const app = appsStore.app(appId)
 const wallet = app.auth.wallet
+const isEdited = ref(false)
 
 type ThemeData = {
   label: string
@@ -59,6 +61,19 @@ function handleCancel() {
   selectedTheme.value = availableThemes.find(
     (theme) => theme.value === wallet.selectedTheme
   ) as ThemeData
+  isEdited.value = false
+}
+
+function isValidWebsiteDomain() {
+  return !walletWebsiteDomain.value || isValidUrl(walletWebsiteDomain.value)
+}
+
+function hasSameValuesInStore() {
+  return (
+    walletWebsiteDomain.value === wallet.websiteDomain &&
+    selectedTheme.value.value === wallet.selectedTheme &&
+    hasUIMode.value === (wallet.walletType === WalletMode.UI)
+  )
 }
 
 async function handleSave() {
@@ -80,6 +95,7 @@ async function handleSave() {
     toast.error('Error occured while saving the wallet config.')
   } finally {
     loaderStore.hideLoader()
+    isEdited.value = false
   }
 }
 </script>
@@ -107,12 +123,14 @@ async function handleSave() {
               </a>
             </div>
             <VTextField
-              v-model="walletWebsiteDomain"
+              v-model.trim="walletWebsiteDomain"
               class="web-wallet-input"
               :icon="walletWebsiteDomain ? CloseIcon : ''"
-              no-message
+              :message-type="isEdited && !isValidWebsiteDomain() ? 'error' : ''"
+              message="Invalid website domain - must be a valid url"
               clickable-icon
               @icon-clicked="clearWebsiteDomain()"
+              @blur="isEdited = true"
             />
           </VStack>
           <VStack direction="column" gap="1rem">
@@ -199,7 +217,11 @@ async function handleSave() {
               </VStack>
             </VStack>
           </VStack>
-          <ConfigureActionButtons @cancel="handleCancel" />
+          <ConfigureActionButtons
+            :save-disabled="hasSameValuesInStore() || !isValidWebsiteDomain()"
+            :cancel-disabled="hasSameValuesInStore()"
+            @cancel="handleCancel"
+          />
         </VStack>
       </form>
     </SettingCard>
