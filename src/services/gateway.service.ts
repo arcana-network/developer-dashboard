@@ -2,7 +2,12 @@ import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
 import bytes from 'bytes'
 
 import store from '@/stores'
-import type { AppId, Theme, AppConfig as AppState } from '@/stores/apps.store'
+import type {
+  AppId,
+  Theme,
+  AppConfig as AppState,
+  SocialAuthState,
+} from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
@@ -98,6 +103,15 @@ function updateApp(appId: AppId, updatedAppConfig: AppState) {
     `${getEnvApi('v2')}/app/?id=${appId}`,
     appConfigRequestBody
   )
+}
+
+function deleteCred(appId: AppId, authToRemove: SocialAuthState[]) {
+  const deleteCredPromises = authToRemove.map((auth) => {
+    return gatewayAuthorizedInstance.delete(
+      `${getEnvApi('v2')}/cred/?id=${appId}&verifier=${auth.verifier}`
+    )
+  })
+  return Promise.all(deleteCredPromises)
 }
 
 function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
@@ -316,6 +330,7 @@ export {
   getThemeLogo,
   uploadThemeLogo,
   removeThemeLogo,
+  deleteCred,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
