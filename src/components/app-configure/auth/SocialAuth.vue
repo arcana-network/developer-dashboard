@@ -1,81 +1,50 @@
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { reactive, watch } from 'vue'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
+import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import type { SocialAuthState, AppConfig } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import {
-  socialLogins,
-  DOCS_URL,
-  type SocialAuthVerifier,
-} from '@/utils/constants'
+import { socialLogins, DOCS_URL } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
+const app = appsStore.app(appId)
 
-type SocialAuthField = 'clientId' | 'clientSecret' | 'redirectUri'
-
-const socialAuthFields: SocialAuthField[] = [
-  'clientId',
-  'clientSecret',
-  'redirectUri',
-]
-
-const socialAuth = computed(() => appsStore.app(appId).auth.social)
-
-function getSocialAuth(verifier: SocialAuthVerifier): {
-  index: number
-  existingAuth: SocialAuthState | undefined
-} {
-  const index = socialAuth.value.findIndex((auth) => auth.verifier === verifier)
-  return {
-    index,
-    existingAuth: socialAuth.value[index],
-  }
-}
-
-function removeSocialAuth(app: AppConfig, verifier: string) {
-  return app.auth.social.filter((auth) => auth.verifier !== verifier)
-}
-
-function handleCloseClick(verifier: SocialAuthVerifier) {
-  const app = appsStore.app(appId)
-  app.auth.social = removeSocialAuth(app, verifier)
-  appsStore.updateApp(appId, app)
-}
-
-function handleFieldUpdate(
-  verifier: SocialAuthVerifier,
-  field: SocialAuthField,
-  value: string
-) {
-  const { index: exisitingAuthIndex, existingAuth } = getSocialAuth(verifier)
-  const app = appsStore.app(appId)
-
-  if (existingAuth) {
-    const areOtherFieldsEmpty = socialAuthFields
-      .filter((el) => el !== field)
-      .every((authField) => !existingAuth[authField])
-    if (!value && areOtherFieldsEmpty) {
-      app.auth.social = removeSocialAuth(app, verifier)
-    } else {
-      app.auth.social[exisitingAuthIndex][field] = value
+const socialAuth = socialLogins.map((login) => {
+  const auth = app.auth.social.find((el) => el.verifier === login.verifier)
+  if (auth) {
+    return {
+      ...login,
+      ...auth,
     }
-  } else {
-    app.auth.social.push({
-      verifier,
-      [field]: value,
-    })
   }
-  appsStore.updateApp(appId, app)
+  return { ...login }
+})
+
+const socialAuthRef = reactive(socialAuth)
+
+function handleClear(verifier: string) {
+  const authIndex = socialAuthRef.findIndex(
+    (auth) => auth.verifier === verifier
+  )
+  if (authIndex > -1) {
+    delete socialAuthRef[authIndex].clientId
+    delete socialAuthRef[authIndex].clientSecret
+    delete socialAuthRef[authIndex].redirectUri
+  }
 }
+
+watch(
+  () => socialAuthRef,
+  () => console.log(socialAuthRef)
+)
 </script>
 
 <template>
@@ -93,82 +62,70 @@ function handleFieldUpdate(
       </template>
       <VStack gap="2rem">
         <h4 class="verifier-name">Social</h4>
-        <VSeperator vertical />
+        <VSeperator vertical style="margin-bottom: -1rem" />
         <h4>Keys</h4>
       </VStack>
       <VSeperator class="social-auth-content-separator" />
-      <VStack
-        v-for="socialLogin in socialLogins"
-        :key="`social-login-${socialLogin.name}`"
-        align="center"
-        gap="2rem"
-      >
-        <span class="sub-heading-5 verifier-name">{{ socialLogin.name }}</span>
-        <VSeperator vertical class="social-auth-separator" />
-        <VStack gap="1.25rem" class="social-auth-input-container">
-          <VTextField
-            :model-value="
-              getSocialAuth(socialLogin.verifier).existingAuth?.clientId
-            "
-            no-message
-            class="social-auth-input"
-            placeholder="Client ID"
-            :icon="CopyIcon"
-            clickable-icon
-            @icon-clicked="
-              copyToClipboard(
-                getSocialAuth(socialLogin.verifier).existingAuth?.clientId || ''
-              )
-            "
-            @update:model-value="
-              handleFieldUpdate(socialLogin.verifier, 'clientId', $event)
-            "
-          ></VTextField>
-          <VTextField
-            v-if="socialLogin.hasClientSecret"
-            :model-value="
-              getSocialAuth(socialLogin.verifier).existingAuth?.clientSecret
-            "
-            no-message
-            class="social-auth-input"
-            placeholder="Client Secret"
-            @update:model-value="
-              handleFieldUpdate(socialLogin.verifier, 'clientSecret', $event)
-            "
-          ></VTextField>
-          <VTextField
-            v-if="socialLogin.hasRedirectUri"
-            :model-value="
-              getSocialAuth(socialLogin.verifier).existingAuth?.redirectUri
-            "
-            no-message
-            class="social-auth-input"
-            placeholder="Redirect URI"
-            @update:model-value="
-              handleFieldUpdate(socialLogin.verifier, 'redirectUri', $event)
-            "
-          ></VTextField>
+      <form>
+        <VStack direction="column" gap="2rem" class="flex-grow">
+          <VStack
+            v-for="auth in socialAuthRef"
+            :key="`social-login-${auth.verifier}`"
+            align="center"
+            gap="2rem"
+          >
+            <label :for="auth.verifier" class="sub-heading-5 verifier-name">
+              {{ auth.name }}
+            </label>
+            <VSeperator vertical class="social-auth-separator" />
+            <VStack gap="1.25rem" class="social-auth-input-container">
+              <VTextField
+                :id="auth.verifier"
+                v-model.trim="auth.clientId"
+                no-message
+                class="social-auth-input"
+                placeholder="Client ID"
+                :icon="CopyIcon"
+                clickable-icon
+                @icon-clicked="copyToClipboard(auth.clientId || '')"
+              ></VTextField>
+              <VTextField
+                v-if="auth.hasClientSecret"
+                v-model.trim="auth.clientSecret"
+                no-message
+                class="social-auth-input"
+                placeholder="Client Secret"
+              ></VTextField>
+              <VTextField
+                v-if="auth.hasRedirectUri"
+                v-model.trim="auth.redirectUri"
+                no-message
+                class="social-auth-input"
+                placeholder="Redirect URI"
+              ></VTextField>
+            </VStack>
+            <VStack gap="1rem" align="center">
+              <VTooltip title="Get Credentials">
+                <a :href="auth.documentation" target="_blank" class="icon-link">
+                  <img
+                    src="@/assets/iconography/link.svg"
+                    alt="Get Credentials"
+                  />
+                </a>
+              </VTooltip>
+              <VTooltip title="Clear Fields">
+                <img
+                  src="@/assets/iconography/close.svg"
+                  alt="Clear Fields"
+                  class="cursor-pointer"
+                  @click.stop="handleClear(auth.verifier)"
+                />
+              </VTooltip>
+            </VStack>
+          </VStack>
+          <ConfigureActionButtons />
         </VStack>
-        <VStack gap="1rem" align="center">
-          <VTooltip title="Get Credentials">
-            <a
-              :href="socialLogin.documentation"
-              target="_blank"
-              class="icon-link"
-            >
-              <img src="@/assets/iconography/link.svg" alt="Get Credentials" />
-            </a>
-          </VTooltip>
-          <VTooltip title="Clear Fields">
-            <img
-              src="@/assets/iconography/close.svg"
-              alt="Clear Fields"
-              class="cursor-pointer"
-              @click.stop="handleCloseClick(socialLogin.verifier)"
-            />
-          </VTooltip>
-        </VStack>
-      </VStack>
+      </form>
     </SettingCard>
   </section>
 </template>
@@ -179,13 +136,13 @@ function handleFieldUpdate(
 }
 
 .social-auth-separator {
-  height: calc(100% + 2rem);
+  height: 6rem;
   margin-top: -2rem;
 }
 
 .social-auth-content-separator {
   width: calc(100% - 6rem) !important;
-  margin: 0 auto 0 0;
+  margin: -1rem auto 0 0;
 }
 
 .social-auth-input-container {
