@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -21,6 +21,34 @@ const app = appsStore.app(appId)
 const isEdited = ref(false)
 
 const passwordless = reactive({ ...app.auth.passwordless })
+const canSave = computed(() => {
+  return (
+    !isValidJavascriptOrigin() ||
+    !isValidRedirectUri() ||
+    hasSameValuesInStore()
+  )
+})
+const javascriptOriginMessageType = computed(() => {
+  if (
+    isEdited.value &&
+    passwordless.redirectUri &&
+    !isValidJavascriptOrigin()
+  ) {
+    return 'error'
+  }
+  return ''
+})
+
+const redirectUriMessageType = computed(() => {
+  if (
+    isEdited.value &&
+    passwordless.javascriptOrigin &&
+    !isValidRedirectUri()
+  ) {
+    return 'error'
+  }
+  return ''
+})
 
 async function handleSave() {
   if (passwordless) {
@@ -96,13 +124,7 @@ function hasSameValuesInStore() {
               id="passwordless-javascript-origin"
               v-model.trim="passwordless.javascriptOrigin"
               class="passwordless-input"
-              :message-type="
-                isEdited &&
-                passwordless.redirectUri &&
-                !isValidJavascriptOrigin()
-                  ? 'error'
-                  : ''
-              "
+              :message-type="javascriptOriginMessageType"
               message="Invalid javascript origin - must be a valid url"
               @blur="isEdited = true"
             />
@@ -119,23 +141,13 @@ function hasSameValuesInStore() {
               id="passwordless-redirect-uri"
               v-model.trim="passwordless.redirectUri"
               class="passwordless-input"
-              :message-type="
-                isEdited &&
-                passwordless.javascriptOrigin &&
-                !isValidRedirectUri()
-                  ? 'error'
-                  : ''
-              "
+              :message-type="redirectUriMessageType"
               message="Invalid redirect uri - must be a valid url"
               @blur="isEdited = true"
             />
           </VStack>
           <ConfigureActionButtons
-            :save-disabled="
-              !isValidJavascriptOrigin() ||
-              !isValidRedirectUri() ||
-              hasSameValuesInStore()
-            "
+            :save-disabled="canSave"
             :cancel-disabled="hasSameValuesInStore()"
             @cancel="handleCancel"
           />
