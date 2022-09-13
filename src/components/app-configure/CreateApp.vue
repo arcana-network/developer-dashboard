@@ -107,8 +107,9 @@ async function handleCreateApp() {
       <VSeperator />
       <form @submit.prevent="handleCreateApp">
         <VStack direction="column" gap="1rem">
-          <label class="app-name-label">Enter App Name</label>
+          <label class="app-name-label" for="app-name">Enter App Name</label>
           <VTextField
+            id="app-name"
             v-model.trim="appName"
             class="app-name-input"
             :message-type="hasAppNameError ? 'error' : ''"
@@ -117,7 +118,7 @@ async function handleCreateApp() {
         </VStack>
         <VStack direction="column" gap="1rem" align="start">
           <VStack gap="0.5rem">
-            <label class="app-name-label">Choose Region</label>
+            <label class="app-name-label" for="app-region">Choose Region</label>
             <VTooltip
               title="Arcana Store uses physical storage nodes that are logically grouped by
         geography. This allows you to control the region or location where
@@ -131,6 +132,7 @@ async function handleCreateApp() {
             </VTooltip>
           </VStack>
           <VDropdown
+            id="app-region"
             :options="regions"
             display-field="name"
             class="region-dropdown"
