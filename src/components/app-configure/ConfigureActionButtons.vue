@@ -46,7 +46,6 @@ const emit = defineEmits(['cancel', 'save'])
 
 <style scoped>
 .footer {
-  display: flex;
   gap: 2rem;
   justify-content: flex-end;
   margin-top: 1rem;
