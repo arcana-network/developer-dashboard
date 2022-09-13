@@ -31,7 +31,7 @@ const canSave = computed(() => {
 const javascriptOriginMessageType = computed(() => {
   if (
     isEdited.value &&
-    passwordless.redirectUri &&
+    (passwordless.javascriptOrigin || passwordless.redirectUri) &&
     !isValidJavascriptOrigin()
   ) {
     return 'error'
@@ -42,7 +42,7 @@ const javascriptOriginMessageType = computed(() => {
 const redirectUriMessageType = computed(() => {
   if (
     isEdited.value &&
-    passwordless.javascriptOrigin &&
+    (passwordless.javascriptOrigin || passwordless.redirectUri) &&
     !isValidRedirectUri()
   ) {
     return 'error'
