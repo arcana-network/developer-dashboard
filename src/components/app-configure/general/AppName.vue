@@ -28,20 +28,18 @@ function hasSameAppName() {
 }
 
 async function handleSave() {
-  if (isValidAppName() && hasSameAppName()) {
-    try {
-      loaderStore.showLoader('Saving app name...')
-      await updateApp(appId, { ...app, name: appName.value })
-      toast.success('Saved app name')
-      loaderStore.showLoader('Saving app config in smart contract...')
-      await setAppConfig(app.name, app.auth.social)
-      toast.success('App config saved in blockchain')
-      app.name = appName.value
-    } catch (e) {
-      toast.error('Error occured while saving the app name.')
-    } finally {
-      loaderStore.hideLoader()
-    }
+  try {
+    loaderStore.showLoader('Saving app name...')
+    await updateApp(appId, { ...app, name: appName.value })
+    toast.success('Saved app name')
+    loaderStore.showLoader('Saving app config in smart contract...')
+    await setAppConfig(app.name, app.auth.social)
+    toast.success('App config saved in blockchain')
+    app.name = appName.value
+  } catch (e) {
+    toast.error('Error occured while saving the app name.')
+  } finally {
+    loaderStore.hideLoader()
   }
 }
 
