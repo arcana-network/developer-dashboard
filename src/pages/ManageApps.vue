@@ -255,11 +255,6 @@ appsStore.$subscribe(() => {
   color: #ee193f !important;
 }
 
-.pause-button {
-  background: linear-gradient(#262626, #262626) padding-box,
-    linear-gradient(to bottom, #0085ff, #29c8fa) border-box !important;
-}
-
 .stats-card {
   display: flex;
   align-items: center;

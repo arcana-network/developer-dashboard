@@ -118,8 +118,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Logo Mark</label>
+              <label for="light-logo">Logo Mark</label>
               <VFileUpload
+                id="light-logo"
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
                 :value="themeLogos.light.vertical.logo"
@@ -139,8 +140,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Horizontal Logo</label>
+              <label for="light-horizontal-logo">Horizontal Logo</label>
               <VFileUpload
+                id="light-horizontal-logo"
                 :value="themeLogos.light.horizontal.logo"
                 :is-loading="themeLogos.light.horizontal.isLoading"
                 class="file-upload-input"
@@ -165,8 +167,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Logo Mark</label>
+              <label for="dark-logo">Logo Mark</label>
               <VFileUpload
+                id="dark-logo"
                 :value="themeLogos.dark.vertical.logo"
                 :is-loading="themeLogos.dark.vertical.isLoading"
                 placeholder="Upload .png, .svg or .gif"
@@ -186,8 +189,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Horizontal Logo</label>
+              <label for="dark-horizontal-logo">Horizontal Logo</label>
               <VFileUpload
+                id="dark-horizontal-log"
                 :value="themeLogos.dark.horizontal.logo"
                 :is-loading="themeLogos.dark.horizontal.isLoading"
                 placeholder="Upload .png, .svg or .gif"

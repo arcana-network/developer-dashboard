@@ -11,7 +11,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { createApp } from '@/services/gateway.service'
-import { useAppsStore, type Theme } from '@/stores/apps.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import calculateUserLimits from '@/utils/calculateUserLimits'
 import {
@@ -105,44 +105,48 @@ async function handleCreateApp() {
     <VCard variant="popup" class="create-app-modal-card">
       <h2 class="create-app-title">Create New App</h2>
       <VSeperator />
-      <VStack direction="column" gap="1rem">
-        <label class="app-name-label">Enter App Name</label>
-        <VTextField
-          v-model="appName"
-          class="app-name-input"
-          :message-type="hasAppNameError ? 'error' : ''"
-          message="App Name cannot be empty"
-        />
-      </VStack>
-      <VStack direction="column" gap="1rem" align="start">
-        <VStack gap="0.5rem">
-          <label class="app-name-label">Choose Region</label>
-          <VTooltip
-            title="Arcana Store uses physical storage nodes that are logically grouped by
+      <form @submit.prevent="handleCreateApp">
+        <VStack direction="column" gap="1rem">
+          <label class="app-name-label" for="app-name">Enter App Name</label>
+          <VTextField
+            id="app-name"
+            v-model.trim="appName"
+            class="app-name-input"
+            :message-type="hasAppNameError ? 'error' : ''"
+            message="App Name cannot be empty"
+          />
+        </VStack>
+        <VStack direction="column" gap="1rem" align="start">
+          <VStack gap="0.5rem">
+            <label class="app-name-label" for="app-region">Choose Region</label>
+            <VTooltip
+              title="Arcana Store uses physical storage nodes that are logically grouped by
         geography. This allows you to control the region or location where
         dApp's data assets reside, for compliance and regulatory purpose. <strong>Once a
         region has been selected it cannot be altered.</strong>"
-          >
-            <img
-              src="@/assets/iconography/info-circle-outline.svg"
-              style="cursor: pointer"
-            />
-          </VTooltip>
+            >
+              <img
+                src="@/assets/iconography/info-circle-outline.svg"
+                style="cursor: pointer"
+              />
+            </VTooltip>
+          </VStack>
+          <VDropdown
+            id="app-region"
+            :options="regions"
+            display-field="name"
+            class="region-dropdown"
+            :model-value="selectedRegion"
+            @update:model-value="handleRegionChange"
+          />
         </VStack>
-        <VDropdown
-          :options="regions"
-          display-field="name"
-          class="region-dropdown"
-          :model-value="selectedRegion"
-          @update:model-value="handleRegionChange"
+        <VButton
+          type="submit"
+          label="CREATE"
+          class="create-button"
+          :disabled="!appName?.trim()"
         />
-      </VStack>
-      <VButton
-        label="CREATE"
-        class="create-button"
-        :disabled="!appName?.trim()"
-        @click.stop="handleCreateApp"
-      />
+      </form>
     </VCard>
   </VOverlay>
 </template>

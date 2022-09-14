@@ -1,22 +1,93 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 
+import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
+import { updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import constants from '@/utils/constants'
+import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
+const loaderStore = useLoaderStore()
+const toast = useToast()
+const app = appsStore.app(appId)
+const isEdited = ref(false)
 
-const passwordless = computed(() => appsStore.app(appId).auth.passwordless)
+const passwordless = reactive({ ...app.auth.passwordless })
+const canSave = computed(() => {
+  return (
+    !isValidJavascriptOrigin() ||
+    !isValidRedirectUri() ||
+    hasSameValuesInStore()
+  )
+})
+const javascriptOriginMessageType = computed(() => {
+  if (
+    isEdited.value &&
+    (passwordless.javascriptOrigin || passwordless.redirectUri) &&
+    !isValidJavascriptOrigin()
+  ) {
+    return 'error'
+  }
+  return ''
+})
 
-function handleUpdate(type: 'javascriptOrigin' | 'redirectUri', value: string) {
-  const app = appsStore.app(appId)
-  app.auth.passwordless[type] = value
-  appsStore.updateApp(appId, app)
+const redirectUriMessageType = computed(() => {
+  if (
+    isEdited.value &&
+    (passwordless.javascriptOrigin || passwordless.redirectUri) &&
+    !isValidRedirectUri()
+  ) {
+    return 'error'
+  }
+  return ''
+})
+
+async function handleSave() {
+  if (passwordless) {
+    try {
+      loaderStore.showLoader('Saving passwordless config...')
+      const { auth } = app
+      auth.passwordless = passwordless
+      await updateApp(appId, { ...app, ...auth })
+      toast.success('Saved passwordless config')
+      app.auth.passwordless = passwordless
+    } catch (e) {
+      toast.error('Error occured while saving the passwordless config.')
+    } finally {
+      loaderStore.hideLoader()
+      isEdited.value = false
+    }
+  }
+}
+
+function handleCancel() {
+  const { javascriptOrigin, redirectUri } = app.auth.passwordless
+  passwordless.javascriptOrigin = javascriptOrigin
+  passwordless.redirectUri = redirectUri
+  isEdited.value = false
+}
+
+function isValidJavascriptOrigin() {
+  return isValidUrl(passwordless.javascriptOrigin as string)
+}
+
+function isValidRedirectUri() {
+  return isValidUrl(passwordless.redirectUri as string)
+}
+
+function hasSameValuesInStore() {
+  return (
+    passwordless.javascriptOrigin === app.auth.passwordless.javascriptOrigin &&
+    passwordless.redirectUri === app.auth.passwordless.redirectUri
+  )
 }
 </script>
 
@@ -37,38 +108,51 @@ function handleUpdate(type: 'javascriptOrigin' | 'redirectUri', value: string) {
           Learn More...
         </a>
       </template>
-      <VStack
-        direction="row"
-        align="center"
-        sm-direction="column"
-        sm-align="start"
-        gap="1rem"
-      >
-        <label for="passwordless-javascript-origin">JavaScript Origin</label>
-        <VTextField
-          id="passwordless-javascript-origin"
-          :model-value="passwordless.javascriptOrigin"
-          class="passwordless-input"
-          no-message
-          @update:model-value="handleUpdate('javascriptOrigin', $event)"
-        />
-      </VStack>
-      <VStack
-        direction="row"
-        align="center"
-        sm-direction="column"
-        sm-align="start"
-        gap="1rem"
-      >
-        <label for="passwordless-redirect-uri">Redirect URI</label>
-        <VTextField
-          id="passwordless-redirect-uri"
-          :model-value="passwordless.redirectUri"
-          class="passwordless-input"
-          no-message
-          @update:model-value="handleUpdate('redirectUri', $event)"
-        />
-      </VStack>
+      <form @submit.prevent="handleSave">
+        <VStack direction="column" gap="1rem" class="flex-grow">
+          <VStack
+            direction="row"
+            align="center"
+            sm-direction="column"
+            sm-align="start"
+            gap="1rem"
+          >
+            <label for="passwordless-javascript-origin"
+              >JavaScript Origin</label
+            >
+            <VTextField
+              id="passwordless-javascript-origin"
+              v-model.trim="passwordless.javascriptOrigin"
+              class="passwordless-input"
+              :message-type="javascriptOriginMessageType"
+              message="Invalid javascript origin - must be a valid url"
+              @blur="isEdited = true"
+            />
+          </VStack>
+          <VStack
+            direction="row"
+            align="center"
+            sm-direction="column"
+            sm-align="start"
+            gap="1rem"
+          >
+            <label for="passwordless-redirect-uri">Redirect URI</label>
+            <VTextField
+              id="passwordless-redirect-uri"
+              v-model.trim="passwordless.redirectUri"
+              class="passwordless-input"
+              :message-type="redirectUriMessageType"
+              message="Invalid redirect uri - must be a valid url"
+              @blur="isEdited = true"
+            />
+          </VStack>
+          <ConfigureActionButtons
+            :save-disabled="canSave"
+            :cancel-disabled="hasSameValuesInStore()"
+            @cancel="handleCancel"
+          />
+        </VStack>
+      </form>
     </SettingCard>
   </section>
 </template>
@@ -76,6 +160,7 @@ function handleUpdate(type: 'javascriptOrigin' | 'redirectUri', value: string) {
 <style scoped>
 label {
   width: 10rem;
+  margin-top: -2rem;
 }
 
 .passwordless-input {
