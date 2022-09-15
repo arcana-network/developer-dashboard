@@ -57,14 +57,17 @@ const menuItems = computed(() => {
   ]
   if (route.name === 'ManageApps') {
     arr[0].selected = true
-    arr[1].disabled = true
-    arr[2].disabled = true
   } else if (route.name === 'Dashboard') {
     arr[1].selected = true
-    arr[1].disabled = false
-    arr[2].disabled = false
   } else if (route.name === 'Users') {
     arr[2].selected = true
+  }
+
+  if (route.name === 'ManageApps' || route.name === 'Profile') {
+    arr[1].disabled = true
+    arr[2].disabled = true
+  }
+  if (route.name === 'Dashboard' || route.name === 'Users') {
     arr[1].disabled = false
     arr[2].disabled = false
   }
