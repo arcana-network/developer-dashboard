@@ -25,11 +25,19 @@ const scrollDelta = 10
 const menuItems = computed(() => {
   let arr = [
     {
+      label: 'Apps',
+      action() {
+        router.push({ name: 'ManageApps' })
+      },
+      selected: false,
+    },
+    {
       label: 'Dashboard',
       action() {
         router.push({ name: 'Dashboard', params: { appId } })
       },
       selected: false,
+      disabled: false,
     },
     {
       label: 'Users',
@@ -37,6 +45,7 @@ const menuItems = computed(() => {
         router.push({ name: 'Users', params: { appId } })
       },
       selected: false,
+      disabled: false,
     },
     {
       label: 'Docs',
@@ -46,10 +55,18 @@ const menuItems = computed(() => {
       selected: false,
     },
   ]
-  if (route.name === 'Dashboard') {
+  if (route.name === 'ManageApps') {
     arr[0].selected = true
-  } else if (route.name === 'Users') {
+    arr[1].disabled = true
+    arr[2].disabled = true
+  } else if (route.name === 'Dashboard') {
     arr[1].selected = true
+    arr[1].disabled = false
+    arr[2].disabled = false
+  } else if (route.name === 'Users') {
+    arr[2].selected = true
+    arr[1].disabled = false
+    arr[2].disabled = false
   }
   return arr
 })
