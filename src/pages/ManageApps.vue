@@ -102,11 +102,6 @@ appsStore.$subscribe(() => {
           />
           <h1>MANAGE APPS</h1>
         </VStack>
-        <div class="body-1 description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Lectus
-          magna fringilla urna porttitor rhoncus dolor purus non.
-        </div>
         <VStack gap="1.25rem" wrap>
           <VCard
             class="app-card"
