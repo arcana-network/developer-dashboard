@@ -25,15 +25,19 @@ const email = ref('')
 const hasValidEmail = computed(() => isValidEmail(email.value))
 
 async function launchLogin(type: string) {
-  if (type === 'passwordless') {
-    if (!hasValidEmail.value) return
-    loaderStore.showLoader(`Sending login link to your email`)
-    await arcanaAuth.loginWithLink(email.value)
-  } else {
-    loaderStore.showLoader(`Signing with ${type}`)
-    await arcanaAuth.loginWithSocial(type)
+  try {
+    if (type === 'passwordless') {
+      if (!hasValidEmail.value) return
+      loaderStore.showLoader(`Sending login link to your email`)
+      await arcanaAuth.loginWithLink(email.value)
+    } else {
+      loaderStore.showLoader(`Signing with ${type}`)
+      await arcanaAuth.loginWithSocial(type)
+    }
+    await fetchAndStoreDetails()
+  } catch (e) {
+    loaderStore.hideLoader()
   }
-  await fetchAndStoreDetails()
 }
 
 async function fetchAndStoreDetails() {
