@@ -20,7 +20,6 @@
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": true,
-    "source.fixAll.stylelint": true,
     "source.fixAll.markdownlint": true
   },
 
@@ -29,13 +28,6 @@
   // ===
   "javascript.format.enable": false,
   "json.format.enable": false,
-
-  // ===
-  // CSS
-  // ===
-
-  "css.validate": false,
-  "scss.validate": false,
 
   // ===
   // Markdown
