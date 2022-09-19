@@ -94,7 +94,7 @@ type AppsListResponse = {
   consumed_storage: number
   consumed_bandwidth: number
   estimated_cost: number
-  CreatedAt: string
+  created_at: string
 }
 
 function createApp(

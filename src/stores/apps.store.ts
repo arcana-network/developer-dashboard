@@ -99,7 +99,7 @@ type AppState = {
   appsById: {
     [key: AppId]: App
   }
-  appsOverview: {
+  appsOverviewById: {
     [key: AppId]: AppOverview
   }
 }
@@ -108,17 +108,17 @@ const useAppsStore = defineStore('apps', {
   state: (): AppState => ({
     appIds: [],
     appsById: {},
-    appsOverview: {},
+    appsOverviewById: {},
   }),
   getters: {
     apps: (state) => {
-      return state.appIds.map((id) => ({ ...state.appsOverview[id] }))
+      return state.appIds.map((id) => ({ ...state.appsOverviewById[id] }))
     },
     app: (state) => {
       return (id: AppId) => state.appsById[id]
     },
     appOverview: (state) => {
-      return (id: AppId) => state.appsOverview[id]
+      return (id: AppId) => state.appsOverviewById[id]
     },
     hasUiMode: (state) => {
       return (id: AppId) =>
@@ -144,13 +144,14 @@ const useAppsStore = defineStore('apps', {
     async fetchAndStoreAllApps() {
       const apps = (await fetchAllApps()).data
       apps.sort(
-        (app1, app2) => Date.parse(app2.CreatedAt) - Date.parse(app1.CreatedAt)
+        (app1, app2) =>
+          Date.parse(app2.created_at) - Date.parse(app1.created_at)
       )
       const appConfigPromises: Promise<void>[] = []
       apps.forEach((app) => {
         const appId = app.id
         this.appIds.push(appId)
-        this.appsOverview[app.id] = {
+        this.appsOverviewById[app.id] = {
           id: app.id,
           name: app.name,
           bandwidth: {
@@ -164,7 +165,7 @@ const useAppsStore = defineStore('apps', {
           noOfFiles: app.no_of_files,
           totalUsers: app.total_users,
           estimatedCost: app.estimated_cost,
-          createdAt: app.CreatedAt,
+          createdAt: app.created_at,
         }
         appConfigPromises.push(this.fetchAndStoreAppConfig(appId))
       })
