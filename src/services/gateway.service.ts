@@ -195,7 +195,6 @@ type StatsResponse = {
     revoke: number
     ownership_change: number
     delete: number
-    transfers: number
     storage: number
     bandwidth: number
   }

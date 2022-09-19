@@ -121,34 +121,39 @@ async function fetchAndPopulateCharts() {
   updateChart(periodicUsage.data)
 }
 
+function getAllowedLimit(limit: number) {
+  return limit || MAX_ALLOWED_APP_LIMIT_IN_BYTES
+}
+
 async function fetchAndPopulateUsersAndActions() {
   const stats = await fetchStats(appId)
   totalUsers.value = stats.data.no_of_users
   actions.value = {
-    download: stats.data.actions?.download,
-    upload: stats.data.actions?.upload,
-    delete: stats.data.actions?.delete,
-    transfers: stats.data.actions?.ownership_change,
-    share: stats.data.actions?.share,
-    revoke: stats.data.actions?.revoke,
+    download: stats.data.actions.download,
+    upload: stats.data.actions.upload,
+    delete: stats.data.actions.delete,
+    transfers: stats.data.actions.ownership_change,
+    share: stats.data.actions.share,
+    revoke: stats.data.actions.revoke,
   }
 
-  const storage: number = stats.data.actions?.storage
+  const storage: number = stats.data.consumed_storage
   storageUsed.value = bytes(storage, {
     unitSeparator: ' ',
   })
-  storageUsedPercentage.value = (storage / MAX_ALLOWED_APP_LIMIT_IN_BYTES) * 100
-  storageRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT_IN_BYTES - storage, {
+  const allowedStorageLimit = getAllowedLimit(stats.data.storage)
+  storageUsedPercentage.value = (storage / allowedStorageLimit) * 100
+  storageRemaining.value = bytes(allowedStorageLimit - storage, {
     unitSeparator: ' ',
   })
 
-  const bandwidth: number = stats.data.actions?.bandwidth
+  const bandwidth: number = stats.data.consumed_bandwidth
   bandwidthUsed.value = bytes(bandwidth, {
     unitSeparator: ' ',
   })
-  bandwidthUsedPercentage.value =
-    (bandwidth / MAX_ALLOWED_APP_LIMIT_IN_BYTES) * 100
-  bandwidthRemaining.value = bytes(MAX_ALLOWED_APP_LIMIT_IN_BYTES - bandwidth, {
+  const allowedBandwidthLimit = getAllowedLimit(stats.data.bandwidth)
+  bandwidthUsedPercentage.value = (bandwidth / allowedBandwidthLimit) * 100
+  bandwidthRemaining.value = bytes(allowedBandwidthLimit - bandwidth, {
     unitSeparator: ' ',
   })
 }
