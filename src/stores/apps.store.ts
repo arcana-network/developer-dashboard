@@ -77,10 +77,30 @@ type App = {
   }
 }
 
+type AppOverview = {
+  id: AppId
+  name: string
+  bandwidth: {
+    allowed: number
+    consumed: number
+  }
+  storage: {
+    allowed: number
+    consumed: number
+  }
+  estimatedCost: number
+  noOfFiles: number
+  totalUsers: number
+  createdAt: string
+}
+
 type AppState = {
   appIds: AppId[]
   appsById: {
     [key: AppId]: App
+  }
+  appsOverview: {
+    [key: AppId]: AppOverview
   }
 }
 
@@ -88,13 +108,17 @@ const useAppsStore = defineStore('apps', {
   state: (): AppState => ({
     appIds: [],
     appsById: {},
+    appsOverview: {},
   }),
   getters: {
     apps: (state) => {
-      return state.appIds.map((id) => ({ ...state.appsById[id] }))
+      return state.appIds.map((id) => ({ ...state.appsOverview[id] }))
     },
     app: (state) => {
       return (id: AppId) => state.appsById[id]
+    },
+    appOverview: (state) => {
+      return (id: AppId) => state.appsOverview[id]
     },
     hasUiMode: (state) => {
       return (id: AppId) =>
@@ -124,8 +148,24 @@ const useAppsStore = defineStore('apps', {
       )
       const appConfigPromises: Promise<void>[] = []
       apps.forEach((app) => {
-        const appId = app.ID
+        const appId = app.id
         this.appIds.push(appId)
+        this.appsOverview[app.id] = {
+          id: app.id,
+          name: app.name,
+          bandwidth: {
+            allowed: app.bandwidth,
+            consumed: app.consumed_bandwidth,
+          },
+          storage: {
+            allowed: app.storage,
+            consumed: app.consumed_storage,
+          },
+          noOfFiles: app.no_of_files,
+          totalUsers: app.total_users,
+          estimatedCost: app.estimated_cost,
+          createdAt: app.CreatedAt,
+        }
         appConfigPromises.push(this.fetchAndStoreAppConfig(appId))
       })
       await Promise.all(appConfigPromises)
@@ -209,4 +249,5 @@ export type {
   Theme,
   App as AppConfig,
   AppId,
+  AppOverview,
 }
