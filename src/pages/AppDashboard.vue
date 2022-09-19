@@ -148,6 +148,23 @@ async function fetchAndPopulateUsersAndActions() {
   bandwidthRemaining.value = bytes(allowedBandwidthLimit - bandwidth, {
     unitSeparator: ' ',
   })
+
+  appsStore.addAppOverview(appId, {
+    id: appId,
+    name: appName,
+    storage: {
+      consumed: stats.data.consumed_storage,
+      allowed: stats.data.storage,
+    },
+    bandwidth: {
+      consumed: stats.data.consumed_bandwidth,
+      allowed: stats.data.bandwidth,
+    },
+    noOfFiles: actions.value.upload - actions.value.delete,
+    totalUsers: totalUsers.value,
+    estimatedCost: 0,
+    createdAt: new Date().toString(),
+  })
 }
 
 function updateChart(data: any[]) {
