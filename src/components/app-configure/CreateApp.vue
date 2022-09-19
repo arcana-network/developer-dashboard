@@ -10,7 +10,7 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import { createApp } from '@/services/gateway.service'
+import { createApp, fetchStats } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import calculateUserLimits from '@/utils/calculateUserLimits'
@@ -49,6 +49,7 @@ async function handleCreateApp() {
       region: RegionMapping[selectedRegion.value.value],
     })
   ).data.app
+  const appOverview = (await fetchStats(app.ID)).data
 
   appsStore.addApp(app.ID, {
     id: app.ID,
@@ -88,6 +89,22 @@ async function handleCreateApp() {
       },
       redirectUri: `${api.verify}/${app.ID}/`,
     },
+  })
+  appsStore.addAppOverview(app.ID, {
+    id: app.ID,
+    name: app.name,
+    storage: {
+      consumed: appOverview.consumed_storage,
+      allowed: appOverview.storage,
+    },
+    bandwidth: {
+      consumed: appOverview.consumed_bandwidth,
+      allowed: appOverview.bandwidth,
+    },
+    noOfFiles: appOverview.actions.upload - appOverview.actions.delete,
+    totalUsers: appOverview.no_of_users,
+    estimatedCost: 0,
+    createdAt: new Date().toString(),
   })
   createTransactionSigner(app.address)
   loaderStore.hideLoader()
