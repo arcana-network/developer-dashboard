@@ -84,6 +84,19 @@ type Cred = {
 
 type AppConfigRequiredProps = Omit<AppConfig, 'ID' | 'logo'>
 
+type AppsListResponse = {
+  id: AppId
+  name: string
+  no_of_files: number
+  total_users: number
+  storage: number
+  bandwidth: number
+  consumed_storage: number
+  consumed_bandwidth: number
+  estimated_cost: number
+  CreatedAt: string
+}
+
 function createApp(
   config: CreateAppRequestBody
 ): Promise<AxiosResponse<CreateAppResponse>> {
@@ -166,9 +179,7 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
   }
 }
 
-function fetchAllApps(): Promise<
-  AxiosResponse<(AppConfig & { CreatedAt: string })[]>
-> {
+function fetchAllApps(): Promise<AxiosResponse<AppsListResponse[]>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
@@ -176,7 +187,26 @@ function fetchApp(appId: AppId): Promise<AxiosResponse<AppConfig>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
-function fetchStats(appId: AppId) {
+type StatsResponse = {
+  actions: {
+    upload: number
+    download: number
+    share: number
+    revoke: number
+    ownership_change: number
+    delete: number
+    transfers: number
+    storage: number
+    bandwidth: number
+  }
+  no_of_users: number
+  consumed_storage: number
+  storage: number
+  consumed_bandwidth: number
+  bandwidth: number
+}
+
+function fetchStats(appId: AppId): Promise<AxiosResponse<StatsResponse>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/overview/?id=${appId}`)
 }
 
