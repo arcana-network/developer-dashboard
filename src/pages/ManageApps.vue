@@ -12,8 +12,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { fetchStats } from '@/services/gateway.service'
-import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
+import { useAppsStore, type AppOverview, type AppId } from '@/stores/apps.store'
 import {
   MAX_ALLOWED_APP_LIMIT,
   MAX_ALLOWED_APP_LIMIT_IN_BYTES,
@@ -22,11 +21,7 @@ import {
 const router = useRouter()
 const appsStore = useAppsStore()
 
-type AppData = AppConfig & {
-  noOfUsers?: number
-  noOfFiles?: number
-  storageUsed?: number
-  bandwidthUsed?: number
+type AppData = AppOverview & {
   storageUsedPercent?: number
   bandwidthUsedPercent?: number
 }
@@ -36,12 +31,15 @@ const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
 const appToDelete = ref(0)
 
-function goToDashboard(appId: number) {
+function goToDashboard(appId: AppId) {
   router.push({ name: 'AppDetails', params: { appId } })
 }
 
-function calculatePercentageLimitUsed(limitUsed: number) {
-  return (limitUsed / MAX_ALLOWED_APP_LIMIT_IN_BYTES) * 100
+function calculatePercentageLimitUsed(
+  limitUsed: number,
+  limitAllowed: number = MAX_ALLOWED_APP_LIMIT_IN_BYTES
+) {
+  return (limitUsed / limitAllowed) * 100
 }
 
 function getProgressState(limitUsedPercent: number) {
@@ -59,18 +57,15 @@ function handleDelete(appId: AppId) {
   appToDelete.value = appId
 }
 
-function fetchAppDetails() {
-  apps.value.forEach(async (app) => {
-    const stats = (await fetchStats(app.id)).data
-    app.noOfUsers = stats.no_of_users
-    app.noOfFiles = stats.actions.upload - stats.actions.delete
-    app.storageUsed = stats.actions.storage
-    app.bandwidthUsed = stats.actions.bandwidth
+function calculateAppLimits() {
+  apps.value.forEach((app) => {
     app.storageUsedPercent = calculatePercentageLimitUsed(
-      app.storageUsed as number
+      app.storage.consumed,
+      app.storage.allowed
     )
     app.bandwidthUsedPercent = calculatePercentageLimitUsed(
-      app.bandwidthUsed as number
+      app.bandwidth.consumed,
+      app.bandwidth.allowed
     )
   })
 }
@@ -80,11 +75,11 @@ function getImageUrl(appId: AppId) {
   return appLogos.dark.vertical || appLogos.light.vertical || AppFallbackLogo
 }
 
-onBeforeMount(fetchAppDetails)
+onBeforeMount(calculateAppLimits)
 
 appsStore.$subscribe(() => {
   apps.value = appsStore.apps
-  fetchAppDetails()
+  calculateAppLimits()
 })
 </script>
 
@@ -125,7 +120,7 @@ appsStore.$subscribe(() => {
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center">
                   <span class="stats-title">Total Users</span>
-                  <span class="stats-number">{{ app.noOfUsers }}</span>
+                  <span class="stats-number">{{ app.totalUsers }}</span>
                 </VStack>
                 <VSeperator vertical class="stats-separator" />
                 <VStack direction="column" align="center">
@@ -135,15 +130,19 @@ appsStore.$subscribe(() => {
                 <VSeperator vertical class="stats-separator" />
                 <VStack direction="column" align="center">
                   <span class="stats-title">Estimated Cost</span>
-                  <span class="stats-number">$0</span>
+                  <span class="stats-number"
+                    >${{ app.estimatedCost || 0 }}</span
+                  >
                 </VStack>
               </VCard>
               <VStack gap="1.25rem" class="limit-indicator-container">
                 <VStack direction="column" class="flex-grow">
                   <span class="limit-title">Storage</span>
                   <span class="limit-details">
-                    {{ bytes(app.storageUsed as number, {decimalPlaces: 2}) }}
-                    of {{ MAX_ALLOWED_APP_LIMIT }} used
+                    {{ bytes(app.storage.consumed, { decimalPlaces: 2 }) }}
+                    of
+                    {{ bytes(app.storage.allowed) || MAX_ALLOWED_APP_LIMIT }}
+                    used
                   </span>
                   <VProgressBar
                     :percentage="app.storageUsedPercent"
@@ -154,8 +153,10 @@ appsStore.$subscribe(() => {
                 <VStack direction="column" class="flex-grow">
                   <span class="limit-title">Bandwidth</span>
                   <span class="limit-details">
-                    {{ bytes(app.bandwidthUsed as number, {decimalPlaces: 2}) }}
-                    of {{ MAX_ALLOWED_APP_LIMIT }} used
+                    {{ bytes(app.bandwidth.consumed, { decimalPlaces: 2 }) }}
+                    of
+                    {{ bytes(app.bandwidth.allowed) || MAX_ALLOWED_APP_LIMIT }}
+                    used
                   </span>
                   <VProgressBar
                     :percentage="app.bandwidthUsedPercent"
