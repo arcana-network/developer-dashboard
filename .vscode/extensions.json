@@ -13,7 +13,6 @@
 
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode",
-    "stylelint.vscode-stylelint",
     "davidanson.vscode-markdownlint"
   ]
 }
