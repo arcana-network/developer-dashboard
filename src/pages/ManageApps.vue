@@ -13,10 +13,6 @@ import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppOverview, type AppId } from '@/stores/apps.store'
-import {
-  MAX_ALLOWED_APP_LIMIT,
-  MAX_ALLOWED_APP_LIMIT_IN_BYTES,
-} from '@/utils/constants'
 
 const router = useRouter()
 const appsStore = useAppsStore()
@@ -35,10 +31,7 @@ function goToDashboard(appId: AppId) {
   router.push({ name: 'AppDetails', params: { appId } })
 }
 
-function calculatePercentageLimitUsed(
-  limitUsed: number,
-  limitAllowed: number = MAX_ALLOWED_APP_LIMIT_IN_BYTES
-) {
+function calculatePercentageLimitUsed(limitUsed: number, limitAllowed: number) {
   return (limitUsed / limitAllowed) * 100
 }
 
@@ -130,9 +123,7 @@ appsStore.$subscribe(() => {
                 <VSeperator vertical class="stats-separator" />
                 <VStack direction="column" align="center">
                   <span class="stats-title">Estimated Cost</span>
-                  <span class="stats-number"
-                    >${{ app.estimatedCost || 0 }}</span
-                  >
+                  <span class="stats-number">${{ app.estimatedCost }}</span>
                 </VStack>
               </VCard>
               <VStack gap="1.25rem" class="limit-indicator-container">
@@ -141,7 +132,7 @@ appsStore.$subscribe(() => {
                   <span class="limit-details">
                     {{ bytes(app.storage.consumed, { decimalPlaces: 2 }) }}
                     of
-                    {{ bytes(app.storage.allowed) || MAX_ALLOWED_APP_LIMIT }}
+                    {{ bytes(app.storage.allowed) }}
                     used
                   </span>
                   <VProgressBar
@@ -155,7 +146,7 @@ appsStore.$subscribe(() => {
                   <span class="limit-details">
                     {{ bytes(app.bandwidth.consumed, { decimalPlaces: 2 }) }}
                     of
-                    {{ bytes(app.bandwidth.allowed) || MAX_ALLOWED_APP_LIMIT }}
+                    {{ bytes(app.bandwidth.allowed) }}
                     used
                   </span>
                   <VProgressBar

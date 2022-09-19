@@ -27,10 +27,6 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
-import {
-  MAX_ALLOWED_APP_LIMIT,
-  MAX_ALLOWED_APP_LIMIT_IN_BYTES,
-} from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const router = useRouter()
@@ -55,8 +51,8 @@ const storageUsed = ref('0 B')
 const bandwidthUsed = ref('0 B')
 const storageUsedPercentage = ref(0)
 const bandwidthUsedPercentage = ref(0)
-const storageRemaining = ref(MAX_ALLOWED_APP_LIMIT)
-const bandwidthRemaining = ref(MAX_ALLOWED_APP_LIMIT)
+const storageRemaining = ref('')
+const bandwidthRemaining = ref('')
 let labels: string[] = []
 let labelAliases: (string | number)[] = []
 let storageData: number[] = []
@@ -121,10 +117,6 @@ async function fetchAndPopulateCharts() {
   updateChart(periodicUsage.data)
 }
 
-function getAllowedLimit(limit: number) {
-  return limit || MAX_ALLOWED_APP_LIMIT_IN_BYTES
-}
-
 async function fetchAndPopulateUsersAndActions() {
   const stats = await fetchStats(appId)
   totalUsers.value = stats.data.no_of_users
@@ -137,21 +129,21 @@ async function fetchAndPopulateUsersAndActions() {
     revoke: stats.data.actions.revoke,
   }
 
-  const storage: number = stats.data.consumed_storage
+  const storage = stats.data.consumed_storage
   storageUsed.value = bytes(storage, {
     unitSeparator: ' ',
   })
-  const allowedStorageLimit = getAllowedLimit(stats.data.storage)
+  const allowedStorageLimit = stats.data.storage
   storageUsedPercentage.value = (storage / allowedStorageLimit) * 100
   storageRemaining.value = bytes(allowedStorageLimit - storage, {
     unitSeparator: ' ',
   })
 
-  const bandwidth: number = stats.data.consumed_bandwidth
+  const bandwidth = stats.data.consumed_bandwidth
   bandwidthUsed.value = bytes(bandwidth, {
     unitSeparator: ' ',
   })
-  const allowedBandwidthLimit = getAllowedLimit(stats.data.bandwidth)
+  const allowedBandwidthLimit = stats.data.bandwidth
   bandwidthUsedPercentage.value = (bandwidth / allowedBandwidthLimit) * 100
   bandwidthRemaining.value = bytes(allowedBandwidthLimit - bandwidth, {
     unitSeparator: ' ',
