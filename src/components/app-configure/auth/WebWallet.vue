@@ -78,14 +78,17 @@ function hasSameValuesInStore() {
 
 async function handleSave() {
   try {
-    const { auth } = app
-    auth.wallet.websiteDomain = walletWebsiteDomain.value
-    auth.wallet.walletType = hasUIMode.value ? WalletMode.UI : WalletMode.NoUI
-    auth.wallet.selectedTheme = selectedTheme.value.value
+    const { auth } = { ...app }
+    wallet.websiteDomain = walletWebsiteDomain.value
+    const walletType = hasUIMode.value ? WalletMode.UI : WalletMode.NoUI
+    const isSameWalletType = walletType === app.auth.wallet.walletType
+    wallet.walletType = walletType
+    wallet.selectedTheme = selectedTheme.value.value
+    auth.wallet = wallet
     loaderStore.showLoader('Saving wallet config...')
     await updateApp(appId, { ...app, ...auth })
     toast.success('Saved wallet config')
-    if (auth.wallet.walletType !== app.auth.wallet.walletType) {
+    if (!isSameWalletType) {
       loaderStore.showLoader('Enabling UI mode in smart contract...')
       await enableUiMode()
       toast.success('UI mode enabled in blockchain')
