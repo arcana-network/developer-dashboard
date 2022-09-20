@@ -78,7 +78,7 @@ function hasSameValuesInStore() {
 
 async function handleSave() {
   try {
-    const { auth } = { ...app }
+    const { auth } = app
     wallet.websiteDomain = walletWebsiteDomain.value
     const walletType = hasUIMode.value ? WalletMode.UI : WalletMode.NoUI
     const isSameWalletType = walletType === app.auth.wallet.walletType
