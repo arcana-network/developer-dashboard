@@ -9,8 +9,9 @@ import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import { createApp } from '@/services/gateway.service'
+import { createApp, fetchStats } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import calculateUserLimits from '@/utils/calculateUserLimits'
@@ -25,6 +26,7 @@ import { createTransactionSigner } from '@/utils/signerUtils'
 
 const router = useRouter()
 const loaderStore = useLoaderStore()
+const toast = useToast()
 const appsStore = useAppsStore()
 const appName = ref('')
 const hasAppNameError = ref(false)
@@ -36,62 +38,85 @@ function handleRegionChange(option: Region) {
 }
 
 async function handleCreateApp() {
-  if (!appName.value?.trim()) {
-    hasAppNameError.value = true
-    return
-  }
-  emit('close')
-  loaderStore.showLoader('Creating App...')
-  hasAppNameError.value = false
-  const app = (
-    await createApp({
-      name: appName.value,
-      region: RegionMapping[selectedRegion.value.value],
-    })
-  ).data.app
+  try {
+    if (!appName.value?.trim()) {
+      hasAppNameError.value = true
+      return
+    }
+    emit('close')
+    loaderStore.showLoader('Creating App...')
+    hasAppNameError.value = false
+    const app = (
+      await createApp({
+        name: appName.value,
+        region: RegionMapping[selectedRegion.value.value],
+      })
+    ).data.app
+    const appOverview = (await fetchStats(app.ID)).data
 
-  appsStore.addApp(app.ID, {
-    id: app.ID,
-    name: app.name as string,
-    address: app.address as string,
-    logos: {
-      dark: {
-        horizontal: '',
-        vertical: '',
+    appsStore.addApp(app.ID, {
+      id: app.ID,
+      name: app.name as string,
+      address: app.address as string,
+      logos: {
+        dark: {
+          horizontal: '',
+          vertical: '',
+        },
+        light: {
+          horizontal: '',
+          vertical: '',
+        },
       },
-      light: {
-        horizontal: '',
-        vertical: '',
+      access: {
+        selectedChain: 'none',
       },
-    },
-    access: {
-      selectedChain: 'none',
-    },
-    store: {
-      region: RegionMapping[app.region] as StorageRegion,
-      userLimits: {
-        storage: calculateUserLimits(app.storage_limit),
-        bandwidth: calculateUserLimits(app.bandwidth_limit),
+      store: {
+        region: RegionMapping[app.region] as StorageRegion,
+        userLimits: {
+          storage: calculateUserLimits(app.storage_limit),
+          bandwidth: calculateUserLimits(app.bandwidth_limit),
+        },
       },
-    },
-    auth: {
-      social: [],
-      passwordless: {
-        javascriptOrigin: '',
-        redirectUri: '',
+      auth: {
+        social: [],
+        passwordless: {
+          javascriptOrigin: '',
+          redirectUri: '',
+        },
+        wallet: {
+          walletType: app.wallet_type,
+          walletTypeInGateway: app.wallet_type,
+          websiteDomain: app.wallet_domain,
+          selectedTheme: app.theme || 'dark',
+        },
+        redirectUri: `${api.verify}/${app.ID}/`,
       },
-      wallet: {
-        walletType: app.wallet_type,
-        walletTypeInGateway: app.wallet_type,
-        websiteDomain: app.wallet_domain,
-        selectedTheme: app.theme || 'dark',
+    })
+    appsStore.addAppOverview(app.ID, {
+      id: app.ID,
+      name: app.name,
+      storage: {
+        consumed: appOverview.consumed_storage,
+        allowed: appOverview.storage,
       },
-      redirectUri: `${api.verify}/${app.ID}/`,
-    },
-  })
-  createTransactionSigner(app.address)
-  loaderStore.hideLoader()
-  router.push({ name: 'GeneralSettings', params: { appId: app.ID } })
+      bandwidth: {
+        consumed: appOverview.consumed_bandwidth,
+        allowed: appOverview.bandwidth,
+      },
+      noOfFiles: appOverview.actions.upload - appOverview.actions.delete,
+      totalUsers: appOverview.no_of_users,
+      estimatedCost: 0,
+      createdAt: new Date().toString(),
+    })
+    createTransactionSigner(app.address)
+    loaderStore.hideLoader()
+    router.push({ name: 'GeneralSettings', params: { appId: app.ID } })
+  } catch (e) {
+    loaderStore.hideLoader()
+    console.error(e)
+    toast.error('Error occurred while creating app')
+  }
 }
 </script>
 
@@ -106,46 +131,50 @@ async function handleCreateApp() {
       <h2 class="create-app-title">Create New App</h2>
       <VSeperator />
       <form @submit.prevent="handleCreateApp">
-        <VStack direction="column" gap="1rem">
-          <label class="app-name-label" for="app-name">Enter App Name</label>
-          <VTextField
-            id="app-name"
-            v-model.trim="appName"
-            class="app-name-input"
-            :message-type="hasAppNameError ? 'error' : ''"
-            message="App Name cannot be empty"
-          />
-        </VStack>
-        <VStack direction="column" gap="1rem" align="start">
-          <VStack gap="0.5rem">
-            <label class="app-name-label" for="app-region">Choose Region</label>
-            <VTooltip
-              title="Arcana Store uses physical storage nodes that are logically grouped by
+        <VStack direction="column">
+          <VStack direction="column" gap="1rem">
+            <label class="app-name-label" for="app-name">Enter App Name</label>
+            <VTextField
+              id="app-name"
+              v-model.trim="appName"
+              class="app-name-input"
+              :message-type="hasAppNameError ? 'error' : ''"
+              message="App Name cannot be empty"
+            />
+          </VStack>
+          <VStack direction="column" gap="1rem" align="start">
+            <VStack gap="0.5rem">
+              <label class="app-name-label" for="app-region"
+                >Choose Region</label
+              >
+              <VTooltip
+                title="Arcana Store uses physical storage nodes that are logically grouped by
         geography. This allows you to control the region or location where
         dApp's data assets reside, for compliance and regulatory purpose. <strong>Once a
         region has been selected it cannot be altered.</strong>"
-            >
-              <img
-                src="@/assets/iconography/info-circle-outline.svg"
-                style="cursor: pointer"
-              />
-            </VTooltip>
+              >
+                <img
+                  src="@/assets/iconography/info-circle-outline.svg"
+                  style="cursor: pointer"
+                />
+              </VTooltip>
+            </VStack>
+            <VDropdown
+              id="app-region"
+              :options="regions"
+              display-field="name"
+              class="region-dropdown"
+              :model-value="selectedRegion"
+              @update:model-value="handleRegionChange"
+            />
           </VStack>
-          <VDropdown
-            id="app-region"
-            :options="regions"
-            display-field="name"
-            class="region-dropdown"
-            :model-value="selectedRegion"
-            @update:model-value="handleRegionChange"
+          <VButton
+            type="submit"
+            label="CREATE"
+            class="create-button"
+            :disabled="!appName?.trim()"
           />
         </VStack>
-        <VButton
-          type="submit"
-          label="CREATE"
-          class="create-button"
-          :disabled="!appName?.trim()"
-        />
       </form>
     </VCard>
   </VOverlay>
