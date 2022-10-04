@@ -129,7 +129,6 @@ type SocialAuthOption = {
   name: SocialAuthVerifierLabel
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
-  hasRedirectUri: boolean
   documentation: string
 }
 
@@ -138,28 +137,24 @@ const socialLogins: readonly SocialAuthOption[] = [
     name: 'Google',
     verifier: 'google',
     hasClientSecret: false,
-    hasRedirectUri: false,
     documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
   },
   {
     name: 'Twitch',
     verifier: 'twitch',
     hasClientSecret: false,
-    hasRedirectUri: false,
     documentation: 'https://dev.twitch.tv/docs/authentication#registration',
   },
   {
     name: 'Discord',
     verifier: 'discord',
     hasClientSecret: true,
-    hasRedirectUri: false,
     documentation: 'https://discord.com/developers/applications',
   },
   {
     name: 'GitHub',
     verifier: 'github',
     hasClientSecret: true,
-    hasRedirectUri: false,
     documentation:
       'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
   },
@@ -167,7 +162,6 @@ const socialLogins: readonly SocialAuthOption[] = [
     name: 'Twitter',
     verifier: 'twitter',
     hasClientSecret: true,
-    hasRedirectUri: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
   },
 ]

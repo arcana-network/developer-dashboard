@@ -26,7 +26,6 @@ type SocialAuthState = {
   verifier: SocialAuthVerifier
   clientId?: string
   clientSecret?: string
-  redirectUri?: string
 }
 
 type Theme = 'light' | 'dark'
@@ -186,7 +185,6 @@ const useAppsStore = defineStore('apps', {
               verifier: authDetail.verifier,
               clientId: authDetail.clientId,
               clientSecret: authDetail.clientSecret,
-              redirectUri: authDetail.redirectUrl,
             })
           } else {
             passwordlessAuth.javascriptOrigin = authDetail.origin || ''
