@@ -16,7 +16,6 @@ import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { socialLogins, DOCS_URL } from '@/utils/constants'
 import copyToClipboard from '@/utils/copyToClipboard'
-import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
@@ -45,39 +44,17 @@ function handleClear(verifier: string) {
   if (authIndex > -1) {
     delete socialAuthRef[authIndex].clientId
     delete socialAuthRef[authIndex].clientSecret
-    delete socialAuthRef[authIndex].redirectUri
   }
 }
 
 function isAuthValid(auth: typeof socialAuth[0]) {
-  if (auth.hasClientSecret || auth.hasRedirectUri) {
-    if (
-      !auth.clientId?.length &&
-      (auth.clientSecret?.length || auth.redirectUri?.length)
-    ) {
+  if (auth.hasClientSecret) {
+    if (!auth.clientId?.length && auth.clientSecret?.length) {
       auth.error = 'Client Id is required'
       return false
     }
-    if (
-      auth.hasClientSecret &&
-      !auth.clientSecret?.length &&
-      (auth.clientId?.length || auth.redirectUri?.length)
-    ) {
+    if (!auth.clientSecret?.length && auth.clientId?.length) {
       auth.error = 'Client secret is required'
-      return false
-    }
-    if (
-      auth.hasRedirectUri &&
-      (auth.clientSecret?.length || auth.clientId?.length)
-    ) {
-      if (!auth.redirectUri?.length) {
-        auth.error = 'Redirect uri is required'
-      } else if (!isValidUrl(auth.redirectUri)) {
-        auth.error = 'Invalid redirect uri - must be a valid url'
-      } else {
-        auth.error = ''
-        return true
-      }
       return false
     }
   }
@@ -96,8 +73,7 @@ function hasSameValuesInStore() {
     )
     if (
       authInStore?.clientId !== auth.clientId ||
-      authInStore?.clientSecret !== auth.clientSecret ||
-      authInStore?.redirectUri !== auth.redirectUri
+      authInStore?.clientSecret !== auth.clientSecret
     ) {
       return false
     }
@@ -110,7 +86,6 @@ function handleCancel() {
     const auth = app.auth.social.find((el) => el.verifier === authRef.verifier)
     authRef.clientId = auth?.clientId
     authRef.clientSecret = auth?.clientSecret
-    authRef.redirectUri = auth?.redirectUri
     authRef.error = ''
   })
 }
@@ -121,8 +96,8 @@ async function handleSave() {
     const { auth } = app
     const social = socialAuthRef
       .map((authRef) => {
-        const { verifier, clientId, clientSecret, redirectUri } = authRef
-        return { verifier, clientId, clientSecret, redirectUri }
+        const { verifier, clientId, clientSecret } = authRef
+        return { verifier, clientId, clientSecret }
       })
       .filter((auth) => !!auth.clientId)
     const authToRemove = auth.social.filter((a) => {
@@ -145,7 +120,7 @@ async function handleSave() {
 
 function handleInputDelete(
   auth: typeof socialAuth[0],
-  key: 'clientId' | 'clientSecret' | 'redirectUri'
+  key: 'clientId' | 'clientSecret'
 ) {
   if (!auth[key]) {
     delete auth[key]
@@ -203,14 +178,6 @@ function handleInputDelete(
                   class="social-auth-input"
                   placeholder="Client Secret"
                   @keyup.delete="handleInputDelete(auth, 'clientSecret')"
-                ></VTextField>
-                <VTextField
-                  v-if="auth.hasRedirectUri"
-                  v-model.trim="auth.redirectUri"
-                  no-message
-                  class="social-auth-input"
-                  placeholder="Redirect URI"
-                  @keyup.delete="handleInputDelete(auth, 'redirectUri')"
                 ></VTextField>
               </VStack>
               <VStack gap="1rem" align="center">
