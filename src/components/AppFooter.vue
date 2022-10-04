@@ -41,7 +41,7 @@ const socialLinks = [
 
 <template>
   <footer>
-    <VStack class="container" gap="2rem">
+    <VStack class="container footer-container">
       <VStack gap="2rem" align="center" class="footer-links">
         <a
           class="body-2 footer-text footer-link"
@@ -117,6 +117,10 @@ footer {
   box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
 }
 
+.footer-container {
+  gap: 2rem;
+}
+
 .footer-links,
 .social-links {
   flex: 1;
@@ -149,6 +153,10 @@ footer {
 
   .arcana-logo {
     height: 1rem;
+  }
+
+  .footer-container {
+    gap: 1rem;
   }
 }
 </style>
