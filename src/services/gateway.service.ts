@@ -25,11 +25,9 @@ let forwarder: string, rpcUrl: string
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
 type AppConfigCred = {
-  verifier: SocialAuthVerifier | 'passwordless'
+  verifier: SocialAuthVerifier
   clientId?: string
   clientSecret?: string
-  redirectURL?: string
-  redirectUrl?: string
   origin?: string
 }
 
@@ -72,14 +70,6 @@ type CreateAppRequestBody = {
 type CreateAppResponse = {
   app: AppConfig
   txHash: string
-}
-
-type Cred = {
-  verifier: SocialAuthVerifier | 'passwordless'
-  clientId?: string
-  clientSecret?: string
-  redirectURL?: string
-  origin?: string
 }
 
 type AppConfigRequiredProps = Omit<AppConfig, 'ID' | 'logo'>
@@ -143,24 +133,14 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
   }
 
-  const { social, passwordless, wallet } = app.auth
-  const cred: Cred[] = social.map((authType) => {
+  const { social, wallet } = app.auth
+  const cred: AppConfigCred[] = social.map((authType) => {
     return {
       verifier: authType.verifier,
       clientId: authType.clientId,
       clientSecret: authType.clientSecret,
-      redirectURL: authType.redirectUri,
     }
   })
-
-  const { javascriptOrigin, redirectUri } = passwordless
-  if (javascriptOrigin && redirectUri) {
-    cred.push({
-      verifier: 'passwordless',
-      origin: javascriptOrigin,
-      redirectURL: redirectUri,
-    })
-  }
 
   const wallet_type = wallet.walletType
 

@@ -80,10 +80,6 @@ async function handleCreateApp() {
       },
       auth: {
         social: [],
-        passwordless: {
-          javascriptOrigin: '',
-          redirectUri: '',
-        },
         wallet: {
           walletType: app.wallet_type,
           walletTypeInGateway: app.wallet_type,

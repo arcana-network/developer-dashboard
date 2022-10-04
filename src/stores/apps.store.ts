@@ -30,11 +30,6 @@ type SocialAuthState = {
 
 type Theme = 'light' | 'dark'
 
-type PasswordlessAuth = {
-  javascriptOrigin?: string
-  redirectUri?: string
-}
-
 type AppId = number
 
 type WalletModeKind = WalletMode.NoUI | WalletMode.UI
@@ -58,7 +53,6 @@ type App = {
   }
   auth: {
     social: SocialAuthState[]
-    passwordless: PasswordlessAuth
     wallet: {
       websiteDomain?: string
       selectedTheme: Theme
@@ -177,19 +171,13 @@ const useAppsStore = defineStore('apps', {
     async fetchAndStoreAppConfig(appId: AppId) {
       const app = (await fetchApp(appId)).data
       const socialAuth: SocialAuthState[] = []
-      const passwordlessAuth: PasswordlessAuth = {}
       if (app.cred?.length) {
         app.cred.forEach((authDetail) => {
-          if (authDetail.verifier !== 'passwordless') {
-            socialAuth.push({
-              verifier: authDetail.verifier,
-              clientId: authDetail.clientId,
-              clientSecret: authDetail.clientSecret,
-            })
-          } else {
-            passwordlessAuth.javascriptOrigin = authDetail.origin || ''
-            passwordlessAuth.redirectUri = authDetail.redirectUrl || ''
-          }
+          socialAuth.push({
+            verifier: authDetail.verifier,
+            clientId: authDetail.clientId,
+            clientSecret: authDetail.clientSecret,
+          })
         })
       }
       this.appsById[appId] = {
@@ -205,7 +193,6 @@ const useAppsStore = defineStore('apps', {
           },
           redirectUri: `${api.verify}/${appId}/`,
           social: socialAuth,
-          passwordless: passwordlessAuth,
         },
         access: {
           selectedChain: app.chain
