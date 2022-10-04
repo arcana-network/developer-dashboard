@@ -41,17 +41,17 @@ const socialLinks = [
 
 <template>
   <footer>
-    <VStack class="container">
-      <VStack gap="2.5rem" align="center" class="footer-links">
+    <VStack class="container" gap="2rem">
+      <VStack gap="2rem" align="center" class="footer-links">
         <a
-          class="body-2 footer-link"
+          class="body-2 footer-text footer-link"
           href="https://github.com/arcana-network/license/blob/main/TERMS.md"
           target="_blank"
         >
           Terms of Use
         </a>
         <a
-          class="body-2 footer-link"
+          class="body-2 footer-text footer-link tablet-remove"
           href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
           target="_blank"
         >
@@ -59,7 +59,7 @@ const socialLinks = [
         </a>
         <a
           v-if="canShowDocs"
-          class="body-2 footer-link"
+          class="body-2 footer-text footer-link tablet-remove"
           :href="constants.DOCS_URL"
           target="_blank"
         >
@@ -67,10 +67,14 @@ const socialLinks = [
         </a>
       </VStack>
       <VStack gap="0.5rem" align="center">
-        <span class="body-2">Powered by</span>
+        <span class="body-2 footer-text">Powered by</span>
         <img src="@/assets/arcana-logo.svg" class="arcana-logo" />
       </VStack>
-      <VStack gap="2rem" align="center" class="social-links">
+      <VStack
+        gap="2rem"
+        align="center"
+        class="social-links tablet-remove justify-end"
+      >
         <a
           v-for="socialLink in socialLinks"
           :key="socialLink.alt"
@@ -82,6 +86,19 @@ const socialLinks = [
             :alt="socialLink.alt"
             class="social-icon"
           />
+        </a>
+      </VStack>
+      <VStack
+        gap="2rem"
+        align="center"
+        class="footer-links laptop-remove justify-end text-right"
+      >
+        <a
+          class="body-2 footer-text footer-link"
+          href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
+          target="_blank"
+        >
+          Privacy Policy
         </a>
       </VStack>
     </VStack>
@@ -100,7 +117,8 @@ footer {
   box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
 }
 
-.footer-links {
+.footer-links,
+.social-links {
   flex: 1;
 }
 
@@ -109,24 +127,28 @@ footer {
   vertical-align: middle;
 }
 
-.body-2 {
+.footer-text {
   font-size: 1.125rem;
   font-weight: 600;
 }
 
 .arcana-logo {
   height: 1.5rem;
-  margin-top: -0.125rem;
   vertical-align: middle;
-}
-
-.social-links {
-  flex: 1;
-  justify-content: end;
 }
 
 .social-icon {
   width: 2rem;
   vertical-align: middle;
+}
+
+@media only screen and (max-width: 1023px) {
+  .footer-text {
+    font-size: 0.625rem;
+  }
+
+  .arcana-logo {
+    height: 1rem;
+  }
 }
 </style>

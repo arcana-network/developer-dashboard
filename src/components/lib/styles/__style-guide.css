@@ -208,6 +208,14 @@ a {
   justify-content: center;
 }
 
+.justify-end {
+  justify-content: end;
+}
+
+.text-right {
+  text-align: right;
+}
+
 .flex-row,
 .row {
   flex-direction: row;
@@ -331,7 +339,6 @@ a {
 
   .container {
     width: 94% !important;
-    margin-bottom: 4vh;
   }
 
   .sm-column {
