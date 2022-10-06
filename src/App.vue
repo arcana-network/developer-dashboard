@@ -28,7 +28,7 @@ onBeforeMount(async () => {
     <router-view
       v-if="isAuthLoaded"
       v-slot="{ Component }"
-      class="flex flex-column flex-grow overflow-auto"
+      class="flex flex-column flex-grow"
     >
       <transition name="fade" mode="out-in">
         <component :is="Component" />
@@ -50,8 +50,7 @@ onBeforeMount(async () => {
 }
 
 .root {
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;
 }
 
 .fade-enter-active,
