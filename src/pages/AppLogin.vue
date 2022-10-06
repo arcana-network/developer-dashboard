@@ -197,7 +197,6 @@ h1 {
 }
 
 .signin-container {
-  width: 50%;
   max-width: 640px;
 }
 

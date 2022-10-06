@@ -216,6 +216,10 @@ a {
   text-align: right;
 }
 
+.overflow-auto {
+  overflow: auto;
+}
+
 .flex-row,
 .row {
   flex-direction: row;

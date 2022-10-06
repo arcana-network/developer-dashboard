@@ -2,10 +2,6 @@
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
-import DiscordIcon from '@/assets/discord-white.svg'
-import DiscourseIcon from '@/assets/discourse-white.svg'
-import TelegramIcon from '@/assets/telegram-white.svg'
-import TwitterIcon from '@/assets/twitter-white.svg'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import constants from '@/utils/constants'
 
@@ -14,35 +10,12 @@ const route = useRoute()
 const canShowDocs = computed(() => {
   return route.name === 'Login'
 })
-
-const socialLinks = [
-  {
-    href: 'https://twitter.com/arcananetwork',
-    image: TwitterIcon,
-    alt: 'Twitter',
-  },
-  {
-    href: 'https://t.me/ArcanaNetwork',
-    image: TelegramIcon,
-    alt: 'Telegram',
-  },
-  {
-    href: 'https://discord.gg/w6ej4FtqYS',
-    image: DiscordIcon,
-    alt: 'Discord',
-  },
-  {
-    href: 'https://forum.arcana.network/',
-    image: DiscourseIcon,
-    alt: 'Forum',
-  },
-]
 </script>
 
 <template>
   <footer>
     <VStack class="container footer-container">
-      <VStack gap="2rem" align="center" class="footer-links">
+      <VStack gap="1.25rem" align="center" class="footer-links">
         <a
           class="body-2 footer-text footer-link"
           href="https://github.com/arcana-network/license/blob/main/TERMS.md"
@@ -67,26 +40,8 @@ const socialLinks = [
         </a>
       </VStack>
       <VStack gap="0.5rem" align="center">
-        <span class="body-2 footer-text">Powered by</span>
+        <span class="body-2 footer-logo-text">Powered by</span>
         <img src="@/assets/arcana-logo.svg" class="arcana-logo" />
-      </VStack>
-      <VStack
-        gap="2rem"
-        align="center"
-        class="social-links tablet-remove justify-end"
-      >
-        <a
-          v-for="socialLink in socialLinks"
-          :key="socialLink.alt"
-          :href="socialLink.href"
-          target="_blank"
-        >
-          <img
-            :src="socialLink.image"
-            :alt="socialLink.alt"
-            class="social-icon"
-          />
-        </a>
       </VStack>
       <VStack
         gap="2rem"
@@ -107,23 +62,12 @@ const socialLinks = [
 
 <style scoped>
 footer {
-  position: sticky;
-  top: 100vh;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 1.25rem 0;
-  background: #1f1f1f;
-  box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
+  padding: 2rem 0;
 }
 
 .footer-container {
-  gap: 2rem;
-}
-
-.footer-links,
-.social-links {
-  flex: 1;
+  gap: 2.5rem;
+  justify-content: flex-end;
 }
 
 .footer-link {
@@ -132,31 +76,40 @@ footer {
 }
 
 .footer-text {
-  font-size: 1.125rem;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
-.arcana-logo {
-  height: 1.5rem;
+.footer-logo-text {
+  font-size: 1rem;
+  font-weight: 600;
   vertical-align: middle;
 }
 
-.social-icon {
-  width: 2rem;
+.arcana-logo {
+  height: 1.125rem;
   vertical-align: middle;
 }
 
 @media only screen and (max-width: 1023px) {
-  .footer-text {
+  footer {
+    padding: 1rem 0;
+    background: #1f1f1f;
+    box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
+  }
+
+  .footer-text,
+  .footer-logo-text {
     font-size: 0.625rem;
   }
 
   .arcana-logo {
-    height: 1rem;
+    height: 0.75rem;
   }
 
   .footer-container {
     gap: 1rem;
+    justify-content: space-between;
   }
 }
 </style>

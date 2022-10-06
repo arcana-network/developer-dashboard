@@ -23,12 +23,6 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
   margin-left: 4vw;
 }
 
-.separator {
-  position: sticky;
-  top: 0;
-  height: calc(100vh - 5rem);
-}
-
 h1 {
   font-weight: 700;
   letter-spacing: unset;

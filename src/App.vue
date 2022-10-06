@@ -24,19 +24,23 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="root">
-    <router-view v-if="isAuthLoaded" v-slot="{ Component }">
+  <div class="root flex flex-column justify-space-between">
+    <router-view
+      v-if="isAuthLoaded"
+      v-slot="{ Component }"
+      class="flex flex-column flex-grow overflow-auto"
+    >
       <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
     <AppFooter v-if="isAuthLoaded && !route.path.includes('/config/')" />
-    <FullScreenLoader
-      v-if="loaderStore.isLoading || !isAuthLoaded"
-      :message="loaderStore.message"
-    />
-    <VToast />
   </div>
+  <FullScreenLoader
+    v-if="loaderStore.isLoading || !isAuthLoaded"
+    :message="loaderStore.message"
+  />
+  <VToast />
 </template>
 
 <style>
@@ -47,6 +51,7 @@ onBeforeMount(async () => {
 
 .root {
   height: 100vh;
+  overflow: hidden;
 }
 
 .fade-enter-active,
