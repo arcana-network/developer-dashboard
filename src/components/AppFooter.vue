@@ -18,7 +18,7 @@ const canShowDocs = computed(() => {
     <VStack class="container">
       <VStack
         v-if="!route.meta.hasSidebar && !route.meta.hasLandingDescriptor"
-        class="flex-grow"
+        class="flex-grow tablet-remove"
       >
         <SocialLinks />
       </VStack>
