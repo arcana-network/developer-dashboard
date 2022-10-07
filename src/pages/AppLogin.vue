@@ -78,9 +78,10 @@ async function fetchAndStoreUserInfo() {
 
 onMounted(async () => {
   if (await arcanaAuth.isLoggedIn()) {
+    loaderStore.showLoader('Signing In...')
     setTimeout(async () => {
       await fetchAndStoreDetails()
-    }, 500)
+    }, 1000)
   }
 })
 </script>
