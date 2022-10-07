@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import VStack from '@/components/lib/VStack/VStack.vue'
+import SocialLinks from '@/components/SocialLinks.vue'
 import constants from '@/utils/constants'
 
 const route = useRoute()
@@ -14,47 +15,55 @@ const canShowDocs = computed(() => {
 
 <template>
   <footer>
-    <VStack class="container footer-container">
-      <VStack gap="1.25rem" align="center" class="footer-links">
-        <a
-          class="body-2 footer-text footer-link"
-          href="https://github.com/arcana-network/license/blob/main/TERMS.md"
-          target="_blank"
-        >
-          Terms of Use
-        </a>
-        <a
-          class="body-2 footer-text footer-link tablet-remove"
-          href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
-          target="_blank"
-        >
-          Privacy Policy
-        </a>
-        <a
-          v-if="canShowDocs"
-          class="body-2 footer-text footer-link tablet-remove"
-          :href="constants.DOCS_URL"
-          target="_blank"
-        >
-          Docs
-        </a>
-      </VStack>
-      <VStack gap="0.5rem" align="center">
-        <span class="body-2 footer-logo-text">Powered by</span>
-        <img src="@/assets/arcana-logo.svg" class="arcana-logo" />
-      </VStack>
+    <VStack class="container">
       <VStack
-        gap="2rem"
-        align="center"
-        class="footer-links laptop-remove justify-end text-right"
+        v-if="!route.meta.hasSidebar && !route.meta.hasLandingDescriptor"
+        class="flex-grow"
       >
-        <a
-          class="body-2 footer-text footer-link"
-          href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
-          target="_blank"
+        <SocialLinks />
+      </VStack>
+      <VStack class="footer-container flex-grow">
+        <VStack gap="1.25rem" align="center" class="footer-links">
+          <a
+            class="body-2 footer-text footer-link"
+            href="https://github.com/arcana-network/license/blob/main/TERMS.md"
+            target="_blank"
+          >
+            Terms of Use
+          </a>
+          <a
+            class="body-2 footer-text footer-link tablet-remove"
+            href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
+            target="_blank"
+          >
+            Privacy Policy
+          </a>
+          <a
+            v-if="canShowDocs"
+            class="body-2 footer-text footer-link tablet-remove"
+            :href="constants.DOCS_URL"
+            target="_blank"
+          >
+            Docs
+          </a>
+        </VStack>
+        <VStack gap="0.5rem" align="center">
+          <span class="body-2 footer-logo-text">Powered by</span>
+          <img src="@/assets/arcana-logo.svg" class="arcana-logo" />
+        </VStack>
+        <VStack
+          gap="2rem"
+          align="center"
+          class="footer-links laptop-remove justify-end text-right"
         >
-          Privacy Policy
-        </a>
+          <a
+            class="body-2 footer-text footer-link"
+            href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
+            target="_blank"
+          >
+            Privacy Policy
+          </a>
+        </VStack>
       </VStack>
     </VStack>
   </footer>
