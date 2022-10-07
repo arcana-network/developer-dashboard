@@ -82,6 +82,7 @@ async function onLogout() {
   await logout()
   localStorage.clear()
   router.push({ name: 'Login' })
+  window.location.reload()
 }
 
 function resetOrganisationDetails() {
