@@ -78,7 +78,9 @@ async function fetchAndStoreUserInfo() {
 
 onMounted(async () => {
   if (await arcanaAuth.isLoggedIn()) {
-    await fetchAndStoreDetails()
+    setTimeout(async () => {
+      await fetchAndStoreDetails()
+    }, 500)
   }
 })
 </script>
