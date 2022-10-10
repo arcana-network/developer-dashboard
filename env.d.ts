@@ -58,6 +58,8 @@ declare global {
 declare module 'vue-router' {
   interface RouteMeta {
     requiresAuth?: boolean
+    hasSidebar?: boolean
+    hasLandingDescriptor?: boolean
   }
 }
 

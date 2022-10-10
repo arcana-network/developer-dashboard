@@ -66,23 +66,21 @@ const routes: RouteRecordRaw[] = [
     path: '/apps/:appId',
     component: AppDetails,
     props: true,
+    meta: {
+      requiresAuth: true,
+      hasSidebar: true,
+    },
     redirect: { name: 'Dashboard' },
     children: [
       {
         name: 'Dashboard',
         path: 'dashboard',
         component: AppDashboard,
-        meta: {
-          requiresAuth: true,
-        },
       },
       {
         name: 'Configure',
         path: 'config',
         component: AppConfigure,
-        meta: {
-          requiresAuth: true,
-        },
         props: true,
         redirect: { name: 'GeneralSettings' },
         children: [
@@ -112,9 +110,6 @@ const routes: RouteRecordRaw[] = [
         name: 'Users',
         path: '/apps/:appId/users',
         component: AppUsers,
-        meta: {
-          requiresAuth: true,
-        },
       },
     ],
   },
@@ -124,12 +119,16 @@ const routes: RouteRecordRaw[] = [
     component: AppProfile,
     meta: {
       requiresAuth: true,
+      hasSidebar: true,
     },
   },
   {
     name: 'Login',
     path: '/login',
     component: toBoolean(constants.isAppDown) ? AppDownNotification : AppLogin,
+    meta: {
+      hasLandingDescriptor: !toBoolean(constants.isAppDown),
+    },
   },
 ]
 
@@ -142,10 +141,9 @@ const router: Router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (
-    to.matched.some((record) => record.meta.requiresAuth) &&
-    !authStore.accessToken
-  ) {
+  console.log('[VueRouter] To', to.meta, to.fullPath)
+  console.log('[VueRouter] From', from.meta, from.fullPath)
+  if (to.meta.requiresAuth && !authStore.accessToken) {
     router.push({
       name: 'Login',
       params: { redirectTo: String(to.name), ...to.params },
