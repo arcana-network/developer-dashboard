@@ -38,7 +38,7 @@ async function handleSave() {
     loaderStore.showLoader('Saving chain type...')
     const { access } = app
     access.selectedChain = selectedChain.value.value
-    await updateApp(appId, { ...app, ...access })
+    await updateApp(appId, { ...app, access })
     toast.success('Saved chain type')
     app.access.selectedChain = selectedChain.value.value
   } catch (e) {

@@ -104,7 +104,7 @@ async function handleSave() {
       return !social.find((s) => s.verifier === a.verifier)
     })
     auth.social = social
-    await updateApp(appId, { ...app, ...auth })
+    await updateApp(appId, { ...app, auth })
     await deleteCred(appId, authToRemove)
     toast.success('Saved social auth credentials')
     loaderStore.showLoader('Saving app config in smart contract...')
