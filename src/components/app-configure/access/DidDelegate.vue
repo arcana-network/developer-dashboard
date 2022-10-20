@@ -149,7 +149,7 @@ function truncate(address: string) {
 
 .table-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr 1fr 4rem;
+  grid-template-columns: 1fr 2fr 2fr 2fr 4rem;
   gap: 0.5rem;
 }
 
