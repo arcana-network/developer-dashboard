@@ -341,14 +341,7 @@ async function fetchAppDelegates(
         id: 2,
         name: 'Delegate 2',
         address: '0xab64844c1225DE934e0ee5370862FA18A62Ed8B2',
-        permissions: [
-          'Download',
-          'Reshare',
-          'Download',
-          'Reshare',
-          'Download',
-          'Reshare',
-        ],
+        permissions: ['Download', 'Reshare'],
         created_at: new Date('2022-5-10').toISOString(),
       },
       {
