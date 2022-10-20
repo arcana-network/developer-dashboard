@@ -29,16 +29,39 @@ function truncate(address: string) {
       <template #controls>
         <img
           src="@/assets/iconography/plus.svg"
-          class="cursor-pointer"
+          class="cursor-pointer control-icons"
           @click.stop="addDelegate"
         />
       </template>
-      <template #description
-        >Delegations can be used to have assigned delegate servers manage the
-        DID’s on behalf of the users. Manage the delegates that you have
-        assigned the ability to perform actions on behalf of your
-        users.</template
-      >
+      <template #description>
+        <VStack gap="2rem" justify="space-between">
+          <div class="description">
+            Delegations can be used to have assigned delegate servers manage the
+            DID’s on behalf of the users. Manage the delegates that you have
+            assigned the ability to perform actions on behalf of your users.
+          </div>
+          <VStack gap="2rem">
+            <a href="#">
+              <VStack direction="column" gap="0.5rem" align="center">
+                <img
+                  src="@/assets/iconography/view-docs.svg"
+                  class="help-action-icons"
+                />
+                <span class="help-title">View Docs</span>
+              </VStack>
+            </a>
+            <a href="#">
+              <VStack direction="column" gap="0.5rem" align="center">
+                <img
+                  src="@/assets/iconography/play-video.svg"
+                  class="help-action-icons"
+                />
+                <span class="help-title">View Guide</span>
+              </VStack>
+            </a>
+          </VStack>
+        </VStack>
+      </template>
       <VCard variant="depressed">
         <div class="table-container">
           <div v-if="delegates.length">
@@ -74,7 +97,7 @@ function truncate(address: string) {
               </div>
               <div class="text-ellipsis">
                 {{
-                  moment(delegate.created_at)
+                  moment(delegate.createdDate)
                     .format('DD MMM YYYY')
                     .toUpperCase()
                 }}
@@ -99,6 +122,25 @@ function truncate(address: string) {
 </template>
 
 <style scoped>
+.control-icons {
+  height: 1.125rem;
+}
+
+.description {
+  max-width: 40rem;
+}
+
+.help-action-icons {
+  height: 3.5rem;
+}
+
+.help-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
 .table-container {
   flex-grow: 1;
   padding: 1.25rem 5px;
@@ -107,7 +149,7 @@ function truncate(address: string) {
 
 .table-grid {
   display: grid;
-  grid-template-columns: 2fr 2fr 3fr 2fr 5rem;
+  grid-template-columns: 2fr 2fr 3fr 2fr 4rem;
   gap: 0.5rem;
 }
 
