@@ -86,7 +86,7 @@ async function handleSave() {
     wallet.selectedTheme = selectedTheme.value.value
     auth.wallet = wallet
     loaderStore.showLoader('Saving wallet config...')
-    await updateApp(appId, { ...app, ...auth })
+    await updateApp(appId, { auth })
     toast.success('Saved wallet config')
     if (!isSameWalletType) {
       loaderStore.showLoader('Enabling UI mode in smart contract...')
