@@ -318,13 +318,13 @@ function removeThemeLogo(
   )
 }
 
-type DelegateResponse = Omit<Delegate & { created_at: string }, 'createdDate'>
+type DelegateResponse = Omit<Delegate, 'createdDate'> & { created_at: string }
 
 async function fetchAppDelegates(
   appId: AppId
 ): Promise<AxiosResponse<DelegateResponse[]>> {
   // API: /delegates/?id={{appId}}
-  return {
+  return Promise.resolve({
     status: 200,
     statusText: 'Success',
     headers: {},
@@ -352,7 +352,7 @@ async function fetchAppDelegates(
         created_at: new Date('2022-6-10').toISOString(),
       },
     ],
-  }
+  })
 }
 
 export {

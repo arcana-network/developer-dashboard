@@ -6,6 +6,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
+import { truncate } from '@/utils/stringUtils'
 
 const appId = useAppId()
 const appsStore = useAppsStore()
@@ -15,10 +16,6 @@ const delegates = app.access.delegates
 
 function addDelegate() {
   //
-}
-
-function truncate(address: string) {
-  return address.substring(0, 6) + '....' + address.substr(address.length - 6)
 }
 </script>
 
@@ -82,7 +79,7 @@ function truncate(address: string) {
                 class="text-ellipsis cursor-pointer"
                 :title="delegate.address"
               >
-                {{ truncate(delegate.address) }}
+                {{ truncate(delegate.address, 6) }}
               </div>
               <div>
                 <VStack gap="5px" wrap>
