@@ -1,4 +1,5 @@
 import type { AppConfigCred } from '@/services/gateway.service'
+import type { DelegateId, DelegatePermission } from '@/stores/apps.store'
 import { signTransaction, hashJson } from '@/utils/signerUtils'
 
 async function setDefaultLimit(storage: number, bandwidth: number) {
@@ -19,4 +20,32 @@ async function enableUiMode() {
   await signTransaction('setUiMode')
 }
 
-export { setAppConfig, setDefaultLimit, enableUiMode }
+async function setDelegate(
+  keyAddress: string,
+  delegateId: DelegateId,
+  permissions: DelegatePermission[]
+) {
+  // await signTransaction('setDelegate', [keyAddress, delegateId, ...permissions])
+  return
+}
+
+async function unsetDelegate(
+  keyAddress: string,
+  delegateId: DelegateId,
+  permissions: DelegatePermission[]
+) {
+  // await signTransaction('unsetDelegate', [
+  //   keyAddress,
+  //   delegateId,
+  //   ...permissions,
+  // ])
+  return
+}
+
+export {
+  setAppConfig,
+  setDefaultLimit,
+  enableUiMode,
+  setDelegate,
+  unsetDelegate,
+}

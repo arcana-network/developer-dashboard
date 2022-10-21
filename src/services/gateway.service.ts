@@ -8,6 +8,8 @@ import type {
   AppConfig as AppState,
   SocialAuthState,
   Delegate,
+  DelegatePermission,
+  DelegateId,
 } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
@@ -323,7 +325,9 @@ type DelegateResponse = Omit<Delegate, 'createdDate'> & { created_at: string }
 async function fetchAppDelegates(
   appId: AppId
 ): Promise<AxiosResponse<DelegateResponse[]>> {
-  // API: /delegates/?id={{appId}}
+  // return gatewayAuthorizedInstance.get(
+  //   `${getEnvApi('v2')}/delegates/?app_id=${appId}`
+  // )
   return Promise.resolve({
     status: 200,
     statusText: 'Success',
@@ -355,6 +359,89 @@ async function fetchAppDelegates(
   })
 }
 
+type CreateDelegateRequest = {
+  name: string
+  address: string
+  permissions: DelegatePermission[]
+}
+
+async function createDelegate(
+  appId: AppId,
+  data: CreateDelegateRequest
+): Promise<AxiosResponse<DelegateResponse>> {
+  // return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/delegates/create`, {
+  //   appId,
+  //   ...data,
+  // })
+  return Promise.resolve({
+    status: 200,
+    statusText: 'Success',
+    headers: {},
+    config: {},
+    data: {
+      id: Date.now(),
+      created_at: new Date().toISOString(),
+      ...data,
+    },
+  })
+}
+
+function listDelegateKeys(): Promise<AxiosResponse<string[]>> {
+  // return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/keys/`)
+  return Promise.resolve({
+    status: 200,
+    statusText: 'Success',
+    headers: {},
+    config: {},
+    data: [
+      '0x60bbc17b282Ce1986c0bc3d6A25Deb68BD3E0926',
+      '0xab64844c1225DE934e0ee5370862FA18A62Ed8B2',
+      '0xbf9cA989CF4bff5AF5E74BDE2877Dd6407FAD980',
+    ],
+  })
+}
+
+type EditDelegateResponse = {
+  message: string
+}
+
+function editDelegate(
+  appId: AppId,
+  data: CreateDelegateRequest
+): Promise<AxiosResponse<EditDelegateResponse>> {
+  // return gatewayAuthorizedInstance.patch(`${getEnvApi('v2')}/delegates/`, {
+  //   appId,
+  //   ...data,
+  // })
+  return Promise.resolve({
+    status: 200,
+    statusText: 'Success',
+    headers: {},
+    config: {},
+    data: {
+      message: 'Delegate updated',
+    },
+  })
+}
+
+function deleteDelegate(
+  delegateId: DelegateId
+): Promise<AxiosResponse<EditDelegateResponse>> {
+  // return gatewayAuthorizedInstance.delete(`${getEnvApi('v2')}/delegates/?id=${deletegateId}`, {
+  //   appId,
+  //   ...data,
+  // })
+  return Promise.resolve({
+    status: 200,
+    statusText: 'Success',
+    headers: {},
+    config: {},
+    data: {
+      message: 'Delegate deleted',
+    },
+  })
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -379,6 +466,10 @@ export {
   removeThemeLogo,
   deleteCred,
   fetchAppDelegates,
+  createDelegate,
+  listDelegateKeys,
+  editDelegate,
+  deleteDelegate,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
