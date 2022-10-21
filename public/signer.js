@@ -250,7 +250,13 @@ async function generateLoginInfo({ provider, gateway }) {
   let address = await ethProvider.getSigner().getAddress();
   let nonce = (await axios.get(gateway + `/get-nonce/?address=${address}`))
     .data;
-  const signature = await ethProvider.getSigner().signMessage(String(nonce));
+  const signature = await ethProvider
+    .getSigner()
+    .signMessage(
+      `Welcome to Arcana Network!\n\nYou are about to use the Storage SDK.\n\nClick to sign in and accept the Arcana Network Terms of Service (https://bit.ly/3gqh6I7) and Privacy Policy (https://bit.ly/3MMpCgM).\n\nThis request will not trigger a blockchain transaction or cost any gas fees.\n\nWallet address:\n${address}\nNonce:\n${ethers.utils
+        .id(String(nonce))
+        .substring(2, 42)}`
+    );
   return {
     nonce,
     address,
@@ -11380,7 +11386,7 @@ var EtherscanProvider = /** @class */ (function (_super) {
                         return [3 /*break*/, 28];
                     case 1: return [2 /*return*/, this.fetch("proxy", { action: "eth_blockNumber" })];
                     case 2: return [2 /*return*/, this.fetch("proxy", { action: "eth_gasPrice" })];
-                    case 3:
+                    case 3: 
                     // Returns base-10 result
                     return [2 /*return*/, this.fetch("account", {
                             action: "balance",
@@ -13346,7 +13352,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                                     }
                                 });
                             }); }, { oncePoll: this.provider })];
-                    case 4:
+                    case 4: 
                     // Unfortunately, JSON-RPC only provides and opaque transaction hash
                     // for a response, and we need the actual transaction, so we poll
                     // for it; it should show up very quickly
@@ -13387,7 +13393,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                     case 1:
                         address = _a.sent();
                         return [4 /*yield*/, this.provider.send("eth_sign", [address.toLowerCase(), (0, bytes_1.hexlify)(data)])];
-                    case 2:
+                    case 2: 
                     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
                     return [2 /*return*/, _a.sent()];
                 }
