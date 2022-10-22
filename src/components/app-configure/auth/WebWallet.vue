@@ -7,15 +7,12 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { updateApp } from '@/services/gateway.service'
-import { enableUiMode } from '@/services/smart-contract.service'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
-import constants, { WalletMode } from '@/utils/constants'
 import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
@@ -49,7 +46,6 @@ const selectedTheme = ref(
 )
 
 const walletWebsiteDomain = ref(wallet.websiteDomain)
-const hasUIMode = ref(wallet.walletType === WalletMode.UI)
 
 function clearWebsiteDomain() {
   walletWebsiteDomain.value = ''
@@ -57,7 +53,6 @@ function clearWebsiteDomain() {
 
 function handleCancel() {
   walletWebsiteDomain.value = wallet.websiteDomain
-  hasUIMode.value = wallet.walletType === WalletMode.UI
   selectedTheme.value = availableThemes.find(
     (theme) => theme.value === wallet.selectedTheme
   ) as ThemeData
@@ -71,8 +66,7 @@ function isValidWebsiteDomain() {
 function hasSameValuesInStore() {
   return (
     walletWebsiteDomain.value === wallet.websiteDomain &&
-    selectedTheme.value.value === wallet.selectedTheme &&
-    hasUIMode.value === (wallet.walletType === WalletMode.UI)
+    selectedTheme.value.value === wallet.selectedTheme
   )
 }
 
@@ -80,19 +74,11 @@ async function handleSave() {
   try {
     const { auth } = app
     wallet.websiteDomain = walletWebsiteDomain.value
-    const walletType = hasUIMode.value ? WalletMode.UI : WalletMode.NoUI
-    const isSameWalletType = walletType === app.auth.wallet.walletType
-    wallet.walletType = walletType
     wallet.selectedTheme = selectedTheme.value.value
     auth.wallet = wallet
     loaderStore.showLoader('Saving wallet config...')
     await updateApp(appId, { auth })
     toast.success('Saved wallet config')
-    if (!isSameWalletType) {
-      loaderStore.showLoader('Enabling UI mode in smart contract...')
-      await enableUiMode()
-      toast.success('UI mode enabled in blockchain')
-    }
     app.auth.wallet = auth.wallet
   } catch (e) {
     toast.error('Error occured while saving the wallet config.')
@@ -137,44 +123,8 @@ async function handleSave() {
             />
           </VStack>
           <VStack direction="column" gap="1rem" style="margin-bottom: 1rem">
-            <VStack justify="space-between">
-              <h3 class="text-uppercase">UI Mode</h3>
-              <VStack align="center" gap="0.625rem">
-                <span
-                  class="body-1 font-300"
-                  :class="{ 'font-700': !hasUIMode }"
-                  >Disable</span
-                >
-                <VSwitch
-                  v-model="hasUIMode"
-                  class="ui-mode-switch"
-                  :disabled="wallet.walletType === WalletMode.UI"
-                />
-                <span class="body-1 font-300" :class="{ 'font-700': hasUIMode }"
-                  >Enable</span
-                >
-              </VStack>
-            </VStack>
-            <div class="body-1">
-              Configure dApp user experience while signing blockchain
-              transactions for storage operations by selecting the appropriate
-              Arcana wallet UI mode.
-              <br />
-              <a
-                :href="`${constants.DOCS_URL}/docs/arcanawallet#arcana-wallet-ui-modes`"
-                target="_blank"
-                class="learn-more"
-              >
-                Learn More...
-              </a>
-            </div>
-            <VStack
-              v-if="hasUIMode"
-              direction="column"
-              gap="0.75rem"
-              align="start"
-              style="margin-top: 1rem"
-            >
+            <h3 class="text-uppercase">Wallet Theme</h3>
+            <VStack direction="column" gap="0.75rem" align="start">
               <h4 class="text-grey">Choose Theme</h4>
               <VDropdown
                 v-model="selectedTheme"
@@ -184,7 +134,7 @@ async function handleSave() {
               />
             </VStack>
           </VStack>
-          <VStack v-if="hasUIMode" direction="column" gap="1rem">
+          <VStack direction="column" gap="1rem">
             <h3 class="text-uppercase">Preview Interface</h3>
             <VStack gap="2.5rem" wrap>
               <VStack direction="column" gap="0.625rem">
