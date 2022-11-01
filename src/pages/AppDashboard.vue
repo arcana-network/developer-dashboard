@@ -36,6 +36,8 @@ const toast = useToast()
 const liveEnv = false
 const appId = useAppId()
 
+const appAddress = appsStore.app(appId).address
+
 const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
@@ -335,14 +337,16 @@ watch(
             style="margin-right: 5px; color: var(--text-grey)"
             class="body-1 mobile-remove"
           >
-            App ID:
+            App Address:
           </span>
-          <div
-            class="text-ellipsis body-1 font-500"
-            style="max-width: 6em; color: var(--text-white)"
-          >
-            {{ appId }}
-          </div>
+          <v-tooltip :title="appAddress" class="">
+            <div
+              class="text-ellipsis body-1 font-500"
+              style="max-width: 6em; color: var(--text-white)"
+            >
+              {{ appAddress }}
+            </div>
+          </v-tooltip>
           <v-tooltip
             :title="smartContractTooltip"
             class="mobile-remove"
@@ -352,7 +356,7 @@ watch(
               :src="SmartContractIcon"
               class="cursor-pointer"
               alt="Click to copy smart contract address"
-              style="margin-top: 4px; margin-left: 1em"
+              style="margin-top: 4px"
             />
           </v-tooltip>
         </div>
@@ -384,14 +388,14 @@ watch(
         class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
       >
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
-          App ID:
+          App Address:
         </span>
-        <v-tooltip :title="String(appId)" class="">
+        <v-tooltip :title="appAddress" class="">
           <div
             style="width: 6em; font-weight: 500; color: var(--text-white)"
             class="body-1 text-ellipsis cursor-pointer"
           >
-            {{ appId }}
+            {{ appAddress }}
           </div>
         </v-tooltip>
         <v-tooltip
@@ -402,7 +406,7 @@ watch(
           <img
             :src="SmartContractIcon"
             alt="Click to copy smart contract address"
-            style="margin-top: 4px; margin-left: 1em"
+            style="margin-top: 4px"
             class="cursor-pointer"
           />
         </v-tooltip>
