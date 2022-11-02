@@ -276,12 +276,12 @@ function goToConfigure() {
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
-async function copyAppId() {
+async function copyAppAddress() {
   try {
     SmartContractIcon.value = CheckIcon
     smartContractTooltip.value = 'Copied'
-    await copyToClipboard(String(appId))
-    toast.success('App ID copied')
+    await copyToClipboard(appAddress)
+    toast.success('App address copied')
   } catch (e) {
     console.error(e)
     toast.error('Failed to copy. Try again or contact support')
@@ -350,7 +350,7 @@ watch(
           <v-tooltip
             :title="smartContractTooltip"
             class="mobile-remove"
-            @click.stop="copyAppId"
+            @click.stop="copyAppAddress"
           >
             <img
               :src="SmartContractIcon"
@@ -401,7 +401,7 @@ watch(
         <v-tooltip
           :title="smartContractTooltip"
           class=""
-          @click.stop="copyAppId"
+          @click.stop="copyAppAddress"
         >
           <img
             :src="SmartContractIcon"
