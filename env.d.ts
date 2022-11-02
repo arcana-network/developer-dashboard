@@ -14,7 +14,7 @@ declare global {
 
   interface ImportMetaEnv {
     PROD: boolean
-    VITE_ARCANA_APP_ID: string
+    VITE_ARCANA_APP_ADDRESS: string
     VITE_GATEWAY_API: string
     VITE_VERIFY_URI: string
     VITE_DOCS_URL: string
