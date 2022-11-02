@@ -131,7 +131,7 @@ async function handleSave() {
       storage: { ...storageLimit.value },
       bandwidth: { ...bandwidthLimit.value },
     }
-    await updateApp(appId, { ...app, ...store })
+    await updateApp(appId, { store })
     toast.success('Saved user limits')
     loaderStore.showLoader('Saving user limits in smart contract...')
     const { storage, bandwidth } = convertUserLimits()

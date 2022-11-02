@@ -213,7 +213,7 @@ const useAppsStore = defineStore('apps', {
             websiteDomain: app.wallet_domain,
             selectedTheme: app.theme || 'dark',
           },
-          redirectUri: `${api.verify}/${appId}/`,
+          redirectUri: `${api.verify}/${app.address}/`,
           social: socialAuth,
         },
         access: {

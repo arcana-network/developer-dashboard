@@ -15,8 +15,4 @@ async function setAppConfig(appName: string, socialAuth: AppConfigCred[]) {
   await signTransaction('setAppConfig', [appConfig])
 }
 
-async function enableUiMode() {
-  await signTransaction('setUiMode')
-}
-
-export { setAppConfig, setDefaultLimit, enableUiMode }
+export { setAppConfig, setDefaultLimit }
