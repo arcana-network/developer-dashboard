@@ -12,8 +12,6 @@ const api = {
   verify: import.meta.env.VITE_VERIFY_URI,
 }
 
-const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID
-
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 
 const DOCS_URL: string = import.meta.env.VITE_DOCS_URL
@@ -189,7 +187,6 @@ const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 const constants = {
   sentry,
   api,
-  arcanaAppId,
   isAppDown,
   chains,
   CONFIGURE_TABS,
@@ -200,7 +197,6 @@ const constants = {
 export {
   sentry,
   api,
-  arcanaAppId,
   isAppDown,
   chains,
   CONFIGURE_TABS,

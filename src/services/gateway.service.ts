@@ -11,6 +11,7 @@ import type {
   DelegatePermission,
   DelegateId,
 } from '@/stores/apps.store'
+import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
@@ -22,6 +23,7 @@ import {
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(store)
+const appsStore = useAppsStore(store)
 
 let forwarder: string, rpcUrl: string
 
@@ -103,7 +105,9 @@ function createApp(
   )
 }
 
-function updateApp(appId: AppId, updatedAppConfig: AppState) {
+function updateApp(appId: AppId, fieldsToUpdate: Partial<AppState>) {
+  const app = appsStore.app(appId)
+  const updatedAppConfig = { ...app, ...fieldsToUpdate }
   const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
   return gatewayAuthorizedInstance.patch(
     `${getEnvApi('v2')}/app/?id=${appId}`,

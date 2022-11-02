@@ -36,6 +36,8 @@ const toast = useToast()
 const liveEnv = false
 const appId = useAppId()
 
+const appAddress = appsStore.app(appId).address
+
 const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
   upload: 0,
@@ -274,12 +276,12 @@ function goToConfigure() {
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
-async function copyAppId() {
+async function copyAppAddress() {
   try {
     SmartContractIcon.value = CheckIcon
     smartContractTooltip.value = 'Copied'
-    await copyToClipboard(String(appId))
-    toast.success('App ID copied')
+    await copyToClipboard(appAddress)
+    toast.success('App address copied')
   } catch (e) {
     console.error(e)
     toast.error('Failed to copy. Try again or contact support')
@@ -335,24 +337,26 @@ watch(
             style="margin-right: 5px; color: var(--text-grey)"
             class="body-1 mobile-remove"
           >
-            App ID:
+            App Address:
           </span>
-          <div
-            class="text-ellipsis body-1 font-500"
-            style="max-width: 6em; color: var(--text-white)"
-          >
-            {{ appId }}
-          </div>
+          <v-tooltip :title="appAddress" class="">
+            <div
+              class="text-ellipsis body-1 font-500"
+              style="max-width: 6em; color: var(--text-white)"
+            >
+              {{ appAddress }}
+            </div>
+          </v-tooltip>
           <v-tooltip
             :title="smartContractTooltip"
             class="mobile-remove"
-            @click.stop="copyAppId"
+            @click.stop="copyAppAddress"
           >
             <img
               :src="SmartContractIcon"
               class="cursor-pointer"
               alt="Click to copy smart contract address"
-              style="margin-top: 4px; margin-left: 1em"
+              style="margin-top: 4px"
             />
           </v-tooltip>
         </div>
@@ -384,25 +388,25 @@ watch(
         class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
       >
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
-          App ID:
+          App Address:
         </span>
-        <v-tooltip :title="String(appId)" class="">
+        <v-tooltip :title="appAddress" class="">
           <div
             style="width: 6em; font-weight: 500; color: var(--text-white)"
             class="body-1 text-ellipsis cursor-pointer"
           >
-            {{ appId }}
+            {{ appAddress }}
           </div>
         </v-tooltip>
         <v-tooltip
           :title="smartContractTooltip"
           class=""
-          @click.stop="copyAppId"
+          @click.stop="copyAppAddress"
         >
           <img
             :src="SmartContractIcon"
             alt="Click to copy smart contract address"
-            style="margin-top: 4px; margin-left: 1em"
+            style="margin-top: 4px"
             class="cursor-pointer"
           />
         </v-tooltip>
