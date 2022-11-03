@@ -1,16 +1,17 @@
 <script lang="ts" setup>
-import { useStore } from 'vuex'
-
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import copyToClipboard from '@/utils/copyToClipboard'
 
-const store = useStore()
 const toast = useToast()
+const appsStore = useAppsStore()
+const appId = useAppId()
 
-const redirectUri = store.getters.redirectUri
+const redirectUri = appsStore.app(appId).auth.redirectUri
 
 async function copyRedirectUri() {
   try {
@@ -27,7 +28,7 @@ async function copyRedirectUri() {
     <SettingCard>
       <template #title>Redirect URI</template>
       <template #controls>
-        <VCard variant="elevated" class="redirect-uri-card">
+        <VCard variant="depressed" class="redirect-uri-card">
           <VStack
             align="center"
             justify="space-between"

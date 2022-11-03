@@ -1,25 +1,20 @@
 import bytes from 'bytes'
 
-import type { UserLimitState, SocialAuthOption } from '@/store/app.store'
+import type { UserLimitState } from '@/stores/apps.store'
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  tracingOrigins: [
-    import.meta.env.VITE_SENTRY_TRACING_ORIGINS.split(','),
-    /^\//,
-  ],
+  tracingOrigins: [import.meta.env.VITE_SENTRY_TRACING_ORIGINS, /^\//],
 }
 
 const api = {
-  gateway: import.meta.env.VITE_GATEWAY_API,
-  verify: import.meta.env.VITE_VERIFY_URI,
+  gateway: import.meta.env.VITE_ARCANA_GATEWAY_URL,
+  verify: import.meta.env.VITE_ARCANA_VERIFY_URL,
 }
-
-const arcanaAppId: string = import.meta.env.VITE_ARCANA_APP_ID
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 
-const DOCS_URL: string = import.meta.env.VITE_DOCS_URL
+const DOCS_URL: string = import.meta.env.VITE_ARCANA_DOCS_URL
 
 type Chain = 'ethereum' | 'polygon' | 'binance' | 'none'
 
@@ -28,7 +23,7 @@ type ChainOption<T> = {
   value: T
 }
 
-const chains: readonly ChainOption<Chain>[] = [
+const chains: ChainOption<Chain>[] = [
   {
     label: 'None',
     value: 'none',
@@ -112,33 +107,52 @@ const bandwidthUnits: BandwidthLimitUnit[] = [
   },
 ]
 
+type SocialAuthVerifier =
+  | 'google'
+  | 'twitter'
+  | 'twitch'
+  | 'reddit'
+  | 'github'
+  | 'discord'
+
+type SocialAuthVerifierLabel =
+  | 'Google'
+  | 'Twitter'
+  | 'Twitch'
+  | 'Reddit'
+  | 'GitHub'
+  | 'Discord'
+
+type SocialAuthOption = {
+  name: SocialAuthVerifierLabel
+  verifier: SocialAuthVerifier
+  hasClientSecret: boolean
+  documentation: string
+}
+
 const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Google',
     verifier: 'google',
     hasClientSecret: false,
-    hasRedirectUri: false,
     documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
   },
   {
     name: 'Twitch',
     verifier: 'twitch',
     hasClientSecret: false,
-    hasRedirectUri: false,
     documentation: 'https://dev.twitch.tv/docs/authentication#registration',
   },
   {
     name: 'Discord',
     verifier: 'discord',
     hasClientSecret: true,
-    hasRedirectUri: false,
     documentation: 'https://discord.com/developers/applications',
   },
   {
-    name: 'Github',
+    name: 'GitHub',
     verifier: 'github',
     hasClientSecret: true,
-    hasRedirectUri: false,
     documentation:
       'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
   },
@@ -146,7 +160,6 @@ const socialLogins: readonly SocialAuthOption[] = [
     name: 'Twitter',
     verifier: 'twitter',
     hasClientSecret: true,
-    hasRedirectUri: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
   },
 ]
@@ -159,8 +172,8 @@ enum ChainMapping {
 }
 
 enum RegionMapping {
-  asia = 1,
-  europe = 4,
+  'asia' = 1,
+  'europe' = 4,
   'north-america' = 5,
 }
 
@@ -174,7 +187,6 @@ const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 const constants = {
   sentry,
   api,
-  arcanaAppId,
   isAppDown,
   chains,
   CONFIGURE_TABS,
@@ -185,7 +197,6 @@ const constants = {
 export {
   sentry,
   api,
-  arcanaAppId,
   isAppDown,
   chains,
   CONFIGURE_TABS,
@@ -196,18 +207,23 @@ export {
   defaultUserLimit,
   socialLogins,
   regions,
-  type Region,
-  type StorageRegion,
-  type ConfigureTab,
-  type ConfigureTabType,
-  type Chain,
-  type ChainOption,
-  type BandwidthLimitUnit,
   ChainMapping,
   RegionMapping,
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   DOCS_URL,
+}
+
+export type {
+  Region,
+  StorageRegion,
+  ConfigureTab,
+  ConfigureTabType,
+  Chain,
+  ChainOption,
+  BandwidthLimitUnit,
+  SocialAuthVerifier,
+  SocialAuthVerifierLabel,
 }
 
 export default constants

@@ -1,62 +1,62 @@
-import { AuthProvider, SocialLoginType } from '@arcana/auth-core'
-import { useStore } from 'vuex'
+import { AuthProvider } from '@arcana/auth'
 
-const ARCANA_APP_ID = import.meta.env.VITE_ARCANA_APP_ID
+import { useAppsStore } from '@/stores/apps.store'
+import { useAuthStore } from '@/stores/auth.store'
+
+const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
 let authInstance: AuthProvider
 
 function useArcanaAuth() {
-  const store = useStore()
+  const authStore = useAuthStore()
+  const appsStore = useAppsStore()
 
   async function init() {
     if (!authInstance) {
-      authInstance = await AuthProvider.init({
-        appId: ARCANA_APP_ID,
+      authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
         network: ARCANA_AUTH_NETWORK,
-        flow: 'redirect',
-        redirectUri: `${window.location.origin}/login`,
-        autoRedirect: true,
         debug: true,
       })
+      await authInstance.init()
     }
   }
 
-  function isLoggedIn() {
-    return authInstance.isLoggedIn()
+  async function isLoggedIn() {
+    return await authInstance.isLoggedIn()
   }
 
-  async function loginWithSocial(type = SocialLoginType.google) {
-    if (!isLoggedIn()) {
-      await authInstance.loginWithSocial(type)
+  async function loginWithSocial(type: string) {
+    if (!(await isLoggedIn())) {
+      return await authInstance.loginWithSocial(type)
+    }
+  }
+
+  async function loginWithLink(email: string) {
+    if (!(await isLoggedIn())) {
+      await authInstance.loginWithLink(email)
     }
   }
 
   async function fetchUserDetails() {
-    return authInstance.getUserInfo()
-  }
-
-  function handleRedirect() {
-    AuthProvider.handleRedirectPage(window.location)
+    return authInstance.getUser()
   }
 
   async function logout() {
     await authInstance.logout()
-    store.dispatch('resetStore')
+    appsStore.$reset()
+    authStore.$reset()
   }
 
-  async function getPublicKey(email) {
-    return await authInstance.getPublicKey({
-      verifier: SocialLoginType.google,
-      id: email,
-    })
+  async function getPublicKey(email: string) {
+    return await authInstance.getPublicKey(email)
   }
 
   return {
     init,
-    handleRedirect,
     isLoggedIn,
     loginWithSocial,
+    loginWithLink,
     logout,
     fetchUserDetails,
     getPublicKey,

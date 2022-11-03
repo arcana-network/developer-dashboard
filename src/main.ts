@@ -6,7 +6,7 @@ import VueGtag from 'vue-gtag'
 
 import App from '@/App.vue'
 import router from '@/router'
-import store from '@/store'
+import store from '@/stores'
 import constants from '@/utils/constants'
 
 import 'vue3-circle-progress/dist/circle-progress.css'
@@ -14,28 +14,24 @@ import '@/components/lib/styles.css'
 
 const sentryConfig = constants.sentry
 
-function getDSN() {
-  if (import.meta.env.PROD) {
-    return sentryConfig.dsn
-  }
-  sentryConfig.tracingOrigins = []
-  return null
+const app = createApp(App)
+
+if (import.meta.env.PROD) {
+  SentryInit({
+    app,
+    dsn: sentryConfig.dsn,
+    integrations: [
+      new Integrations.BrowserTracing({
+        routingInstrumentation: vueRouterInstrumentation(router),
+        tracingOrigins: sentryConfig.tracingOrigins,
+      }),
+    ],
+    tracesSampleRate: 1.0,
+  })
 }
 
-const app = createApp(App)
-SentryInit({
-  app,
-  dsn: getDSN(),
-  integrations: [
-    new Integrations.BrowserTracing({
-      routingInstrumentation: vueRouterInstrumentation(router),
-      tracingOrigins: sentryConfig.tracingOrigins,
-    }),
-  ],
-  tracesSampleRate: 1.0,
-})
-app.use(router)
 app.use(store)
+app.use(router)
 app.use(VWave)
 
 if (import.meta.env.PROD) {

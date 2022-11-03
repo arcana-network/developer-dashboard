@@ -65,6 +65,7 @@ const logoAltText = computed(() => {
 const showMenu = ref(false)
 
 function handleMenuItemClick(menuItem) {
+  if (menuItem.disabled) return
   if (menuItem.action) {
     menuItem.action.call()
   }
@@ -137,11 +138,11 @@ function onLogoClick() {
             }"
             role="listitem"
             class="menu-item"
-            :class="
-              selectedItem === 'menu-item' && menuItem.selected
-                ? 'menu-item-selected'
-                : ''
-            "
+            :class="{
+              'menu-item-selected':
+                selectedItem === 'menu-item' && menuItem.selected,
+              'menu-item-disabled': menuItem.disabled,
+            }"
             @click.stop="handleMenuItemClick(menuItem)"
           >
             {{ menuItem.label }}
@@ -278,6 +279,8 @@ header section {
 }
 
 .menu-item {
+  display: flex;
+  align-items: center;
   font-family: var(--font-title);
   font-size: 1.125em;
   font-weight: 700;
@@ -289,9 +292,13 @@ header section {
 .logo,
 .menu-item,
 .notification-icon {
-  padding: 2em 1em;
+  padding: 1.25rem 1rem;
   cursor: pointer;
   transition: opacity 0.3s;
+}
+
+.logo img {
+  vertical-align: middle;
 }
 
 .notification-icon {
@@ -310,6 +317,11 @@ header section {
 
 .menu-item-selected {
   color: #13a3fd;
+}
+
+.menu-item-disabled {
+  pointer-events: none;
+  opacity: 0.25;
 }
 
 @media only screen and (max-width: 1023px) {

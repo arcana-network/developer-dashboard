@@ -1,20 +1,23 @@
 <script lang="ts" setup>
 import bytes from 'bytes'
 import { reactive } from 'vue'
-import { useStore } from 'vuex'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import getEnvApi from '@/utils/get-env-api'
 
-const store = useStore()
+const appsStore = useAppsStore()
 const toast = useToast()
+const appId = useAppId()
+const currentApp = appsStore.app(appId)
 
 type OrientationOption = {
-  logo: string
+  logo?: string
   isLoading: boolean
   hasError: boolean
 }
@@ -32,24 +35,24 @@ type ThemeLogo = {
 const themeLogos: ThemeLogo = reactive({
   dark: {
     vertical: {
-      logo: store.getters.logos.dark.vertical,
+      logo: currentApp.logos.dark.vertical,
       isLoading: false,
       hasError: false,
     },
     horizontal: {
-      logo: store.getters.logos.dark.horizontal,
+      logo: currentApp.logos.dark.horizontal,
       isLoading: false,
       hasError: false,
     },
   },
   light: {
     vertical: {
-      logo: store.getters.logos.light.vertical,
+      logo: currentApp.logos.light.vertical,
       isLoading: false,
       hasError: false,
     },
     horizontal: {
-      logo: store.getters.logos.light.horizontal,
+      logo: currentApp.logos.light.horizontal,
       isLoading: false,
       hasError: false,
     },
@@ -67,13 +70,14 @@ async function handleFileChange(
   themeLogos[mode][orientation].hasError = false
   themeLogos[mode][orientation].isLoading = true
   try {
-    await uploadThemeLogo(files[0], mode, orientation)
+    await uploadThemeLogo(appId, files[0], mode, orientation)
     toast.success('Logo uploaded successfully')
-    const logoUrl = `${getEnvApi('v2')}/app/${
-      store.getters.appId
-    }/logo?type=${mode}&orientation=${orientation}`
+    const logoUrl = `${getEnvApi(
+      'v2'
+    )}/app/${appId}/logo?type=${mode}&orientation=${orientation}`
     themeLogos[mode][orientation].logo = logoUrl
-    store.commit('updateLogo', { mode, orientation, url: logoUrl })
+    currentApp.logos[mode][orientation] = logoUrl
+    appsStore.updateApp(appId, currentApp)
   } catch (e) {
     console.error(e)
     toast.error("Couldn't upload logo. Please try again or contact support")
@@ -88,7 +92,7 @@ async function handleFileRemove(
 ) {
   themeLogos[mode][orientation].isLoading = true
   try {
-    await removeThemeLogo(mode, orientation)
+    await removeThemeLogo(appId, mode, orientation)
     toast.success('Logo removed successfully')
     themeLogos[mode][orientation].logo = ''
   } catch (e) {
@@ -114,8 +118,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Logo Mark</label>
+              <label for="light-logo">Logo Mark</label>
               <VFileUpload
+                id="light-logo"
                 placeholder="Upload .png, .svg or .gif"
                 allowed-file-type=".png,.svg,.gif"
                 :value="themeLogos.light.vertical.logo"
@@ -135,8 +140,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Horizontal Logo</label>
+              <label for="light-horizontal-logo">Horizontal Logo</label>
               <VFileUpload
+                id="light-horizontal-logo"
                 :value="themeLogos.light.horizontal.logo"
                 :is-loading="themeLogos.light.horizontal.isLoading"
                 class="file-upload-input"
@@ -161,8 +167,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Logo Mark</label>
+              <label for="dark-logo">Logo Mark</label>
               <VFileUpload
+                id="dark-logo"
                 :value="themeLogos.dark.vertical.logo"
                 :is-loading="themeLogos.dark.vertical.isLoading"
                 placeholder="Upload .png, .svg or .gif"
@@ -182,8 +189,9 @@ async function handleFileRemove(
               gap="0.625rem"
               class="file-upload-container"
             >
-              <label>Horizontal Logo</label>
+              <label for="dark-horizontal-logo">Horizontal Logo</label>
               <VFileUpload
+                id="dark-horizontal-log"
                 :value="themeLogos.dark.horizontal.logo"
                 :is-loading="themeLogos.dark.horizontal.isLoading"
                 placeholder="Upload .png, .svg or .gif"

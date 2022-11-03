@@ -1,17 +1,35 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import bytes from 'bytes'
 
-import store from '@/store'
-import { ChainMapping, MAX_DATA_TRANSFER_BYTES } from '@/utils/constants'
+import store from '@/stores'
+import type {
+  AppId,
+  Theme,
+  AppConfig as AppState,
+  SocialAuthState,
+} from '@/stores/apps.store'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAuthStore } from '@/stores/auth.store'
+import {
+  ChainMapping,
+  MAX_DATA_TRANSFER_BYTES,
+  RegionMapping,
+  WalletMode,
+  type SocialAuthVerifier,
+} from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
+
+const authStore = useAuthStore(store)
+const appsStore = useAppsStore(store)
+
+let forwarder: string, rpcUrl: string
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
 type AppConfigCred = {
-  verifier: string
+  verifier: SocialAuthVerifier
   clientId?: string
   clientSecret?: string
-  redirectURL?: string
-  redirectUrl?: string
   origin?: string
 }
 
@@ -23,25 +41,25 @@ type AppConfigThemeLogo = {
 }
 
 type AppConfig = {
-  ID?: number
-  name?: string
-  address?: string
-  cred?: AppConfigCred[]
-  aggregate_login?: boolean
+  ID: AppId
+  name: string
+  address: string
+  cred: AppConfigCred[]
+  aggregate_login: boolean
   bandwidth_limit: number
   storage_limit: number
   chain: number
   region: number
-  theme?: string
-  wallet_type?: number
+  theme: Theme
+  wallet_type: WalletMode.NoUI | WalletMode.UI
   wallet_domain?: string
-  logo?: AppConfigThemeLogo
+  logo: AppConfigThemeLogo
 }
 
 const gatewayAuthorizedInstance = axios.create()
 gatewayAuthorizedInstance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
-    config.headers.Authorization = `Bearer ${store.getters.accessToken}`
+    config.headers.Authorization = `Bearer ${authStore.accessToken}`
     return config
   }
 )
@@ -51,19 +69,32 @@ type CreateAppRequestBody = {
   region: number
 }
 
+type CreateAppResponse = {
+  app: AppConfig
+  txHash: string
+}
+
+type AppConfigRequiredProps = Omit<AppConfig, 'ID' | 'logo'>
+
+type AppsListResponse = {
+  id: AppId
+  name: string
+  no_of_files: number
+  total_users: number
+  storage: number
+  bandwidth: number
+  consumed_storage: number
+  consumed_bandwidth: number
+  estimated_cost: number
+  created_at: string
+}
+
 function createApp(
   config: CreateAppRequestBody
-): Promise<AxiosResponse<AppConfig>> {
-  const defaultAppConfig: AppConfig = {
+): Promise<AxiosResponse<CreateAppResponse>> {
+  const defaultAppConfig = {
     name: config.name,
     region: config.region,
-    chain: ChainMapping.ethereum,
-    cred: [],
-    storage_limit: MAX_DATA_TRANSFER_BYTES,
-    bandwidth_limit: MAX_DATA_TRANSFER_BYTES,
-    aggregate_login: true,
-    theme: 'dark',
-    wallet_domain: '',
   }
   return gatewayAuthorizedInstance.post(
     `${getEnvApi('v2')}/app/`,
@@ -71,41 +102,118 @@ function createApp(
   )
 }
 
-function updateApp(updatedAppConfig: AppConfig) {
+function updateApp(appId: AppId, fieldsToUpdate: Partial<AppState>) {
+  const app = appsStore.app(appId)
+  const updatedAppConfig = { ...app, ...fieldsToUpdate }
+  const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
   return gatewayAuthorizedInstance.patch(
-    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`,
-    updatedAppConfig
+    `${getEnvApi('v2')}/app/?id=${appId}`,
+    appConfigRequestBody
   )
 }
 
-function fetchAllApps() {
+function deleteCred(appId: AppId, authToRemove: SocialAuthState[]) {
+  const deleteCredPromises = authToRemove.map((auth) => {
+    return gatewayAuthorizedInstance.delete(
+      `${getEnvApi('v2')}/cred/?id=${appId}&verifier=${auth.verifier}`
+    )
+  })
+  return Promise.all(deleteCredPromises)
+}
+
+function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
+  let storage_limit: number, bandwidth_limit: number
+  const storageLimit = app.store.userLimits.storage
+  const bandwidthLimit = app.store.userLimits.bandwidth
+  if (storageLimit.isUnlimited) {
+    storage_limit = MAX_DATA_TRANSFER_BYTES
+  } else {
+    storage_limit = bytes(`${storageLimit.value} ${storageLimit.unit}`)
+  }
+
+  if (bandwidthLimit.isUnlimited) {
+    bandwidth_limit = MAX_DATA_TRANSFER_BYTES
+  } else {
+    bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
+  }
+
+  const { social, wallet } = app.auth
+  const cred: AppConfigCred[] = social.map((authType) => {
+    return {
+      verifier: authType.verifier,
+      clientId: authType.clientId,
+      clientSecret: authType.clientSecret,
+    }
+  })
+
+  const wallet_type = wallet.walletType
+
+  return {
+    name: app.name,
+    address: app.address,
+    storage_limit,
+    bandwidth_limit,
+    cred,
+    aggregate_login: true,
+    chain: ChainMapping[app.access.selectedChain],
+    region: RegionMapping[app.store.region],
+    theme: wallet.selectedTheme,
+    wallet_domain: wallet.websiteDomain,
+    wallet_type,
+  }
+}
+
+function fetchAllApps(): Promise<AxiosResponse<AppsListResponse[]>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
 }
 
-function fetchApp(appId?: number) {
+function fetchApp(appId: AppId): Promise<AxiosResponse<AppConfig>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
-function fetchStats() {
+type StatsResponse = {
+  actions: {
+    upload: number
+    download: number
+    share: number
+    revoke: number
+    ownership_change: number
+    delete: number
+    storage: number
+    bandwidth: number
+  }
+  no_of_users: number
+  consumed_storage: number
+  storage: number
+  consumed_bandwidth: number
+  bandwidth: number
+}
+
+function fetchStats(appId: AppId): Promise<AxiosResponse<StatsResponse>> {
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/overview/?id=${appId}`)
+}
+
+function fetchPeriodicUsage(appId: AppId, period: Duration = 'month') {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/overview/?id=${store.getters.appId}`
+    `${getEnvApi()}/app-usage/?id=${appId}&period=${period}`
   )
 }
 
-function fetchPeriodicUsage(period: Duration = 'month') {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/app-usage/?id=${store.getters.appId}&period=${period}`
-  )
+function deleteApp(appId: AppId) {
+  return gatewayAuthorizedInstance.delete(`${getEnvApi('v2')}/app/?id=${appId}`)
 }
 
-function deleteApp() {
-  return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/?id=${store.getters.appId}`
-  )
+async function fetchAndStoreConfig() {
+  const config = (await axios.get(`${getEnvApi()}/get-config/`)).data
+  forwarder = config?.Forwarder
+  rpcUrl = config?.RPC_URL
 }
 
 function getConfig() {
-  return axios.get(`${getEnvApi()}/get-config/`)
+  return {
+    forwarder,
+    rpcUrl,
+  }
 }
 
 function fetchProfile() {
@@ -126,31 +234,27 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
   })
 }
 
-function fetchAllUsers() {
+function fetchAllUsers(appId: AppId) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details/?id=${store.getters.appId}`
+    `${getEnvApi()}/user-details/?id=${appId}`
   )
 }
 
-function searchUsers(address: string) {
+function searchUsers(appId: AppId, address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${
-      store.getters.appId
-    }&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchAllUserTransactions(address: string) {
+function fetchAllUserTransactions(appId: AppId, address: string) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${
-      store.getters.appId
-    }&address=${address}`
+    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchMonthlyUsers() {
+function fetchMonthlyUsers(appId: AppId) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/no-of-users/?id=${store.getters.appId}`
+    `${getEnvApi()}/no-of-users/?id=${appId}`
   )
 }
 
@@ -175,10 +279,11 @@ function loginUser({
 }
 
 function getThemeLogo(
+  appId: AppId,
   mode: 'dark' | 'light',
   orientation: 'horizontal' | 'vertical'
 ) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${store.getters.appId}/logo`
+  const logoFetchUrl = `${getEnvApi('v2')}/app/${appId}/logo`
   return {
     mode,
     orientation,
@@ -187,6 +292,7 @@ function getThemeLogo(
 }
 
 function uploadThemeLogo(
+  appId: AppId,
   file: File,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
@@ -194,7 +300,7 @@ function uploadThemeLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo`,
     formData,
     {
       params: { type: mode, orientation },
@@ -203,11 +309,12 @@ function uploadThemeLogo(
 }
 
 function removeThemeLogo(
+  appId: AppId,
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
 ) {
   return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/${store.getters.appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo`,
     {
       params: { type: mode, orientation },
     }
@@ -215,6 +322,7 @@ function removeThemeLogo(
 }
 
 export {
+  getAppConfigRequestBody,
   createApp,
   updateApp,
   deleteApp,
@@ -223,6 +331,7 @@ export {
   fetchStats,
   fetchPeriodicUsage,
   getConfig,
+  fetchAndStoreConfig,
   fetchProfile,
   updateOrganization,
   fetchAllUsers,
@@ -234,8 +343,10 @@ export {
   getThemeLogo,
   uploadThemeLogo,
   removeThemeLogo,
+  deleteCred,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
   type Duration,
+  type AppConfigRequiredProps,
 }

@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -9,9 +8,12 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { fetchProfile, updateOrganization } from '@/services/gateway.service'
+import { useAuthStore } from '@/stores/auth.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
-const store = useStore()
+const authStore = useAuthStore()
+const loaderStore = useLoaderStore()
 const toast = useToast()
 const { logout } = useArcanaAuth()
 
@@ -30,9 +32,9 @@ const organisationDetails: Ref<OrganizationDetails> = ref({
   country: '',
 })
 const name = ref('')
-name.value = store.getters.userInfo.name
+name.value = authStore.name
 const email = ref('')
-email.value = store.getters.userInfo.email
+email.value = authStore.email
 const router = useRouter()
 
 let organisationDetailsResetState: OrganizationDetails
@@ -46,7 +48,7 @@ async function onUpdateOrganization() {
   organisationDetails.value.sizeErrorMessage = ''
 
   try {
-    store.commit('showLoader', 'Updating Profile details...')
+    loaderStore.showLoader('Updating Profile details...')
     await updateOrganization({
       name: organisationDetails.value.name,
       size,
@@ -61,7 +63,7 @@ async function onUpdateOrganization() {
       'An error occurred while saving the profile details. Please try again or contact support'
     )
   } finally {
-    store.commit('hideLoader')
+    loaderStore.hideLoader()
   }
 }
 
@@ -76,13 +78,11 @@ onBeforeMount(() => {
   })
 })
 
-function onLogout() {
-  logout()
+async function onLogout() {
+  await logout()
   localStorage.clear()
-  store.dispatch('resetSettings')
-  store.dispatch('resetAuth')
-  store.dispatch('resetStore')
   router.push({ name: 'Login' })
+  window.location.reload()
 }
 
 function resetOrganisationDetails() {
@@ -252,11 +252,11 @@ function resetOrganisationDetails() {
 }
 
 .heading {
-  margin-top: 1.2em;
+  margin-top: 2rem;
 }
 
 .personal-details {
-  margin-top: 4em;
+  margin-top: 3rem;
 }
 
 .overflow-ellipsis {

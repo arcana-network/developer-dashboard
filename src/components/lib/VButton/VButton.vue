@@ -98,9 +98,9 @@ button,
 a {
   position: relative;
   min-width: 9em;
-  padding: 0.8em 1em;
+  padding: 0.625rem;
   font-family: var(--font-body);
-  font-size: 1.125em;
+  font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.5;
   text-align: center;
@@ -119,7 +119,7 @@ button.primary {
 button.primary:disabled {
   color: var(--text-grey);
   cursor: not-allowed;
-  background: linear-gradient(to bottom, #4e4e4e, #2b2b2b);
+  background: linear-gradient(180deg, #4e4e4e -4.5%, #3d3d3d 100.1%);
 }
 
 button.primary:hover:not(:disabled) {
@@ -127,31 +127,19 @@ button.primary:hover:not(:disabled) {
 }
 
 button.secondary {
-  box-sizing: border-box;
-  min-width: calc(9em - 3px);
-  padding: calc(0.8em - 3px) calc(1em - 3px);
+  padding: calc(0.625rem - 2px);
   color: var(--text-white);
-  background-color: var(--dark-theme-bg);
-  background-clip: padding-box;
-  border: 3px solid transparent;
-}
-
-button.secondary::before {
-  position: absolute;
-  top: -3px;
-  right: -3px;
-  bottom: -3px;
-  left: -3px;
-  z-index: -1;
-  content: '';
-  background: linear-gradient(to bottom, #0085ff, #29c8fa);
+  background: linear-gradient(#262626, #262626) padding-box,
+    linear-gradient(to bottom, #0085ff, #29c8fa) border-box;
+  border: 2px solid transparent;
   border-radius: 10px;
 }
 
 button.secondary:disabled {
-  color: #8d8d8d;
+  color: #808080;
   cursor: not-allowed;
-  border: 3px solid #8d8d8d;
+  background: linear-gradient(#262626, #262626) padding-box,
+    linear-gradient(180deg, #4e4e4e 0%, #3d3d3d 100%) border-box;
 }
 
 button.secondary:hover:not(:disabled) {
@@ -195,9 +183,9 @@ progress {
 @media only screen and (max-width: 1023px) {
   button,
   a {
-    min-width: 8em;
-    padding: 0.6em 0.8em;
-    font-size: 0.9em;
+    min-width: 8rem;
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     line-height: 1.5;
     text-align: center;

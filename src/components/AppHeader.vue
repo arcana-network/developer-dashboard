@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import AccountUserIcon from '@/assets/iconography/account-user.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
@@ -9,11 +8,14 @@ import ArcanaFavicon from '@/assets/iconography/arcana-favicon.svg'
 import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VHeader from '@/components/lib/VHeader/VHeader.vue'
+import { useAuthStore } from '@/stores/auth.store'
+import { useAppId } from '@/use/getAppId'
 import constants from '@/utils/constants'
 
 const route = useRoute()
 const router = useRouter()
-const store = useStore()
+const authStore = useAuthStore()
+const appId = useAppId()
 const canShowBanner = ref(true)
 const hideHeader = ref(false)
 
@@ -23,18 +25,27 @@ const scrollDelta = 10
 const menuItems = computed(() => {
   let arr = [
     {
-      label: 'Dashboard',
+      label: 'Apps',
       action() {
-        router.push({ name: 'Dashboard' })
+        router.push({ name: 'ManageApps' })
       },
       selected: false,
     },
     {
-      label: 'Users',
+      label: 'Dashboard',
       action() {
-        router.push({ name: 'Users' })
+        router.push({ name: 'Dashboard', params: { appId } })
       },
       selected: false,
+      disabled: false,
+    },
+    {
+      label: 'Users',
+      action() {
+        router.push({ name: 'Users', params: { appId } })
+      },
+      selected: false,
+      disabled: false,
     },
     {
       label: 'Docs',
@@ -44,18 +55,29 @@ const menuItems = computed(() => {
       selected: false,
     },
   ]
-  if (route.name === 'Dashboard') {
+  if (route.name === 'ManageApps') {
     arr[0].selected = true
-  } else if (route.name === 'Users') {
+  } else if (route.name === 'Dashboard') {
     arr[1].selected = true
+  } else if (route.name === 'Users') {
+    arr[2].selected = true
+  }
+
+  if (route.name === 'ManageApps' || route.name === 'Profile') {
+    arr[1].disabled = true
+    arr[2].disabled = true
+  }
+  if (route.name === 'Dashboard' || route.name === 'Users') {
+    arr[1].disabled = false
+    arr[2].disabled = false
   }
   return arr
 })
 
 const loggedInUser = {
-  name: store.getters.userInfo.name,
+  name: authStore.name,
   action() {
-    router.push('/profile')
+    router.push({ name: 'Profile', params: { appId } })
   },
 }
 

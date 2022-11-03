@@ -91,11 +91,11 @@ const socialLinks = [
 <style scoped>
 footer {
   position: sticky;
-  top: calc(100vh - 5rem);
+  top: 100vh;
   right: 0;
   bottom: 0;
   left: 0;
-  padding: 1.5rem 0;
+  padding: 1.25rem 0;
   background: #1f1f1f;
   box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
 }

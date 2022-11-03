@@ -1,118 +1,182 @@
 <script lang="ts" setup>
-import { computed, ref, type ComputedRef, type Ref } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
+import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import { createApp, type AppConfig } from '@/services/gateway.service'
+import { createApp, fetchStats } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
+import calculateUserLimits from '@/utils/calculateUserLimits'
 import {
   RegionMapping,
   regions,
   type Region,
   type StorageRegion,
+  api,
 } from '@/utils/constants'
+import { createTransactionSigner } from '@/utils/signerUtils'
 
-const store = useStore()
 const router = useRouter()
-const appName: ComputedRef<string> = computed(() => store.getters.appName)
-const hasAppNameError: Ref<boolean> = ref(false)
-const selectedRegion: ComputedRef<Region | undefined> = computed(() => {
-  const storageRegion: StorageRegion = store.getters.storageRegion
-  return regions.find((region) => region.value === storageRegion)
-})
+const loaderStore = useLoaderStore()
+const toast = useToast()
+const appsStore = useAppsStore()
+const appName = ref('')
+const hasAppNameError = ref(false)
+const selectedRegion = ref(regions[0])
+const emit = defineEmits(['close'])
 
 function handleRegionChange(option: Region) {
-  store.commit('updateStorageRegion', option.value)
-}
-
-function handleAppNameChange(appName: string) {
-  store.commit('updateAppName', appName)
+  selectedRegion.value = option
 }
 
 async function handleCreateApp() {
-  if (!appName.value?.trim()) {
-    hasAppNameError.value = true
-    return
-  }
-  store.commit('showLoader', 'Creating App...')
-  hasAppNameError.value = false
-  const app: AppConfig = (
-    await createApp({
-      name: appName.value,
-      region: RegionMapping[selectedRegion.value.value],
+  try {
+    if (!appName.value?.trim()) {
+      hasAppNameError.value = true
+      return
+    }
+    emit('close')
+    loaderStore.showLoader('Creating App...')
+    hasAppNameError.value = false
+    const app = (
+      await createApp({
+        name: appName.value,
+        region: RegionMapping[selectedRegion.value.value],
+      })
+    ).data.app
+    const appOverview = (await fetchStats(app.ID)).data
+
+    appsStore.addApp(app.ID, {
+      id: app.ID,
+      name: app.name as string,
+      address: app.address as string,
+      logos: {
+        dark: {
+          horizontal: '',
+          vertical: '',
+        },
+        light: {
+          horizontal: '',
+          vertical: '',
+        },
+      },
+      access: {
+        selectedChain: 'none',
+      },
+      store: {
+        region: RegionMapping[app.region] as StorageRegion,
+        userLimits: {
+          storage: calculateUserLimits(app.storage_limit),
+          bandwidth: calculateUserLimits(app.bandwidth_limit),
+        },
+      },
+      auth: {
+        social: [],
+        wallet: {
+          walletType: app.wallet_type,
+          walletTypeInGateway: app.wallet_type,
+          websiteDomain: app.wallet_domain,
+          selectedTheme: app.theme || 'dark',
+        },
+        redirectUri: `${api.verify}/${app.ID}/`,
+      },
     })
-  ).data
-  store.commit('updateAppId', app.ID)
-  await store.dispatch('fetchAppConfig')
-  store.commit('hideLoader')
-  router.push({ name: 'GeneralSettings' })
+    appsStore.addAppOverview(app.ID, {
+      id: app.ID,
+      name: app.name,
+      storage: {
+        consumed: appOverview.consumed_storage,
+        allowed: appOverview.storage,
+      },
+      bandwidth: {
+        consumed: appOverview.consumed_bandwidth,
+        allowed: appOverview.bandwidth,
+      },
+      noOfFiles: appOverview.actions.upload - appOverview.actions.delete,
+      totalUsers: appOverview.no_of_users,
+      estimatedCost: 0,
+      createdAt: new Date().toString(),
+    })
+    createTransactionSigner(app.address)
+    loaderStore.hideLoader()
+    router.push({ name: 'GeneralSettings', params: { appId: app.ID } })
+  } catch (e) {
+    loaderStore.hideLoader()
+    console.error(e)
+    toast.error('Error occurred while creating app')
+  }
 }
 </script>
 
 <template>
-  <section name="create-app" class="create-app-section">
+  <VOverlay>
+    <img
+      src="@/assets/iconography/close.svg"
+      class="close-btn"
+      @click.stop="emit('close')"
+    />
     <VCard variant="popup" class="create-app-modal-card">
       <h2 class="create-app-title">Create New App</h2>
       <VSeperator />
-      <VStack direction="column" gap="1rem">
-        <label class="app-name-label">Enter App Name</label>
-        <VTextField
-          :model-value="appName"
-          class="app-name-input"
-          :message-type="hasAppNameError ? 'error' : ''"
-          message="App Name cannot be empty"
-          @update:model-value="handleAppNameChange"
-        />
-      </VStack>
-      <VStack direction="column" gap="1rem" align="start">
-        <VStack gap="0.5rem">
-          <label class="app-name-label">Choose Region</label>
-          <VTooltip
-            title="Arcana Store uses physical storage nodes that are logically grouped by
+      <form @submit.prevent="handleCreateApp">
+        <VStack direction="column">
+          <VStack direction="column" gap="1rem">
+            <label class="app-name-label" for="app-name">Enter App Name</label>
+            <VTextField
+              id="app-name"
+              v-model.trim="appName"
+              class="app-name-input"
+              :message-type="hasAppNameError ? 'error' : ''"
+              message="App Name cannot be empty"
+            />
+          </VStack>
+          <VStack direction="column" gap="1rem" align="start">
+            <VStack gap="0.5rem">
+              <label class="app-name-label" for="app-region"
+                >Choose Region</label
+              >
+              <VTooltip
+                title="Arcana Store uses physical storage nodes that are logically grouped by
         geography. This allows you to control the region or location where
         dApp's data assets reside, for compliance and regulatory purpose. <strong>Once a
         region has been selected it cannot be altered.</strong>"
-          >
-            <img
-              src="@/assets/iconography/info-circle-outline.svg"
-              style="cursor: pointer"
+              >
+                <img
+                  src="@/assets/iconography/info-circle-outline.svg"
+                  style="cursor: pointer"
+                />
+              </VTooltip>
+            </VStack>
+            <VDropdown
+              id="app-region"
+              :options="regions"
+              display-field="name"
+              class="region-dropdown"
+              :model-value="selectedRegion"
+              @update:model-value="handleRegionChange"
             />
-          </VTooltip>
+          </VStack>
+          <VButton
+            type="submit"
+            label="CREATE"
+            class="create-button"
+            :disabled="!appName?.trim()"
+          />
         </VStack>
-        <VDropdown
-          :options="regions"
-          display-field="name"
-          class="region-dropdown"
-          :model-value="selectedRegion"
-          @update:model-value="handleRegionChange"
-        />
-      </VStack>
-      <VButton
-        label="CREATE"
-        class="create-button"
-        :disabled="!appName?.trim()"
-        @click.stop="handleCreateApp"
-      />
+      </form>
     </VCard>
-  </section>
+  </VOverlay>
 </template>
 
 <style scoped>
-.create-app-section {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  background: rgb(10 10 10 / 72%);
-}
-
 .create-app-modal-card {
   position: fixed;
   top: 50%;
@@ -148,5 +212,13 @@ async function handleCreateApp() {
 
 .region-dropdown {
   width: 100%;
+}
+
+.close-btn {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 1.5rem;
+  cursor: pointer;
 }
 </style>
