@@ -8,13 +8,13 @@ const sentry = {
 }
 
 const api = {
-  gateway: import.meta.env.VITE_GATEWAY_API,
-  verify: import.meta.env.VITE_VERIFY_URI,
+  gateway: import.meta.env.VITE_ARCANA_GATEWAY_URL,
+  verify: import.meta.env.VITE_ARCANA_VERIFY_URL,
 }
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 
-const DOCS_URL: string = import.meta.env.VITE_DOCS_URL
+const DOCS_URL: string = import.meta.env.VITE_ARCANA_DOCS_URL
 
 type Chain = 'ethereum' | 'polygon' | 'binance' | 'none'
 
