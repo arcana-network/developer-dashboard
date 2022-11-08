@@ -182,7 +182,7 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAppConfig(appId: AppId) {
       const app = (await fetchApp(appId)).data
-      const appDelegates = (await fetchAppDelegates(appId)).data
+      const appDelegates = (await fetchAppDelegates(appId)).data || []
       const socialAuth: SocialAuthState[] = []
       if (app.cred?.length) {
         app.cred.forEach((authDetail) => {
