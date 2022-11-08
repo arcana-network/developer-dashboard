@@ -326,37 +326,10 @@ type DelegateResponse = Omit<Delegate, 'createdDate'> & { created_at: string }
 
 async function fetchAppDelegates(
   appId: AppId
-): Promise<AxiosResponse<DelegateResponse[]>> {
-  // API: /delegates/?id={{appId}}
-  return Promise.resolve({
-    status: 200,
-    statusText: 'Success',
-    headers: {},
-    config: {},
-    data: [
-      {
-        id: 1,
-        name: 'Delegate 1',
-        address: '0x60bbc17b282Ce1986c0bc3d6A25Deb68BD3E0926',
-        permissions: ['Download', 'Reshare'],
-        created_at: new Date('2022-4-10').toISOString(),
-      },
-      {
-        id: 2,
-        name: 'Delegate 2',
-        address: '0xab64844c1225DE934e0ee5370862FA18A62Ed8B2',
-        permissions: ['Download', 'Reshare'],
-        created_at: new Date('2022-5-10').toISOString(),
-      },
-      {
-        id: 3,
-        name: 'Delegate 3',
-        address: '0xbf9cA989CF4bff5AF5E74BDE2877Dd6407FAD980',
-        permissions: ['Download', 'Reshare'],
-        created_at: new Date('2022-6-10').toISOString(),
-      },
-    ],
-  })
+): Promise<AxiosResponse<DelegateResponse[] | null>> {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi()}/delegates/?app_id=${appId}`
+  )
 }
 
 export {
