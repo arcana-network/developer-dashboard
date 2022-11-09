@@ -92,13 +92,17 @@ function addDelegate() {
               class="table-grid table-body"
             >
               <VStack direction="column" gap="0.25rem" class="delegate-name">
-                <div class="text-ellipsis delegate-header">NAME</div>
+                <div class="text-ellipsis laptop-remove delegate-header">
+                  NAME
+                </div>
                 <div class="text-ellipsis" :title="delegate.name">
                   {{ delegate.name }}
                 </div>
               </VStack>
               <VStack direction="column" gap="0.25rem" class="delegate-address">
-                <div class="text-ellipsis delegate-header">ADDRESS</div>
+                <div class="text-ellipsis laptop-remove delegate-header">
+                  ADDRESS
+                </div>
                 <VStack justify="between" gap="0.5rem">
                   <div
                     class="text-ellipsis tablet-remove mobile-remove"
@@ -126,7 +130,7 @@ function addDelegate() {
                 gap="0.25rem"
                 class="delegate-permissions"
               >
-                <div class="text-ellipsis delegate-header">
+                <div class="text-ellipsis laptop-remove delegate-header">
                   PERMISSIONS GRANTED
                 </div>
                 <VStack gap="5px" wrap>
@@ -140,7 +144,9 @@ function addDelegate() {
                 </VStack>
               </VStack>
               <VStack direction="column" gap="0.25rem" class="delegate-date">
-                <div class="text-ellipsis delegate-header">DELEGATION DATE</div>
+                <div class="text-ellipsis laptop-remove delegate-header">
+                  DELEGATION DATE
+                </div>
                 <div class="text-ellipsis">
                   {{
                     moment(delegate.createdDate)
