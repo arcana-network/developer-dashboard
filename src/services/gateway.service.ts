@@ -328,39 +328,10 @@ type DelegateResponse = Omit<Delegate, 'createdDate'> & { created_at: string }
 
 async function fetchAppDelegates(
   appId: AppId
-): Promise<AxiosResponse<DelegateResponse[]>> {
-  // return gatewayAuthorizedInstance.get(
-  //   `${getEnvApi('v2')}/delegates/?app_id=${appId}`
-  // )
-  return Promise.resolve({
-    status: 200,
-    statusText: 'Success',
-    headers: {},
-    config: {},
-    data: [
-      {
-        id: 1,
-        name: 'Delegate 1',
-        address: '0x60bbc17b282Ce1986c0bc3d6A25Deb68BD3E0926',
-        permissions: ['Download', 'Reshare'],
-        created_at: new Date('2022-4-10').toISOString(),
-      },
-      {
-        id: 2,
-        name: 'Delegate 2',
-        address: '0xab64844c1225DE934e0ee5370862FA18A62Ed8B2',
-        permissions: ['Download', 'Reshare'],
-        created_at: new Date('2022-5-10').toISOString(),
-      },
-      {
-        id: 3,
-        name: 'Delegate 3',
-        address: '0xbf9cA989CF4bff5AF5E74BDE2877Dd6407FAD980',
-        permissions: ['Download', 'Reshare'],
-        created_at: new Date('2022-6-10').toISOString(),
-      },
-    ],
-  })
+): Promise<AxiosResponse<DelegateResponse[] | null>> {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi()}/delegates/?app_id=${appId}`
+  )
 }
 
 type CreateDelegateRequest = {
@@ -373,7 +344,7 @@ async function createDelegate(
   appId: AppId,
   data: CreateDelegateRequest
 ): Promise<AxiosResponse<DelegateResponse>> {
-  // return gatewayAuthorizedInstance.post(`${getEnvApi('v2')}/delegates/create`, {
+  // return gatewayAuthorizedInstance.post(`${getEnvApi()}/delegates/create`, {
   //   appId,
   //   ...data,
   // })
@@ -391,7 +362,7 @@ async function createDelegate(
 }
 
 function listDelegateKeys(): Promise<AxiosResponse<string[]>> {
-  // return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/keys/`)
+  // return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/`)
   return Promise.resolve({
     status: 200,
     statusText: 'Success',
@@ -413,7 +384,7 @@ function editDelegate(
   appId: AppId,
   data: CreateDelegateRequest
 ): Promise<AxiosResponse<EditDelegateResponse>> {
-  // return gatewayAuthorizedInstance.patch(`${getEnvApi('v2')}/delegates/`, {
+  // return gatewayAuthorizedInstance.patch(`${getEnvApi()}/delegates/`, {
   //   appId,
   //   ...data,
   // })
@@ -431,7 +402,7 @@ function editDelegate(
 function deleteDelegate(
   delegateId: DelegateId
 ): Promise<AxiosResponse<EditDelegateResponse>> {
-  // return gatewayAuthorizedInstance.delete(`${getEnvApi('v2')}/delegates/?id=${deletegateId}`, {
+  // return gatewayAuthorizedInstance.delete(`${getEnvApi()}/delegates/?id=${deletegateId}`, {
   //   appId,
   //   ...data,
   // })

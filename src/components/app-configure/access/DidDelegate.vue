@@ -31,15 +31,26 @@ function addDelegate() {
         />
       </template>
       <template #description>
-        <VStack gap="2rem" justify="space-between">
+        <VStack
+          gap="2rem"
+          justify="space-between"
+          sm-direction="column"
+          md-direction="column"
+        >
           <div class="description">
             Delegations can be used to have assigned delegate servers manage the
-            DID’s on behalf of the users. Manage the delegates that you have
+            DIDs on behalf of the users. Manage the delegates that you have
             assigned the ability to perform actions on behalf of your users.
           </div>
           <VStack gap="2rem">
             <a href="#">
-              <VStack direction="column" gap="0.5rem" align="center">
+              <VStack
+                direction="column"
+                sm-direction="row"
+                md-direction="row"
+                gap="0.5rem"
+                align="center"
+              >
                 <img
                   src="@/assets/iconography/view-docs.svg"
                   class="help-action-icons"
@@ -48,7 +59,13 @@ function addDelegate() {
               </VStack>
             </a>
             <a href="#">
-              <VStack direction="column" gap="0.5rem" align="center">
+              <VStack
+                direction="column"
+                sm-direction="row"
+                md-direction="row"
+                gap="0.5rem"
+                align="center"
+              >
                 <img
                   src="@/assets/iconography/play-video.svg"
                   class="help-action-icons"
@@ -59,9 +76,9 @@ function addDelegate() {
           </VStack>
         </VStack>
       </template>
-      <VCard variant="depressed">
+      <VCard variant="depressed" class="delegates-card">
         <div class="table-container">
-          <div v-if="delegates.length">
+          <div v-if="delegates.length !== 0" class="table">
             <div class="table-grid table-header">
               <div class="text-ellipsis">NAME</div>
               <div class="text-ellipsis">ADDRESS</div>
@@ -74,14 +91,44 @@ function addDelegate() {
               :key="delegate.address"
               class="table-grid table-body"
             >
-              <div class="text-ellipsis">{{ delegate.name }}</div>
-              <div
-                class="text-ellipsis cursor-pointer"
-                :title="delegate.address"
+              <VStack direction="column" gap="0.25rem" class="delegate-name">
+                <div class="text-ellipsis delegate-header">NAME</div>
+                <div class="text-ellipsis" :title="delegate.name">
+                  {{ delegate.name }}
+                </div>
+              </VStack>
+              <VStack direction="column" gap="0.25rem" class="delegate-address">
+                <div class="text-ellipsis delegate-header">ADDRESS</div>
+                <VStack justify="between" gap="0.5rem">
+                  <div
+                    class="text-ellipsis tablet-remove mobile-remove"
+                    :title="delegate.address"
+                  >
+                    {{ truncate(delegate.address, 5) }}
+                  </div>
+                  <div
+                    class="text-ellipsis laptop-remove"
+                    :title="delegate.address"
+                  >
+                    {{ truncate(delegate.address, 8) }}
+                  </div>
+                  <div class="actions">
+                    <img
+                      src="@/assets/iconography/copy.svg"
+                      class="cursor-pointer"
+                      title="Copy"
+                    />
+                  </div>
+                </VStack>
+              </VStack>
+              <VStack
+                direction="column"
+                gap="0.25rem"
+                class="delegate-permissions"
               >
-                {{ truncate(delegate.address, 6) }}
-              </div>
-              <div>
+                <div class="text-ellipsis delegate-header">
+                  PERMISSIONS GRANTED
+                </div>
                 <VStack gap="5px" wrap>
                   <div
                     v-for="permission in delegate.permissions"
@@ -91,23 +138,34 @@ function addDelegate() {
                     {{ permission }}
                   </div>
                 </VStack>
-              </div>
-              <div class="text-ellipsis">
-                {{
-                  moment(delegate.createdDate)
-                    .format('DD MMM YYYY')
-                    .toUpperCase()
-                }}
-              </div>
-              <VStack class="actions" gap="1rem">
-                <img
-                  src="@/assets/iconography/delete-icon.svg"
-                  class="cursor-pointer"
-                />
-                <img
-                  src="@/assets/iconography/edit-icon.svg"
-                  class="cursor-pointer"
-                />
+              </VStack>
+              <VStack direction="column" gap="0.25rem" class="delegate-date">
+                <div class="text-ellipsis delegate-header">DELEGATION DATE</div>
+                <div class="text-ellipsis">
+                  {{
+                    moment(delegate.createdDate)
+                      .format('DD MMM YYYY')
+                      .toUpperCase()
+                  }}
+                </div>
+              </VStack>
+              <VStack
+                direction="column"
+                gap="0.25rem"
+                class="delegate-controls"
+              >
+                <VStack class="actions" gap="1rem">
+                  <img
+                    src="@/assets/iconography/delete-icon.svg"
+                    class="cursor-pointer"
+                    title="Delete"
+                  />
+                  <img
+                    src="@/assets/iconography/edit-icon.svg"
+                    class="cursor-pointer"
+                    title="Edit"
+                  />
+                </VStack>
               </VStack>
             </div>
           </div>
@@ -152,6 +210,10 @@ function addDelegate() {
 
 .table-header {
   padding-inline: 1.25rem;
+}
+
+.table-header,
+.delegate-header {
   font-family: var(--font-title);
   font-weight: 700;
   color: var(--text-grey);
@@ -202,5 +264,86 @@ function addDelegate() {
 
 .actions img {
   width: 1.5rem;
+}
+
+@media only screen and (max-width: 1024px) {
+  .delegate-name {
+    grid-area: name;
+  }
+
+  .delegate-address {
+    grid-area: address;
+  }
+
+  .delegate-controls {
+    grid-area: controls;
+  }
+
+  .delegate-date {
+    grid-area: date;
+  }
+
+  .delegate-permissions {
+    grid-area: permissions;
+  }
+
+  .separator,
+  .table-header {
+    display: none;
+  }
+
+  .table-container {
+    padding: 0;
+  }
+
+  .delegates-card {
+    background: none !important;
+    box-shadow: none !important;
+  }
+
+  .delegate-header {
+    font-size: 0.625rem;
+  }
+
+  .table-grid {
+    grid-template-areas:
+      'name name controls'
+      'address address address'
+      'date permissions permissions';
+    grid-template-columns: 1fr 1fr max-content;
+    grid-row-gap: 1rem;
+  }
+
+  .table {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .actions {
+    opacity: 1;
+  }
+
+  .table-body,
+  .table-body:hover,
+  .no-results {
+    padding: 1rem;
+    background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+    border-radius: 10px;
+    box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%);
+  }
+
+  a:has(.help-title) {
+    text-decoration: none;
+    vertical-align: middle;
+  }
+
+  .help-action-icons {
+    height: 2rem;
+  }
+
+  .help-title {
+    margin-top: 2px;
+  }
 }
 </style>
