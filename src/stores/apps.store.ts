@@ -4,6 +4,7 @@ import {
   fetchAllApps,
   fetchApp,
   getThemeLogo,
+  fetchAppDelegates,
 } from '@/services/gateway.service'
 import calculateUserLimits from '@/utils/calculateUserLimits'
 import type {
@@ -34,6 +35,16 @@ type AppId = number
 
 type WalletModeKind = WalletMode.NoUI | WalletMode.UI
 
+type DelegatePermission = 'Download' | 'Reshare'
+
+type Delegate = {
+  id: number | string
+  name: string
+  address: string
+  permissions: DelegatePermission[]
+  createdDate: string
+}
+
 type App = {
   id: AppId
   name: string
@@ -50,6 +61,7 @@ type App = {
   }
   access: {
     selectedChain: Chain
+    delegates: Delegate[]
   }
   auth: {
     social: SocialAuthState[]
@@ -170,6 +182,7 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAppConfig(appId: AppId) {
       const app = (await fetchApp(appId)).data
+      const appDelegates = (await fetchAppDelegates(appId)).data || []
       const socialAuth: SocialAuthState[] = []
       if (app.cred?.length) {
         app.cred.forEach((authDetail) => {
@@ -180,6 +193,15 @@ const useAppsStore = defineStore('apps', {
           })
         })
       }
+      const delegates: Delegate[] = appDelegates.map((delegate) => {
+        const createdDate = delegate.created_at
+        const delegateState = {
+          ...delegate,
+          createdDate,
+          created_at: undefined,
+        }
+        return delegateState
+      })
       this.appsById[appId] = {
         id: appId,
         address: app.address,
@@ -198,6 +220,7 @@ const useAppsStore = defineStore('apps', {
           selectedChain: app.chain
             ? (ChainMapping[app.chain] as Chain)
             : 'none',
+          delegates,
         },
         store: {
           region: RegionMapping[app.region] as StorageRegion,
@@ -240,4 +263,6 @@ export type {
   App as AppConfig,
   AppId,
   AppOverview,
+  Delegate,
+  DelegatePermission,
 }

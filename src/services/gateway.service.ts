@@ -7,6 +7,7 @@ import type {
   Theme,
   AppConfig as AppState,
   SocialAuthState,
+  Delegate,
 } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
@@ -321,6 +322,16 @@ function removeThemeLogo(
   )
 }
 
+type DelegateResponse = Omit<Delegate, 'createdDate'> & { created_at: string }
+
+async function fetchAppDelegates(
+  appId: AppId
+): Promise<AxiosResponse<DelegateResponse[] | null>> {
+  return gatewayAuthorizedInstance.get(
+    `${getEnvApi()}/delegates/?app_id=${appId}`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -344,6 +355,7 @@ export {
   uploadThemeLogo,
   removeThemeLogo,
   deleteCred,
+  fetchAppDelegates,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
