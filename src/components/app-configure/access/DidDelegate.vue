@@ -39,7 +39,7 @@ function addDelegate() {
         >
           <div class="description">
             Delegations can be used to have assigned delegate servers manage the
-            DID’s on behalf of the users. Manage the delegates that you have
+            DIDs on behalf of the users. Manage the delegates that you have
             assigned the ability to perform actions on behalf of your users.
           </div>
           <VStack gap="2rem">
@@ -78,7 +78,7 @@ function addDelegate() {
       </template>
       <VCard variant="depressed" class="delegates-card">
         <div class="table-container">
-          <div v-if="delegates.length" class="table">
+          <div v-if="delegates.length !== 0" class="table">
             <div class="table-grid table-header">
               <div class="text-ellipsis">NAME</div>
               <div class="text-ellipsis">ADDRESS</div>
