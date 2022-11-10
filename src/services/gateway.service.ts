@@ -8,6 +8,7 @@ import type {
   AppConfig as AppState,
   SocialAuthState,
   Delegate,
+  DelegateId,
 } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
@@ -332,6 +333,12 @@ async function fetchAppDelegates(
   )
 }
 
+function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
+  return gatewayAuthorizedInstance.delete(
+    `${getEnvApi()}/delegates/?id=${delegateId}`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -356,6 +363,7 @@ export {
   removeThemeLogo,
   deleteCred,
   fetchAppDelegates,
+  deleteDelegate,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

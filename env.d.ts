@@ -7,10 +7,21 @@ declare module '*.vue' {
   export default component
 }
 declare global {
+  import type { DelegatePermission } from '@/stores/apps.store'
   import type {
     TransactionSignerParams,
     SmartContractAcceptedValue,
   } from '@/utils/signerUtils'
+
+  type DelegatorParams = {
+    appAddress: string
+    gateway: string
+    forwarderAddress: string
+    accessToken: string
+    provider: any
+    delegator: string
+    roles: DelegatePermission[]
+  }
 
   interface ImportMetaEnv {
     PROD: boolean
@@ -53,6 +64,10 @@ declare global {
         address: string
       }>
       hashJson: (data: any) => string
+      delegator: {
+        grant: (data: DelegatorParams) => Promise<string>
+        revoke: (data: Omit<DelegatorParams, 'roles'>) => Promise<string>
+      }
     }
     arcana: {
       provider: any
