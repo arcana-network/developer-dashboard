@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import moment from 'moment'
-import { ref, type Ref } from 'vue'
+import { ref, computed, type Ref } from 'vue'
 
 import DeleteDelegatePopup from '@/components/app-configure/access/DeleteDelegatePopup.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
@@ -20,13 +20,13 @@ const loaderStore = useLoaderStore()
 const toast = useToast()
 
 const app = appsStore.app(appId)
-const delegates = app.access.delegates
+const delegates = computed(() => app.access.delegates)
 
 const showDeletePopup = ref(false)
 
 const selectedDelegate: Ref<Delegate | null> = ref(null)
 
-function addDelegate() {
+async function addDelegate() {
   //
 }
 
@@ -43,12 +43,10 @@ async function handleDeleteDelegate(delegate: Delegate) {
     loaderStore.showLoader('Deleting the delegate...')
     await deleteDelegate(delegate.id)
     const app = appsStore.app(appId)
-    const { access } = app
-    const updatedDelegates = access.delegates.filter(
+    const updatedDelegates = app.access.delegates.filter(
       (d) => d.id !== delegate.id
     )
-    access.delegates = updatedDelegates
-    appsStore.updateApp(appId, { access })
+    app.access.delegates = updatedDelegates
     selectedDelegate.value = null
     toast.success('Delegate deleted')
   } catch (e) {
@@ -144,7 +142,7 @@ async function handleDeleteDelegate(delegate: Delegate) {
                 <div class="text-ellipsis laptop-remove delegate-header">
                   ADDRESS
                 </div>
-                <VStack justify="space-between" gap="0.5rem">
+                <VStack gap="0.5rem">
                   <div
                     class="text-ellipsis tablet-remove mobile-remove"
                     :title="delegate.address"
@@ -258,7 +256,9 @@ async function handleDeleteDelegate(delegate: Delegate) {
 
 .table-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr 2fr 4rem;
+  grid-template-columns:
+    20% 20% 25% 25%
+    4rem;
   gap: 0.5rem;
 }
 
