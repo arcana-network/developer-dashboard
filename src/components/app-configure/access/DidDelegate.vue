@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import moment from 'moment'
-import { ref } from 'vue'
 
-import CreateDelegate from '@/components/app-configure/access/CreateDelegate.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
@@ -12,13 +10,12 @@ import { truncate } from '@/utils/stringUtils'
 
 const appId = useAppId()
 const appsStore = useAppsStore()
-const showCreateDelegate = ref(false)
 
 const app = appsStore.app(appId)
 const delegates = app.access.delegates
 
 function addDelegate() {
-  showCreateDelegate.value = true
+  //
 }
 </script>
 
@@ -183,10 +180,6 @@ function addDelegate() {
       </VCard>
     </SettingCard>
   </section>
-  <CreateDelegate
-    v-if="showCreateDelegate"
-    @close="showCreateDelegate = false"
-  />
 </template>
 
 <style scoped>
