@@ -344,36 +344,14 @@ async function createDelegate(
   appId: AppId,
   data: CreateDelegateRequest
 ): Promise<AxiosResponse<DelegateResponse>> {
-  // return gatewayAuthorizedInstance.post(`${getEnvApi()}/delegates/create`, {
-  //   appId,
-  //   ...data,
-  // })
-  return Promise.resolve({
-    status: 200,
-    statusText: 'Success',
-    headers: {},
-    config: {},
-    data: {
-      id: Date.now(),
-      created_at: new Date().toISOString(),
-      ...data,
-    },
+  return gatewayAuthorizedInstance.post(`${getEnvApi()}/delegates/`, {
+    appId,
+    ...data,
   })
 }
 
 function listDelegateKeys(): Promise<AxiosResponse<string[]>> {
-  // return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/`)
-  return Promise.resolve({
-    status: 200,
-    statusText: 'Success',
-    headers: {},
-    config: {},
-    data: [
-      '0x60bbc17b282Ce1986c0bc3d6A25Deb68BD3E0926',
-      '0xab64844c1225DE934e0ee5370862FA18A62Ed8B2',
-      '0xbf9cA989CF4bff5AF5E74BDE2877Dd6407FAD980',
-    ],
-  })
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/`)
 }
 
 type EditDelegateResponse = {
