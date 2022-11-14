@@ -1,21 +1,60 @@
 <script lang="ts" setup>
 import moment from 'moment'
+import { ref, computed, type Ref } from 'vue'
 
+import DeleteDelegatePopup from '@/components/app-configure/access/DeleteDelegatePopup.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppsStore } from '@/stores/apps.store'
+import { useToast } from '@/components/lib/VToast'
+import { deleteDelegate } from '@/services/gateway.service'
+import { revokeDelegate } from '@/services/smart-contract.service'
+import { useAppsStore, type Delegate } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { truncate } from '@/utils/stringUtils'
 
 const appId = useAppId()
 const appsStore = useAppsStore()
+const loaderStore = useLoaderStore()
+const toast = useToast()
 
 const app = appsStore.app(appId)
-const delegates = app.access.delegates
+const delegates = computed(() => app.access.delegates)
 
-function addDelegate() {
+const showDeletePopup = ref(false)
+
+const selectedDelegate: Ref<Delegate | null> = ref(null)
+
+async function addDelegate() {
   //
+}
+
+function handleDeleteClick(delegate: Delegate) {
+  showDeletePopup.value = true
+  selectedDelegate.value = delegate
+}
+
+async function handleDeleteDelegate(delegate: Delegate) {
+  try {
+    showDeletePopup.value = false
+    loaderStore.showLoader('Revoking delegator access in smart contract...')
+    await revokeDelegate(appId, delegate.address)
+    loaderStore.showLoader('Deleting the delegate...')
+    await deleteDelegate(delegate.id)
+    const app = appsStore.app(appId)
+    const updatedDelegates = app.access.delegates.filter(
+      (d) => d.id !== delegate.id
+    )
+    app.access.delegates = updatedDelegates
+    selectedDelegate.value = null
+    toast.success('Delegate deleted')
+  } catch (e) {
+    console.error(e)
+    toast.error('Error occurred while deleting delegate')
+  } finally {
+    loaderStore.hideLoader()
+  }
 }
 </script>
 
@@ -103,7 +142,7 @@ function addDelegate() {
                 <div class="text-ellipsis laptop-remove delegate-header">
                   ADDRESS
                 </div>
-                <VStack justify="between" gap="0.5rem">
+                <VStack gap="0.5rem">
                   <div
                     class="text-ellipsis tablet-remove mobile-remove"
                     :title="delegate.address"
@@ -165,6 +204,7 @@ function addDelegate() {
                     src="@/assets/iconography/delete-icon.svg"
                     class="cursor-pointer"
                     title="Delete"
+                    @click.stop="handleDeleteClick(delegate)"
                   />
                   <img
                     src="@/assets/iconography/edit-icon.svg"
@@ -179,6 +219,12 @@ function addDelegate() {
         </div>
       </VCard>
     </SettingCard>
+    <DeleteDelegatePopup
+      v-if="showDeletePopup"
+      :delegate="(selectedDelegate as Delegate)"
+      @close="showDeletePopup = false"
+      @delete="handleDeleteDelegate(selectedDelegate as Delegate)"
+    />
   </section>
 </template>
 
@@ -210,7 +256,9 @@ function addDelegate() {
 
 .table-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr 2fr 4rem;
+  grid-template-columns:
+    20% 20% 25% 25%
+    4rem;
   gap: 0.5rem;
 }
 

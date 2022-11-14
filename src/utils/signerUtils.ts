@@ -72,7 +72,16 @@ async function generateLoginInfo() {
   })
 }
 
-export { createTransactionSigner, signTransaction, hashJson, generateLoginInfo }
+const delegator = window.transactionSigner.delegator
+
+export {
+  getTransactionRequestProps,
+  createTransactionSigner,
+  signTransaction,
+  hashJson,
+  generateLoginInfo,
+  delegator,
+}
 
 export type {
   SmartContractRequestParams,
