@@ -3,6 +3,7 @@ import moment from 'moment'
 import { ref, type Ref } from 'vue'
 
 import CreateDelegate from '@/components/app-configure/access/CreateDelegate.vue'
+import EditDelegate from '@/components/app-configure/access/EditDelegate.vue'
 import GenerateKeySuccess from '@/components/app-configure/access/GenerateKeySuccess.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -21,10 +22,15 @@ const loaderStore = useLoaderStore()
 const app = appsStore.app(appId)
 const delegates = ref(app.access.delegates)
 
+type selectedOperation = 'create' | 'edit'
+
 const generatedKeyInfo = ref({ address: '', privateKey: '' })
 const delegateKeys: Ref<{ name: string; address: string }[]> = ref([])
 const showCreateDelegate = ref(false)
 const showGenerateKeySuccess = ref(false)
+const showEditDelegate = ref(false)
+const delegateToEdit = ref({})
+let currentSelectedOperation: selectedOperation = 'edit'
 
 async function getDelegateKeys() {
   try {
@@ -39,6 +45,7 @@ async function getDelegateKeys() {
 }
 
 async function addDelegate() {
+  currentSelectedOperation = 'create'
   await getDelegateKeys()
   showCreateDelegate.value = true
 }
@@ -49,6 +56,7 @@ function onGenerateClick() {
   generatedKeyInfo.value.privateKey = privateKey
   delegateKeys.value = [...delegateKeys.value, { name: address, address }]
   showCreateDelegate.value = false
+  showEditDelegate.value = false
   showGenerateKeySuccess.value = true
 }
 
@@ -56,6 +64,13 @@ async function onCreatingDelegate() {
   await appsStore.fetchAndStoreAppConfig(appId)
   const app = appsStore.app(appId)
   delegates.value = app.access.delegates
+}
+
+async function onEditClick(delegate: object) {
+  currentSelectedOperation = 'edit'
+  await getDelegateKeys()
+  showEditDelegate.value = true
+  delegateToEdit.value = delegate
 }
 </script>
 
@@ -210,6 +225,7 @@ async function onCreatingDelegate() {
                     src="@/assets/iconography/edit-icon.svg"
                     class="cursor-pointer"
                     title="Edit"
+                    @click.stop="() => onEditClick(delegate)"
                   />
                 </VStack>
               </VStack>
@@ -232,9 +248,18 @@ async function onCreatingDelegate() {
       @proceed="
         () => {
           showGenerateKeySuccess = false
-          showCreateDelegate = true
+          if (currentSelectedOperation === 'edit') showEditDelegate = true
+          else if (currentSelectedOperation === 'create')
+            showCreateDelegate = true
         }
       "
+    />
+    <EditDelegate
+      v-if="showEditDelegate"
+      :delegate-info="delegateToEdit"
+      :delegate-keys="delegateKeys"
+      @close="showEditDelegate = false"
+      @generate-key="onGenerateClick"
     />
   </section>
 </template>
