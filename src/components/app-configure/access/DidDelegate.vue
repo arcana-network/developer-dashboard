@@ -1,21 +1,55 @@
 <script lang="ts" setup>
 import moment from 'moment'
+import { ref, type Ref } from 'vue'
 
+import CreateDelegate from '@/components/app-configure/access/CreateDelegate.vue'
+import GenerateKeySuccess from '@/components/app-configure/access/GenerateKeySuccess.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { listDelegateKeys } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
+import { generateKey } from '@/utils/generateKey'
 import { truncate } from '@/utils/stringUtils'
 
 const appId = useAppId()
 const appsStore = useAppsStore()
+const loaderStore = useLoaderStore()
 
 const app = appsStore.app(appId)
 const delegates = app.access.delegates
 
-function addDelegate() {
-  //
+const generatedKeyInfo = ref({ address: '', privateKey: '' })
+const delegateKeys: Ref<{ name: string; address: string }[]> = ref([])
+const showCreateDelegate = ref(false)
+const showGenerateKeySuccess = ref(false)
+
+async function getDelegateKeys() {
+  try {
+    loaderStore.showLoader('Fethcing keys...')
+    const { data } = await listDelegateKeys()
+    delegateKeys.value = data
+  } catch (err) {
+    console.log({ err })
+  } finally {
+    loaderStore.hideLoader()
+  }
+}
+
+async function addDelegate() {
+  await getDelegateKeys()
+  showCreateDelegate.value = true
+}
+
+function onGenerateClick() {
+  const { address, privateKey } = generateKey()
+  generatedKeyInfo.value.address = address
+  generatedKeyInfo.value.privateKey = privateKey
+  delegateKeys.value = [...delegateKeys.value, { name: address, address }]
+  showCreateDelegate.value = false
+  showGenerateKeySuccess.value = true
 }
 </script>
 
@@ -179,6 +213,22 @@ function addDelegate() {
         </div>
       </VCard>
     </SettingCard>
+    <CreateDelegate
+      v-if="showCreateDelegate"
+      :delegate-keys="delegateKeys"
+      @close="showCreateDelegate = false"
+      @generate-key="onGenerateClick"
+    />
+    <GenerateKeySuccess
+      v-if="showGenerateKeySuccess"
+      :delegate-private-key="generatedKeyInfo.privateKey"
+      @proceed="
+        () => {
+          showGenerateKeySuccess = false
+          showCreateDelegate = true
+        }
+      "
+    />
   </section>
 </template>
 
