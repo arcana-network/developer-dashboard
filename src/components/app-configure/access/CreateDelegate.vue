@@ -12,7 +12,7 @@ import { useToast } from '@/components/lib/VToast'
 import { createDelegate } from '@/services/gateway.service'
 import { useAppId } from '@/use/getAppId'
 
-const emit = defineEmits(['close', 'generateKey'])
+const emit = defineEmits(['close', 'generateKey', 'created'])
 
 const props = defineProps({
   delegateKeys: {
@@ -21,15 +21,31 @@ const props = defineProps({
   },
 })
 
+const loader = ref({
+  show: false,
+  message: '',
+})
+
 const toast = useToast()
 const appId = useAppId()
 const delegateName = ref('')
 const selectedDelegateAddress = ref('')
 
+function showLoader(message: string) {
+  loader.value.show = true
+  loader.value.message = message
+}
+
+function hideLoader() {
+  loader.value.show = false
+  loader.value.message = ''
+}
+
 async function onSubmit() {
   if (!delegateName.value.length || !selectedDelegateAddress.value.length) {
     toast.error('Please fill all required values')
   }
+  showLoader('Created Delegate...')
   try {
     const payload = {
       name: delegateName.value,
@@ -40,11 +56,14 @@ async function onSubmit() {
     if (data.err) toast.error(data.err)
     else {
       toast.success(`Delegate created with name ${data.name}`)
+      emit('created')
       emit('close')
     }
   } catch (err) {
     console.log({ err })
     toast.error(err.message)
+  } finally {
+    hideLoader()
   }
 }
 
@@ -67,7 +86,8 @@ function handleKeySelected(option: string) {
       "
     >
       <VCard popup="true" class="flex column" style="padding: 30px">
-        <VStack gap="1rem" direction="column">
+        <p v-if="loader.show">{{ loader.message }}</p>
+        <VStack v-else gap="1rem" direction="column">
           <VStack justify="space-between" align="center">
             <h1 class="sub-heading-5 font-700 text-uppercase">
               Create A Delegate
