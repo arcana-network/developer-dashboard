@@ -19,7 +19,7 @@ const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 
 const app = appsStore.app(appId)
-const delegates = app.access.delegates
+const delegates = ref(app.access.delegates)
 
 const generatedKeyInfo = ref({ address: '', privateKey: '' })
 const delegateKeys: Ref<{ name: string; address: string }[]> = ref([])
@@ -50,6 +50,12 @@ function onGenerateClick() {
   delegateKeys.value = [...delegateKeys.value, { name: address, address }]
   showCreateDelegate.value = false
   showGenerateKeySuccess.value = true
+}
+
+async function onCreatingDelegate() {
+  await appsStore.fetchAndStoreAppConfig(appId)
+  const app = appsStore.app(appId)
+  delegates.value = app.access.delegates
 }
 </script>
 
@@ -218,6 +224,7 @@ function onGenerateClick() {
       :delegate-keys="delegateKeys"
       @close="showCreateDelegate = false"
       @generate-key="onGenerateClick"
+      @created="onCreatingDelegate"
     />
     <GenerateKeySuccess
       v-if="showGenerateKeySuccess"
