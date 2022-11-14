@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { ref } from 'vue'
+
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
@@ -6,8 +8,50 @@ import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
+import { createDelegate } from '@/services/gateway.service'
+import { useAppId } from '@/use/getAppId'
 
-const emit = defineEmits(['close'])
+const emit = defineEmits(['close', 'generateKey'])
+
+const props = defineProps({
+  delegateKeys: {
+    type: Array,
+    required: true,
+  },
+})
+
+const toast = useToast()
+const appId = useAppId()
+const delegateName = ref('')
+const selectedDelegateAddress = ref('')
+
+async function onSubmit() {
+  if (!delegateName.value.length || !selectedDelegateAddress.value.length) {
+    toast.error('Please fill all required values')
+  }
+  try {
+    const payload = {
+      name: delegateName.value,
+      address: selectedDelegateAddress.value,
+      permissions: ['Dowload', 'Reshare'],
+    }
+    const { data } = await createDelegate(appId, payload)
+    if (data.err) toast.error(data.err)
+    else {
+      toast.success(`Delegate created with name ${data.name}`)
+      emit('close')
+    }
+  } catch (err) {
+    console.log({ err })
+    toast.error(err.message)
+  }
+}
+
+function handleKeySelected(option: string) {
+  const { address } = props.delegateKeys.find((item) => item.name == option)
+  selectedDelegateAddress.value = address
+}
 </script>
 
 <template>
@@ -47,13 +91,22 @@ const emit = defineEmits(['close'])
             </p>
             <VStack gap="0.5rem" direction="column">
               <label class="body-3 grey">Name</label>
-              <VTextField :no-message="true" />
+              <VTextField v-model="delegateName" :no-message="true" />
             </VStack>
             <VStack gap="0.5rem" direction="column">
               <label class="body-3 grey">Key</label>
               <VStack gap="1rem">
-                <VDropdown :options="[]" style="flex: 1" />
-                <VButton label="Generate" variant="secondary" />
+                <VDropdown
+                  :options="props.delegateKeys.map((item) => item.name)"
+                  style="flex: 1"
+                  trigger-class="text-ellipsis"
+                  @update:model-value="handleKeySelected"
+                />
+                <VButton
+                  label="Generate"
+                  variant="secondary"
+                  @click.stop="emit('generateKey')"
+                />
               </VStack>
               <p class="body-3 grey">
                 Provide a SECP256K1 public key, choose from the list or generate
@@ -70,6 +123,14 @@ const emit = defineEmits(['close'])
                 <img src="@/assets/iconography/ok.svg" />
                 <p class="sub-heading-4 font-500">Reshare</p>
               </VStack>
+            </VStack>
+            <VStack gap="1rem" justify="center">
+              <VButton
+                label="Cancel"
+                variant="secondary"
+                @click.stop="emit('close')"
+              />
+              <VButton label="Submit" @click.stop="onSubmit" />
             </VStack>
           </VStack>
         </VStack>
