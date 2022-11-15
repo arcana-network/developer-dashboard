@@ -92,7 +92,7 @@ function handleKeySelected(option: string) {
             <h1 class="sub-heading-5 font-700 text-uppercase">
               Create A Delegate
             </h1>
-            <Button
+            <button
               style="
                 cursor: pointer;
                 background-color: transparent;
@@ -101,7 +101,7 @@ function handleKeySelected(option: string) {
               @click="emit('close')"
             >
               <img src="@/assets/iconography/close.svg" />
-            </Button>
+            </button>
           </VStack>
           <VSeperator />
           <VStack direction="column" gap="1.5rem">
