@@ -75,16 +75,7 @@ function handleKeySelected(option: string) {
 
 <template>
   <VOverlay>
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-      "
-    >
+    <div class="center height-100 width-100">
       <VCard popup="true" class="flex column" style="padding: 30px">
         <p v-if="loader.show">{{ loader.message }}</p>
         <VStack v-else gap="1rem" direction="column">

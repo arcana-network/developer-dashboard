@@ -31,16 +31,7 @@ async function copyAddress() {
 
 <template>
   <VOverlay>
-    <div
-      style="
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-      "
-    >
+    <div class="center height-100 width-100">
       <VCard
         popup="true"
         class="flex column"
