@@ -44,8 +44,9 @@ function hideLoader() {
 }
 
 async function onSubmit() {
-  if (!delegateName.value.length || !selectedDelegateAddress.value.length) {
+  if (delegateName.value === '' || selectedDelegateAddress.value === '') {
     toast.error('Please fill all required values')
+    return
   }
   showLoader('Creating Delegate...')
   const keyAddress = selectedDelegateAddress.value

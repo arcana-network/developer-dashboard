@@ -40,8 +40,9 @@ onMounted(() => {
 })
 
 async function onSubmit() {
-  if (!delegateName.value.length || !selectedDelegateAddress.value.length) {
+  if (delegateName.value === '' || selectedDelegateAddress.value === '') {
     toast.error('Please fill all required values')
+    return
   }
   const permissions: DelegatePermission[] = ['Download', 'Share and Revoke']
   const address = selectedDelegateAddress.value
