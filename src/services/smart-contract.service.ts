@@ -1,5 +1,6 @@
 import type { AppConfigCred } from '@/services/gateway.service'
 import store from '@/stores'
+import type { DelegatePermission } from '@/stores/apps.store'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
 import {
   signTransaction,
@@ -24,6 +25,26 @@ async function setAppConfig(appName: string, socialAuth: AppConfigCred[]) {
   await signTransaction('setAppConfig', [appConfig])
 }
 
+async function grantDelegate(
+  appId: AppId,
+  keyAddress: string,
+  permissions: DelegatePermission[]
+) {
+  const { appAddress, gateway, forwarderAddress, accessToken } =
+    getTransactionRequestProps(appsStore.app(appId).address)
+  const provider = window.arcana.provider
+  await delegator.grant({
+    roles: permissions,
+    provider,
+    appAddress,
+    forwarderAddress,
+    gateway,
+    accessToken,
+    delegator: keyAddress,
+  })
+  return
+}
+
 async function revokeDelegate(appId: AppId, keyAddress: string) {
   const { appAddress, gateway, forwarderAddress, accessToken } =
     getTransactionRequestProps(appsStore.app(appId).address)
@@ -38,4 +59,4 @@ async function revokeDelegate(appId: AppId, keyAddress: string) {
   })
 }
 
-export { setAppConfig, setDefaultLimit, revokeDelegate }
+export { setAppConfig, setDefaultLimit, grantDelegate, revokeDelegate }

@@ -1,17 +1,22 @@
 <script lang="ts" setup>
 import moment from 'moment'
-import { ref, computed, type Ref } from 'vue'
+import { ref, type Ref } from 'vue'
 
+import CreateDelegate from '@/components/app-configure/access/CreateDelegate.vue'
 import DeleteDelegatePopup from '@/components/app-configure/access/DeleteDelegatePopup.vue'
+import EditDelegate from '@/components/app-configure/access/EditDelegate.vue'
+import GenerateKeySuccess from '@/components/app-configure/access/GenerateKeySuccess.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
-import { deleteDelegate } from '@/services/gateway.service'
+import { deleteDelegate, listDelegateKeys } from '@/services/gateway.service'
 import { revokeDelegate } from '@/services/smart-contract.service'
 import { useAppsStore, type Delegate } from '@/stores/apps.store'
+import type { DelegateOperation } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
+import { generateKey } from '@/utils/generateKey'
 import { truncate } from '@/utils/stringUtils'
 
 const appId = useAppId()
@@ -20,14 +25,70 @@ const loaderStore = useLoaderStore()
 const toast = useToast()
 
 const app = appsStore.app(appId)
-const delegates = computed(() => app.access.delegates)
+const delegates = ref(app.access.delegates)
 
+const generatedKeyInfo = ref({ address: '', privateKey: '' })
+const delegateKeys: Ref<{ name: string; address: string }[]> = ref([])
+const showCreateDelegate = ref(false)
+const showGenerateKeySuccess = ref(false)
+const showEditDelegate = ref(false)
 const showDeletePopup = ref(false)
-
+const delegateToEdit = ref({})
 const selectedDelegate: Ref<Delegate | null> = ref(null)
+let currentSelectedOperation: DelegateOperation = 'edit'
+
+async function getDelegateKeys() {
+  try {
+    loaderStore.showLoader('Fetching keys...')
+    const { data } = await listDelegateKeys(app.address)
+    delegateKeys.value = data
+  } catch (err) {
+    console.log({ err })
+  } finally {
+    loaderStore.hideLoader()
+  }
+}
 
 async function addDelegate() {
-  //
+  currentSelectedOperation = 'create'
+  await getDelegateKeys()
+  showCreateDelegate.value = true
+}
+
+function onGenerateClick() {
+  const { address, privateKey } = generateKey()
+  generatedKeyInfo.value.address = address
+  generatedKeyInfo.value.privateKey = privateKey
+  delegateKeys.value = [...delegateKeys.value, { name: address, address }]
+  showCreateDelegate.value = false
+  showEditDelegate.value = false
+  showGenerateKeySuccess.value = true
+}
+
+async function onCreatingDelegate() {
+  await appsStore.fetchAndStoreAppConfig(appId)
+  const app = appsStore.app(appId)
+  delegates.value = app.access.delegates
+}
+
+async function onEditingDelegate() {
+  await appsStore.fetchAndStoreAppConfig(appId)
+  const app = appsStore.app(appId)
+  delegates.value = app.access.delegates
+}
+
+async function onEditClick(delegate: Delegate) {
+  currentSelectedOperation = 'edit'
+  await getDelegateKeys()
+  showEditDelegate.value = true
+  delegateToEdit.value = delegate
+}
+
+function onProceed() {
+  showGenerateKeySuccess.value = false
+  if (currentSelectedOperation === 'edit') showEditDelegate.value = true
+  else if (currentSelectedOperation === 'create')
+    showCreateDelegate.value = true
 }
 
 function handleDeleteClick(delegate: Delegate) {
@@ -47,6 +108,7 @@ async function handleDeleteDelegate(delegate: Delegate) {
       (d) => d.id !== delegate.id
     )
     app.access.delegates = updatedDelegates
+    delegates.value = app.access.delegates
     selectedDelegate.value = null
     toast.success('Delegate deleted')
   } catch (e) {
@@ -210,6 +272,7 @@ async function handleDeleteDelegate(delegate: Delegate) {
                     src="@/assets/iconography/edit-icon.svg"
                     class="cursor-pointer"
                     title="Edit"
+                    @click.stop="() => onEditClick(delegate)"
                   />
                 </VStack>
               </VStack>
@@ -219,6 +282,26 @@ async function handleDeleteDelegate(delegate: Delegate) {
         </div>
       </VCard>
     </SettingCard>
+    <CreateDelegate
+      v-if="showCreateDelegate"
+      :delegate-keys="delegateKeys"
+      @close="showCreateDelegate = false"
+      @generate-key="onGenerateClick"
+      @created="onCreatingDelegate"
+    />
+    <GenerateKeySuccess
+      v-if="showGenerateKeySuccess"
+      :delegate-private-key="generatedKeyInfo.privateKey"
+      @proceed="onProceed"
+    />
+    <EditDelegate
+      v-if="showEditDelegate"
+      :delegate-info="delegateToEdit"
+      :delegate-keys="delegateKeys"
+      @close="showEditDelegate = false"
+      @generate-key="onGenerateClick"
+      @edited="onEditingDelegate"
+    />
     <DeleteDelegatePopup
       v-if="showDeletePopup"
       :delegate="(selectedDelegate as Delegate)"

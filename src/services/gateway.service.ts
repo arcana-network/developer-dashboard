@@ -8,6 +8,7 @@ import type {
   AppConfig as AppState,
   SocialAuthState,
   Delegate,
+  DelegatePermission,
   DelegateId,
 } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
@@ -333,6 +334,42 @@ async function fetchAppDelegates(
   )
 }
 
+type CreateDelegateRequest = {
+  name: string
+  address: string
+  permissions: DelegatePermission[]
+}
+
+async function createDelegate(
+  appId: AppId,
+  data: CreateDelegateRequest
+): Promise<AxiosResponse<DelegateResponse>> {
+  return gatewayAuthorizedInstance.post(`${getEnvApi()}/delegates/`, {
+    appId,
+    ...data,
+  })
+}
+
+function listDelegateKeys(
+  appAddress: string
+): Promise<AxiosResponse<string[]>> {
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/?app=${appAddress}`)
+}
+
+type EditDelegateResponse = {
+  message: string
+}
+
+function editDelegate(
+  appId: AppId,
+  data: CreateDelegateRequest
+): Promise<AxiosResponse<EditDelegateResponse>> {
+  return gatewayAuthorizedInstance.patch(`${getEnvApi()}/delegates/`, {
+    appId,
+    ...data,
+  })
+}
+
 function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
   return gatewayAuthorizedInstance.delete(
     `${getEnvApi()}/delegates/?id=${delegateId}`
@@ -363,6 +400,9 @@ export {
   removeThemeLogo,
   deleteCred,
   fetchAppDelegates,
+  createDelegate,
+  listDelegateKeys,
+  editDelegate,
   deleteDelegate,
   type AppConfig,
   type AppConfigCred,
