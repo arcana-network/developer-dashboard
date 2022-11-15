@@ -35,7 +35,7 @@ type AppId = number
 
 type WalletModeKind = WalletMode.NoUI | WalletMode.UI
 
-type DelegatePermission = 'Download' | 'Reshare'
+type DelegatePermission = 'Download' | 'Share and Revoke'
 type DelegateId = number | string
 
 type DelegateId = number

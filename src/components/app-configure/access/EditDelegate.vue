@@ -10,6 +10,11 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { editDelegate } from '@/services/gateway.service'
+import {
+  grantDelegate,
+  revokeDelegate,
+} from '@/services/smart-contract.service'
+import type { DelegatePermission } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 
 const emit = defineEmits(['close', 'generateKey', 'edited'])
@@ -38,14 +43,18 @@ async function onSubmit() {
   if (!delegateName.value.length || !selectedDelegateAddress.value.length) {
     toast.error('Please fill all required values')
   }
+  const permissions: DelegatePermission[] = ['Download', 'Share and Revoke']
+  const address = selectedDelegateAddress.value
   try {
     const payload = {
       id: props.delegateInfo.id,
       name: delegateName.value,
-      address: selectedDelegateAddress.value,
-      permissions: ['Dowload', 'Reshare'],
+      address,
+      permissions,
     }
     const { data } = await editDelegate(appId, payload)
+    await revokeDelegate(appId, props.delegateInfo.address)
+    await grantDelegate(appId, address, permissions)
     if (data.err) toast.error(data.err)
     else {
       toast.success(`Delegate Edited with name ${data.name}`)

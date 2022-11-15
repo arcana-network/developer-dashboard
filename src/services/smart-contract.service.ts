@@ -30,9 +30,9 @@ async function enableUiMode() {
 }
 
 async function grantDelegate(
+  appId: AppId,
   keyAddress: string,
-  permissions: DelegatePermission[],
-  appId: AppId
+  permissions: DelegatePermission[]
 ) {
   const { appAddress, gateway, forwarderAddress, accessToken } =
     getTransactionRequestProps(appsStore.app(appId).address)
