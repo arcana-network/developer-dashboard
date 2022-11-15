@@ -156,10 +156,6 @@ function handleKeySelected(option: string) {
 </template>
 
 <style scoped>
-p {
-  margin: 0;
-}
-
 .grey {
   color: var(--text-grey);
 }
