@@ -40,7 +40,7 @@ let currentSelectedOperation: selectedOperation = 'edit'
 
 async function getDelegateKeys() {
   try {
-    loaderStore.showLoader('Fethcing keys...')
+    loaderStore.showLoader('Fetching keys...')
     const { data } = await listDelegateKeys(app.address)
     delegateKeys.value = data
   } catch (err) {
