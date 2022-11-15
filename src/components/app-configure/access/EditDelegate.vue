@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue'
+import type { PropType } from 'vue'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -14,18 +15,22 @@ import {
   grantDelegate,
   revokeDelegate,
 } from '@/services/smart-contract.service'
-import type { DelegatePermission } from '@/stores/apps.store'
+import type {
+  DelegatePermission,
+  DelegateKey,
+  Delegate,
+} from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 
 const emit = defineEmits(['close', 'generateKey', 'edited'])
 
 const props = defineProps({
   delegateInfo: {
-    type: Object,
+    type: Object as PropType<Delegate>,
     required: true,
   },
   delegateKeys: {
-    type: Array,
+    type: Array as PropType<DelegateKey[]>,
     required: true,
   },
 })

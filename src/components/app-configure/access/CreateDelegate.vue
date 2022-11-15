@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import type { PropType } from 'vue'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -11,14 +12,14 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { createDelegate } from '@/services/gateway.service'
 import { grantDelegate } from '@/services/smart-contract.service'
-import type { DelegatePermission } from '@/stores/apps.store'
+import type { DelegatePermission, DelegateKey } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 
 const emit = defineEmits(['close', 'generateKey', 'created'])
 
 const props = defineProps({
   delegateKeys: {
-    type: Array,
+    type: Array as PropType<DelegateKey[]>,
     required: true,
   },
 })
