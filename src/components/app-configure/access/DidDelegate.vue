@@ -77,7 +77,7 @@ async function onEditingDelegate() {
   delegates.value = app.access.delegates
 }
 
-async function onEditClick(delegate: object) {
+async function onEditClick(delegate: Delegate) {
   currentSelectedOperation = 'edit'
   await getDelegateKeys()
   showEditDelegate.value = true
