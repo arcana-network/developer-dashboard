@@ -350,8 +350,10 @@ async function createDelegate(
   })
 }
 
-function listDelegateKeys(): Promise<AxiosResponse<string[]>> {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/`)
+function listDelegateKeys(
+  appAddress: string
+): Promise<AxiosResponse<string[]>> {
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/?app=${appAddress}`)
 }
 
 type EditDelegateResponse = {

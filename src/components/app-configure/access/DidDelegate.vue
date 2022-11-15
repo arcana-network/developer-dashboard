@@ -35,7 +35,7 @@ let currentSelectedOperation: selectedOperation = 'edit'
 async function getDelegateKeys() {
   try {
     loaderStore.showLoader('Fethcing keys...')
-    const { data } = await listDelegateKeys()
+    const { data } = await listDelegateKeys(app.address)
     delegateKeys.value = data
   } catch (err) {
     console.log({ err })
