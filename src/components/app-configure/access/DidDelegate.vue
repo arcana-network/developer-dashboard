@@ -158,7 +158,7 @@ async function onEditClick(delegate: object) {
                 <div class="text-ellipsis laptop-remove delegate-header">
                   ADDRESS
                 </div>
-                <VStack justify="between" gap="0.5rem">
+                <VStack justify="space-between" gap="0.5rem">
                   <div
                     class="text-ellipsis tablet-remove mobile-remove"
                     :title="delegate.address"
