@@ -72,6 +72,13 @@ async function onEditClick(delegate: object) {
   showEditDelegate.value = true
   delegateToEdit.value = delegate
 }
+
+function onProceed() {
+  showGenerateKeySuccess.value = false
+  if (currentSelectedOperation === 'edit') showEditDelegate.value = true
+  else if (currentSelectedOperation === 'create')
+    showCreateDelegate.value = true
+}
 </script>
 
 <template>
@@ -245,14 +252,7 @@ async function onEditClick(delegate: object) {
     <GenerateKeySuccess
       v-if="showGenerateKeySuccess"
       :delegate-private-key="generatedKeyInfo.privateKey"
-      @proceed="
-        () => {
-          showGenerateKeySuccess = false
-          if (currentSelectedOperation === 'edit') showEditDelegate = true
-          else if (currentSelectedOperation === 'create')
-            showCreateDelegate = true
-        }
-      "
+      @proceed="onProceed"
     />
     <EditDelegate
       v-if="showEditDelegate"
