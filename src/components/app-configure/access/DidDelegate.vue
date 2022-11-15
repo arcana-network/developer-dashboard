@@ -13,6 +13,7 @@ import { useToast } from '@/components/lib/VToast'
 import { deleteDelegate, listDelegateKeys } from '@/services/gateway.service'
 import { revokeDelegate } from '@/services/smart-contract.service'
 import { useAppsStore, type Delegate } from '@/stores/apps.store'
+import type { DelegateOperation } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { generateKey } from '@/utils/generateKey'
@@ -26,8 +27,6 @@ const toast = useToast()
 const app = appsStore.app(appId)
 const delegates = ref(app.access.delegates)
 
-type selectedOperation = 'create' | 'edit'
-
 const generatedKeyInfo = ref({ address: '', privateKey: '' })
 const delegateKeys: Ref<{ name: string; address: string }[]> = ref([])
 const showCreateDelegate = ref(false)
@@ -36,7 +35,7 @@ const showEditDelegate = ref(false)
 const showDeletePopup = ref(false)
 const delegateToEdit = ref({})
 const selectedDelegate: Ref<Delegate | null> = ref(null)
-let currentSelectedOperation: selectedOperation = 'edit'
+let currentSelectedOperation: DelegateOperation = 'edit'
 
 async function getDelegateKeys() {
   try {
