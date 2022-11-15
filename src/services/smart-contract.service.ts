@@ -25,10 +25,6 @@ async function setAppConfig(appName: string, socialAuth: AppConfigCred[]) {
   await signTransaction('setAppConfig', [appConfig])
 }
 
-async function enableUiMode() {
-  await signTransaction('setUiMode')
-}
-
 async function grantDelegate(
   appId: AppId,
   keyAddress: string,
@@ -63,10 +59,4 @@ async function revokeDelegate(appId: AppId, keyAddress: string) {
   })
 }
 
-export {
-  setAppConfig,
-  setDefaultLimit,
-  enableUiMode,
-  grantDelegate,
-  revokeDelegate,
-}
+export { setAppConfig, setDefaultLimit, grantDelegate, revokeDelegate }
