@@ -1207,13 +1207,13 @@ async function revoke({ appAddress,
       gateway,
       accessToken,
     });
-  const {arcanaContract} = getContracts(provider,appAddress,forwarderAddress) ;  
+  const {arcanaContract} = getContracts(provider,appAddress,forwarderAddress) ;
   const iDelegatorRole = await arcanaContract.delegators(delegator);
-  
+
   if (iDelegatorRole == 0) return new Error("Delegator role not found");
 
   return signTransaction("updateDelegator", [delegator, iDelegatorRole, false]);
-  
+
 }
 
 const transactionSigner = {
@@ -12341,7 +12341,7 @@ var EtherscanProvider = /** @class */ (function (_super) {
                         return [3 /*break*/, 28];
                     case 1: return [2 /*return*/, this.fetch("proxy", { action: "eth_blockNumber" })];
                     case 2: return [2 /*return*/, this.fetch("proxy", { action: "eth_gasPrice" })];
-                    case 3: 
+                    case 3:
                     // Returns base-10 result
                     return [2 /*return*/, this.fetch("account", {
                             action: "balance",
@@ -14307,7 +14307,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                                     }
                                 });
                             }); }, { oncePoll: this.provider })];
-                    case 4: 
+                    case 4:
                     // Unfortunately, JSON-RPC only provides and opaque transaction hash
                     // for a response, and we need the actual transaction, so we poll
                     // for it; it should show up very quickly
@@ -14348,7 +14348,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                     case 1:
                         address = _a.sent();
                         return [4 /*yield*/, this.provider.send("eth_sign", [address.toLowerCase(), (0, bytes_1.hexlify)(data)])];
-                    case 2: 
+                    case 2:
                     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
                     return [2 /*return*/, _a.sent()];
                 }
@@ -31908,8 +31908,7 @@ utils.encode = function encode(arr, enc) {
 },{"timers":199}],195:[function(require,module,exports){
 const iRoleMap = {
     "Download": 1,
-    "Reshare": 2,
-    "Revoke": 2,
+    "Share and Revoke": 2,
     "Remove": 4
 }
 
