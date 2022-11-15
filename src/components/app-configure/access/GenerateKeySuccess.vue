@@ -32,11 +32,7 @@ async function copyAddress() {
 <template>
   <VOverlay>
     <div class="center height-100 width-100">
-      <VCard
-        popup="true"
-        class="flex column"
-        style="max-width: 600px; padding: 30px"
-      >
+      <VCard popup="true" class="flex column container">
         <VStack gap="1rem" direction="column">
           <VStack
             gap="1rem"
@@ -98,6 +94,11 @@ async function copyAddress() {
 </template>
 
 <style scoped>
+.container {
+  max-width: 600px;
+  padding: 30px;
+}
+
 .grey {
   color: var(--text-grey);
 }
