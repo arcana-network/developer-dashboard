@@ -9,10 +9,10 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
-import { createDelegate } from '@/services/gateway.service'
+import { editDelegate } from '@/services/gateway.service'
 import { useAppId } from '@/use/getAppId'
 
-const emit = defineEmits(['close', 'generateKey'])
+const emit = defineEmits(['close', 'generateKey', 'edited'])
 
 const props = defineProps({
   delegateInfo: {
@@ -40,14 +40,16 @@ async function onSubmit() {
   }
   try {
     const payload = {
+      id: props.delegateInfo.id,
       name: delegateName.value,
       address: selectedDelegateAddress.value,
       permissions: ['Dowload', 'Reshare'],
     }
-    const { data } = await createDelegate(appId, payload)
+    const { data } = await editDelegate(appId, payload)
     if (data.err) toast.error(data.err)
     else {
-      toast.success(`Delegate created with name ${data.name}`)
+      toast.success(`Delegate Edited with name ${data.name}`)
+      emit('edited')
       emit('close')
     }
   } catch (err) {

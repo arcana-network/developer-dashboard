@@ -38,6 +38,8 @@ type WalletModeKind = WalletMode.NoUI | WalletMode.UI
 type DelegatePermission = 'Download' | 'Reshare'
 type DelegateId = number | string
 
+type DelegateId = number
+
 type Delegate = {
   id: DelegateId
   name: string

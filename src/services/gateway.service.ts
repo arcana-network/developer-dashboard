@@ -364,37 +364,16 @@ function editDelegate(
   appId: AppId,
   data: CreateDelegateRequest
 ): Promise<AxiosResponse<EditDelegateResponse>> {
-  // return gatewayAuthorizedInstance.patch(`${getEnvApi()}/delegates/`, {
-  //   appId,
-  //   ...data,
-  // })
-  return Promise.resolve({
-    status: 200,
-    statusText: 'Success',
-    headers: {},
-    config: {},
-    data: {
-      message: 'Delegate updated',
-    },
+  return gatewayAuthorizedInstance.patch(`${getEnvApi()}/delegates/`, {
+    appId,
+    ...data,
   })
 }
 
-function deleteDelegate(
-  delegateId: DelegateId
-): Promise<AxiosResponse<EditDelegateResponse>> {
-  // return gatewayAuthorizedInstance.delete(`${getEnvApi()}/delegates/?id=${deletegateId}`, {
-  //   appId,
-  //   ...data,
-  // })
-  return Promise.resolve({
-    status: 200,
-    statusText: 'Success',
-    headers: {},
-    config: {},
-    data: {
-      message: 'Delegate deleted',
-    },
-  })
+function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
+  return gatewayAuthorizedInstance.delete(
+    `${getEnvApi()}/delegates/?id=${delegateId}`
+  )
 }
 
 export {

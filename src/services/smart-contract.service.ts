@@ -1,6 +1,15 @@
 import type { AppConfigCred } from '@/services/gateway.service'
-import type { DelegateId, DelegatePermission } from '@/stores/apps.store'
-import { signTransaction, hashJson } from '@/utils/signerUtils'
+import store from '@/stores'
+import type { DelegatePermission } from '@/stores/apps.store'
+import { useAppsStore, type AppId } from '@/stores/apps.store'
+import {
+  signTransaction,
+  hashJson,
+  delegator,
+  getTransactionRequestProps,
+} from '@/utils/signerUtils'
+
+const appsStore = useAppsStore(store)
 
 async function setDefaultLimit(storage: number, bandwidth: number) {
   await signTransaction('setDefaultLimit', [storage, bandwidth])
@@ -20,32 +29,44 @@ async function enableUiMode() {
   await signTransaction('setUiMode')
 }
 
-async function setDelegate(
+async function grantDelegate(
   keyAddress: string,
-  delegateId: DelegateId,
-  permissions: DelegatePermission[]
+  permissions: DelegatePermission[],
+  appId: AppId
 ) {
-  // await signTransaction('setDelegate', [keyAddress, delegateId, ...permissions])
+  const { appAddress, gateway, forwarderAddress, accessToken } =
+    getTransactionRequestProps(appsStore.app(appId).address)
+  const provider = window.arcana.provider
+  await delegator.grant({
+    roles: permissions,
+    provider,
+    appAddress,
+    forwarderAddress,
+    gateway,
+    accessToken,
+    delegator: keyAddress,
+  })
   return
 }
 
-async function unsetDelegate(
-  keyAddress: string,
-  delegateId: DelegateId,
-  permissions: DelegatePermission[]
-) {
-  // await signTransaction('unsetDelegate', [
-  //   keyAddress,
-  //   delegateId,
-  //   ...permissions,
-  // ])
-  return
+async function revokeDelegate(appId: AppId, keyAddress: string) {
+  const { appAddress, gateway, forwarderAddress, accessToken } =
+    getTransactionRequestProps(appsStore.app(appId).address)
+  const provider = window.arcana.provider
+  await delegator.revoke({
+    provider,
+    appAddress,
+    forwarderAddress,
+    gateway,
+    accessToken,
+    delegator: keyAddress,
+  })
 }
 
 export {
   setAppConfig,
   setDefaultLimit,
   enableUiMode,
-  setDelegate,
-  unsetDelegate,
+  grantDelegate,
+  revokeDelegate,
 }

@@ -3,13 +3,16 @@ import moment from 'moment'
 import { ref, type Ref } from 'vue'
 
 import CreateDelegate from '@/components/app-configure/access/CreateDelegate.vue'
+import DeleteDelegatePopup from '@/components/app-configure/access/DeleteDelegatePopup.vue'
 import EditDelegate from '@/components/app-configure/access/EditDelegate.vue'
 import GenerateKeySuccess from '@/components/app-configure/access/GenerateKeySuccess.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { listDelegateKeys } from '@/services/gateway.service'
-import { useAppsStore } from '@/stores/apps.store'
+import { useToast } from '@/components/lib/VToast'
+import { deleteDelegate, listDelegateKeys } from '@/services/gateway.service'
+import { revokeDelegate } from '@/services/smart-contract.service'
+import { useAppsStore, type Delegate } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { generateKey } from '@/utils/generateKey'
@@ -18,6 +21,7 @@ import { truncate } from '@/utils/stringUtils'
 const appId = useAppId()
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
+const toast = useToast()
 
 const app = appsStore.app(appId)
 const delegates = ref(app.access.delegates)
@@ -29,7 +33,9 @@ const delegateKeys: Ref<{ name: string; address: string }[]> = ref([])
 const showCreateDelegate = ref(false)
 const showGenerateKeySuccess = ref(false)
 const showEditDelegate = ref(false)
+const showDeletePopup = ref(false)
 const delegateToEdit = ref({})
+const selectedDelegate: Ref<Delegate | null> = ref(null)
 let currentSelectedOperation: selectedOperation = 'edit'
 
 async function getDelegateKeys() {
@@ -66,6 +72,12 @@ async function onCreatingDelegate() {
   delegates.value = app.access.delegates
 }
 
+async function onEditingDelegate() {
+  await appsStore.fetchAndStoreAppConfig(appId)
+  const app = appsStore.app(appId)
+  delegates.value = app.access.delegates
+}
+
 async function onEditClick(delegate: object) {
   currentSelectedOperation = 'edit'
   await getDelegateKeys()
@@ -78,6 +90,34 @@ function onProceed() {
   if (currentSelectedOperation === 'edit') showEditDelegate.value = true
   else if (currentSelectedOperation === 'create')
     showCreateDelegate.value = true
+}
+
+function handleDeleteClick(delegate: Delegate) {
+  showDeletePopup.value = true
+  selectedDelegate.value = delegate
+}
+
+async function handleDeleteDelegate(delegate: Delegate) {
+  try {
+    showDeletePopup.value = false
+    loaderStore.showLoader('Revoking delegator access in smart contract...')
+    await revokeDelegate(appId, delegate.address)
+    loaderStore.showLoader('Deleting the delegate...')
+    await deleteDelegate(delegate.id)
+    const app = appsStore.app(appId)
+    const updatedDelegates = app.access.delegates.filter(
+      (d) => d.id !== delegate.id
+    )
+    app.access.delegates = updatedDelegates
+    delegates.value = app.access.delegates
+    selectedDelegate.value = null
+    toast.success('Delegate deleted')
+  } catch (e) {
+    console.error(e)
+    toast.error('Error occurred while deleting delegate')
+  } finally {
+    loaderStore.hideLoader()
+  }
 }
 </script>
 
@@ -165,7 +205,7 @@ function onProceed() {
                 <div class="text-ellipsis laptop-remove delegate-header">
                   ADDRESS
                 </div>
-                <VStack justify="space-between" gap="0.5rem">
+                <VStack gap="0.5rem">
                   <div
                     class="text-ellipsis tablet-remove mobile-remove"
                     :title="delegate.address"
@@ -227,6 +267,7 @@ function onProceed() {
                     src="@/assets/iconography/delete-icon.svg"
                     class="cursor-pointer"
                     title="Delete"
+                    @click.stop="handleDeleteClick(delegate)"
                   />
                   <img
                     src="@/assets/iconography/edit-icon.svg"
@@ -260,6 +301,13 @@ function onProceed() {
       :delegate-keys="delegateKeys"
       @close="showEditDelegate = false"
       @generate-key="onGenerateClick"
+      @edited="onEditingDelegate"
+    />
+    <DeleteDelegatePopup
+      v-if="showDeletePopup"
+      :delegate="(selectedDelegate as Delegate)"
+      @close="showDeletePopup = false"
+      @delete="handleDeleteDelegate(selectedDelegate as Delegate)"
     />
   </section>
 </template>
@@ -292,7 +340,9 @@ function onProceed() {
 
 .table-grid {
   display: grid;
-  grid-template-columns: 1fr 2fr 2fr 2fr 4rem;
+  grid-template-columns:
+    20% 20% 25% 25%
+    4rem;
   gap: 0.5rem;
 }
 
