@@ -10,6 +10,7 @@ import type {
   Delegate,
   DelegatePermission,
   DelegateId,
+  DelegateKey,
 } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
@@ -340,10 +341,15 @@ type CreateDelegateRequest = {
   permissions: DelegatePermission[]
 }
 
+type CreateDelegateResponse = Delegate & {
+  err?: string
+  createdAt: string
+}
+
 async function createDelegate(
   appId: AppId,
   data: CreateDelegateRequest
-): Promise<AxiosResponse<DelegateResponse>> {
+): Promise<AxiosResponse<CreateDelegateResponse>> {
   return gatewayAuthorizedInstance.post(`${getEnvApi()}/delegates/`, {
     appId,
     ...data,
@@ -352,18 +358,14 @@ async function createDelegate(
 
 function listDelegateKeys(
   appAddress: string
-): Promise<AxiosResponse<string[]>> {
+): Promise<AxiosResponse<DelegateKey[]>> {
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/?app=${appAddress}`)
-}
-
-type EditDelegateResponse = {
-  message: string
 }
 
 function editDelegate(
   appId: AppId,
   data: CreateDelegateRequest
-): Promise<AxiosResponse<EditDelegateResponse>> {
+): Promise<AxiosResponse<CreateDelegateResponse>> {
   return gatewayAuthorizedInstance.patch(`${getEnvApi()}/delegates/`, {
     appId,
     ...data,

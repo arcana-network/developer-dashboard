@@ -5,6 +5,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
+import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const emit = defineEmits(['proceed'])
@@ -21,7 +22,7 @@ const toast = useToast()
 async function copyAddress() {
   try {
     await copyToClipboard(props.delegatePrivateKey)
-    toast.success('Address copied')
+    toast.success('Key copied')
   } catch (e) {
     console.error(e)
     toast.error('Failed to copy. Try again or contact support')
@@ -32,7 +33,8 @@ async function copyAddress() {
 <template>
   <VOverlay>
     <div class="center height-100 width-100">
-      <VCard popup="true" class="flex column container">
+      <VCard class="flex column container">
+        <img src="@/assets/success-popup-icon.png" class="popup-icon" />
         <VStack gap="1rem" direction="column">
           <VStack
             gap="1rem"
@@ -40,16 +42,16 @@ async function copyAddress() {
             justify="space-between"
             align="center"
           >
-            <h1 class="sub-heading-5 font-700 text-uppercase">
+            <div class="sub-heading-4 title font-700">
               Successfully Generated
-            </h1>
-            <p class="body-2 font-400 grey">
+            </div>
+            <p class="body-1 font-400 description">
               The public key will be applied to this delegate. The private key
               shown below must be stored safely. Note that one including Arcana
               will have access to it:
             </p>
             <VStack gap="0.5rem" direction="column" style="width: 100%">
-              <p class="body-3 grey">Private Key</p>
+              <label class="font-600 grey label">Private Key</label>
               <VStack
                 justify="center"
                 align="center"
@@ -60,7 +62,7 @@ async function copyAddress() {
                 <p class="body-2 text-ellipsis">
                   {{ props.delegatePrivateKey }}
                 </p>
-                <v-tooltip
+                <VTooltip
                   title="Click to copy"
                   class="mobile-remove"
                   @click.stop="copyAddress"
@@ -68,22 +70,22 @@ async function copyAddress() {
                   <img
                     :src="CopyIcon"
                     class="cursor-pointer"
-                    alt="Click to copy smart contract address"
+                    alt="Click to copy key"
                     style="margin-top: 4px"
                   />
-                </v-tooltip>
+                </VTooltip>
               </VStack>
             </VStack>
           </VStack>
           <VStack gap="1rem" direction="column" align="center">
             <VButton
-              label="Proceed"
+              label="PROCEED"
               button-style="width: 100px"
               @click.stop="emit('proceed')"
             />
             <VButton
               variant="link"
-              label="Learn More"
+              label="LEARN MORE"
               button-style="width: 100px"
             />
           </VStack>
@@ -95,8 +97,18 @@ async function copyAddress() {
 
 <style scoped>
 .container {
-  max-width: 600px;
-  padding: 30px;
+  position: relative;
+  max-width: 480px;
+  padding: 2rem;
+  padding-top: 6rem;
+}
+
+.popup-icon {
+  position: absolute;
+  top: -3.5rem;
+  left: 50%;
+  width: 12rem;
+  transform: translateX(-50%);
 }
 
 .grey {
@@ -109,5 +121,22 @@ async function copyAddress() {
   border-radius: 10px;
   box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
     inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.description {
+  max-width: 40ch;
+  font-size: 1rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.label {
+  font-size: 0.875rem;
+  color: var(--text-grey);
 }
 </style>

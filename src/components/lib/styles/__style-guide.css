@@ -366,11 +366,11 @@ a {
   }
 
   .sub-heading-1 {
-    font-size: 2.125em !important;
+    font-size: 2.125em;
   }
 
   .sub-heading-2 {
-    font-size: 1.688em !important;
+    font-size: 1.688em;
   }
 
   .sm-flex-start {
