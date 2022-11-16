@@ -343,7 +343,8 @@ type CreateDelegateRequest = {
 
 type CreateDelegateResponse = Delegate & {
   err?: string
-  createdAt: string
+  CreatedAt: string
+  ID: DelegateId
 }
 
 async function createDelegate(

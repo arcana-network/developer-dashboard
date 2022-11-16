@@ -115,10 +115,10 @@ async function handleCreateDelegate(payload: DelegatePayload) {
   else {
     await grantDelegate(appId, payload.address, payload.permissions)
     appsStore.app(appId).access.delegates.push({
-      id: data.id,
+      id: data.ID,
       name: data.name,
       address: data.address,
-      createdDate: data.createdAt,
+      createdDate: data.CreatedAt,
       permissions: payload.permissions,
     })
     toast.success(`Delegate created`)
