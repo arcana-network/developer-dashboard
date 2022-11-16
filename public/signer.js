@@ -1089,7 +1089,7 @@ const axios = require("axios");
 const sign = require("./signer.js").sign;
 const { getApplicableRole } = require("./role-helper");
 
-function getContracts(provider,appAddress,forwarderAddress) {
+function getContracts(provider, appAddress, forwarderAddress) {
   const ethProvider = new ethers.providers.Web3Provider(provider);
   const arcanaContract = new ethers.Contract(
     appAddress,
@@ -1105,9 +1105,12 @@ function getContracts(provider,appAddress,forwarderAddress) {
   return {
     ethProvider,
     arcanaContract,
-    forwarderContract
-  }
+    forwarderContract,
+  };
+}
 
+function parseHex(hex) {
+  return !hex.startsWith("0x") ? `0x${hex}` : hex;
 }
 
 function createTransactionSigner({
@@ -1117,8 +1120,11 @@ function createTransactionSigner({
   gateway,
   accessToken,
 }) {
-
-  const {ethProvider,arcanaContract,forwarderContract} = getContracts(provider,appAddress,forwarderAddress) ;
+  const { ethProvider, arcanaContract, forwarderContract } = getContracts(
+    provider,
+    appAddress,
+    forwarderAddress
+  );
 
   return async function signTransaction(method, value) {
     const req = await sign(
@@ -1143,7 +1149,6 @@ function hashJson(data) {
   return ethers.utils.id(JSON.stringify(data));
 }
 
-
 async function generateLoginInfo({ provider, gateway }) {
   const ethProvider = new ethers.providers.Web3Provider(provider);
   let address = await ethProvider.getSigner().getAddress();
@@ -1163,12 +1168,15 @@ async function generateLoginInfo({ provider, gateway }) {
   };
 }
 
-async function grant({  appAddress,
+async function grant({
+  appAddress,
   provider,
   forwarderAddress,
   gateway,
-  accessToken, delegator, roles }) {
-
+  accessToken,
+  delegator,
+  roles,
+}) {
   let signTransaction = createTransactionSigner({
     appAddress,
     provider,
@@ -1177,43 +1185,71 @@ async function grant({  appAddress,
     accessToken,
   });
 
-  const {arcanaContract} = getContracts(provider,appAddress,forwarderAddress) ;
+  const { arcanaContract } = getContracts(
+    provider,
+    appAddress,
+    forwarderAddress
+  );
 
-  const iAppRole = getApplicableRole(await arcanaContract.appLevelControl(), roles);
+  const delegatorHex = parseHex(delegator);
+
+  const iAppRole = getApplicableRole(
+    await arcanaContract.appLevelControl(),
+    roles
+  );
 
   if (iAppRole > 0) {
     await signTransaction("editAppPermission", [iAppRole, true]);
   }
 
-  const iDelegatorRole = getApplicableRole(await arcanaContract.delegators(delegator), roles);
+  const iDelegatorRole = getApplicableRole(
+    await arcanaContract.delegators(delegatorHex),
+    roles
+  );
 
   if (iDelegatorRole == 0) {
     return new Error("Delegator role already granted");
   }
 
-  return signTransaction("updateDelegator", [delegator, iDelegatorRole, true]);
-
+  return signTransaction("updateDelegator", [
+    delegatorHex,
+    iDelegatorRole,
+    true,
+  ]);
 }
 
-async function revoke({ appAddress,
+async function revoke({
+  appAddress,
   provider,
   forwarderAddress,
   gateway,
-  accessToken, delegator }) {
+  accessToken,
+  delegator,
+}) {
   let signTransaction = createTransactionSigner({
-      appAddress,
-      provider,
-      forwarderAddress,
-      gateway,
-      accessToken,
-    });
-  const {arcanaContract} = getContracts(provider,appAddress,forwarderAddress) ;
-  const iDelegatorRole = await arcanaContract.delegators(delegator);
+    appAddress,
+    provider,
+    forwarderAddress,
+    gateway,
+    accessToken,
+  });
+  const { arcanaContract } = getContracts(
+    provider,
+    appAddress,
+    forwarderAddress
+  );
+
+  const delegatorHex = parseHex(delegator);
+
+  const iDelegatorRole = await arcanaContract.delegators(delegatorHex);
 
   if (iDelegatorRole == 0) return new Error("Delegator role not found");
 
-  return signTransaction("updateDelegator", [delegator, iDelegatorRole, false]);
-
+  return signTransaction("updateDelegator", [
+    delegatorHex,
+    iDelegatorRole,
+    false,
+  ]);
 }
 
 const transactionSigner = {
@@ -1221,8 +1257,9 @@ const transactionSigner = {
   createTransactionSigner,
   hashJson,
   delegator: {
-    revoke, grant
-  }
+    revoke,
+    grant,
+  },
 };
 
 window.transactionSigner = transactionSigner;
@@ -12341,7 +12378,7 @@ var EtherscanProvider = /** @class */ (function (_super) {
                         return [3 /*break*/, 28];
                     case 1: return [2 /*return*/, this.fetch("proxy", { action: "eth_blockNumber" })];
                     case 2: return [2 /*return*/, this.fetch("proxy", { action: "eth_gasPrice" })];
-                    case 3:
+                    case 3: 
                     // Returns base-10 result
                     return [2 /*return*/, this.fetch("account", {
                             action: "balance",
@@ -14307,7 +14344,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                                     }
                                 });
                             }); }, { oncePoll: this.provider })];
-                    case 4:
+                    case 4: 
                     // Unfortunately, JSON-RPC only provides and opaque transaction hash
                     // for a response, and we need the actual transaction, so we poll
                     // for it; it should show up very quickly
@@ -14348,7 +14385,7 @@ var JsonRpcSigner = /** @class */ (function (_super) {
                     case 1:
                         address = _a.sent();
                         return [4 /*yield*/, this.provider.send("eth_sign", [address.toLowerCase(), (0, bytes_1.hexlify)(data)])];
-                    case 2:
+                    case 2: 
                     // https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign
                     return [2 /*return*/, _a.sent()];
                 }
@@ -31907,37 +31944,33 @@ utils.encode = function encode(arr, enc) {
 }).call(this)}).call(this,require("timers").setImmediate)
 },{"timers":199}],195:[function(require,module,exports){
 const iRoleMap = {
-    "Download": 1,
-    "Share and Revoke": 2,
-    "Remove": 4
-}
+  Download: 1,
+  "Share and Revoke": 2,
+  Remove: 4,
+};
 
 function hasRole(role, testRole) {
-    return (role & testRole) === testRole;
+  return (role & testRole) === testRole;
 }
 
 function getApplicableRole(iPermission, aRoles) {
-    let finRole = 0;
+  let finRole = 0;
 
-    for (let role of aRoles) {
-        let iRole = iRoleMap[role];
+  for (let role of aRoles) {
+    let iRole = iRoleMap[role];
 
-        if (!iRole)
-            return new Error("Invalid Role");
+    if (!iRole) return new Error("Invalid Role");
 
-        if (!hasRole(iPermission, iRole)) {
-            finRole = iRole | finRole;
-        }
-
+    if (!hasRole(iPermission, iRole)) {
+      finRole = iRole | finRole;
     }
+  }
 
-    return finRole;
+  return finRole;
 }
 
+module.exports.getApplicableRole = getApplicableRole;
 
-console.log( getApplicableRole(2, ["Revoke"]))
-
-module.exports.getApplicableRole = getApplicableRole
 },{}],196:[function(require,module,exports){
 const { BigNumber } = require("ethers");
 
