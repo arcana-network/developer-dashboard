@@ -18,7 +18,7 @@ const slot = useSlots()
         <slot name="controls" />
       </VStack>
       <VSeperator class="settings-card-separator" />
-      <div v-if="slot.description" class="body-1">
+      <div v-if="slot.description" class="body-1 settings-card-description">
         <slot name="description" />
       </div>
       <slot />
@@ -38,5 +38,9 @@ const slot = useSlots()
 .settings-card-separator {
   width: calc(100% + 3rem);
   margin: 0 -1.5rem;
+}
+
+.settings-card-description {
+  color: var(--text-grey);
 }
 </style>

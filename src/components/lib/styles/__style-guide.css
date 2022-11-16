@@ -53,6 +53,10 @@ main {
   flex-grow: 1;
 }
 
+p {
+  margin: 0;
+}
+
 h1,
 h2,
 h3,
@@ -98,6 +102,13 @@ label {
   font-weight: 600;
   line-height: 1.5;
   color: var(--text-white);
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .sub-heading-1,
@@ -311,6 +322,10 @@ a {
   width: 100%;
 }
 
+.height-100 {
+  height: 100%;
+}
+
 .text-uppercase {
   text-transform: uppercase;
 }
@@ -351,11 +366,11 @@ a {
   }
 
   .sub-heading-1 {
-    font-size: 2.125em !important;
+    font-size: 2.125em;
   }
 
   .sub-heading-2 {
-    font-size: 1.688em !important;
+    font-size: 1.688em;
   }
 
   .sm-flex-start {

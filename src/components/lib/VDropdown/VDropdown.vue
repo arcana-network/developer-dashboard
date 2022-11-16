@@ -84,7 +84,10 @@ watch(
       :class="triggerClass"
       :style="triggerStyle"
     >
-      <span v-if="value" class="custom-select-value">
+      <span
+        v-if="(!displayField && value) || value[displayField]"
+        class="custom-select-value"
+      >
         <span v-if="displayField">
           {{ value[displayField] }}
         </span>
@@ -92,7 +95,9 @@ watch(
           {{ value }}
         </span>
       </span>
-      <span v-else class="placeholder">{{ placeholder }}</span>
+      <span v-if="!value || !value[displayField]" class="placeholder">{{
+        placeholder
+      }}</span>
       <div class="arrow"></div>
     </div>
     <div class="custom-options" role="listbox" tabindex="-1">
@@ -197,6 +202,7 @@ watch(
 
 .arrow {
   position: relative;
+  right: -1rem;
   width: 1rem;
   height: 1rem;
 }
