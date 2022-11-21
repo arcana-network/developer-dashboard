@@ -95,9 +95,7 @@ watch(
           {{ value }}
         </span>
       </span>
-      <span v-if="!value || !value[displayField]" class="placeholder">{{
-        placeholder
-      }}</span>
+      <span v-else class="placeholder">{{ placeholder }}</span>
       <div class="arrow"></div>
     </div>
     <div class="custom-options" role="listbox" tabindex="-1">
