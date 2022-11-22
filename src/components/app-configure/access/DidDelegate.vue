@@ -41,7 +41,7 @@ async function getDelegateKeys() {
   try {
     loaderStore.showLoader('Fetching keys...')
     const { data } = await listDelegateKeys(app.address)
-    delegateKeys.value = data
+    delegateKeys.value = data || []
   } catch (err) {
     console.error({ err })
   } finally {
