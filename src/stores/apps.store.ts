@@ -154,7 +154,7 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAllApps() {
       this.appIds = []
-      const apps = (await fetchAllApps()).data
+      const apps = (await fetchAllApps()).data || []
       apps.sort(
         (app1, app2) =>
           Date.parse(app2.created_at) - Date.parse(app1.created_at)
