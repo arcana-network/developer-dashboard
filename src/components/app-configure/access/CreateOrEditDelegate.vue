@@ -198,11 +198,13 @@ function handleGenerateKey() {
                 <label class="body-1 label font-600">Key</label>
                 <VStack gap="1rem">
                   <VDropdown
+                    :disabled="props.delegateKeys.length === 0"
                     :options="props.delegateKeys"
                     display-field="name"
                     :model-value="selectedDelegateKey"
                     style="flex: 1"
                     placeholder="Select or Generate"
+                    show-tooltip
                     @update:model-value="handleKeySelected"
                   />
                   <VButton
@@ -291,6 +293,11 @@ function handleGenerateKey() {
 <style>
 .custom-select-value {
   max-width: 12ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-option {
   overflow: hidden;
   text-overflow: ellipsis;
 }

@@ -30,6 +30,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  showTooltip: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -108,10 +112,13 @@ watch(
         class="custom-option"
         @click.stop="onChange(option, $event)"
       >
-        <span v-if="displayField">
+        <span
+          v-if="displayField"
+          :title="props.showTooltip ? option[displayField] : ''"
+        >
           {{ option[displayField] }}
         </span>
-        <span v-else>
+        <span v-else :title="props.showTooltip ? option : ''">
           {{ option }}
         </span>
       </span>
