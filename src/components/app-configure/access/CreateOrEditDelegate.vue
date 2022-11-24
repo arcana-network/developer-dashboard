@@ -49,8 +49,11 @@ const appsStore = useAppsStore()
 onMounted(() => {
   if (props.variant === 'edit' && props.delegateInfo) {
     delegateName.value = props.delegateInfo.name
+    const keyName = delegateKeysList.value.find(
+      (key) => key.address === props.delegateInfo?.address
+    )?.name
     selectedDelegateKey.value = {
-      name: props.delegateInfo.address,
+      name: keyName || props.delegateInfo.address,
       address: props.delegateInfo.address,
     }
   }
@@ -295,6 +298,7 @@ function handleGenerateKey() {
   max-width: 12ch;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .custom-option {
