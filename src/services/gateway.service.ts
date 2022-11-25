@@ -238,9 +238,9 @@ function updateOrganization({ name, country, size }: OrganizationOptions) {
   })
 }
 
-function fetchAllUsers(appId: AppId) {
+function fetchAllUsers(appId: AppId, offset: number, count: number) {
   return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details/?id=${appId}`
+    `${getEnvApi()}/user-details/?id=${appId}&offset=${offset}&count=${count}`
   )
 }
 
