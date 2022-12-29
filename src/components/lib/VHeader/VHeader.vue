@@ -10,13 +10,9 @@ const props = defineProps({
     type: String,
     default: '',
   },
-  menuItems: {
+  helpItems: {
     type: Array,
-    default: null,
-  },
-  loggedInUser: {
-    type: Object,
-    default: null,
+    required: true,
   },
   notificationIcon: {
     type: [Object, String],
@@ -26,31 +22,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  height: {
-    type: Number,
-    default: 0,
-  },
-  width: {
-    type: Number,
-    default: 0,
-  },
-  logoStyle: {
-    type: [Object, String],
-    default: '',
-  },
-  selectedItem: {
-    type: String,
-    default: '',
-  },
   mobileMenuIcon: {
     type: [Object, String],
     default: '',
   },
-  mobileAccountIcon: {
-    type: [Object, String],
-    default: '',
-  },
-  mobileLogo: {
+  closeIcon: {
     type: [Object, String],
     default: '',
   },
@@ -63,21 +39,7 @@ const logoAltText = computed(() => {
 })
 
 const showMenu = ref(false)
-
-function handleMenuItemClick(menuItem) {
-  if (menuItem.disabled) return
-  if (menuItem.action) {
-    menuItem.action.call()
-  }
-  return emit('header-menu-item-click', menuItem)
-}
-
-function handleUserClick() {
-  if (props.loggedInUser?.action) {
-    props.loggedInUser.action.call()
-  }
-  return emit('user-click')
-}
+const showHelpMenu = ref(false)
 
 function onLogoClick() {
   return emit('logo-click')
@@ -94,154 +56,55 @@ function onLogoClick() {
           initialOpacity: 0.4,
           finalOpacity: 0.1,
         }"
-        class="logo laptop-remove"
-        @click="showMenu = !showMenu"
-      >
-        <img
-          style="margin-top: 10px"
-          :src="mobileMenuIcon"
-          :alt="logoAltText"
-        />
-      </div>
-      <div
-        v-if="logoSrc"
-        v-wave="{
-          color: 'rgb(196,196,196)',
-          initialOpacity: 0.4,
-          finalOpacity: 0.1,
-        }"
         class="logo"
         @click.stop="onLogoClick"
       >
-        <img class="tablet-remove" :src="logoSrc" :alt="logoAltText" />
-        <img
-          class="laptop-remove"
-          :src="mobileLogo"
-          :alt="logoAlt"
-          style="margin-top: 2px"
-        />
+        <img :src="logoSrc" :alt="logoAltText" />
       </div>
-      <div class="flex">
-        <ul
-          v-if="menuItems && menuItems.length"
-          class="flex menu tablet-remove"
-          role="listbox"
-          style="gap: 1em"
+      <div class="position-relative flex flex-center">
+        <button class="help-button" @click.stop="showHelpMenu = !showHelpMenu">
+          Help
+        </button>
+        <button
+          class="mobile-menu-icon-button cursor-pointer"
+          @click.stop="showMenu = !showMenu"
         >
+          <img v-if="showMenu" :src="closeIcon" alt="close icon" />
+          <img v-else :src="mobileMenuIcon" :alt="logoAltText" />
+        </button>
+        <ul v-if="showHelpMenu" class="help-menu-items position-absolute">
           <li
-            v-for="menuItem in menuItems"
-            :key="menuItem.label"
-            v-wave="{
-              color: 'rgb(196,196,196)',
-              initialOpacity: 0.4,
-              finalOpacity: 0.1,
-            }"
-            role="listitem"
-            class="menu-item"
-            :class="{
-              'menu-item-selected':
-                selectedItem === 'menu-item' && menuItem.selected,
-              'menu-item-disabled': menuItem.disabled,
-            }"
-            @click.stop="handleMenuItemClick(menuItem)"
+            v-for="helpItem in helpItems"
+            :key="helpItem.label"
+            class="cursor-pointer help-menu-item"
+            @click.stop="showHelpMenu = false"
           >
-            {{ menuItem.label }}
+            {{ helpItem.label }}
           </li>
         </ul>
-        <img
-          v-if="notificationIcon"
-          :src="notificationIcon"
-          alt="Notification"
-          class="notification-icon mobile-remove"
-        />
-        <ul v-if="loggedInUser" class="flex menu tablet-remove" role="listbox">
-          <li
-            v-wave="{
-              color: 'rgb(196,196,196)',
-              initialOpacity: 0.4,
-              finalOpacity: 0.1,
-            }"
-            role="listitem"
-            class="menu-item"
-            :class="selectedItem === 'profile' ? 'menu-item-selected' : ''"
-            style="
-              width: max-content;
-              max-width: 200px;
-              overflow: hidden;
-              text-align: center;
-              text-overflow: ellipsis;
-              word-wrap: nowrap;
-            "
-            @click.stop="handleUserClick"
-          >
-            {{ loggedInUser.name }}
-          </li>
-        </ul>
-      </div>
-      <div
-        v-if="logoSrc"
-        v-wave="{
-          color: 'rgb(196,196,196)',
-          initialOpacity: 0.4,
-          finalOpacity: 0.1,
-        }"
-        class="logo laptop-remove"
-        style="margin-left: auto; cursor: pointer"
-        @click.stop="handleUserClick"
-      >
-        <img
-          class="laptop-remove"
-          :src="mobileAccountIcon"
-          style="margin-top: 5px"
-        />
       </div>
     </section>
-    <aside :class="{ show: showMenu }" class="laptop-remove">
-      <ul
-        v-if="menuItems && menuItems.length"
-        class="flex column menu"
-        role="listbox"
-      >
-        <li
-          v-for="menuItem in menuItems"
-          :key="menuItem.label"
-          v-wave="{
-            color: 'rgb(196,196,196)',
-            initialOpacity: 0.4,
-            finalOpacity: 0.1,
-          }"
-          role="listitem"
-          class="menu-item"
-          :class="
-            selectedItem === 'menu-item' && menuItem.selected
-              ? 'menu-item-selected'
-              : ''
-          "
-          @click.stop="handleMenuItemClick(menuItem)"
-        >
-          {{ menuItem.label }}
-        </li>
-      </ul>
-    </aside>
   </header>
 </template>
 
 <style scoped>
 header {
+  position: relative;
   display: flex;
+  padding: 1.5rem 0;
   visibility: visible;
   background: #1f1f1f;
-  box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
   transition: transform 0.6s;
 }
 
-aside {
+.mobile-menu {
   position: absolute;
   top: 100%;
   z-index: 10000;
   width: 100%;
+  height: 100vh;
   visibility: hidden;
-  background: linear-gradient(143.36deg, #0f0f0f -4.7%, #000 115.05%);
+  background-color: #262626;
   opacity: 0;
   transition: opacity 0.6s, visibility 0.6s;
 }
@@ -257,7 +120,7 @@ aside ul {
 }
 
 aside ul li {
-  padding: 1.5em 1em !important;
+  padding: 1em;
   text-align: center;
 }
 
@@ -266,8 +129,15 @@ aside.show {
   opacity: 1;
 }
 
-.mobile-menu-icon {
-  display: none;
+.mobile-menu-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
 .hide-header {
@@ -290,9 +160,7 @@ header section {
 }
 
 .logo,
-.menu-item,
-.notification-icon {
-  padding: 1.25rem 1rem;
+.menu-item {
   cursor: pointer;
   transition: opacity 0.3s;
 }
@@ -301,13 +169,7 @@ header section {
   vertical-align: middle;
 }
 
-.notification-icon {
-  margin-top: -0.3em;
-  margin-left: 4em;
-}
-
-.logo:hover,
-.notification-icon:hover {
+.logo:hover {
   opacity: 0.6;
 }
 
@@ -324,17 +186,59 @@ header section {
   opacity: 0.25;
 }
 
+.help-button {
+  font-family: var(--font-body);
+  color: var(--primary);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.help-menu-items {
+  top: 30px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 245px;
+  padding: 0;
+  padding: 1rem;
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%);
+}
+
+.help-menu-item {
+  width: 100%;
+  padding: 0.5rem;
+  font-family: var(--font-body);
+  color: var(--text-white);
+  list-style: none;
+  background-color: #1f1f1f;
+}
+
+@media only screen and (max-width: 767px) {
+  .help-button {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .mobile-menu-icon-button {
+    display: none;
+  }
+}
+
 @media only screen and (max-width: 1023px) {
   .logo,
-  .menu-item,
-  .notification-icon {
-    padding: 1em;
+  .menu-item {
     cursor: pointer;
     transition: opacity 0.3s;
   }
 
-  header section {
-    justify-content: unset;
+  header {
+    padding: 1rem 0;
   }
 }
 </style>

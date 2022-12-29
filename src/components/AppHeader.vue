@@ -1,95 +1,56 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, onUnmounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, ref, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-import AccountUserIcon from '@/assets/iconography/account-user.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
-import ArcanaFavicon from '@/assets/iconography/arcana-favicon.svg'
+import BlueCloseIcon from '@/assets/iconography/close.svg'
 import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
-import VHeader from '@/components/lib/VHeader/VHeader.vue'
-import { useAuthStore } from '@/stores/auth.store'
-import { useAppId } from '@/use/getAppId'
-import constants from '@/utils/constants'
 
-const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
-const appId = useAppId()
 const canShowBanner = ref(true)
 const hideHeader = ref(false)
 
 let lastScrollTop = 0
 const scrollDelta = 10
 
-const menuItems = computed(() => {
-  let arr = [
-    {
-      label: 'Apps',
-      action() {
-        router.push({ name: 'ManageApps' })
-      },
-      selected: false,
+const helpItems = [
+  {
+    label: 'View Docs',
+    action() {
+      router.push({ name: 'ManageApps' })
     },
-    {
-      label: 'Dashboard',
-      action() {
-        router.push({ name: 'Dashboard', params: { appId } })
-      },
-      selected: false,
-      disabled: false,
-    },
-    {
-      label: 'Users',
-      action() {
-        router.push({ name: 'Users', params: { appId } })
-      },
-      selected: false,
-      disabled: false,
-    },
-    {
-      label: 'Docs',
-      action() {
-        window.open(`${constants.DOCS_URL}`)
-      },
-      selected: false,
-    },
-  ]
-  if (route.name === 'ManageApps') {
-    arr[0].selected = true
-  } else if (route.name === 'Dashboard') {
-    arr[1].selected = true
-  } else if (route.name === 'Users') {
-    arr[2].selected = true
-  }
-
-  if (route.name === 'ManageApps' || route.name === 'Profile') {
-    arr[1].disabled = true
-    arr[2].disabled = true
-  }
-  if (route.name === 'Dashboard' || route.name === 'Users') {
-    arr[1].disabled = false
-    arr[2].disabled = false
-  }
-  return arr
-})
-
-const loggedInUser = {
-  name: authStore.name,
-  action() {
-    router.push({ name: 'Profile', params: { appId } })
+    selected: false,
   },
-}
-
-const selectedItem = computed(() => {
-  if (route.name === 'Profile') {
-    return 'profile'
-  } else if (route.name === 'Notification') {
-    return 'notification'
-  } else {
-    return 'menu-item'
-  }
-})
+  {
+    label: 'Schedule a Demo',
+    action() {
+      router.push({ name: 'ManageApps' })
+    },
+    selected: false,
+  },
+  {
+    label: 'Get Support',
+    action() {
+      router.push({ name: 'ManageApps' })
+    },
+    selected: false,
+  },
+  {
+    label: 'Report a Bug',
+    action() {
+      router.push({ name: 'ManageApps' })
+    },
+    selected: false,
+  },
+  {
+    label: 'Request a Feature',
+    action() {
+      router.push({ name: 'ManageApps' })
+    },
+    selected: false,
+  },
+]
 
 function onLogoClick() {
   router.push('/')
@@ -138,12 +99,9 @@ function handleScroll(ev: any) {
     <v-header
       :logo-src="ArcanaLogo"
       logo-alt="Arcana Logo"
-      :logged-in-user="loggedInUser"
-      :menu-items="menuItems"
-      :selected-item="selectedItem"
+      :help-items="helpItems"
       :mobile-menu-icon="MenuIcon"
-      :mobile-logo="ArcanaFavicon"
-      :mobile-account-icon="AccountUserIcon"
+      :close-icon="BlueCloseIcon"
       @logo-click="onLogoClick"
     />
   </section>
