@@ -14,6 +14,7 @@ import {
   fetchAllUserTransactions,
   fetchMonthlyUsers,
 } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
 
@@ -45,9 +46,11 @@ const showDetails = ref(false)
 const userLog: Ref<UserLog> = ref({})
 const userTransactions: Ref<UserTransaction[]> = ref([])
 const appId = useAppId()
+const appsStore = useAppsStore()
 
 function fetchUsers() {
-  fetchAllUsers(appId).then((response) => {
+  const totalUsers = appsStore.appOverview(appId).totalUsers
+  fetchAllUsers(appId, 0, totalUsers).then((response) => {
     if (response.data instanceof Array) {
       users.value = response.data.map((user) => {
         return {
