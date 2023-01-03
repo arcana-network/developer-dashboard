@@ -98,7 +98,7 @@ function handleScroll(ev: any) {
         <CloseIcon color="#FFFFFF" />
       </span>
     </div>
-    <header class="container flex" style="margin-bottom: 0">
+    <header class="container flex">
       <div class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </div>
@@ -141,22 +141,12 @@ header {
   position: relative;
   display: flex;
   justify-content: space-between;
+  width: 100%;
   padding: 1.5rem 0;
+  margin: 0 1rem;
   visibility: visible;
   background: #1f1f1f;
   transition: transform 0.6s;
-}
-
-.mobile-menu {
-  position: absolute;
-  top: 100%;
-  z-index: 10000;
-  width: 100%;
-  height: 100vh;
-  visibility: hidden;
-  background-color: #262626;
-  opacity: 0;
-  transition: opacity 0.6s, visibility 0.6s;
 }
 
 .mobile-menu-icon-button {
@@ -165,6 +155,7 @@ header {
   justify-content: center;
   width: 24px;
   height: 24px;
+  margin-right: 1rem;
   background-color: transparent;
   border: none;
   outline: none;
@@ -184,6 +175,7 @@ header {
 }
 
 .help-button {
+  margin-right: 2rem;
   font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
