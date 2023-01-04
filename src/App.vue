@@ -30,7 +30,7 @@ onBeforeMount(async () => {
         <component :is="Component" />
       </transition>
     </router-view>
-    <AppFooter v-if="isAuthLoaded && !route.path.includes('/config/')" />
+    <!-- <AppFooter v-if="isAuthLoaded && !route.path.includes('/config/')" /> -->
     <FullScreenLoader
       v-if="loaderStore.isLoading || !isAuthLoaded"
       :message="loaderStore.message"
