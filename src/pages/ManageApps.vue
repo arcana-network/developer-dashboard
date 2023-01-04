@@ -109,54 +109,33 @@ appsStore.$subscribe(() => {
           >
             <VStack direction="column" align="center" class="app-container">
               <img :src="getImageUrl(app.id)" class="app-logo" />
-              <span class="sub-heading-3 app-name">{{ app.name }}</span>
+              <span
+                class="sub-heading-3 app-name text-ellipsis"
+                :title="app.name"
+              >
+                {{ app.name }}
+              </span>
               <VCard variant="depressed" gap="6px" class="stats-card">
-                <VStack direction="column" align="center">
+                <VStack direction="column" align="center" gap="0.25rem">
                   <span class="stats-title">Total Users</span>
                   <span class="stats-number">{{ app.totalUsers }}</span>
                 </VStack>
                 <VSeperator vertical class="stats-separator" />
-                <VStack direction="column" align="center">
-                  <span class="stats-title">No of Files</span>
-                  <span class="stats-number">{{ app.noOfFiles }}</span>
-                </VStack>
-                <VSeperator vertical class="stats-separator" />
-                <VStack direction="column" align="center">
+                <VStack direction="column" align="center" gap="0.25rem">
                   <span class="stats-title">Estimated Cost</span>
                   <span class="stats-number">${{ app.estimatedCost }}</span>
                 </VStack>
               </VCard>
               <VStack gap="1.25rem" class="limit-indicator-container">
                 <VStack direction="column" class="flex-grow">
-                  <span class="limit-title">Storage</span>
+                  <span class="limit-title">Monthly Active Users</span>
                   <span class="limit-details">
-                    {{ bytes(app.storage.consumed, { decimalPlaces: 2 }) }}
-                    of
-                    {{ bytes(app.storage.allowed) }}
-                    used
+                    <span class="mau-users">1000</span>
+                    users
                   </span>
-                  <VProgressBar
-                    :percentage="app.storageUsedPercent"
-                    :state="getProgressState(app.storageUsedPercent as number)"
-                    class="limit-indicator"
-                  />
-                </VStack>
-                <VStack direction="column" class="flex-grow">
-                  <span class="limit-title">Bandwidth</span>
-                  <span class="limit-details">
-                    {{ bytes(app.bandwidth.consumed, { decimalPlaces: 2 }) }}
-                    of
-                    {{ bytes(app.bandwidth.allowed) }}
-                    used
-                  </span>
-                  <VProgressBar
-                    :percentage="app.bandwidthUsedPercent"
-                    :state="getProgressState(app.bandwidthUsedPercent as number)"
-                    class="limit-indicator"
-                  />
                 </VStack>
               </VStack>
-              <VStack gap="1rem" style="width: 100%; margin-top: auto">
+              <VStack gap="1rem" style="width: 100%; margin-top: 1.5rem">
                 <VButton
                   variant="secondary"
                   label="Delete"
@@ -206,7 +185,7 @@ appsStore.$subscribe(() => {
   align-items: center;
   justify-content: center;
   width: clamp(20rem, 30vw, 25rem);
-  height: 31rem;
+  height: 28rem;
   cursor: pointer;
 }
 
@@ -224,6 +203,7 @@ appsStore.$subscribe(() => {
 }
 
 .app-name {
+  max-width: 100%;
   margin-top: 0.625rem;
   font-size: 1.5rem;
 }
@@ -291,5 +271,11 @@ appsStore.$subscribe(() => {
   width: 100%;
   height: 5px;
   margin-top: 1.25rem;
+}
+
+.mau-users {
+  font-family: var(--font-body);
+  font-size: 1.5rem;
+  color: var(--text-white);
 }
 </style>
