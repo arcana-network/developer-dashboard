@@ -1,5 +1,12 @@
 import bytes from 'bytes'
 
+import brandingIcon from '@/assets/iconography/branding.png'
+import dashboardIcon from '@/assets/iconography/dashboard.png'
+import passcodeLockIcon from '@/assets/iconography/passcode-lock.png'
+import settingsIcon from '@/assets/iconography/settings.png'
+import socialMediaIcon from '@/assets/iconography/social-media.png'
+import usersGroupIcon from '@/assets/iconography/users_group.png'
+import walletIcon from '@/assets/iconography/wallet.png'
 import type { UserLimitState } from '@/stores/apps.store'
 
 const sentry = {
@@ -64,20 +71,53 @@ const regions: Region[] = [
   },
 ]
 
-type ConfigureTabType = 'general' | 'auth' | 'store' | 'access' | 'wallet'
+type ConfigureTabType = 'dashboard' | 'configure' | 'users'
+
+type ConfigureTabSubMenu = {
+  type: string
+  label: string
+  icon: string
+}
 
 type ConfigureTab = {
   type: ConfigureTabType
   label: string
+  icon: string
+  subMenu?: ConfigureTabSubMenu[]
 }
 
 const userLimitOptions: string[] = ['Limited', 'Unlimited']
 
 const CONFIGURE_TABS: readonly ConfigureTab[] = [
-  { type: 'general', label: 'General' },
-  { type: 'auth', label: 'Auth' },
-  { type: 'store', label: 'Store' },
-  { type: 'access', label: 'Access' },
+  { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
+  {
+    type: 'configure',
+    label: 'Configure',
+    icon: settingsIcon,
+    subMenu: [
+      {
+        type: 'branding',
+        label: 'Branding',
+        icon: brandingIcon,
+      },
+      {
+        type: 'socialAuth',
+        label: 'Social Auth',
+        icon: socialMediaIcon,
+      },
+      {
+        type: 'passwordlessAuth',
+        label: 'Passwordless Auth',
+        icon: passcodeLockIcon,
+      },
+      {
+        type: 'arcanaWallet',
+        label: 'Arcana Wallet',
+        icon: walletIcon,
+      },
+    ],
+  },
+  { type: 'users', label: 'Users', icon: usersGroupIcon },
 ]
 
 type BandwidthLimitUnit = {
