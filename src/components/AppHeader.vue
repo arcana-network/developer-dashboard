@@ -142,8 +142,7 @@ header {
   display: flex;
   justify-content: space-between;
   width: 100%;
-  padding: 1.5rem 0;
-  margin: 0 1rem;
+  padding: 1.5rem 1rem;
   visibility: visible;
   background: #1f1f1f;
   transition: transform 0.6s;
