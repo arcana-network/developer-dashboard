@@ -46,6 +46,7 @@
 }
 
 body {
+  box-sizing: border-box;
   background-color: var(--dark-theme-bg);
 }
 
@@ -217,6 +218,10 @@ a {
 
 .justify-center {
   justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
 }
 
 .flex-row,
