@@ -29,10 +29,8 @@ function switchTab(tab: ConfigureTab) {
 
 <template>
   <VStack direction="column" gap="2rem" class="configure-container">
-    <AppHeader />
     <ConfigureHeader />
     <VStack gap="2rem" class="container app-settings-container">
-      <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
       <RouterView />
     </VStack>
   </VStack>
