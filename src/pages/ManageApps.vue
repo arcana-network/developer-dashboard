@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import bytes from 'bytes'
 import { onBeforeMount, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -9,7 +8,6 @@ import AppDelete from '@/components/app-configure/general/AppDelete.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
-import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppOverview, type AppId } from '@/stores/apps.store'
@@ -33,16 +31,6 @@ function goToDashboard(appId: AppId) {
 
 function calculatePercentageLimitUsed(limitUsed: number, limitAllowed: number) {
   return (limitUsed / limitAllowed) * 100
-}
-
-function getProgressState(limitUsedPercent: number) {
-  if (limitUsedPercent <= 50) {
-    return 'success'
-  }
-  if (limitUsedPercent > 70) {
-    return 'error'
-  }
-  return 'warn'
 }
 
 function handleDelete(appId: AppId) {
