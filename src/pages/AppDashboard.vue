@@ -47,7 +47,7 @@ const actions = ref({
   delete: 0,
 })
 const totalUsers = ref(0)
-const appName = appsStore.app(appId).name
+const appName = ref(appsStore.selectedApp?.name)
 const storageUsed = ref('0 B')
 const bandwidthUsed = ref('0 B')
 const storageUsedPercentage = ref(0)
@@ -300,6 +300,13 @@ watch(
   () => durationSelected.value,
   () => {
     fetchAndPopulateCharts()
+  }
+)
+
+watch(
+  () => appsStore.selectedApp?.name,
+  () => {
+    appName.value = appsStore.selectedApp?.name
   }
 )
 </script>

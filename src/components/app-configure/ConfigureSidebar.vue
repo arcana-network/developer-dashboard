@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
@@ -7,11 +8,15 @@ import profileIcon from '@/assets/iconography/profile.png'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { CONFIGURE_TABS, type ConfigureTabType } from '@/utils/constants'
 
 const authStore = useAuthStore()
+const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
+const showAppsList = ref(false)
+const router = useRouter()
 const emit = defineEmits(['switch-tab'])
 
 function onClickOfMenu(tab: string) {
@@ -20,6 +25,15 @@ function onClickOfMenu(tab: string) {
     showConfigureSubmenu.value = !showConfigureSubmenu.value
   }
   console.log({ tab })
+}
+
+function onLogoClick() {
+  router.push('/')
+}
+
+function onAppClick(appId: AppId) {
+  appsStore.setSelectedAppId(appId)
+  router.push({ name: 'AppDetails', params: { appId } })
 }
 
 type ConfigureProps = {
@@ -34,10 +48,41 @@ withDefaults(defineProps<ConfigureProps>(), {
 <template>
   <aside class="configure-sidebar">
     <VCard class="configure-sidebar-card">
-      <div class="logo">
+      <button class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
-      </div>
+      </button>
       <VStack direction="column" gap="1rem" class="configure-tabs flex-grow">
+        <VStack class="apps-name__container">
+          <button
+            class="flex app-name__container"
+            @click="showAppsList = !showAppsList"
+          >
+            <label>{{ appsStore.selectedApp?.name }}</label>
+            <img
+              v-if="appsStore.apps.length > 1"
+              :src="arrowIcon"
+              alt="arrow-icon"
+              class="arrow-icon"
+              :class="{
+                'arrow-icon--active': showAppsList,
+              }"
+            />
+          </button>
+          <div
+            v-if="appsStore.apps.length > 1 && showAppsList"
+            class="apps-name__list-container"
+          >
+            <VCardButton
+              v-for="app in appsStore.apps"
+              :key="app.name"
+              class="apps-name__list-item"
+              :active="appsStore.selectedAppId === app.id"
+              @click="onAppClick(app.id)"
+            >
+              {{ app.name }}
+            </VCardButton>
+          </div>
+        </VStack>
         <VCardButton
           v-for="tab in CONFIGURE_TABS"
           :key="`configure-sidebar-tab-${tab.type}`"
@@ -55,9 +100,9 @@ withDefaults(defineProps<ConfigureProps>(), {
               v-if="tab.type === 'configure'"
               :src="arrowIcon"
               alt="arrow-icon"
-              class="sidebar__option-arrow-icon"
+              class="arrow-icon"
               :class="{
-                'sidebar__option-arrow-icon--active': showConfigureSubmenu,
+                'arrow-icon--active': showConfigureSubmenu,
               }"
             />
           </div>
@@ -95,6 +140,17 @@ withDefaults(defineProps<ConfigureProps>(), {
 </template>
 
 <style scoped>
+.logo {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  transition: opacity 0.3s;
+}
+
 .configure-sidebar {
   flex: 0 0 12rem;
   height: 100%;
@@ -165,19 +221,53 @@ withDefaults(defineProps<ConfigureProps>(), {
   margin-right: 4px;
 }
 
-.sidebar__option-arrow-icon {
+.arrow-icon {
   width: 18px;
   height: 18px;
   margin-left: 4px;
   transition: ease 0.5s;
 }
 
-.sidebar__option-arrow-icon--active {
+.arrow-icon--active {
   transition: ease 0.5s;
   transform: rotate(180deg);
 }
 
 .strong {
   font-weight: 600 !important;
+}
+
+.apps-name__container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #8d8d8d;
+}
+
+.apps-name__list-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+  margin-left: 10px;
+}
+
+.apps-name__list-item {
+  display: flex;
+  justify-content: flex-start;
+  padding: 0;
+  margin-top: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.app-name__container {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
 }
 </style>
