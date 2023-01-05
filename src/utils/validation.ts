@@ -1,3 +1,5 @@
+import { toASCII } from 'punycode'
+
 const urlRegexPattern = {
   protocol: 'https?://',
   localhost: 'localhost',
@@ -14,7 +16,18 @@ const URLRegex = new RegExp(
 )
 
 function isValidEmail(email: string) {
-  return /^\w+[\w-.]*@\w+((-\w+)|(\w*))\.[a-z]{2,3}$/.test(email)
+  const splitEmails = email.split('@')
+  let decodedEmail = ''
+  if (splitEmails[0]) {
+    decodedEmail += toASCII(splitEmails[0])
+  }
+  if (splitEmails[1]) {
+    decodedEmail += '@' + toASCII(splitEmails[1])
+  }
+  console.log({ decodedEmail })
+  return /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([\w]{2,24}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i.test(
+    decodedEmail
+  )
 }
 
 function isValidUrl(url: string) {
