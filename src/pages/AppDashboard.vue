@@ -5,16 +5,11 @@ import moment from 'moment'
 import { computed, onMounted, ref, watch, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import ArrowRightIcon from '@/assets/iconography/arrow-right.svg'
 import CheckIcon from '@/assets/iconography/check.svg'
 import CopyIcon from '@/assets/iconography/copy.svg'
-import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
-import VIconButton from '@/components/lib/VIconButton/VIconButton.vue'
-import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
-import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import {
@@ -32,10 +27,7 @@ const router = useRouter()
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
-const liveEnv = false
 const appId = useAppId()
-
-const appAddress = appsStore.app(appId).address
 
 const durationSelected: Ref<Duration> = ref('month')
 const actions = ref({
@@ -47,6 +39,7 @@ const actions = ref({
   delete: 0,
 })
 const totalUsers = ref(0)
+const appAddress = ref(appsStore.selectedApp?.address)
 const appName = ref(appsStore.selectedApp?.name)
 const storageUsed = ref('0 B')
 const bandwidthUsed = ref('0 B')
@@ -268,10 +261,6 @@ function generateInitialChartValuesForYear() {
   }
 }
 
-function goToConfigure() {
-  router.push({ name: 'GeneralSettings', params: { appId } })
-}
-
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
@@ -304,9 +293,10 @@ watch(
 )
 
 watch(
-  () => appsStore.selectedApp?.name,
+  () => appsStore.selectedAppId,
   () => {
     appName.value = appsStore.selectedApp?.name
+    appAddress.value = appsStore.selectedApp?.address
   }
 )
 </script>
@@ -315,28 +305,11 @@ watch(
   <main class="container">
     <section class="flex dashboard-heading flex-wrap">
       <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
-        {{ appName }}
+        Dashboard
       </h1>
       <div
         class="flex mobile-remove justify-content-center flex-center flex-wrap"
       >
-        <span
-          v-if="liveEnv"
-          class="body-1 mobile-remove"
-          style="margin-right: 8px"
-        >
-          MainNet
-        </span>
-        <span v-else class="body-1 mobile-remove" style="margin-right: 8px">
-          TestNet
-        </span>
-        <v-switch
-          v-model="liveEnv"
-          variant="secondary"
-          style="margin-top: 2px; margin-right: 1em"
-          class="mobile-remove"
-          disabled
-        />
         <span
           style="margin-right: 5px; color: var(--text-grey)"
           class="body-1 mobile-remove"
@@ -363,29 +336,6 @@ watch(
             style="margin-top: 4px"
           />
         </v-tooltip>
-      </div>
-      <div
-        class="configure-btn cursor-pointer justify-center flex-center"
-        style="display: inline-flex"
-        @click.stop="goToConfigure"
-      >
-        <img
-          src="@/assets/iconography/settings.svg"
-          alt="configure app settings"
-          @click.stop="goToConfigure"
-        />
-        <v-button
-          disabled
-          variant="link"
-          label="Configure"
-          style="
-            margin-top: 3px;
-            margin-left: 0.5em;
-            color: var(--primary);
-            cursor: pointer;
-          "
-          @click.stop="goToConfigure"
-        />
       </div>
     </section>
     <div
@@ -415,79 +365,6 @@ watch(
         />
       </v-tooltip>
     </div>
-    <section style="margin-top: 2rem; color: var(--text-white)">
-      <h2 style="margin-bottom: 1rem">OVERVIEW</h2>
-      <div
-        class="flex flex-wrap justify-space-between"
-        style="gap: 1em; margin-top: 20px"
-      >
-        <v-card
-          class="flex sm-column overview-card flex-grow"
-          style="gap: 1.5em"
-          variant="elevated"
-        >
-          <div class="card-icon">
-            <img src="@/assets/iconography/total-users.svg" alt="Total users" />
-          </div>
-          <div class="flex flex-grow">
-            <div>
-              <h4 class="font-400">Total Users</h4>
-              <h2 style="margin-top: 0.5em; font-size: 2em">
-                {{ totalUsers }}
-              </h2>
-            </div>
-            <v-icon-button
-              :icon="ArrowRightIcon"
-              style="margin-left: auto"
-              @click.stop="goToUsers"
-            />
-          </div>
-        </v-card>
-        <v-card
-          class="flex sm-column overview-card flex-grow"
-          style="gap: 1.5em"
-          variant="elevated"
-        >
-          <div class="card-icon">
-            <img
-              src="@/assets/iconography/no-of-files.svg"
-              alt="Number of files"
-              style="margin-top: 1px; margin-left: -2px"
-            />
-          </div>
-          <div class="flex" style="flex-grow: 1">
-            <div>
-              <h4 style="font-weight: 400">No of Files</h4>
-              <h2 style="margin-top: 0.5em; font-size: 2em">
-                {{ actions.upload - actions.delete }}
-              </h2>
-            </div>
-            <v-icon-button
-              :icon="ArrowRightIcon"
-              style="margin-left: auto; visibility: hidden"
-              @click.stop="goToUsers"
-            />
-          </div>
-        </v-card>
-        <v-card
-          class="flex overview-card tablet-remove"
-          variant="elevated"
-          style="flex-grow: 1; gap: 1.5em"
-        >
-          <div class="card-icon">
-            <img
-              src="@/assets/iconography/no-of-files.svg"
-              alt="Number of files"
-              style="margin-top: 1px; margin-left: -2px"
-            />
-          </div>
-          <div>
-            <h4 style="font-weight: 400">Estimated Cost</h4>
-            <h2 style="margin-top: 0.5em; font-size: 2em">$0</h2>
-          </div>
-        </v-card>
-      </div>
-    </section>
     <v-card
       class="column usage-container"
       variant="elevated"
@@ -504,169 +381,20 @@ watch(
           :active="durationSelected === 'month'"
           @click.stop="durationSelected = 'month'"
         />
-        <v-card-button
-          label="Quarterly"
-          :active="durationSelected === 'quarter'"
-          @click.stop="durationSelected = 'quarter'"
-        />
-        <v-card-button
-          label="Yearly"
-          :active="durationSelected === 'year'"
-          @click.stop="durationSelected = 'year'"
-        />
       </div>
+      <v-seperator />
       <section class="flex sm-column">
-        <section
-          class="flex column storage-container"
-          style="flex-grow: 1; gap: 1em"
-        >
-          <div class="flex" style="gap: 1em; margin-top: 1.2em">
-            <h3>STORAGE</h3>
-            <v-tooltip
-              title="This is an aggregation of the data uploaded/stored by all users of your app"
-            >
-              <img
-                src="@/assets/iconography/info-circle-outline.svg"
-                style="cursor: pointer"
-              />
-            </v-tooltip>
-          </div>
-          <div
-            class="flex"
-            style="
-              align-items: flex-end;
-              justify-content: space-between;
-              width: 95%;
-            "
-          >
-            <h2 style="font-family: var(--font-body); font-size: 2em">
-              {{ storageUsed }} used
-            </h2>
-            <span
-              class="body-1"
-              style="font-weight: 600; color: var(--text-grey)"
-            >
-              {{ storageRemaining }} Remaining
-            </span>
-          </div>
-          <v-progress-bar
-            style="width: 95%"
-            :percentage="storageUsedPercentage || 1"
-            :state="storageProgressState"
-            class="limits-progress"
-          />
-          <div
-            id="storageChartContainer"
-            style="min-width: 300px; margin-top: 0.65em"
-          >
-            <canvas id="storageChart" width="200"></canvas>
-          </div>
-        </section>
-        <section
-          class="flex column sm-column-gap"
-          style="flex-grow: 1; gap: 1em"
-        >
-          <div class="flex" style="gap: 1em; margin-top: 1.2em">
-            <h3>BANDWIDTH</h3>
-            <v-tooltip
-              title="This is an aggregation of data downloaded/egress by all users of your app"
-            >
-              <img
-                src="@/assets/iconography/info-circle-outline.svg"
-                style="cursor: pointer"
-              />
-            </v-tooltip>
-          </div>
-          <div
-            class="flex"
-            style="
-              align-items: flex-end;
-              justify-content: space-between;
-              width: 95%;
-            "
-          >
-            <h2 style="font-family: var(--font-body); font-size: 2em">
-              {{ bandwidthUsed }} used
-            </h2>
-            <span
-              class="body-1"
-              style="font-weight: 600; color: var(--text-grey)"
-            >
-              {{ bandwidthRemaining }} Remaining
-            </span>
-          </div>
-          <v-progress-bar
-            style="width: 95%"
-            :percentage="bandwidthUsedPercentage || 1"
-            :state="bandwidthProgressState"
-            class="limits-progress"
-          />
-          <div
-            id="bandwidthChartContainer"
-            style="min-width: 300px; margin-top: 0.65em"
-          >
-            <canvas id="bandwidthChart" width="200"></canvas>
-          </div>
-        </section>
+        <h2>Users</h2>
       </section>
-      <v-seperator style="margin: 1.2em 0" />
-      <div class="flex" style="gap: 1em; margin-top: 1.2em">
-        <h3>ACTIONS</h3>
-        <v-tooltip
-          title="This is an aggregation of all Actions (uploads, downloads, shares, revokes and deletes) by all users of your app"
-        >
-          <img
-            src="@/assets/iconography/info-circle-outline.svg"
-            style="cursor: pointer"
-          />
-        </v-tooltip>
-      </div>
-      <div
-        class="flex flex-wrap"
-        style="align-content: stretch; margin-top: 1.5rem"
-      >
-        <div class="flex action-container">
-          <div class="flex column action" style="flex-grow: 1">
-            <h2>{{ actions.upload }}</h2>
-            <span class="body-1">Upload</span>
-          </div>
-          <v-seperator :vertical="true" class="vr-border tablet-remove" />
-        </div>
-        <div class="flex action-container">
-          <div class="flex column action" style="flex-grow: 1">
-            <h2>{{ actions.download }}</h2>
-            <span class="body-1">Download</span>
-          </div>
-          <v-seperator :vertical="true" class="vr-border tablet-remove" />
-        </div>
-        <div class="flex action-container">
-          <div class="flex column action" style="flex-grow: 1">
-            <h2>{{ actions.share }}</h2>
-            <span class="body-1">Share</span>
-          </div>
-          <v-seperator :vertical="true" class="vr-border tablet-remove" />
-        </div>
-        <div class="flex action-container">
-          <div class="flex column action" style="flex-grow: 1">
-            <h2>{{ actions.transfers }}</h2>
-            <span class="body-1">Transfers</span>
-          </div>
-          <v-seperator :vertical="true" class="vr-border tablet-remove" />
-        </div>
-        <div class="flex action-container">
-          <div class="flex column action" style="flex-grow: 1">
-            <h2>{{ actions.revoke }}</h2>
-            <span class="body-1">Revoke</span>
-          </div>
-          <v-seperator :vertical="true" class="vr-border tablet-remove" />
-        </div>
-        <div class="flex action-container">
-          <div class="flex column action" style="flex-grow: 1">
-            <h2>{{ actions.delete }}</h2>
-            <span class="body-1">Delete</span>
-          </div>
-        </div>
-      </div>
+    </v-card>
+    <v-card
+      class="column usage-container"
+      variant="elevated"
+      style="align-items: stretch"
+    >
+      <section class="flex sm-column">
+        <h2>Tutorials</h2>
+      </section>
     </v-card>
   </main>
 </template>
@@ -678,6 +406,7 @@ watch(
 
 .usage-container {
   padding: 2em;
+  margin-top: 2em;
 }
 
 .card-icon {

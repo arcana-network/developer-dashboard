@@ -2,6 +2,7 @@
 import { onMounted, ref, computed } from '@vue/runtime-core'
 import { useRoute, useRouter } from 'vue-router'
 
+import AppFooter from '@/components/AppFooter.vue'
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
@@ -156,6 +157,7 @@ onMounted(async () => {
         </div>
       </section>
     </main>
+    <AppFooter />
   </div>
 </template>
 

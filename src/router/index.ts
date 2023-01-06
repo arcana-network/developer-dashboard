@@ -11,7 +11,6 @@ import constants from '@/utils/constants'
 const authStore = useAuthStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
-const AppConfigure = () => import('@/pages/AppConfigure.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')
 const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
@@ -19,14 +18,13 @@ const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 const ManageApps = () => import('@/pages/ManageApps.vue')
 const AppDetails = () => import('@/pages/AppDetails.vue')
 
-const GeneralSettings = () =>
-  import('@/components/app-configure/general/GeneralSettings.vue')
 const AuthSettings = () =>
   import('@/components/app-configure/auth/AuthSettings.vue')
-const StoreSettings = () =>
-  import('@/components/app-configure/store/StoreSettings.vue')
-const AccessSettings = () =>
-  import('@/components/app-configure/access/AccessSettings.vue')
+const WebWallet = () => import('@/components/app-configure/auth/WebWallet.vue')
+const BrandingScreen = () =>
+  import('@/components/app-configure/auth/BrandingScreen.vue')
+const PasswordlessAuth = () =>
+  import('@/components/app-configure/auth/PasswordlessAuth.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -77,54 +75,54 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'Configure',
-        path: 'config',
-        component: AppConfigure,
+        name: 'BrandingScreen',
+        path: 'branding',
+        component: BrandingScreen,
         meta: {
           requiresAuth: true,
         },
-        props: true,
-        redirect: { name: 'GeneralSettings' },
-        children: [
-          {
-            name: 'GeneralSettings',
-            path: 'general',
-            component: GeneralSettings,
-          },
-          {
-            name: 'AuthSettings',
-            path: 'auth',
-            component: AuthSettings,
-          },
-          {
-            name: 'StoreSettings',
-            path: 'store',
-            component: StoreSettings,
-          },
-          {
-            name: 'AccessSettings',
-            path: 'access',
-            component: AccessSettings,
-          },
-        ],
+      },
+      {
+        name: 'PasswordlessAuth',
+        path: 'passwordlessAuth',
+        component: PasswordlessAuth,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'AuthSettings',
+        path: 'socialAuth',
+        component: AuthSettings,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'ArcanaWallet',
+        path: 'arcanaWallet',
+        component: WebWallet,
+        meta: {
+          requiresAuth: true,
+        },
       },
       {
         name: 'Users',
-        path: '/apps/:appId/users',
+        path: 'users',
         component: AppUsers,
         meta: {
           requiresAuth: true,
         },
       },
+      {
+        name: 'Profile',
+        path: 'profile',
+        component: AppProfile,
+        meta: {
+          requiresAuth: true,
+        },
+      },
     ],
-  },
-  {
-    name: 'Profile',
-    path: '/profile',
-    component: AppProfile,
-    meta: {
-      requiresAuth: true,
-    },
   },
   {
     name: 'Login',

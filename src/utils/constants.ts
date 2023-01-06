@@ -71,7 +71,15 @@ const regions: Region[] = [
   },
 ]
 
-type ConfigureTabType = 'dashboard' | 'configure' | 'users'
+type ConfigureTabType =
+  | 'dashboard'
+  | 'configure'
+  | 'users'
+  | 'branding'
+  | 'passwordlessAuth'
+  | 'socialAuth'
+  | 'arcanaWallet'
+  | 'profile'
 
 type ConfigureTabSubMenu = {
   type: string

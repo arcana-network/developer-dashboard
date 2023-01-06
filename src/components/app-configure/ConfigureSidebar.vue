@@ -19,12 +19,20 @@ const showAppsList = ref(false)
 const router = useRouter()
 const emit = defineEmits(['switch-tab'])
 
+type ConfigureProps = {
+  currentTab?: ConfigureTabType
+}
+
+withDefaults(defineProps<ConfigureProps>(), {
+  currentTab: 'dashboard',
+})
+
 function onClickOfMenu(tab: string) {
-  // emit('switch-tab', tab)
   if (tab === 'configure') {
     showConfigureSubmenu.value = !showConfigureSubmenu.value
+  } else {
+    emit('switch-tab', tab)
   }
-  console.log({ tab })
 }
 
 function onLogoClick() {
@@ -33,16 +41,9 @@ function onLogoClick() {
 
 function onAppClick(appId: AppId) {
   appsStore.setSelectedAppId(appId)
+  emit('switch-tab', 'dashboard')
   router.push({ name: 'AppDetails', params: { appId } })
 }
-
-type ConfigureProps = {
-  currentTab?: ConfigureTabType
-}
-
-withDefaults(defineProps<ConfigureProps>(), {
-  currentTab: 'dashboard',
-})
 </script>
 
 <template>
@@ -89,11 +90,9 @@ withDefaults(defineProps<ConfigureProps>(), {
           :class="{ strong: currentTab === tab.type }"
           class="sidebar__option"
           :active="currentTab === tab.type"
+          @click.stop="onClickOfMenu(tab.type)"
         >
-          <div
-            class="sidebar__option-item"
-            @click.stop="onClickOfMenu(tab.type)"
-          >
+          <div class="sidebar__option-item">
             <img :src="tab.icon" alt="icon" class="sidebar__option-icon" />
             <span>{{ tab.label }}</span>
             <img
@@ -109,11 +108,14 @@ withDefaults(defineProps<ConfigureProps>(), {
           <div
             v-if="tab.subMenu && showConfigureSubmenu"
             class="sidebar__submenu"
+            @click.stop=""
           >
             <VCardButton
               v-for="subTab in tab.subMenu"
               :key="subTab.label"
               class="sidebar__submenu-option"
+              :active="currentTab === subTab.type"
+              @click.stop="onClickOfMenu(subTab.type)"
             >
               <div class="sidebar__submenu-option-item">
                 <img
@@ -129,6 +131,7 @@ withDefaults(defineProps<ConfigureProps>(), {
         <VCardButton
           class="sidebar__option"
           style="flex-direction: row"
+          :active="currentTab === 'profile'"
           @click.stop="onClickOfMenu('profile')"
         >
           <img :src="profileIcon" alt="icon" class="sidebar__option-icon" />

@@ -2,7 +2,6 @@
 import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
-import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
@@ -31,10 +30,8 @@ const organisationDetails: Ref<OrganizationDetails> = ref({
   sizeErrorMessage: '',
   country: '',
 })
-const name = ref('')
-name.value = authStore.name
-const email = ref('')
-email.value = authStore.email
+const name = ref(authStore.name)
+const email = ref(authStore.email)
 const router = useRouter()
 
 let organisationDetailsResetState: OrganizationDetails
@@ -97,7 +94,6 @@ function resetOrganisationDetails() {
 
 <template>
   <div>
-    <app-header />
     <main class="container">
       <h1 class="heading">PROFILE DETAILS</h1>
       <section class="personal-details">

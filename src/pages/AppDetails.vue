@@ -7,20 +7,19 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
-import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
-const currentTab: Ref<ConfigureTabType> = ref('dashboard')
+const currentTab = ref('dashboard')
 const router = useRouter()
 const appId = useAppId()
 
-function switchTab(tab: ConfigureTab) {
-  currentTab.value = tab.type
+function switchTab(tab: string) {
+  currentTab.value = tab
   router.push({
-    name: `${tab.label}Settings`,
     params: { appId },
+    path: tab,
   })
 }
 
