@@ -379,6 +379,30 @@ function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
   )
 }
 
+type AccountStatus = 'active' | 'overlimit' | 'overdue'
+
+function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
+  // Mocking the account details for now
+  const localStatus = localStorage.getItem('account-status')?.toLowerCase()
+  if (localStatus === 'overdue' || localStatus === 'overlimit') {
+    return Promise.resolve({
+      status: 200,
+      statusText: 'Success',
+      headers: {},
+      config: {},
+      data: localStatus,
+    })
+  } else {
+    return Promise.resolve({
+      status: 200,
+      statusText: 'Success',
+      headers: {},
+      config: {},
+      data: 'active',
+    })
+  }
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -407,9 +431,11 @@ export {
   listDelegateKeys,
   editDelegate,
   deleteDelegate,
+  getAccountStatus,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
   type Duration,
   type AppConfigRequiredProps,
+  type AccountStatus,
 }

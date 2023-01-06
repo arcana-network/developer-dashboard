@@ -6,10 +6,14 @@ import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import CreateApp from '@/components/app-configure/CreateApp.vue'
 import AppDelete from '@/components/app-configure/general/AppDelete.vue'
 import AppHeader from '@/components/AppHeader.vue'
+import AppStatusBanner from '@/components/AppStatusBanner.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
-import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import {
+  getAccountStatus,
+  type AccountStatus,
+} from '@/services/gateway.service'
 import { useAppsStore, type AppOverview, type AppId } from '@/stores/apps.store'
 
 const router = useRouter()
@@ -23,6 +27,7 @@ type AppData = AppOverview & {
 const apps: Ref<AppData[]> = ref(appsStore.apps)
 const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
+const accountStatus: Ref<AccountStatus> = ref('active')
 const appToDelete = ref(0)
 
 function goToDashboard(appId: AppId) {
@@ -56,7 +61,10 @@ function getImageUrl(appId: AppId) {
   return appLogos.dark.vertical || appLogos.light.vertical || AppFallbackLogo
 }
 
-onBeforeMount(calculateAppLimits)
+onBeforeMount(async () => {
+  accountStatus.value = (await getAccountStatus()).data
+  calculateAppLimits()
+})
 
 appsStore.$subscribe(() => {
   apps.value = appsStore.apps
@@ -66,6 +74,10 @@ appsStore.$subscribe(() => {
 
 <template>
   <div>
+    <AppStatusBanner
+      v-if="accountStatus !== 'active'"
+      :status="accountStatus"
+    />
     <AppHeader />
     <main>
       <VStack direction="column" gap="2rem" class="container">
@@ -93,7 +105,10 @@ appsStore.$subscribe(() => {
             v-for="app in apps"
             :key="`app-${app.id}`"
             class="app-card"
-            @click.stop="goToDashboard(app.id)"
+            :class="{ 'app-card-disabled': accountStatus !== 'active' }"
+            @click.stop="
+              accountStatus === 'active' ? goToDashboard(app.id) : void 0
+            "
           >
             <VStack direction="column" align="center" class="app-container">
               <img :src="getImageUrl(app.id)" class="app-logo" />
@@ -108,22 +123,8 @@ appsStore.$subscribe(() => {
                   <span class="stats-title">Total Users</span>
                   <span class="stats-number">{{ app.totalUsers }}</span>
                 </VStack>
-                <VSeperator vertical class="stats-separator" />
-                <VStack direction="column" align="center" gap="0.25rem">
-                  <span class="stats-title">Estimated Cost</span>
-                  <span class="stats-number">${{ app.estimatedCost }}</span>
-                </VStack>
               </VCard>
-              <VStack gap="1.25rem" class="limit-indicator-container">
-                <VStack direction="column" class="flex-grow">
-                  <span class="limit-title">Monthly Active Users</span>
-                  <span class="limit-details">
-                    <span class="mau-users">1000</span>
-                    users
-                  </span>
-                </VStack>
-              </VStack>
-              <VStack gap="1rem" style="width: 100%; margin-top: 1.5rem">
+              <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
                 <VButton
                   variant="secondary"
                   label="Delete"
@@ -173,8 +174,13 @@ appsStore.$subscribe(() => {
   align-items: center;
   justify-content: center;
   width: clamp(20rem, 30vw, 25rem);
-  height: 28rem;
+  height: 24rem;
   cursor: pointer;
+}
+
+.app-card-disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
 }
 
 .app-container {
