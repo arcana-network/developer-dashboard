@@ -12,7 +12,6 @@ const authStore = useAuthStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')
-const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 const ManageApps = () => import('@/pages/ManageApps.vue')
@@ -23,8 +22,6 @@ const AuthSettings = () =>
 const WebWallet = () => import('@/components/app-configure/auth/WebWallet.vue')
 const AppBranding = () =>
   import('@/components/app-configure/general/AppBranding.vue')
-const PasswordlessAuth = () =>
-  import('@/components/app-configure/auth/PasswordlessAuth.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -83,14 +80,6 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'PasswordlessAuth',
-        path: 'passwordlessAuth',
-        component: PasswordlessAuth,
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
         name: 'AuthSettings',
         path: 'socialAuth',
         component: AuthSettings,
@@ -102,14 +91,6 @@ const routes: RouteRecordRaw[] = [
         name: 'ArcanaWallet',
         path: 'arcanaWallet',
         component: WebWallet,
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        name: 'Users',
-        path: 'users',
-        component: AppUsers,
         meta: {
           requiresAuth: true,
         },

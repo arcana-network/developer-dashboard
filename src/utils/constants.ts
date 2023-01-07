@@ -74,9 +74,7 @@ const regions: Region[] = [
 type ConfigureTabType =
   | 'dashboard'
   | 'configure'
-  | 'users'
   | 'branding'
-  | 'passwordlessAuth'
   | 'socialAuth'
   | 'arcanaWallet'
   | 'profile'
@@ -114,18 +112,12 @@ const CONFIGURE_TABS: readonly ConfigureTab[] = [
         icon: socialMediaIcon,
       },
       {
-        type: 'passwordlessAuth',
-        label: 'Passwordless Auth',
-        icon: passcodeLockIcon,
-      },
-      {
         type: 'arcanaWallet',
         label: 'Arcana Wallet',
         icon: walletIcon,
       },
     ],
   },
-  { type: 'users', label: 'Users', icon: usersGroupIcon },
 ]
 
 type BandwidthLimitUnit = {
