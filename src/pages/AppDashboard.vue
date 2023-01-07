@@ -10,13 +10,15 @@ import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
+import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const appsStore = useAppsStore()
 const toast = useToast()
-const durationSelected: Ref<Duration> = ref('month')
+const durationSelected: Ref<Duration> = ref('day')
 const appAddress = ref(appsStore.selectedApp?.address)
 const appName = ref(appsStore.selectedApp?.name)
+const chartConfig = chartUtils.getInitialUsersChartConfig()
 
 const tutorials = [
   {
@@ -51,6 +53,26 @@ const tutorials = [
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
+onMounted(fetchActiveUsers)
+
+onMounted(() => {
+  const chartCtx = document.getElementById('users-count-chart').getContext('2d')
+  // chartConfig.data.datasets = [
+  //   { ...chartConfig.data.datasets[0], data: [1, 2, 3, 4, 5, 6, 7] },
+  // ]
+  chartUtils.createChartView(chartCtx, chartConfig)
+})
+
+watch(() => durationSelected.value, fetchActiveUsers)
+
+watch(
+  () => appsStore.selectedAppId,
+  () => {
+    appName.value = appsStore.selectedApp?.name
+    appAddress.value = appsStore.selectedApp?.address
+  }
+)
+
 async function copyAppAddress() {
   try {
     SmartContractIcon.value = CheckIcon
@@ -71,24 +93,10 @@ async function copyAppAddress() {
 async function fetchActiveUsers() {
   if (durationSelected.value === 'day') {
     const response = await fetchDau(appsStore.selectedApp?.address)
-    console.log(response, 'fetchDau-response')
   } else if (durationSelected.value === 'month') {
     const response = await fetchMau(appsStore.selectedApp?.address)
-    console.log(response, 'fetchMau - response')
   }
 }
-
-onMounted(fetchActiveUsers)
-
-watch(() => durationSelected.value, fetchActiveUsers)
-
-watch(
-  () => appsStore.selectedAppId,
-  () => {
-    appName.value = appsStore.selectedApp?.name
-    appAddress.value = appsStore.selectedApp?.address
-  }
-)
 </script>
 
 <template>
@@ -160,21 +168,26 @@ watch(
       variant="elevated"
       style="align-items: stretch"
     >
-      <div class="flex flex-wrap duration" style="margin-bottom: 1em">
-        <v-card-button
-          label="Daily"
-          :active="durationSelected === 'day'"
-          @click.stop="durationSelected = 'day'"
-        />
-        <v-card-button
-          label="Monthly"
-          :active="durationSelected === 'month'"
-          @click.stop="durationSelected = 'month'"
-        />
+      <div class="flex justify-space-between flex-center">
+        <h2>Users</h2>
+        <div class="flex flex-wrap duration">
+          <v-card-button
+            label="Daily"
+            :active="durationSelected === 'day'"
+            @click.stop="durationSelected = 'day'"
+          />
+          <v-card-button
+            label="Monthly"
+            :active="durationSelected === 'month'"
+            @click.stop="durationSelected = 'month'"
+          />
+        </div>
       </div>
       <v-seperator />
-      <section class="flex sm-column">
-        <h2>Users</h2>
+      <section class="flex column">
+        <div class="chart__container">
+          <canvas id="users-count-chart" class="users-count-chart"></canvas>
+        </div>
       </section>
     </v-card>
     <v-card
@@ -208,6 +221,10 @@ watch(
 <style scoped>
 .container {
   padding: 2rem;
+}
+
+.users-count-chart {
+  max-height: 430px;
 }
 
 .tutorials__container {

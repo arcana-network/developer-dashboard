@@ -23,10 +23,10 @@ hr,
 
 hr {
   width: 100%;
-  border-top: 1px solid #000;
+  border-top: 1px solid #8d8d8d;
 }
 
 .vr {
-  border-left: 1px solid #000;
+  border-left: 1px solid #8d8d8d;
 }
 </style>
