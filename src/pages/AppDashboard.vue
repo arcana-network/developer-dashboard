@@ -1,9 +1,5 @@
 <script lang="ts" setup>
-import bytes from 'bytes'
-import type { Chart } from 'chart.js'
-import moment from 'moment'
-import { computed, onMounted, ref, watch, type Ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, ref, watch, type Ref } from 'vue'
 
 import CheckIcon from '@/assets/iconography/check.svg'
 import CopyIcon from '@/assets/iconography/copy.svg'
@@ -12,254 +8,45 @@ import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import {
-  fetchPeriodicUsage,
-  fetchStats,
-  type Duration,
-} from '@/services/gateway.service'
+import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
-import { useLoaderStore } from '@/stores/loader.store'
-import { useAppId } from '@/use/getAppId'
-import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
-const router = useRouter()
 const appsStore = useAppsStore()
-const loaderStore = useLoaderStore()
 const toast = useToast()
-const appId = useAppId()
-
 const durationSelected: Ref<Duration> = ref('month')
-const actions = ref({
-  upload: 0,
-  download: 0,
-  share: 0,
-  transfers: 0,
-  revoke: 0,
-  delete: 0,
-})
-const totalUsers = ref(0)
 const appAddress = ref(appsStore.selectedApp?.address)
 const appName = ref(appsStore.selectedApp?.name)
-const storageUsed = ref('0 B')
-const bandwidthUsed = ref('0 B')
-const storageUsedPercentage = ref(0)
-const bandwidthUsedPercentage = ref(0)
-const storageRemaining = ref('')
-const bandwidthRemaining = ref('')
-let labels: string[] = []
-let labelAliases: (string | number)[] = []
-let storageData: number[] = []
-let bandwidthData: number[] = []
-const currentDate = moment()
-const quarters = ['Jan-Mar', 'Apr-Jun', 'Jul-Sept', 'Oct-Dec']
-const storageProgressState = computed(() => {
-  if (storageUsedPercentage.value <= 50) {
-    return 'success'
-  }
-  if (storageUsedPercentage.value > 75) {
-    return 'error'
-  }
-  return 'warn'
-})
 
-const bandwidthProgressState = computed(() => {
-  if (bandwidthUsedPercentage.value <= 50) {
-    return 'success'
-  }
-  if (bandwidthUsedPercentage.value > 75) {
-    return 'error'
-  }
-  return 'warn'
-})
-
-let StorageChart: Chart
-let BandwidthChart: Chart
-
-onMounted(async () => {
-  var storageCtx = document.getElementById('storageChart')?.getContext('2d')
-  if (storageCtx) {
-    StorageChart = chartUtils.createChartView(storageCtx, {
-      ...chartUtils.getInitialUsageChartConfig(),
-    })
-  }
-  var bandwidthCtx = document.getElementById('bandwidthChart')?.getContext('2d')
-  if (bandwidthCtx) {
-    BandwidthChart = chartUtils.createChartView(bandwidthCtx, {
-      ...chartUtils.getInitialUsageChartConfig(),
-    })
-  }
-  if (appId) {
-    await appsStore.fetchAndStoreAppConfig(appId)
-    loaderStore.showLoader('Fetching App statistics...')
-    await fetchAndPopulateStatistics()
-    loaderStore.hideLoader()
-  }
-})
-
-async function fetchAndPopulateStatistics() {
-  try {
-    await fetchAndPopulateCharts()
-    await fetchAndPopulateUsersAndActions()
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-async function fetchAndPopulateCharts() {
-  const periodicUsage = await fetchPeriodicUsage(appId, durationSelected.value)
-  updateChart(periodicUsage.data)
-}
-
-async function fetchAndPopulateUsersAndActions() {
-  const stats = await fetchStats(appId)
-  totalUsers.value = stats.data.no_of_users
-  actions.value = {
-    download: stats.data.actions.download,
-    upload: stats.data.actions.upload,
-    delete: stats.data.actions.delete,
-    transfers: stats.data.actions.ownership_change,
-    share: stats.data.actions.share,
-    revoke: stats.data.actions.revoke,
-  }
-
-  const storage = stats.data.consumed_storage
-  storageUsed.value = bytes(storage, {
-    unitSeparator: ' ',
-  })
-  const allowedStorageLimit = stats.data.storage
-  storageUsedPercentage.value = (storage / allowedStorageLimit) * 100
-  storageRemaining.value = bytes(allowedStorageLimit - storage, {
-    unitSeparator: ' ',
-  })
-
-  const bandwidth = stats.data.consumed_bandwidth
-  bandwidthUsed.value = bytes(bandwidth, {
-    unitSeparator: ' ',
-  })
-  const allowedBandwidthLimit = stats.data.bandwidth
-  bandwidthUsedPercentage.value = (bandwidth / allowedBandwidthLimit) * 100
-  bandwidthRemaining.value = bytes(allowedBandwidthLimit - bandwidth, {
-    unitSeparator: ' ',
-  })
-
-  appsStore.addAppOverview(appId, {
-    id: appId,
-    name: appName,
-    storage: {
-      consumed: stats.data.consumed_storage,
-      allowed: stats.data.storage,
-    },
-    bandwidth: {
-      consumed: stats.data.consumed_bandwidth,
-      allowed: stats.data.bandwidth,
-    },
-    noOfFiles: actions.value.upload - actions.value.delete,
-    totalUsers: totalUsers.value,
-    estimatedCost: 0,
-    createdAt: new Date().toString(),
-  })
-}
-
-function updateChart(data: any[]) {
-  labels = []
-  labelAliases = []
-  storageData = []
-  bandwidthData = []
-
-  switch (durationSelected.value) {
-    case 'day':
-      generateInitialChartValuesForDay()
-      break
-    case 'month':
-      generateInitialChartValuesForMonth()
-      break
-    case 'quarter':
-      generateInitialChartValuesForQuarter()
-      break
-    case 'year':
-      generateInitialChartValuesForYear()
-      break
-    default:
-      break
-  }
-
-  data?.forEach((d) => {
-    const index = labelAliases.indexOf(d[durationSelected.value])
-    if (index > -1) {
-      storageData[index] = Number(
-        bytes(d.storage, { unit: 'MB' }).replace('MB', '')
-      )
-      bandwidthData[index] = Number(
-        bytes(d.bandwidth, {
-          unit: 'MB',
-        }).replace('MB', '')
-      )
-    }
-  })
-
-  const storageDatasets = [
-    {
-      label: 'Storage used in MB',
-      data: storageData,
-      borderColor: 'white',
-      borderWidth: 4,
-      lineTension: 0.2,
-    },
-  ]
-  chartUtils.updateChartView(StorageChart, labels, storageDatasets)
-
-  const bandwidthDatasets = [
-    {
-      label: 'Bandwidth used in MB',
-      data: bandwidthData,
-      borderColor: 'white',
-      borderWidth: 4,
-      lineTension: 0.2,
-    },
-  ]
-  chartUtils.updateChartView(BandwidthChart, labels, bandwidthDatasets)
-}
-
-function generateInitialChartValuesForDay() {
-  for (let i = 7 - 1; i >= 0; i--) {
-    const date = currentDate.clone().subtract(i, 'days')
-    labels.push(date.format('DD/MM'))
-    labelAliases.push(date.format('D-M-Y'))
-    storageData.push(0)
-    bandwidthData.push(0)
-  }
-}
-
-function generateInitialChartValuesForMonth() {
-  for (let i = 12 - 1; i >= 0; i--) {
-    const date = currentDate.clone().subtract(i, 'months')
-    labels.push(date.format('MMM'))
-    labelAliases.push(date.format('M-Y'))
-    storageData.push(0)
-    bandwidthData.push(0)
-  }
-}
-
-function generateInitialChartValuesForQuarter() {
-  for (let i = 4 - 1; i >= 0; i--) {
-    const date = currentDate.clone().subtract(i, 'quarter')
-    labels.push(quarters[date.quarter() - 1])
-    labelAliases.push(date.format('Q-Y'))
-    storageData.push(0)
-    bandwidthData.push(0)
-  }
-}
-
-function generateInitialChartValuesForYear() {
-  for (let i = 2; i >= 0; i--) {
-    const year = currentDate.clone().subtract(i, 'years').format('YYYY')
-    labels.push(year)
-    labelAliases.push(Number(year))
-    storageData.push(0)
-    bandwidthData.push(0)
-  }
-}
+const tutorials = [
+  {
+    id: '1',
+    title: 'How to set up social auth',
+    description:
+      'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy first stack for your own ',
+    thumbnail_url:
+      'https://images.unsplash.com/photo-1518461845661-a2640bd93759?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=360&q=80',
+    link: 'https://docs.beta.arcana.network/docs/config_social',
+  },
+  {
+    id: '2',
+    title: 'How to enable up passwordless login',
+    description:
+      'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy first stack for your own ',
+    thumbnail_url:
+      'https://images.unsplash.com/photo-1518461845661-a2640bd93759?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=360&q=80',
+    link: 'https://docs.beta.arcana.network/docs/pwdlessauth',
+  },
+  {
+    id: '3',
+    title: 'How to enable plug & play auth',
+    description:
+      'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy...',
+    thumbnail_url:
+      'https://images.unsplash.com/photo-1518461845661-a2640bd93759?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=360&q=80',
+    link: 'https://docs.beta.arcana.network/docs/authplugnplay',
+  },
+]
 
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
@@ -281,16 +68,19 @@ async function copyAppAddress() {
   }
 }
 
-function goToUsers() {
-  router.push({ name: 'Users', params: { appId } })
+async function fetchActiveUsers() {
+  if (durationSelected.value === 'day') {
+    const response = await fetchDau(appsStore.selectedApp?.address)
+    console.log(response, 'fetchDau-response')
+  } else if (durationSelected.value === 'month') {
+    const response = await fetchMau(appsStore.selectedApp?.address)
+    console.log(response, 'fetchMau - response')
+  }
 }
 
-watch(
-  () => durationSelected.value,
-  () => {
-    fetchAndPopulateCharts()
-  }
-)
+onMounted(fetchActiveUsers)
+
+watch(() => durationSelected.value, fetchActiveUsers)
 
 watch(
   () => appsStore.selectedAppId,
@@ -392,9 +182,25 @@ watch(
       variant="elevated"
       style="align-items: stretch"
     >
-      <section class="flex sm-column">
-        <h2>Tutorials</h2>
-      </section>
+      <h2>Tutorials</h2>
+      <div class="tutorials__container">
+        <div
+          v-for="tutorial in tutorials"
+          :key="tutorial.id"
+          class="tutorial__card"
+        >
+          <img
+            :src="tutorial.thumbnail_url"
+            alt="thumbnail image"
+            class="tutorial__thumbnail"
+          />
+          <h3 class="tutorial__title">{{ tutorial.title }}</h3>
+          <p class="tutorial__description">{{ tutorial.description }}</p>
+          <a :href="tutorial.link" target="_blank" class="tutorial__link"
+            >Read More</a
+          >
+        </div>
+      </div>
     </v-card>
   </main>
 </template>
@@ -404,84 +210,56 @@ watch(
   padding: 2rem;
 }
 
+.tutorials__container {
+  display: flex;
+  margin-top: 10px;
+}
+
+.tutorial__card {
+  flex: 1;
+  align-items: flex-start;
+  padding: 20px;
+  background-color: #000;
+  border-radius: 10px;
+}
+
+.tutorial__card * + * {
+  margin-top: 10px;
+}
+
+.tutorial__card:not(:last-child) {
+  margin-right: 20px;
+}
+
+.tutorial__thumbnail {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.tutorial__link {
+  font-size: 14px;
+  text-transform: uppercase;
+}
+
+.tutorial__title {
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.tutorial__description {
+  margin-bottom: 10px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: #8d8d8d;
+}
+
 .usage-container {
   padding: 2em;
   margin-top: 2em;
 }
 
-.card-icon {
-  width: 20px;
-  height: 20px;
-  padding: 24px;
-  background: linear-gradient(143.36deg, #000 -4.7%, #000 115.05%);
-  border-radius: 50%;
-  box-shadow: inset -2px -2px 4px rgb(80 80 80 / 10%),
-    inset 5px 5px 5px rgb(0 0 0 / 21%),
-    inset -10px -26px 33px -28px rgb(255 255 255 / 10%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
-}
-
-.overview-card {
-  align-items: center;
-  width: 20vw;
-  min-width: 120px;
-  max-width: 480px;
-  padding: 20px;
-}
-
-.vr-border {
-  border-top: unset;
-  border-right: unset;
-  border-bottom: unset;
-}
-
-.configure-btn {
-  transition: tranform 0.4s;
-}
-
-.configure-btn:hover {
-  opacity: 0.7;
-}
-
-.configure-btn:active {
-  transform: scale(0.98);
-}
-
-.action-container {
-  flex: 16.5%;
-  flex-grow: 1;
-}
-
-.action {
-  min-width: 80px;
-  margin: 2em;
-  text-align: center;
-}
-
-.action h2 {
-  font-size: 3em;
-}
-
-.action span {
-  margin-top: 1em;
-}
-
 .duration {
   justify-content: flex-end;
-}
-
-.limits-progress {
-  height: 1rem;
-}
-
-@media only screen and (min-width: 1024px) {
-  .configure-btn {
-    margin-left: 4em;
-  }
-
-  .storage-container {
-    width: 50%;
-  }
 }
 
 @media only screen and (max-width: 1080px) {
@@ -489,18 +267,9 @@ watch(
     width: 100%;
     margin-bottom: 1em;
   }
-
-  .action-container {
-    flex: 33%;
-    flex-grow: 1;
-  }
 }
 
 @media only screen and (max-width: 1023px) {
-  .configure-btn {
-    margin-left: auto;
-  }
-
   .smart-contract-copy {
     visibility: hidden;
   }
@@ -521,28 +290,15 @@ watch(
     padding: 0.65em;
   }
 
-  .action {
-    margin: 0.6em;
-  }
-
   .duration {
     justify-content: center;
-  }
-
-  .overview-card {
-    flex-grow: 1;
-    padding: 18px 8px;
-  }
-
-  .action .body-1 {
-    font-size: 1em;
   }
 
   h4 {
     font-size: 0.85em;
   }
 
-  .overview-card .flex {
+  .flex {
     width: 90%;
     margin-left: 20px;
   }
