@@ -21,8 +21,8 @@ const AppDetails = () => import('@/pages/AppDetails.vue')
 const AuthSettings = () =>
   import('@/components/app-configure/auth/AuthSettings.vue')
 const WebWallet = () => import('@/components/app-configure/auth/WebWallet.vue')
-const BrandingScreen = () =>
-  import('@/components/app-configure/auth/BrandingScreen.vue')
+const AppBranding = () =>
+  import('@/components/app-configure/general/AppBranding.vue')
 const PasswordlessAuth = () =>
   import('@/components/app-configure/auth/PasswordlessAuth.vue')
 
@@ -77,7 +77,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'BrandingScreen',
         path: 'branding',
-        component: BrandingScreen,
+        component: AppBranding,
         meta: {
           requiresAuth: true,
         },
