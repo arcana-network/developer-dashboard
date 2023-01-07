@@ -100,7 +100,7 @@ async function fetchActiveUsers() {
 </script>
 
 <template>
-  <main class="container">
+  <main>
     <section class="flex dashboard-heading flex-wrap">
       <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
         Dashboard
@@ -219,10 +219,6 @@ async function fetchActiveUsers() {
 </template>
 
 <style scoped>
-.container {
-  padding: 2rem;
-}
-
 .users-count-chart {
   max-height: 430px;
 }

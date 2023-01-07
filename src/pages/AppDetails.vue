@@ -39,7 +39,7 @@ onBeforeMount(async () => {
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
     </div>
     <VStack direction="column" class="app-details__content">
-      <div class="flex justify-end">
+      <div class="flex justify-end help-button__container">
         <button class="help-button">Help</button>
       </div>
       <RouterView />
@@ -60,13 +60,17 @@ onBeforeMount(async () => {
   box-sizing: border-box;
   flex: 1;
   height: 100%;
+  padding: 2rem;
   padding-top: 2rem;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
+.help-button__container {
+  margin-bottom: 10px;
+}
+
 .help-button {
-  margin-right: 4rem;
   font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
