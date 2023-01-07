@@ -45,14 +45,7 @@ async function fetchAndStoreDetails() {
   loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
   await appsStore.fetchAndStoreAllApps()
-  if (route.params.redirectTo) {
-    router.push({
-      name: String(route.params.redirectTo),
-      params: route.params,
-    })
-  } else {
-    router.push({ name: 'ManageApps' })
-  }
+  router.push({ name: 'ManageApps' })
   loaderStore.hideLoader()
 }
 
