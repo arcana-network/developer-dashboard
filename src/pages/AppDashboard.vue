@@ -77,7 +77,7 @@ async function copyAppAddress() {
   try {
     SmartContractIcon.value = CheckIcon
     smartContractTooltip.value = 'Copied'
-    await copyToClipboard(appAddress)
+    await copyToClipboard(appAddress.value)
     toast.success('App address copied')
   } catch (e) {
     console.error(e)
