@@ -262,6 +262,16 @@ function fetchMonthlyUsers(appId: AppId) {
   )
 }
 
+function fetchDau(appAddress: string) {
+  const api = `/get-dau/?app=${appAddress}`
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
+}
+
+function fetchMau(appAddress: string) {
+  const api = `/get-mau/?app=${appAddress}`
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
+}
+
 function getNonce(address: string) {
   return axios.get(`${getEnvApi()}/get-nonce/?address=${address}`)
 }
@@ -407,6 +417,8 @@ export {
   listDelegateKeys,
   editDelegate,
   deleteDelegate,
+  fetchDau,
+  fetchMau,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
