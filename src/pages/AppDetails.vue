@@ -7,6 +7,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
+import { Help_Items } from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appsStore = useAppsStore()
@@ -14,6 +15,7 @@ const loaderStore = useLoaderStore()
 const currentTab = ref('dashboard')
 const router = useRouter()
 const appId = useAppId()
+const showHelpMenu = ref(false)
 
 function switchTab(tab: string) {
   currentTab.value = tab
@@ -39,8 +41,20 @@ onBeforeMount(async () => {
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
     </div>
     <VStack direction="column" class="app-details__content">
-      <div class="flex justify-end help-button__container">
-        <button class="help-button">Help</button>
+      <div class="flex justify-end help-button__container position-relative">
+        <button class="help-button" @click.stop="showHelpMenu = !showHelpMenu">
+          Help
+        </button>
+        <ul v-if="showHelpMenu" class="help-menu-items position-absolute">
+          <li
+            v-for="helpItem in Help_Items"
+            :key="helpItem.label"
+            class="cursor-pointer help-menu-item"
+            @click.stop="showHelpMenu = false"
+          >
+            <a :href="helpItem.link" target="_blank">{{ helpItem.label }}</a>
+          </li>
+        </ul>
       </div>
       <RouterView />
     </VStack>
@@ -77,5 +91,34 @@ onBeforeMount(async () => {
   background: transparent;
   border: none;
   outline: none;
+}
+
+.help-menu-items {
+  top: 30px;
+  right: 20px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 245px;
+  padding: 0;
+  padding: 1rem;
+  background-color: #1f1f1f;
+  border-radius: 10px;
+  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%);
+}
+
+.help-menu-item {
+  width: 100%;
+  padding: 0.5rem;
+  font-family: var(--font-body);
+  color: var(--text-white);
+  list-style: none;
+  background-color: #1f1f1f;
+}
+
+.help-menu-items a {
+  color: white;
+  text-decoration: none;
 }
 </style>
