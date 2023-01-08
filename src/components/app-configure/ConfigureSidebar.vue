@@ -43,6 +43,7 @@ function onAppClick(appId: AppId) {
   appsStore.setSelectedAppId(appId)
   emit('switch-tab', 'dashboard')
   router.push({ name: 'AppDetails', params: { appId } })
+  showAppsList.value = false
 }
 </script>
 
