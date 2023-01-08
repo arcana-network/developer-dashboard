@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import type { Chart } from 'chart.js'
+import moment from 'moment'
 import { onMounted, ref, watch, type Ref } from 'vue'
 
 import CheckIcon from '@/assets/iconography/check.svg'
@@ -10,15 +12,33 @@ import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
+const initialDailyData = [-6, -5, -4, -3, -2, -1, 0].reduce((a, b) => {
+  a[moment().day(b).format('YYYY-MM-DD')] = 0
+  return a
+}, {})
+
+const initialMonthlyData = [
+  -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+].reduce((a, b) => {
+  a[moment().month(b).format('YYYY-MM')] = 0
+  return a
+}, {})
+
+let chart: Chart | null = null
+const chartConfig = chartUtils.getInitialUsersChartConfig(
+  Object.keys(initialDailyData),
+  Object.values(initialDailyData)
+)
 const appsStore = useAppsStore()
+const { showLoader, hideLoader } = useLoaderStore()
 const toast = useToast()
 const durationSelected: Ref<Duration> = ref('day')
 const appAddress = ref(appsStore.selectedApp?.address)
 const appName = ref(appsStore.selectedApp?.name)
-const chartConfig = chartUtils.getInitialUsersChartConfig()
 
 const tutorials = [
   {
@@ -53,14 +73,11 @@ const tutorials = [
 const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
-onMounted(fetchActiveUsers)
-
 onMounted(() => {
   const chartCtx = document.getElementById('users-count-chart').getContext('2d')
-  // chartConfig.data.datasets = [
-  //   { ...chartConfig.data.datasets[0], data: [1, 2, 3, 4, 5, 6, 7] },
-  // ]
-  chartUtils.createChartView(chartCtx, chartConfig)
+  chart = chartUtils.createChartView(chartCtx, chartConfig)
+  console.log({ chart })
+  fetchActiveUsers()
 })
 
 watch(() => durationSelected.value, fetchActiveUsers)
@@ -70,6 +87,7 @@ watch(
   () => {
     appName.value = appsStore.selectedApp?.name
     appAddress.value = appsStore.selectedApp?.address
+    fetchActiveUsers()
   }
 )
 
@@ -91,10 +109,30 @@ async function copyAppAddress() {
 }
 
 async function fetchActiveUsers() {
-  if (durationSelected.value === 'day') {
-    const response = await fetchDau(appsStore.selectedApp?.address)
-  } else if (durationSelected.value === 'month') {
-    const response = await fetchMau(appsStore.selectedApp?.address)
+  try {
+    showLoader('Fetching chart data')
+    let activeUsers = []
+    let dataTemplate = {}
+    if (durationSelected.value === 'day') {
+      const { data } = await fetchDau(appsStore.selectedApp?.address)
+      activeUsers = data
+      dataTemplate = initialDailyData
+    } else if (durationSelected.value === 'month') {
+      const { data } = await fetchMau(appsStore.selectedApp?.address)
+      activeUsers = data
+      dataTemplate = initialMonthlyData
+    }
+    activeUsers.forEach((item) => {
+      const formattedData = item.Date.split(' ').join('-')
+      dataTemplate[formattedData] = item.Value
+    })
+    const dataSet = chartConfig.data.datasets[0]
+    const newDataSet = { ...dataSet, data: Object.values(dataTemplate) }
+    chartUtils.updateChartView(chart, Object.keys(dataTemplate), [newDataSet])
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoader()
   }
 }
 </script>
