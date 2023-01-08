@@ -9,6 +9,8 @@ import usersGroupIcon from '@/assets/iconography/users_group.png'
 import walletIcon from '@/assets/iconography/wallet.png'
 import type { UserLimitState } from '@/stores/apps.store'
 
+const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
+
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
   tracingOrigins: [import.meta.env.VITE_SENTRY_TRACING_ORIGINS, /^\//],
@@ -224,6 +226,17 @@ enum WalletMode {
 
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
+const Help_Items = [
+  {
+    label: 'View Docs',
+    link: docs_url,
+  },
+  {
+    label: 'Schedule a Demo',
+    link: 'https://calendly.com/arcana-network/arcana-demo-walkthrough',
+  },
+]
+
 const constants = {
   sentry,
   api,
@@ -252,6 +265,7 @@ export {
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   DOCS_URL,
+  Help_Items,
 }
 
 export type {

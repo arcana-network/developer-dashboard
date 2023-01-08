@@ -6,6 +6,7 @@ import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import BlueCloseIcon from '@/assets/iconography/close.svg'
 import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
+import { Help_Items } from '@/utils/constants'
 
 const router = useRouter()
 const canShowBanner = ref(true)
@@ -15,44 +16,6 @@ const showMenu = ref(false)
 
 let lastScrollTop = 0
 const scrollDelta = 10
-
-const helpItems = [
-  {
-    label: 'View Docs',
-    action() {
-      router.push({ name: 'ManageApps' })
-    },
-    selected: false,
-  },
-  {
-    label: 'Schedule a Demo',
-    action() {
-      router.push({ name: 'ManageApps' })
-    },
-    selected: false,
-  },
-  {
-    label: 'Get Support',
-    action() {
-      router.push({ name: 'ManageApps' })
-    },
-    selected: false,
-  },
-  {
-    label: 'Report a Bug',
-    action() {
-      router.push({ name: 'ManageApps' })
-    },
-    selected: false,
-  },
-  {
-    label: 'Request a Feature',
-    action() {
-      router.push({ name: 'ManageApps' })
-    },
-    selected: false,
-  },
-]
 
 function onLogoClick() {
   router.push('/')
@@ -115,12 +78,12 @@ function handleScroll(ev: any) {
         </button>
         <ul v-if="showHelpMenu" class="help-menu-items position-absolute">
           <li
-            v-for="helpItem in helpItems"
+            v-for="helpItem in Help_Items"
             :key="helpItem.label"
             class="cursor-pointer help-menu-item"
             @click.stop="showHelpMenu = false"
           >
-            {{ helpItem.label }}
+            <a :href="helpItem.link" target="_blank">{{ helpItem.label }}</a>
           </li>
         </ul>
       </div>
@@ -195,6 +158,11 @@ header {
   background-color: #1f1f1f;
   border-radius: 10px;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%);
+}
+
+.help-menu-items a {
+  color: white;
+  text-decoration: none;
 }
 
 .help-menu-item {
