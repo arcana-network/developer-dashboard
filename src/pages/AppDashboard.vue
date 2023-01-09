@@ -123,8 +123,8 @@ async function fetchActiveUsers() {
       dataTemplate = initialMonthlyData
     }
     activeUsers.forEach((item) => {
-      const formattedData = item.Date.split(' ').join('-')
-      dataTemplate[formattedData] = item.Value
+      const formattedDate = item.Date.split(' ').join('-')
+      dataTemplate[formattedDate] = item.Value
     })
     const dataSet = chartConfig.data.datasets[0]
     const newDataSet = { ...dataSet, data: Object.values(dataTemplate) }
