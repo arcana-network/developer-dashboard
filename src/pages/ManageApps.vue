@@ -9,6 +9,8 @@ import AppHeader from '@/components/AppHeader.vue'
 import AppStatusBanner from '@/components/AppStatusBanner.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
+import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import {
   getAccountStatus,
@@ -22,6 +24,7 @@ const appsStore = useAppsStore()
 type AppData = AppOverview & {
   storageUsedPercent?: number
   bandwidthUsedPercent?: number
+  editState?: boolean
 }
 
 const apps: Ref<AppData[]> = ref(appsStore.apps)
@@ -90,7 +93,69 @@ appsStore.$subscribe(() => {
           />
           <h1>MANAGE APPS</h1>
         </VStack>
-        <VStack gap="1.25rem" wrap>
+        <VStack gap="1.25rem" md-direction="column" sm-direction="column">
+          <VCard class="info-card">
+            <VStack direction="column" gap="1.5rem" class="flex-grow">
+              <span class="info-title">Monthly Active Users</span>
+              <VSeperator class="info-separator" />
+              <VStack gap="0.25rem" class="info-margin">
+                <VStack
+                  direction="column"
+                  gap="0.75rem"
+                  :style="{ width: '90%' }"
+                >
+                  <VStack
+                    gap="0.25rem"
+                    sm-direction="column"
+                    align="end"
+                    sm-align="start"
+                  >
+                    <span class="info-detail">1000</span>
+                    <span class="info-detail-name">free users</span>
+                  </VStack>
+                  <VProgressBar
+                    class="info-progress"
+                    :percentage="100"
+                    state="success"
+                  />
+                </VStack>
+                <VStack
+                  direction="column"
+                  gap="0.75rem"
+                  align="end"
+                  :style="{ width: '10%', overflow: 'visible' }"
+                  class="text-ellipsis"
+                >
+                  <VStack
+                    gap="0.25rem"
+                    sm-direction="column"
+                    align="end"
+                    sm-align="start"
+                  >
+                    <span class="info-detail">5</span>
+                    <span class="info-detail-name">paid users</span>
+                  </VStack>
+                  <VProgressBar
+                    class="info-progress"
+                    style="min-width: 0"
+                    :percentage="100"
+                  />
+                </VStack>
+              </VStack>
+            </VStack>
+          </VCard>
+          <VCard class="info-card">
+            <VStack direction="column" gap="1.5rem" class="flex-grow">
+              <span class="info-title">Estimated Cost</span>
+              <VSeperator class="info-separator" />
+              <VStack gap="1rem" class="info-margin">
+                <span class="info-detail">Due:</span>
+                <span class="info-detail info-amount">$100</span>
+              </VStack>
+            </VStack>
+          </VCard>
+        </VStack>
+        <VStack gap="1.25rem" sm-justify="center" wrap>
           <VCard
             class="app-card"
             @click.stop="canCreateApp = true"
@@ -107,17 +172,37 @@ appsStore.$subscribe(() => {
             class="app-card"
             :class="{ 'app-card-disabled': accountStatus !== 'active' }"
             @click.stop="
-              accountStatus === 'active' ? goToDashboard(app.id) : void 0
+              accountStatus === 'active' && !app.editState
+                ? goToDashboard(app.id)
+                : void 0
             "
           >
             <VStack direction="column" align="center" class="app-container">
               <img :src="getImageUrl(app.id)" class="app-logo" />
-              <span
-                class="sub-heading-3 app-name text-ellipsis"
-                :title="app.name"
-              >
-                {{ app.name }}
-              </span>
+              <VStack gap="0.5rem">
+                <span
+                  class="sub-heading-3 app-name text-ellipsis"
+                  :title="app.name"
+                  style="max-width: calc(100% - 1rem)"
+                  :contenteditable="app.editState"
+                >
+                  {{ app.name }}
+                </span>
+                <!-- <img
+                  v-if="app.editState"
+                  src="@/assets/iconography/check-white.svg"
+                  class="edit-icon"
+                  title="Save app name"
+                  @click.stop="app.editState = false"
+                />
+                <img
+                  v-else
+                  src="@/assets/iconography/pencil.svg"
+                  class="edit-icon"
+                  title="Edit app name"
+                  @click.stop="app.editState = true"
+                /> -->
+              </VStack>
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center" gap="0.25rem">
                   <span class="stats-title">Total Users</span>
@@ -243,33 +328,59 @@ appsStore.$subscribe(() => {
   line-height: 1.5;
 }
 
-.limit-indicator-container {
+.info-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
   width: 100%;
+  padding-bottom: 2rem;
 }
 
-.limit-title {
+.info-title {
+  margin-inline: 2rem;
+  margin-top: 2rem;
   font-family: var(--font-title);
-  font-size: 0.875rem;
+  font-size: 1.25rem;
   font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
-.limit-details {
-  margin-top: 0.625rem;
-  font-family: var(--font-title);
-  font-size: 0.75rem;
-  font-weight: 600;
+.info-separator {
+  margin: 0;
+  border-top: 1px solid rgb(141 141 141 / 20%);
+}
+
+.info-detail {
+  margin-bottom: -0.75rem;
+  font-family: var(--font-body);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.info-detail-name {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-grey);
 }
 
-.limit-indicator {
-  width: 100%;
-  height: 5px;
-  margin-top: 1.25rem;
+.info-margin {
+  margin-inline: 2rem;
 }
 
-.mau-users {
-  font-family: var(--font-body);
-  font-size: 1.5rem;
-  color: var(--text-white);
+.info-amount {
+  color: var(--color-orange);
+}
+
+.info-progress {
+  width: 100%;
+  height: 10px;
+}
+
+.edit-icon {
+  margin-top: 0.5rem;
+  cursor: pointer;
 }
 </style>
