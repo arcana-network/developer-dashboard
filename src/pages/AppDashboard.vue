@@ -127,8 +127,10 @@ async function fetchActiveUsers() {
       dataTemplate[formattedDate] = item.Value
     })
     const dataSet = chartConfig.data.datasets[0]
-    const newDataSet = { ...dataSet, data: Object.values(dataTemplate) }
-    chartUtils.updateChartView(chart, Object.keys(dataTemplate), [newDataSet])
+    const labels = Object.keys(dataTemplate)
+    const values = activeUsers.length ? Object.values(dataTemplate) : []
+    const newDataSet = { ...dataSet, data: values }
+    chartUtils.updateChartView(chart, labels, [newDataSet])
   } catch (e) {
     console.log(e)
   } finally {
