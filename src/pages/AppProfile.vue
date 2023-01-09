@@ -2,9 +2,10 @@
 import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
+import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
-import VCard from '@/components/lib/VCard/VCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { fetchProfile, updateOrganization } from '@/services/gateway.service'
@@ -101,133 +102,146 @@ function resetOrganisationDetails() {
     <main class="container">
       <h1 class="heading">PROFILE DETAILS</h1>
       <section class="personal-details">
-        <div
-          class="flex"
-          style="justify-content: space-between; margin-right: 1.5em"
-        >
-          <h2>PERSONAL DETAILS</h2>
-          <v-button
-            variant="link"
-            label="Edit"
-            :disabled="true"
-            style="visibility: hidden"
-          />
-        </div>
-        <v-card
-          variant="elevated"
-          class="flex sm-column flex-wrap"
-          style="
-            gap: 1em;
-            justify-content: space-between;
-            padding: 1.5em;
-            margin-top: 1em;
-          "
-        >
-          <div class="flex column details">
-            <span class="body-2">Name</span>
-            <span class="sub-heading-3 overflow-ellipsis" :title="name">
-              {{ name }}
-            </span>
+        <SettingCard>
+          <template #title>PERSONAL DETAILS</template>
+          <div class="flex sm-column flex-wrap justify-space-between">
+            <div class="flex column details">
+              <label for="light-horizontal-logo">Name</label>
+              <VTextField v-model.trim="name" class="app-name-input" disabled />
+            </div>
+            <div class="flex column details">
+              <label for="light-horizontal-logo">Public Identifier</label>
+              <VTextField
+                v-model.trim="email"
+                class="app-name-input"
+                disabled
+              />
+            </div>
+            <div class="flex column details" style="visibility: hidden"></div>
           </div>
-          <div class="flex column details">
-            <span class="body-2">Public Identifier</span>
-            <span class="sub-heading-3 overflow-ellipsis" :title="email">
-              {{ email }}
-            </span>
-          </div>
-          <div class="flex column details" style="visibility: hidden"></div>
-        </v-card>
+        </SettingCard>
       </section>
       <section style="margin-top: 3em">
-        <div
-          class="flex"
-          style="justify-content: space-between; margin-right: 1.5em"
-        >
-          <h2>ORGANISATION DETAILS</h2>
-          <v-button
-            v-if="!editOrganisationDetails"
-            variant="link"
-            label="Edit"
-            :disabled="false"
-            @click="editOrganisationDetails = true"
-          />
-          <div v-else class="flex" style="gap: 1.5em">
-            <v-button
-              variant="link"
-              label="Cancel"
-              :disabled="false"
-              style="color: #8d8d8d"
-              @click="resetOrganisationDetails"
-            />
-            <v-button
-              variant="link"
-              label="Save"
-              :disabled="false"
-              @click="onUpdateOrganization"
-            />
-          </div>
-        </div>
-        <v-card
-          variant="elevated"
-          class="flex sm-column flex-wrap"
-          style="
-            gap: 1em;
-            justify-content: space-between;
-            padding: 1.5em;
-            margin-top: 1em;
-          "
-        >
-          <div class="flex column flex-grow">
-            <div class="flex flex-wrap justify-space-between">
+        <SettingCard>
+          <template #title>ORGANISATION DETAILS</template>
+          <form>
+            <div class="flex sm-column flex-wrap justify-space-between">
               <div class="flex column details">
-                <span class="body-2">Organisation Name</span>
-                <span
-                  v-if="!editOrganisationDetails"
-                  class="sub-heading-3 overflow-ellipsis"
-                  :title="organisationDetails.name"
-                >
-                  {{ organisationDetails.name }}
-                </span>
-                <v-text-field v-else v-model="organisationDetails.name" />
-              </div>
-              <div class="flex column details">
-                <span class="body-2">Organization Size</span>
-                <span
-                  v-if="organisationDetails.sizeErrorMessage"
-                  class="body-3"
-                  style="text-transform: uppercase; letter-spacing: 0.1em"
-                >
-                  {{ organisationDetails.sizeErrorMessage }}
-                </span>
-                <span
-                  v-if="!editOrganisationDetails"
-                  class="sub-heading-3 overflow-ellipsis"
-                  :title="String(organisationDetails.size)"
-                >
-                  {{ organisationDetails.size }}
-                </span>
-                <v-text-field
-                  v-else
-                  v-model="organisationDetails.size"
-                  type="number"
-                  min="1"
-                  step="1"
+                <label for="light-horizontal-logo">Organisation Name</label>
+                <VTextField
+                  v-model.trim="organisationDetails.name"
+                  class="app-name-input"
                 />
               </div>
               <div class="flex column details">
-                <span class="body-2">Country</span>
+                <label for="light-horizontal-logo">Organization Size</label>
+                <VTextField
+                  v-model.trim="organisationDetails.size"
+                  class="app-name-input"
+                  type="number"
+                />
                 <span
-                  v-if="!editOrganisationDetails"
-                  class="sub-heading-3 overflow-ellipsis"
-                  :title="organisationDetails.country"
+                  :style="{
+                    visibility: organisationDetails.sizeErrorMessage
+                      ? 'visible'
+                      : 'hidden',
+                  }"
+                  class="body-3"
                 >
-                  {{ organisationDetails.country }}
+                  {{ organisationDetails.sizeErrorMessage }}
                 </span>
-                <v-text-field v-else v-model="organisationDetails.country" />
               </div>
+              <div class="flex column details">
+                <label for="light-horizontal-logo">Country</label>
+                <VTextField
+                  v-model.trim="organisationDetails.country"
+                  class="app-name-input"
+                  disabled
+                />
+              </div>
+              <ConfigureActionButtons
+                :save-disabled="false"
+                :cancel-disabled="false"
+              />
             </div>
-          </div>
-        </v-card>
+          </form>
+        </SettingCard>
+      </section>
+      <section style="margin-top: 3em">
+        <SettingCard>
+          <template #title>INVOICING DETAILS</template>
+          <form>
+            <div class="flex sm-column flex-wrap justify-space-between">
+              <div class="flex column details">
+                <label for="light-horizontal-logo">Billing Name</label>
+                <VTextField
+                  v-model.trim="organisationDetails.name"
+                  class="app-name-input"
+                />
+              </div>
+              <div class="flex column details">
+                <label for="light-horizontal-logo">Billing Address</label>
+                <VTextField
+                  v-model.trim="organisationDetails.size"
+                  class="app-name-input text-ellipsis"
+                />
+                <span
+                  :style="{
+                    visibility: organisationDetails.sizeErrorMessage
+                      ? 'visible'
+                      : 'hidden',
+                  }"
+                  class="body-3"
+                >
+                  {{ organisationDetails.sizeErrorMessage }}
+                </span>
+              </div>
+              <div class="flex column details" style="visibility: hidden"></div>
+              <ConfigureActionButtons
+                :save-disabled="false"
+                :cancel-disabled="false"
+              />
+            </div>
+          </form>
+        </SettingCard>
+      </section>
+      <section style="margin-top: 3em">
+        <SettingCard>
+          <template #title>PAYMENT METHODS</template>
+          <form>
+            <div class="flex sm-column flex-wrap justify-space-between">
+              <div class="flex column details">
+                <label for="light-horizontal-logo">Billing Name</label>
+                <VTextField
+                  v-model.trim="organisationDetails.name"
+                  class="app-name-input"
+                />
+              </div>
+              <div class="flex column details">
+                <label for="light-horizontal-logo">Billing Address</label>
+                <VTextField
+                  v-model.trim="organisationDetails.size"
+                  class="app-name-input text-ellipsis"
+                />
+                <span
+                  :style="{
+                    visibility: organisationDetails.sizeErrorMessage
+                      ? 'visible'
+                      : 'hidden',
+                  }"
+                  class="body-3"
+                >
+                  {{ organisationDetails.sizeErrorMessage }}
+                </span>
+              </div>
+              <div class="flex column details" style="visibility: hidden"></div>
+              <ConfigureActionButtons
+                :save-disabled="false"
+                :cancel-disabled="false"
+              />
+            </div>
+          </form>
+        </SettingCard>
       </section>
       <div
         class="flex"
@@ -263,6 +277,10 @@ function resetOrganisationDetails() {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+label {
+  color: var(--text-grey);
 }
 
 @media only screen and (max-width: 1023px) {
