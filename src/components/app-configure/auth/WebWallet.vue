@@ -96,19 +96,18 @@ async function handleSave() {
       <form @submit.prevent="handleSave">
         <VStack direction="column" gap="1rem">
           <VStack direction="column" gap="1rem" class="flex-grow">
-            <h3 class="text-uppercase">Website Domain</h3>
-            <div class="body-1">
+            <h3>Website Domain</h3>
+            <div class="body-1 text-grey">
               Set your website domain here. It is used for security reasons by
               the server, to restrict Arcana wallet from loading anywhere else
               other than the domain you specify. We use frame-ancestor CSP to
               restrict domains.
-              <br />
               <a
                 href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
                 target="_blank"
                 class="learn-more"
               >
-                Learn More...
+                LEARN MORE
               </a>
             </div>
             <VTextField
@@ -123,7 +122,7 @@ async function handleSave() {
             />
           </VStack>
           <VStack direction="column" gap="1rem" style="margin-bottom: 1rem">
-            <h3 class="text-uppercase">Wallet Theme</h3>
+            <h3>Wallet Theme</h3>
             <VStack direction="column" gap="0.75rem" align="start">
               <h4 class="text-grey">Choose Theme</h4>
               <VDropdown
@@ -135,10 +134,10 @@ async function handleSave() {
             </VStack>
           </VStack>
           <VStack direction="column" gap="1rem">
-            <h3 class="text-uppercase">Preview Interface</h3>
+            <h3>Preview Interface</h3>
             <VStack gap="2.5rem" wrap>
               <VStack direction="column" gap="0.625rem">
-                <h4>Desktop</h4>
+                <h4 class="text-grey">Desktop</h4>
                 <img
                   v-if="selectedTheme.value === 'light'"
                   src="@/assets/web-wallet-preview-desktop-light.png"
@@ -154,7 +153,7 @@ async function handleSave() {
               </VStack>
               <VSeperator vertical />
               <VStack direction="column" gap="0.625rem">
-                <h4>Mobile</h4>
+                <h4 class="text-grey">Mobile</h4>
                 <img
                   v-if="selectedTheme.value === 'light'"
                   src="@/assets/web-wallet-preview-mobile-light.png"

@@ -100,7 +100,7 @@ h5 {
 
 label {
   font-family: var(--font-title);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   color: var(--text-white);
 }
