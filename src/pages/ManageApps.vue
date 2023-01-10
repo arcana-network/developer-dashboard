@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref, type Ref } from 'vue'
+import { onBeforeMount, ref, type Ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
@@ -32,6 +32,28 @@ const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
 const accountStatus: Ref<AccountStatus> = ref('active')
 const appToDelete = ref(0)
+const estimatedCost = ref(100)
+const freeMausUsed = ref(0)
+const percentageFreeMaus = ref(0)
+const paidMausUsed = ref(0)
+const freeMausWidth = ref(100)
+const paidMausWidth = ref(0)
+
+onMounted(() => {
+  const mausUsed = 1300
+  const allowedFreeMaus = 1000
+
+  if (mausUsed > allowedFreeMaus) {
+    freeMausUsed.value = allowedFreeMaus
+    paidMausUsed.value = mausUsed - allowedFreeMaus
+    percentageFreeMaus.value = 100
+    freeMausWidth.value = (freeMausUsed.value / mausUsed) * 100
+    paidMausWidth.value = (paidMausUsed.value / mausUsed) * 100
+  } else {
+    freeMausUsed.value = mausUsed
+    percentageFreeMaus.value = (mausUsed / allowedFreeMaus) * 100
+  }
+})
 
 function goToDashboard(appId: AppId) {
   router.push({ name: 'AppDetails', params: { appId } })
@@ -102,7 +124,7 @@ appsStore.$subscribe(() => {
                 <VStack
                   direction="column"
                   gap="0.75rem"
-                  :style="{ width: '90%' }"
+                  :style="{ width: `${freeMausWidth}%`, overflow: 'visible' }"
                 >
                   <VStack
                     gap="0.25rem"
@@ -110,20 +132,21 @@ appsStore.$subscribe(() => {
                     align="end"
                     sm-align="start"
                   >
-                    <span class="info-detail">1000</span>
+                    <span class="info-detail">{{ freeMausUsed }}</span>
                     <span class="info-detail-name">free users</span>
                   </VStack>
                   <VProgressBar
                     class="info-progress"
-                    :percentage="100"
+                    :percentage="percentageFreeMaus"
                     state="success"
                   />
                 </VStack>
                 <VStack
+                  v-if="paidMausUsed > 0"
                   direction="column"
                   gap="0.75rem"
                   align="end"
-                  :style="{ width: '10%', overflow: 'visible' }"
+                  :style="{ width: `${paidMausWidth}%`, overflow: 'visible' }"
                   class="text-ellipsis"
                 >
                   <VStack
@@ -132,7 +155,7 @@ appsStore.$subscribe(() => {
                     align="end"
                     sm-align="start"
                   >
-                    <span class="info-detail">5</span>
+                    <span class="info-detail">{{ paidMausUsed }}</span>
                     <span class="info-detail-name">paid users</span>
                   </VStack>
                   <VProgressBar
@@ -150,7 +173,9 @@ appsStore.$subscribe(() => {
               <VSeperator class="info-separator" />
               <VStack gap="1rem" class="info-margin">
                 <span class="info-detail">Due:</span>
-                <span class="info-detail info-amount">$100</span>
+                <span class="info-detail info-amount"
+                  >${{ estimatedCost }}</span
+                >
               </VStack>
             </VStack>
           </VCard>
