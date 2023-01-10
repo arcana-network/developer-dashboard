@@ -12,8 +12,11 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
 import {
   getAccountStatus,
+  updateApp,
   type AccountStatus,
 } from '@/services/gateway.service'
 import { useAppsStore, type AppOverview, type AppId } from '@/stores/apps.store'
@@ -38,6 +41,7 @@ const percentageFreeMaus = ref(0)
 const paidMausUsed = ref(0)
 const freeMausWidth = ref(100)
 const paidMausWidth = ref(0)
+const toast = useToast()
 
 onMounted(() => {
   const mausUsed = 1300
@@ -95,6 +99,12 @@ appsStore.$subscribe(() => {
   apps.value = appsStore.apps
   calculateAppLimits()
 })
+
+async function handleAppNameSave(app: AppData) {
+  app.editState = false
+  await updateApp(app.id, { name: app.name })
+  toast.success('App name saved')
+}
 </script>
 
 <template>
@@ -204,20 +214,34 @@ appsStore.$subscribe(() => {
           >
             <VStack direction="column" align="center" class="app-container">
               <img :src="getImageUrl(app.id)" class="app-logo" />
-              <VStack gap="0.5rem">
+              <VStack
+                gap="0.5rem"
+                style="max-width: 100%"
+                :style="{ marginBottom: app.editState ? '-1rem' : '' }"
+              >
+                <input
+                  v-if="app.editState"
+                  v-model="app.name"
+                  class="sub-heading-3 app-name text-ellipsis app-name-input"
+                  type="text"
+                  no-message
+                  style="max-width: calc(100% - 1rem)"
+                  @keyup.enter.prevent="handleAppNameSave(app)"
+                />
                 <span
+                  v-else
                   class="sub-heading-3 app-name text-ellipsis"
                   :title="app.name"
-                  :contenteditable="app.editState"
+                  style="max-width: calc(100% - 1rem)"
                 >
                   {{ app.name }}
                 </span>
-                <!-- <img
+                <img
                   v-if="app.editState"
                   src="@/assets/iconography/check-white.svg"
                   class="edit-icon"
                   title="Save app name"
-                  @click.stop="app.editState = false"
+                  @click.stop="handleAppNameSave(app)"
                 />
                 <img
                   v-else
@@ -225,7 +249,7 @@ appsStore.$subscribe(() => {
                   class="edit-icon"
                   title="Edit app name"
                   @click.stop="app.editState = true"
-                /> -->
+                />
               </VStack>
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center" gap="0.25rem">
@@ -406,5 +430,20 @@ appsStore.$subscribe(() => {
 .edit-icon {
   margin-top: 0.5rem;
   cursor: pointer;
+}
+
+.app-name-input {
+  width: 100%;
+  padding: 0.825rem;
+  font-size: 1rem;
+  color: var(--text-white);
+  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  border: none;
+  border-radius: 10px;
+  outline: none;
+  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
+    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+
+  --webkit-outline: none;
 }
 </style>
