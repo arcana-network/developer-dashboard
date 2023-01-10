@@ -1,7 +1,8 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
+import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
 import profileIcon from '@/assets/iconography/profile.png'
@@ -19,6 +20,10 @@ const showAppsList = ref(false)
 const router = useRouter()
 const emit = defineEmits(['switch-tab'])
 
+onMounted(() => {
+  console.log(appsStore.selectedApp)
+})
+
 type ConfigureProps = {
   currentTab?: ConfigureTabType
 }
@@ -33,6 +38,11 @@ function onClickOfMenu(tab: string) {
   } else {
     emit('switch-tab', tab)
   }
+}
+
+function getlogo(appId) {
+  const app = appsStore.app(appId)
+  return app.logos.dark.vertical || app.logos.light.vertical || AppFallbackLogo
 }
 
 function onLogoClick() {
@@ -59,6 +69,11 @@ function onAppClick(appId: AppId) {
             class="flex app-name__container"
             @click="showAppsList = !showAppsList"
           >
+            <img
+              :src="getlogo(appsStore.selectedAppId)"
+              alt="app logo"
+              class="app-logo"
+            />
             <label>{{ appsStore.selectedApp?.name }}</label>
             <img
               v-if="appsStore.apps.length > 1"
@@ -81,7 +96,8 @@ function onAppClick(appId: AppId) {
               :active="appsStore.selectedAppId === app.id"
               @click="onAppClick(app.id)"
             >
-              {{ app.name }}
+              <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
+              <p>{{ app.name }}</p>
             </VCardButton>
           </div>
         </VStack>
@@ -153,6 +169,11 @@ function onAppClick(appId: AppId) {
   border: none;
   outline: none;
   transition: opacity 0.3s;
+}
+
+.app-logo {
+  width: 35px;
+  height: 35px;
 }
 
 .configure-sidebar {
@@ -257,12 +278,17 @@ function onAppClick(appId: AppId) {
 
 .apps-name__list-item {
   display: flex;
+  align-items: center;
   justify-content: flex-start;
   padding: 0;
   margin-top: 10px;
   background-color: transparent;
   border: none;
   outline: none;
+}
+
+.apps-name__list-item * + * {
+  margin-left: 5px;
 }
 
 .app-name__container {
@@ -273,5 +299,9 @@ function onAppClick(appId: AppId) {
   background: transparent;
   border: none;
   outline: none;
+}
+
+.app-name__container * + * {
+  margin-left: 5px;
 }
 </style>
