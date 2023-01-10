@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type Ref } from 'vue'
+import { ref, onBeforeMount, type Ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 import CloseIcon from '@/assets/iconography/close.svg'
@@ -33,6 +33,28 @@ const organisationDetails: Ref<OrganizationDetails> = ref({
   size: 0,
   sizeErrorMessage: '',
   country: '',
+})
+
+const swapClicked = ref(false)
+
+const invoiceDetails = ref({
+  name: '',
+  address: '',
+})
+
+const paymentDetails = reactive({
+  primary: {
+    cardNumber: '',
+    cvv: '',
+    expiry: '',
+    cardName: '',
+  },
+  secondary: {
+    cardNumber: '',
+    cvv: '',
+    expiry: '',
+    cardName: '',
+  },
 })
 const name = ref('')
 name.value = authStore.name
@@ -96,6 +118,22 @@ function resetOrganisationDetails() {
     organisationDetails.value.sizeErrorMessage = ''
   }
 }
+
+function swapCards() {
+  const temp = paymentDetails.primary
+  paymentDetails.primary = paymentDetails.secondary
+  paymentDetails.secondary = temp
+  swapClicked.value = !swapClicked.value
+}
+
+function deleteSecondary() {
+  paymentDetails.secondary = {
+    cardNumber: '',
+    cvv: '',
+    expiry: '',
+    cardName: '',
+  }
+}
 </script>
 
 <template>
@@ -132,7 +170,7 @@ function resetOrganisationDetails() {
       <section style="margin-top: 3em">
         <SettingCard>
           <template #title>ORGANISATION DETAILS</template>
-          <form>
+          <form @submit.prevent="onUpdateOrganization">
             <VStack
               class="flex sm-column flex-wrap justify-space-between"
               gap="1.25rem"
@@ -173,6 +211,7 @@ function resetOrganisationDetails() {
             <ConfigureActionButtons
               :save-disabled="false"
               :cancel-disabled="false"
+              @cancel="resetOrganisationDetails"
             />
           </form>
         </SettingCard>
@@ -188,32 +227,22 @@ function resetOrganisationDetails() {
               <div class="flex column details flex-grow">
                 <label for="light-horizontal-logo">Billing Name</label>
                 <VTextField
-                  v-model.trim="organisationDetails.name"
-                  class="app-name-input"
+                  v-model.trim="invoiceDetails.name"
+                  class="app-name-input text-ellipsis"
                   :icon="CloseIcon"
                   clickable-icon
-                  @icon-clicked="void 0"
+                  @icon-clicked="invoiceDetails.name = ''"
                 />
               </div>
               <div class="flex column details flex-grow">
                 <label for="light-horizontal-logo">Billing Address</label>
                 <VTextField
-                  v-model.trim="organisationDetails.size"
+                  v-model.trim="invoiceDetails.address"
                   class="app-name-input text-ellipsis"
                   :icon="CloseIcon"
                   clickable-icon
-                  @icon-clicked="void 0"
+                  @icon-clicked="invoiceDetails.address = ''"
                 />
-                <span
-                  :style="{
-                    visibility: organisationDetails.sizeErrorMessage
-                      ? 'visible'
-                      : 'hidden',
-                  }"
-                  class="body-3"
-                >
-                  {{ organisationDetails.sizeErrorMessage }}
-                </span>
               </div>
               <div
                 class="flex column details flex-grow"
@@ -235,58 +264,58 @@ function resetOrganisationDetails() {
               align="center"
               md-direction="column"
               class="flex sm-column flex-wrap justify-space-between payment-container"
-              gap="10vw"
+              gap="4vw"
             >
-              <VStack direction="column" gap="1.25rem" class="flex-grow">
+              <VStack direction="column" gap="1.25rem">
                 <span class="payment-title">Primary</span>
                 <div class="payment-input">
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">Card Name</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
-                      class="app-name-input"
+                      v-model.trim="paymentDetails.primary.cardName"
+                      class="app-name-input text-ellipsis"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
-                      @icon-clicked="void 0"
+                      @icon-clicked="paymentDetails.primary.cardName = ''"
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">Expiry Date</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
+                      v-model.trim="paymentDetails.primary.expiry"
                       class="app-name-input"
                       :icon="CloseIcon"
                       type="number"
-                      placeholder="mm-yyyy"
+                      placeholder="mm/yyyy"
                       clickable-icon
                       no-message
                       pattern="[\d]{2}\/[\d]{4}"
-                      @icon-clicked="void 0"
+                      @icon-clicked="paymentDetails.primary.expiry = ''"
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">Card Number</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
-                      class="app-name-input"
+                      v-model.trim="paymentDetails.primary.cardNumber"
+                      class="app-name-input text-ellipsis"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
-                      @icon-clicked="void 0"
+                      @icon-clicked="paymentDetails.primary.cardNumber = ''"
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">CVV Number</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
+                      v-model.trim="paymentDetails.primary.cvv"
                       class="app-name-input cvv"
                       type="number"
                       pattern="[\d]{3}"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
-                      @icon-clicked="void 0"
+                      @icon-clicked="paymentDetails.primary.cvv = ''"
                     />
                   </div>
                 </div>
@@ -295,64 +324,71 @@ function resetOrganisationDetails() {
                 <img
                   src="@/assets/iconography/switch-vertical.svg"
                   class="cursor-pointer switch-icon"
+                  :class="{ swapped: swapClicked }"
+                  @click.stop="swapCards"
                 />
               </div>
-              <VStack direction="column" gap="1.25rem" class="flex-grow">
+              <VStack direction="column" gap="1.25rem">
                 <VStack
                   justify="space-between"
                   align="center"
                   class="flex-grow"
                 >
                   <span class="payment-title">Secondary</span>
-                  <VButton variant="link" label="DELETE" />
+                  <VButton
+                    variant="link"
+                    label="DELETE"
+                    @click.stop="deleteSecondary"
+                  />
                 </VStack>
                 <div class="payment-input">
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">Card Name</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
-                      class="app-name-input"
+                      v-model.trim="paymentDetails.secondary.cardName"
+                      class="app-name-input text-ellipsis"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
-                      @icon-clicked="void 0"
+                      @icon-clicked="paymentDetails.secondary.cardName = ''"
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">Expiry Date</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
+                      v-model.trim="paymentDetails.secondary.expiry"
                       class="app-name-input"
-                      type="number"
-                      placeholder="mm-yyyy"
+                      type="text"
+                      placeholder="mm/yyyy"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
-                      @icon-clicked="void 0"
+                      pattern="[\d]{2}\/[\d]{4}"
+                      @icon-clicked="paymentDetails.secondary.expiry = ''"
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">Card Number</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
-                      class="app-name-input"
+                      v-model.trim="paymentDetails.secondary.cardNumber"
+                      class="app-name-input text-ellipsis"
                       no-message
                       :icon="CloseIcon"
                       clickable-icon
-                      @icon-clicked="void 0"
+                      @icon-clicked="paymentDetails.secondary.cardNumber = ''"
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="light-horizontal-logo">CVV Number</label>
                     <VTextField
-                      v-model.trim="organisationDetails.name"
+                      v-model.trim="paymentDetails.secondary.cvv"
                       class="app-name-input cvv"
                       type="number"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
                       pattern="[\d]{3}"
-                      @icon-clicked="void 0"
+                      @icon-clicked="paymentDetails.secondary.cvv = ''"
                     />
                   </div>
                 </div>
@@ -361,6 +397,7 @@ function resetOrganisationDetails() {
             <ConfigureActionButtons
               :save-disabled="false"
               :cancel-disabled="false"
+              style="margin-top: 3rem"
             />
           </form>
         </SettingCard>
@@ -424,12 +461,16 @@ label {
 
 .payment-input {
   display: grid;
-  grid-template-columns: 260px 160px;
+  grid-template-columns: 20vw 14vw;
   gap: 1.25rem;
 }
 
 .cvv {
   -webkit-text-security: disc;
+}
+
+.swapped {
+  transform: rotate(-180deg);
 }
 
 @media only screen and (max-width: 1023px) {
@@ -452,6 +493,10 @@ label {
 
   .switch-icon {
     transform: rotate(-90deg);
+  }
+
+  .swapped {
+    transform: rotate(-270deg);
   }
 
   .payment-input {
