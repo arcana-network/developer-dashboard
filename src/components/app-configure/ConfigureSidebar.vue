@@ -30,14 +30,14 @@ type ConfigureProps = {
 }
 
 withDefaults(defineProps<ConfigureProps>(), {
-  currentTab: 'dashboard',
+  currentTab: 'Dashboard',
 })
 
-function onClickOfMenu(tab: string) {
-  if (tab === 'configure') {
+function onClickOfMenu(tab) {
+  if (tab.subMenu) {
     showConfigureSubmenu.value = !showConfigureSubmenu.value
   } else {
-    emit('switch-tab', tab)
+    emit('switch-tab', tab.label)
   }
 }
 
@@ -92,8 +92,7 @@ function onAppClick(appId: AppId) {
               v-for="app in appsStore.apps"
               :key="app.name"
               class="apps-name__list-item"
-              :class="{ active: appsStore.selectedAppId === app.id }"
-              :active="appsStore.selectedAppId === app.id"
+              :class="{ 'active-app': appsStore.selectedAppId === app.id }"
               @click="onAppClick(app.id)"
             >
               <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
@@ -105,17 +104,16 @@ function onAppClick(appId: AppId) {
         <VCardButton
           v-for="tab in CONFIGURE_TABS"
           :key="`configure-sidebar-tab-${tab.type}`"
-          :class="{ strong: currentTab === tab.type }"
+          :class="{ active: !tab.subMenu && currentTab === tab.label }"
           class="sidebar__option"
-          :active="currentTab === tab.type"
-          @click.stop="onClickOfMenu(tab.type)"
+          @click.stop="onClickOfMenu(tab)"
         >
           <div class="sidebar__option-item">
             <img :src="tab.icon" alt="icon" class="sidebar__option-icon" />
             <VStack gap="0.5rem" align="center">
               <span class="tab-label">{{ tab.label }}</span>
               <img
-                v-if="tab.type === 'configure'"
+                v-if="tab.subMenu"
                 :src="arrowIcon"
                 alt="arrow-icon"
                 class="arrow-icon"
@@ -134,8 +132,8 @@ function onAppClick(appId: AppId) {
               v-for="subTab in tab.subMenu"
               :key="subTab.label"
               class="sidebar__submenu-option"
-              :active="currentTab === subTab.type"
-              @click.stop="onClickOfMenu(subTab.type)"
+              :class="{ active: currentTab === subTab.label }"
+              @click.stop="onClickOfMenu(subTab)"
             >
               <div class="sidebar__submenu-option-item">
                 <img
@@ -151,8 +149,8 @@ function onAppClick(appId: AppId) {
         <VCardButton
           class="sidebar__option"
           style="flex-direction: row"
-          :active="currentTab === 'profile'"
-          @click.stop="onClickOfMenu('profile')"
+          :class="{ active: currentTab === 'Profile' }"
+          @click.stop="onClickOfMenu({ label: 'Profile' })"
         >
           <img :src="profileIcon" alt="icon" class="sidebar__option-icon" />
           <span class="tab-label">{{ authStore.name }}</span>
@@ -305,11 +303,11 @@ function onAppClick(appId: AppId) {
   font-weight: 500;
 }
 
-.apps-name__list-item .app-name:hover {
-  color: var(--color-blue);
+.active-app .app-name {
+  color: var(--primary);
 }
 
-.apps-name__list-item.active .app-name {
+.apps-name__list-item .app-name:hover {
   color: var(--color-blue);
 }
 
@@ -329,5 +327,13 @@ function onAppClick(appId: AppId) {
 
 .apps-name__list-item * + * {
   margin-left: 5px;
+}
+
+.active .tab-label {
+  color: var(--color-blue);
+}
+
+.active img {
+  filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
 }
 </style>

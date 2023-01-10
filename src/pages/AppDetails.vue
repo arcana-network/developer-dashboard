@@ -12,7 +12,7 @@ import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
-const currentTab = ref('dashboard')
+const currentTab = ref('Dashboard')
 const router = useRouter()
 const appId = useAppId()
 const showHelpMenu = ref(false)
@@ -21,7 +21,7 @@ function switchTab(tab: string) {
   currentTab.value = tab
   router.push({
     params: { appId },
-    path: tab,
+    name: tab,
   })
 }
 
