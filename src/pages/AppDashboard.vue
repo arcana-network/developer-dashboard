@@ -5,6 +5,7 @@ import { onMounted, ref, watch, type Ref } from 'vue'
 
 import CheckIcon from '@/assets/iconography/check.svg'
 import CopyIcon from '@/assets/iconography/copy.svg'
+import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
@@ -140,7 +141,7 @@ async function fetchActiveUsers() {
 </script>
 
 <template>
-  <main>
+  <main style="margin-bottom: 2rem">
     <section class="flex dashboard-heading flex-wrap">
       <VStack justify="space-between" sm-direction="column" class="flex-grow">
         <h1 class="heading">DASHBOARD</h1>
@@ -225,7 +226,7 @@ async function fetchActiveUsers() {
           />
         </div>
       </div>
-      <v-seperator />
+      <v-seperator class="full-bleed-separator" />
       <section class="flex column">
         <div v-if="showNoDataChart" class="users-count-empty-state">
           <p>No Data</p>
@@ -242,7 +243,11 @@ async function fetchActiveUsers() {
       variant="elevated"
       style="align-items: stretch"
     >
-      <h2>TUTORIALS</h2>
+      <VStack justify="space-between" align="center" class="flex-grow">
+        <h2>TUTORIALS</h2>
+        <VButton variant="link" label="VIEW ALL" />
+      </VStack>
+      <VSeperator class="full-bleed-separator" />
       <div class="tutorials__container">
         <div
           v-for="tutorial in tutorials"
@@ -274,8 +279,13 @@ async function fetchActiveUsers() {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100px;
+  margin-block: 1rem;
   font-family: var(--font-body);
+  font-weight: 600;
+}
+
+.users-count-empty-state p {
+  color: var(--text-grey);
 }
 
 .tutorials__container {
@@ -322,8 +332,14 @@ async function fetchActiveUsers() {
 }
 
 .usage-container {
-  padding: 2em;
-  margin-top: 2em;
+  padding: 2rem;
+  margin-top: 2rem;
+}
+
+.full-bleed-separator {
+  width: calc(100% + 4rem);
+  margin-block: 2rem;
+  margin-inline: -2rem;
 }
 
 .duration {
