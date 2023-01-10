@@ -61,7 +61,7 @@ function handleScroll(ev: any) {
         <CloseIcon color="#FFFFFF" />
       </span>
     </div>
-    <header class="container flex">
+    <header class="flex">
       <div class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </div>
@@ -104,8 +104,7 @@ header {
   position: relative;
   display: flex;
   justify-content: space-between;
-  width: 100%;
-  padding: 1.5rem 1rem;
+  padding: 1.5rem 2rem;
   visibility: visible;
   background: #1f1f1f;
   transition: transform 0.6s;
@@ -137,7 +136,6 @@ header {
 }
 
 .help-button {
-  margin-right: 2rem;
   font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
@@ -194,7 +192,7 @@ header {
 
 .banner {
   position: relative;
-  padding: 0.75em 1.5em;
+  padding: 0.25em 1.5em;
   font-family: var(--font-body);
   line-height: 1.5em;
   color: white;
@@ -204,6 +202,7 @@ header {
 
 .banner h4 {
   display: inline-block;
+  font-size: 1.125rem;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -212,6 +211,7 @@ header {
   display: inline-block;
   margin-right: 2em;
   margin-left: 1em;
+  font-size: 1rem;
   font-weight: 400;
 }
 
@@ -222,6 +222,7 @@ header {
 .banner-close {
   position: absolute;
   right: 2em;
+  margin-top: 2px;
   cursor: pointer;
 }
 </style>

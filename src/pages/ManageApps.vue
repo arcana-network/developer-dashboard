@@ -119,6 +119,10 @@ main {
   padding-block: 2rem 4rem;
 }
 
+.container {
+  margin: 0 2rem;
+}
+
 .back-icon {
   width: 2.25rem;
 }
@@ -128,7 +132,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(20rem, 30vw, 25rem);
+  width: 19rem;
   min-height: 350px;
   cursor: pointer;
 }
@@ -151,16 +155,8 @@ main {
 
 .app-action-button {
   width: 100%;
+  min-width: unset !important;
   text-transform: uppercase;
-}
-
-.delete-button {
-  background: transparent !important;
-  border: 2px solid #ee193f !important;
-}
-
-.delete-button:hover {
-  color: #ee193f !important;
 }
 
 .stats-card {
