@@ -39,6 +39,7 @@ const toast = useToast()
 const durationSelected: Ref<Duration> = ref('day')
 const appAddress = ref(appsStore.selectedApp?.address)
 const appName = ref(appsStore.selectedApp?.name)
+const showNoDataChart = ref(false)
 
 const tutorials = [
   {
@@ -121,6 +122,7 @@ async function fetchActiveUsers() {
       activeUsers = data
       dataTemplate = initialMonthlyData
     }
+    showNoDataChart.value = !activeUsers.length
     activeUsers.forEach((item) => {
       const formattedDate = item.Date.split(' ').join('-')
       dataTemplate[formattedDate] = item.Value
@@ -224,9 +226,14 @@ async function fetchActiveUsers() {
       </div>
       <v-seperator />
       <section class="flex column">
-        <div class="chart__container">
-          <canvas id="users-count-chart" class="users-count-chart"></canvas>
+        <div v-if="showNoDataChart" class="users-count-empty-state">
+          <p>No Data</p>
         </div>
+        <canvas
+          v-else
+          id="users-count-chart"
+          class="users-count-chart"
+        ></canvas>
       </section>
     </v-card>
     <v-card
@@ -260,6 +267,14 @@ async function fetchActiveUsers() {
 <style scoped>
 .users-count-chart {
   max-height: 430px;
+}
+
+.users-count-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  font-family: var(--font-body);
 }
 
 .tutorials__container {
