@@ -214,7 +214,7 @@ function onAppClick(appId: AppId) {
   gap: 1rem;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0 !important;
 }
 
 .sidebar__option-item {
@@ -235,7 +235,7 @@ function onAppClick(appId: AppId) {
 }
 
 .sidebar__submenu-option {
-  padding: 0;
+  padding: 0 !important;
 }
 
 .sidebar__submenu-option:not(:last-child) {
@@ -283,7 +283,7 @@ function onAppClick(appId: AppId) {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0;
+  padding: 0 !important;
   background-color: transparent;
   border: none;
   outline: none;
