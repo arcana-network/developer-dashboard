@@ -81,7 +81,7 @@ onBeforeMount(async () => {
 }
 
 .help-button__container {
-  margin-bottom: 4rem;
+  margin-bottom: 2rem;
 }
 
 .help-button {
