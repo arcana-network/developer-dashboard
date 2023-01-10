@@ -11,17 +11,10 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import { createApp, fetchStats } from '@/services/gateway.service'
+import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
-import calculateUserLimits from '@/utils/calculateUserLimits'
-import {
-  RegionMapping,
-  regions,
-  type Region,
-  type StorageRegion,
-  api,
-} from '@/utils/constants'
+import { RegionMapping, regions, type Region, api } from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const router = useRouter()
@@ -52,12 +45,12 @@ async function handleCreateApp() {
         region: RegionMapping[selectedRegion.value.value],
       })
     ).data.app
-    const appOverview = (await fetchStats(app.ID)).data
 
     appsStore.addApp(app.ID, {
       id: app.ID,
       name: app.name as string,
       address: app.address as string,
+      totalUsers: 0,
       logos: {
         dark: {
           horizontal: '',
@@ -71,13 +64,6 @@ async function handleCreateApp() {
       access: {
         selectedChain: 'none',
       },
-      store: {
-        region: RegionMapping[app.region] as StorageRegion,
-        userLimits: {
-          storage: calculateUserLimits(app.storage_limit),
-          bandwidth: calculateUserLimits(app.bandwidth_limit),
-        },
-      },
       auth: {
         social: [],
         wallet: {
@@ -88,22 +74,6 @@ async function handleCreateApp() {
         },
         redirectUri: `${api.verify}/${app.ID}/`,
       },
-    })
-    appsStore.addAppOverview(app.ID, {
-      id: app.ID,
-      name: app.name,
-      storage: {
-        consumed: appOverview.consumed_storage,
-        allowed: appOverview.storage,
-      },
-      bandwidth: {
-        consumed: appOverview.consumed_bandwidth,
-        allowed: appOverview.bandwidth,
-      },
-      noOfFiles: appOverview.actions.upload - appOverview.actions.delete,
-      totalUsers: appOverview.no_of_users,
-      estimatedCost: 0,
-      createdAt: new Date().toString(),
     })
     createTransactionSigner(app.address)
     loaderStore.hideLoader()
