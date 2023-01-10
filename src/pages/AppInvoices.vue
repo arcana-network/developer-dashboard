@@ -128,7 +128,7 @@ function handleCardChange(card) {
               <span class="charge-details">21 MAY 2023</span>
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
-              <span class="charge-details">PAYMENT METHOD:</span>
+              <span class="charge-details">Payment Method:</span>
               <VStack gap="0.625rem" class="position-relative">
                 <span class="charge-details text-uppercase">{{
                   selectedCard
