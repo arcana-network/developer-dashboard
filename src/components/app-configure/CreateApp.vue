@@ -89,12 +89,12 @@ async function handleCreateApp() {
 
 <template>
   <VOverlay>
-    <img
-      src="@/assets/iconography/close.svg"
-      class="close-btn"
-      @click.stop="emit('close')"
-    />
     <VCard variant="popup" class="create-app-modal-card">
+      <img
+        src="@/assets/iconography/close.svg"
+        class="close-btn"
+        @click.stop="emit('close')"
+      />
       <h2 class="create-app-title">Create New App</h2>
       <VSeperator />
       <form @submit.prevent="handleCreateApp">
@@ -189,7 +189,7 @@ async function handleCreateApp() {
   position: fixed;
   top: 1.25rem;
   right: 1.25rem;
-  width: 1.5rem;
+  width: 1rem;
   cursor: pointer;
 }
 </style>
