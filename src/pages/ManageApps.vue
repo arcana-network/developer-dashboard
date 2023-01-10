@@ -52,12 +52,6 @@ appsStore.$subscribe(() => {
     <main>
       <VStack direction="column" gap="2rem" class="container">
         <VStack gap="2rem">
-          <img
-            src="@/assets/iconography/back.svg"
-            class="cursor-pointer back-icon"
-            alt="Go Back"
-            @click.stop="router.back()"
-          />
           <h1>MANAGE APPS</h1>
         </VStack>
         <VStack gap="1.25rem" wrap>
@@ -121,8 +115,8 @@ appsStore.$subscribe(() => {
 </template>
 
 <style scoped>
-.container {
-  margin: 1rem;
+main {
+  padding-block: 2rem 4rem;
 }
 
 .back-icon {
