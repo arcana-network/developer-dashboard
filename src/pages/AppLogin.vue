@@ -17,7 +17,6 @@ import { generateLoginInfo } from '@/utils/signerUtils'
 import { isValidEmail } from '@/utils/validation'
 
 const router = useRouter()
-const route = useRoute()
 const appsStore = useAppsStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
