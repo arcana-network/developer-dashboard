@@ -49,6 +49,7 @@ type App = {
   address: string
   totalUsers: number
   createdAt: string
+  region: string
   logos: {
     dark: {
       horizontal?: string
