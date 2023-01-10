@@ -183,7 +183,6 @@ appsStore.$subscribe(() => {
                 <span
                   class="sub-heading-3 app-name text-ellipsis"
                   :title="app.name"
-                  style="max-width: calc(100% - 1rem)"
                   :contenteditable="app.editState"
                 >
                   {{ app.name }}
