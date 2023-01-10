@@ -94,7 +94,7 @@ function resetOrganisationDetails() {
 
 <template>
   <div>
-    <main class="container">
+    <main>
       <h1 class="heading">PROFILE DETAILS</h1>
       <section class="personal-details">
         <div
