@@ -76,7 +76,6 @@ const smartContractTooltip = ref('Click to copy')
 onMounted(() => {
   const chartCtx = document.getElementById('users-count-chart').getContext('2d')
   chart = chartUtils.createChartView(chartCtx, chartConfig)
-  console.log({ chart })
   fetchActiveUsers()
 })
 
