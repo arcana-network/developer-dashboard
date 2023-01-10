@@ -116,7 +116,7 @@ function hasSubMenuSelected(tabLabel: string) {
           v-for="tab in CONFIGURE_TABS"
           :key="`configure-sidebar-tab-${tab.type}`"
           :class="{
-            active:
+            'active-tab':
               props.currentTab === tab.label || hasSubMenuSelected(tab.label),
           }"
           class="sidebar__option"
@@ -162,7 +162,7 @@ function hasSubMenuSelected(tabLabel: string) {
         <VCardButton
           class="sidebar__option"
           style="flex-direction: row"
-          :class="{ active: props.currentTab === 'Profile' }"
+          :class="{ 'active-tab': props.currentTab === 'Profile' }"
           @click.stop="onClickOfMenu({ label: 'Profile' })"
         >
           <img :src="profileIcon" alt="icon" class="sidebar__option-icon" />
@@ -343,7 +343,7 @@ function hasSubMenuSelected(tabLabel: string) {
   margin-left: 5px;
 }
 
-.active .tab-label {
+.active-tab .tab-label {
   color: var(--primary);
 }
 
@@ -351,7 +351,7 @@ function hasSubMenuSelected(tabLabel: string) {
   color: var(--primary);
 }
 
-.active .sidebar__option-icon {
+.active-tab .sidebar__option-icon {
   filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
 }
 

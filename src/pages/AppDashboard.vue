@@ -111,7 +111,6 @@ async function copyAppAddress() {
 
 async function fetchActiveUsers() {
   try {
-    showLoader('Fetching chart data')
     let activeUsers = []
     let dataTemplate = {}
     if (durationSelected.value === 'day') {
@@ -134,9 +133,8 @@ async function fetchActiveUsers() {
     const newDataSet = { ...dataSet, data: values }
     chartUtils.updateChartView(chart, labels, [newDataSet])
   } catch (e) {
+    toast.error('Error fetching chart data')
     console.log(e)
-  } finally {
-    hideLoader()
   }
 }
 </script>
@@ -211,16 +209,18 @@ async function fetchActiveUsers() {
       style="align-items: stretch"
     >
       <div class="flex justify-space-between flex-center">
-        <h2>Users</h2>
+        <h2>USERS</h2>
         <div class="flex flex-wrap duration">
           <v-card-button
             label="Daily"
             :active="durationSelected === 'day'"
+            :class="{ strong: durationSelected === 'day' }"
             @click.stop="durationSelected = 'day'"
           />
           <v-card-button
             label="Monthly"
             :active="durationSelected === 'month'"
+            :class="{ strong: durationSelected === 'month' }"
             @click.stop="durationSelected = 'month'"
           />
         </div>
@@ -242,7 +242,7 @@ async function fetchActiveUsers() {
       variant="elevated"
       style="align-items: stretch"
     >
-      <h2>Tutorials</h2>
+      <h2>TUTORIALS</h2>
       <div class="tutorials__container">
         <div
           v-for="tutorial in tutorials"
@@ -328,6 +328,10 @@ async function fetchActiveUsers() {
 
 .duration {
   justify-content: flex-end;
+}
+
+.strong {
+  font-weight: 600;
 }
 
 @media only screen and (max-width: 1080px) {
