@@ -8,6 +8,7 @@ import arrowIcon from '@/assets/iconography/arrow.png'
 import profileIcon from '@/assets/iconography/profile.png'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
@@ -74,9 +75,10 @@ function onAppClick(appId: AppId) {
               alt="app logo"
               class="app-logo"
             />
-            <label>{{ appsStore.selectedApp?.name }}</label>
+            <label class="selected-app text-ellipsis">{{
+              appsStore.selectedApp?.name
+            }}</label>
             <img
-              v-if="appsStore.apps.length > 1"
               :src="arrowIcon"
               alt="arrow-icon"
               class="arrow-icon"
@@ -85,22 +87,21 @@ function onAppClick(appId: AppId) {
               }"
             />
           </button>
-          <div
-            v-if="appsStore.apps.length > 1 && showAppsList"
-            class="apps-name__list-container"
-          >
+          <div v-if="showAppsList" class="apps-name__list-container">
             <VCardButton
               v-for="app in appsStore.apps"
               :key="app.name"
               class="apps-name__list-item"
+              :class="{ active: appsStore.selectedAppId === app.id }"
               :active="appsStore.selectedAppId === app.id"
               @click="onAppClick(app.id)"
             >
               <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
-              <p>{{ app.name }}</p>
+              <span class="app-name text-ellipsis">{{ app.name }}</span>
             </VCardButton>
           </div>
         </VStack>
+        <VSeperator class="full-bleed" />
         <VCardButton
           v-for="tab in CONFIGURE_TABS"
           :key="`configure-sidebar-tab-${tab.type}`"
@@ -111,16 +112,18 @@ function onAppClick(appId: AppId) {
         >
           <div class="sidebar__option-item">
             <img :src="tab.icon" alt="icon" class="sidebar__option-icon" />
-            <span>{{ tab.label }}</span>
-            <img
-              v-if="tab.type === 'configure'"
-              :src="arrowIcon"
-              alt="arrow-icon"
-              class="arrow-icon"
-              :class="{
-                'arrow-icon--active': showConfigureSubmenu,
-              }"
-            />
+            <VStack gap="0.5rem" align="center">
+              <span class="tab-label">{{ tab.label }}</span>
+              <img
+                v-if="tab.type === 'configure'"
+                :src="arrowIcon"
+                alt="arrow-icon"
+                class="arrow-icon"
+                :class="{
+                  'arrow-icon--active': showConfigureSubmenu,
+                }"
+              />
+            </VStack>
           </div>
           <div
             v-if="tab.subMenu && showConfigureSubmenu"
@@ -140,7 +143,7 @@ function onAppClick(appId: AppId) {
                   alt="icon"
                   class="sidebar__option-icon"
                 />
-                <span>{{ subTab.label }}</span>
+                <span class="tab-label">{{ subTab.label }}</span>
               </div>
             </VCardButton>
           </div>
@@ -152,7 +155,7 @@ function onAppClick(appId: AppId) {
           @click.stop="onClickOfMenu('profile')"
         >
           <img :src="profileIcon" alt="icon" class="sidebar__option-icon" />
-          <span>{{ authStore.name }}</span>
+          <span class="tab-label">{{ authStore.name }}</span>
         </VCardButton>
       </VStack>
     </VCard>
@@ -177,8 +180,13 @@ function onAppClick(appId: AppId) {
 }
 
 .configure-sidebar {
-  flex: 0 0 12rem;
+  width: 16rem;
   height: 100%;
+}
+
+.full-bleed {
+  width: calc(100% + 4rem) !important;
+  margin-inline: -2rem;
 }
 
 .configure-sidebar-card {
@@ -187,8 +195,7 @@ function onAppClick(appId: AppId) {
   flex-direction: column;
   flex-grow: 1;
   height: 100%;
-  padding: 2.5rem 1.25rem;
-  padding: 1rem;
+  padding: 2rem;
   border-radius: 0;
 }
 
@@ -198,12 +205,13 @@ function onAppClick(appId: AppId) {
 }
 
 .configure-tabs {
-  margin-top: 20px;
+  margin-top: 4rem;
 }
 
 .sidebar__option {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   align-items: flex-start;
   justify-content: flex-start;
   padding: 0.5rem 0;
@@ -212,6 +220,7 @@ function onAppClick(appId: AppId) {
 .sidebar__option-item {
   display: flex;
   flex-direction: row;
+  gap: 1rem;
   align-items: flex-start;
   justify-content: center;
 }
@@ -221,8 +230,8 @@ function onAppClick(appId: AppId) {
   flex-direction: column;
   align-items: baseline;
   justify-content: center;
-  margin-top: 20px;
-  margin-left: 20px;
+  margin-top: 0.5rem;
+  margin-left: 1.25rem;
 }
 
 .sidebar__submenu-option {
@@ -230,20 +239,15 @@ function onAppClick(appId: AppId) {
 }
 
 .sidebar__submenu-option:not(:last-child) {
-  margin-bottom: 20px;
+  margin-bottom: 1.5rem;
 }
 
 .sidebar__submenu-option-item {
   display: flex;
   flex-direction: row;
+  gap: 1rem;
   align-items: flex-start;
   justify-content: center;
-}
-
-.sidebar__option-icon {
-  width: 18px;
-  height: 18px;
-  margin-right: 4px;
 }
 
 .arrow-icon {
@@ -255,7 +259,7 @@ function onAppClick(appId: AppId) {
 
 .arrow-icon--active {
   transition: ease 0.5s;
-  transform: rotate(180deg);
+  transform: rotate(-180deg);
 }
 
 .strong {
@@ -266,14 +270,13 @@ function onAppClick(appId: AppId) {
   display: flex;
   flex-direction: column;
   padding-bottom: 20px;
-  border-bottom: 1px solid #8d8d8d;
 }
 
 .apps-name__list-container {
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
-  margin-left: 10px;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
 }
 
 .apps-name__list-item {
@@ -281,14 +284,32 @@ function onAppClick(appId: AppId) {
   align-items: center;
   justify-content: flex-start;
   padding: 0;
-  margin-top: 10px;
   background-color: transparent;
   border: none;
   outline: none;
 }
 
-.apps-name__list-item * + * {
-  margin-left: 5px;
+.selected-app,
+.tab-label,
+.app-name {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-white);
+}
+
+.selected-app {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
+.apps-name__list-item .app-name:hover {
+  color: var(--color-blue);
+}
+
+.apps-name__list-item.active .app-name {
+  color: var(--color-blue);
 }
 
 .app-name__container {
