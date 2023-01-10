@@ -325,4 +325,8 @@ function onAppClick(appId: AppId) {
 .app-name__container * + * {
   margin-left: 5px;
 }
+
+.apps-name__list-item * + * {
+  margin-left: 5px;
+}
 </style>
