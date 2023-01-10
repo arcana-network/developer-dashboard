@@ -8,6 +8,7 @@ import CopyIcon from '@/assets/iconography/copy.svg'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
+import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
@@ -143,39 +144,39 @@ async function fetchActiveUsers() {
 <template>
   <main>
     <section class="flex dashboard-heading flex-wrap">
-      <h1 class="text-ellipsis flex-grow" style="min-width: 150px">
-        Dashboard
-      </h1>
-      <div
-        class="flex mobile-remove justify-content-center flex-center flex-wrap"
-      >
-        <span
-          style="margin-right: 5px; color: var(--text-grey)"
-          class="body-1 mobile-remove"
+      <VStack justify="space-between" sm-direction="column" class="flex-grow">
+        <h1 class="heading">DASHBOARD</h1>
+        <div
+          class="flex mobile-remove justify-content-center flex-center flex-wrap"
         >
-          App Address:
-        </span>
-        <v-tooltip :title="appAddress" class="">
-          <div
-            class="text-ellipsis body-1 font-500"
-            style="max-width: 6em; color: var(--text-white)"
+          <span
+            style="margin-right: 5px; color: var(--text-grey)"
+            class="body-1 mobile-remove"
           >
-            {{ appAddress }}
-          </div>
-        </v-tooltip>
-        <v-tooltip
-          :title="smartContractTooltip"
-          class="mobile-remove"
-          @click.stop="copyAppAddress"
-        >
-          <img
-            :src="SmartContractIcon"
-            class="cursor-pointer"
-            alt="Click to copy smart contract address"
-            style="margin-top: 4px"
-          />
-        </v-tooltip>
-      </div>
+            App Address:
+          </span>
+          <v-tooltip :title="appAddress" class="">
+            <div
+              class="text-ellipsis body-1 font-500"
+              style="max-width: 6em; color: var(--text-white)"
+            >
+              {{ appAddress }}
+            </div>
+          </v-tooltip>
+          <v-tooltip
+            :title="smartContractTooltip"
+            class="mobile-remove"
+            @click.stop="copyAppAddress"
+          >
+            <img
+              :src="SmartContractIcon"
+              class="cursor-pointer"
+              alt="Click to copy smart contract address"
+              style="margin-top: 4px"
+            />
+          </v-tooltip>
+        </div>
+      </VStack>
     </section>
     <div
       class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
