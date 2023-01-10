@@ -29,7 +29,7 @@ type ConfigureProps = {
   currentTab?: ConfigureTabType
 }
 
-withDefaults(defineProps<ConfigureProps>(), {
+const props = withDefaults(defineProps<ConfigureProps>(), {
   currentTab: 'Dashboard',
 })
 
@@ -55,6 +55,17 @@ function onAppClick(appId: AppId) {
   emit('switch-tab', 'dashboard')
   router.push({ name: 'AppDetails', params: { appId } })
   showAppsList.value = false
+}
+
+function hasSubMenuSelected(tabLabel: string) {
+  const selectedTab = CONFIGURE_TABS.find((tab) => tab.label === tabLabel)
+  if (selectedTab && selectedTab.subMenu) {
+    const subTab = selectedTab.subMenu.find(
+      (el) => el.label === props.currentTab
+    )
+    if (subTab) return true
+  }
+  return false
 }
 </script>
 
@@ -104,7 +115,10 @@ function onAppClick(appId: AppId) {
         <VCardButton
           v-for="tab in CONFIGURE_TABS"
           :key="`configure-sidebar-tab-${tab.type}`"
-          :class="{ active: !tab.subMenu && currentTab === tab.label }"
+          :class="{
+            active:
+              props.currentTab === tab.label || hasSubMenuSelected(tab.label),
+          }"
           class="sidebar__option"
           @click.stop="onClickOfMenu(tab)"
         >
@@ -126,22 +140,21 @@ function onAppClick(appId: AppId) {
           <div
             v-if="tab.subMenu && showConfigureSubmenu"
             class="sidebar__submenu"
-            @click.stop=""
           >
             <VCardButton
               v-for="subTab in tab.subMenu"
               :key="subTab.label"
               class="sidebar__submenu-option"
-              :class="{ active: currentTab === subTab.label }"
+              :class="{ 'submenu-active': props.currentTab === subTab.label }"
               @click.stop="onClickOfMenu(subTab)"
             >
               <div class="sidebar__submenu-option-item">
                 <img
                   :src="subTab.icon"
                   alt="icon"
-                  class="sidebar__option-icon"
+                  class="sidebar__submenu-option-icon"
                 />
-                <span class="tab-label">{{ subTab.label }}</span>
+                <span class="submenu-tab-label">{{ subTab.label }}</span>
               </div>
             </VCardButton>
           </div>
@@ -149,7 +162,7 @@ function onAppClick(appId: AppId) {
         <VCardButton
           class="sidebar__option"
           style="flex-direction: row"
-          :class="{ active: currentTab === 'Profile' }"
+          :class="{ active: props.currentTab === 'Profile' }"
           @click.stop="onClickOfMenu({ label: 'Profile' })"
         >
           <img :src="profileIcon" alt="icon" class="sidebar__option-icon" />
@@ -290,7 +303,8 @@ function onAppClick(appId: AppId) {
 
 .selected-app,
 .tab-label,
-.app-name {
+.app-name,
+.submenu-tab-label {
   font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
@@ -308,7 +322,7 @@ function onAppClick(appId: AppId) {
 }
 
 .apps-name__list-item .app-name:hover {
-  color: var(--color-blue);
+  color: var(--primary);
 }
 
 .app-name__container {
@@ -330,10 +344,18 @@ function onAppClick(appId: AppId) {
 }
 
 .active .tab-label {
-  color: var(--color-blue);
+  color: var(--primary);
 }
 
-.active img {
+.submenu-active .submenu-tab-label {
+  color: var(--primary);
+}
+
+.active .sidebar__option-icon {
+  filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
+}
+
+.submenu-active .sidebar__submenu-option-icon {
   filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
 }
 </style>
