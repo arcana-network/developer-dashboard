@@ -51,6 +51,7 @@ async function handleCreateApp() {
       name: app.name as string,
       address: app.address as string,
       totalUsers: 0,
+      region: selectedRegion.value.value,
       logos: {
         dark: {
           horizontal: '',
