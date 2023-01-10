@@ -75,13 +75,13 @@ onBeforeMount(async () => {
   flex: 1;
   height: 100%;
   padding: 2rem;
-  padding-top: 2rem;
+  margin-top: 1rem;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
 .help-button__container {
-  margin-bottom: 10px;
+  margin-bottom: 4rem;
 }
 
 .help-button {
