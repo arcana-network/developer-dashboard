@@ -196,6 +196,7 @@ function onAppClick(appId: AppId) {
   flex-grow: 1;
   height: 100%;
   padding: 2rem;
+  overflow-y: auto;
   border-radius: 0;
 }
 
