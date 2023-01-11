@@ -1,12 +1,12 @@
 import bytes from 'bytes'
 
-import brandingIcon from '@/assets/iconography/branding.png'
-import dashboardIcon from '@/assets/iconography/dashboard.png'
-import passcodeLockIcon from '@/assets/iconography/passcode-lock.png'
-import settingsIcon from '@/assets/iconography/settings.png'
-import socialMediaIcon from '@/assets/iconography/social-media.png'
-import usersGroupIcon from '@/assets/iconography/users_group.png'
-import walletIcon from '@/assets/iconography/wallet.png'
+import brandingIcon from '@/assets/iconography/branding.svg'
+import dashboardIcon from '@/assets/iconography/dashboard.svg'
+import passcodeLockIcon from '@/assets/iconography/passcode-lock.svg'
+import settingsIcon from '@/assets/iconography/settings.svg'
+import socialMediaIcon from '@/assets/iconography/user.svg'
+import usersGroupIcon from '@/assets/iconography/users.svg'
+import walletIcon from '@/assets/iconography/wallet.svg'
 import type { UserLimitState } from '@/stores/apps.store'
 
 const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
