@@ -200,10 +200,12 @@ async function handleSave() {
 }
 
 .web-wallet-desktop-preview {
+  width: 100%;
   max-width: 38rem;
 }
 
 .web-wallet-mobile-preview {
+  width: 100%;
   max-width: 12rem;
 }
 </style>
