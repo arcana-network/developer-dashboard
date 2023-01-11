@@ -106,6 +106,14 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    name: 'AppProfile',
+    path: '/profile',
+    component: AppProfile,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
     name: 'Login',
     path: '/login',
     component: toBoolean(constants.isAppDown) ? AppDownNotification : AppLogin,

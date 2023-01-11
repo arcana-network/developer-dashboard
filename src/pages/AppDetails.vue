@@ -4,11 +4,14 @@ import { useRouter } from 'vue-router'
 
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import VButton from '@/components/lib/VButton/VButton.vue'
+import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import useArcanaAuth from '@/use/arcanaAuth'
 import { useAppId } from '@/use/getAppId'
-import { Help_Items } from '@/utils/constants'
+import { HelpItems, ProfileItems } from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const appsStore = useAppsStore()
@@ -17,6 +20,8 @@ const currentTab = ref('Dashboard')
 const router = useRouter()
 const appId = useAppId()
 const showHelpMenu = ref(false)
+const showProfileMenu = ref(false)
+const { logout } = useArcanaAuth()
 
 function switchTab(tab: string) {
   currentTab.value = tab
@@ -34,6 +39,13 @@ onBeforeMount(async () => {
   createTransactionSigner(address)
   loaderStore.hideLoader()
 })
+
+async function onLogout() {
+  await logout()
+  localStorage.clear()
+  router.push({ name: 'Login' })
+  window.location.reload()
+}
 </script>
 
 <template>
@@ -42,21 +54,74 @@ onBeforeMount(async () => {
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
     </div>
     <VStack direction="column" class="app-details__content">
-      <div class="flex justify-end help-button__container position-relative">
-        <button class="help-button" @click.stop="showHelpMenu = !showHelpMenu">
-          Help
-        </button>
-        <ul v-if="showHelpMenu" class="help-menu-items position-absolute">
-          <li
-            v-for="helpItem in Help_Items"
-            :key="helpItem.label"
-            class="cursor-pointer help-menu-item"
-            @click.stop="showHelpMenu = false"
+      <VStack class="justify-end help-button__container" gap="1rem">
+        <div class="position-relative flex">
+          <button
+            class="help-button"
+            @click.stop="showHelpMenu = !showHelpMenu"
           >
-            <a :href="helpItem.link" target="_blank">{{ helpItem.label }}</a>
-          </li>
-        </ul>
-      </div>
+            Help
+          </button>
+          <VCard v-if="showHelpMenu" class="help-menu-items position-absolute">
+            <ul style="margin: 0">
+              <li
+                v-for="helpItem in HelpItems"
+                :key="helpItem.label"
+                class="cursor-pointer help-menu-item"
+                @click.stop="showHelpMenu = false"
+              >
+                <a
+                  :href="helpItem.link"
+                  class="flex"
+                  style="gap: 0.75rem"
+                  target="_blank"
+                >
+                  <img :src="helpItem.icon" />
+                  <span>{{ helpItem.label }} </span></a
+                >
+              </li>
+            </ul>
+          </VCard>
+        </div>
+        <div class="position-relative flex">
+          <img
+            src="@/assets/iconography/profile.svg"
+            class="cursor-pointer"
+            @click.stop="showProfileMenu = !showProfileMenu"
+          />
+          <VCard
+            v-if="showProfileMenu"
+            class="help-menu-items position-absolute"
+          >
+            <ul style="margin: 0">
+              <li
+                v-for="profileItem in ProfileItems"
+                :key="profileItem.label"
+                class="cursor-pointer help-menu-item"
+                @click.stop="showProfileMenu = false"
+              >
+                <RouterLink
+                  :to="{ name: profileItem.label }"
+                  class="flex"
+                  style="gap: 0.75rem"
+                  ><img :src="profileItem.icon" />
+                  <span>{{ profileItem.label }} </span></RouterLink
+                >
+              </li>
+              <li
+                class="cursor-pointer help-menu-item"
+                style="margin-top: 1.5rem"
+              >
+                <VButton
+                  label="LOGOUT"
+                  variant="secondary"
+                  @click.stop="onLogout"
+                />
+              </li>
+            </ul>
+          </VCard>
+        </div>
+      </VStack>
       <VStack direction="column" gap="2rem" class="flex-grow">
         <RouterView />
         <AppFooter class="footer-bleed" />
@@ -102,27 +167,29 @@ onBeforeMount(async () => {
 }
 
 .help-menu-items {
-  top: 30px;
-  right: 20px;
+  top: calc(100% + 0.75rem);
+  right: 0;
   z-index: 999;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 245px;
   padding: 0;
-  padding: 1rem;
-  background-color: #1f1f1f;
-  border-radius: 10px;
+  padding-top: 1.25rem;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%);
+}
+
+.help-menu-items ul {
+  padding: 0;
 }
 
 .help-menu-item {
   width: 100%;
-  padding: 0.5rem;
+  padding-inline: 1.25rem;
+  padding-bottom: 1.25rem;
   font-family: var(--font-body);
   color: var(--text-white);
+  white-space: nowrap;
   list-style: none;
-  background-color: #1f1f1f;
 }
 
 .help-menu-items a {

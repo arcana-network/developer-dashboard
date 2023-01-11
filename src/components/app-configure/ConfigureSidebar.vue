@@ -7,7 +7,6 @@ import DiscordIcon from '@/assets/discord-white.svg'
 import DiscourseIcon from '@/assets/discourse-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
-import profileIcon from '@/assets/iconography/profile.png'
 import TelegramIcon from '@/assets/telegram-white.svg'
 import TwitterIcon from '@/assets/twitter-white.svg'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -24,10 +23,6 @@ const showConfigureSubmenu = ref(false)
 const showAppsList = ref(false)
 const router = useRouter()
 const emit = defineEmits(['switch-tab'])
-
-onMounted(() => {
-  console.log(appsStore.selectedApp)
-})
 
 const socialLinks = [
   {
@@ -185,15 +180,6 @@ function hasSubMenuSelected(tabLabel: string) {
               </div>
             </VCardButton>
           </div>
-        </VCardButton>
-        <VCardButton
-          class="sidebar__option"
-          style="flex-direction: row"
-          :class="{ 'active-tab': props.currentTab === 'Profile' }"
-          @click.stop="onClickOfMenu({ label: 'Profile' })"
-        >
-          <img :src="profileIcon" alt="icon" class="sidebar__option-icon" />
-          <span class="tab-label">{{ authStore.name }}</span>
         </VCardButton>
       </VStack>
       <VStack gap="1.5rem" align="center" class="social-links">

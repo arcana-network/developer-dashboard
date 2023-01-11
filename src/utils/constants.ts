@@ -2,7 +2,11 @@ import bytes from 'bytes'
 
 import brandingIcon from '@/assets/iconography/branding.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
+import DocsIcon from '@/assets/iconography/docs.svg'
+import InvoiceIcon from '@/assets/iconography/invoice.svg'
 import passcodeLockIcon from '@/assets/iconography/passcode-lock.svg'
+import PassportIcon from '@/assets/iconography/passport.svg'
+import ScheduleIcon from '@/assets/iconography/schedule.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import usersGroupIcon from '@/assets/iconography/users.svg'
@@ -226,15 +230,28 @@ enum WalletMode {
 
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
-const Help_Items = [
+const HelpItems = [
   {
     label: 'View Docs',
     link: docs_url,
+    icon: DocsIcon,
   },
   {
     label: 'Schedule a Demo',
     link: 'https://calendly.com/arcana-network/arcana-demo-walkthrough',
+    icon: ScheduleIcon,
   },
+]
+
+const ProfileItems = [
+  {
+    label: 'Profile',
+    icon: PassportIcon,
+  },
+  // {
+  //   label: 'Invoices',
+  //   icon: InvoiceIcon,
+  // },
 ]
 
 const constants = {
@@ -265,7 +282,8 @@ export {
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   DOCS_URL,
-  Help_Items,
+  HelpItems,
+  ProfileItems,
 }
 
 export type {
