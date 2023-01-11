@@ -9,7 +9,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppId } from '@/use/getAppId'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
 
-const currentTab: Ref<ConfigureTabType> = ref('general')
+const currentTab: Ref<ConfigureTabType> = ref('Branding')
 const router = useRouter()
 const route = useRoute()
 const appId = useAppId()
