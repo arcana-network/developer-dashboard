@@ -318,9 +318,8 @@ async function fetchActiveUsers() {
 }
 
 .full-bleed-separator {
-  width: calc(100% + 4rem);
-  margin-block: 2rem;
-  margin-inline: -2rem;
+  width: 100%;
+  margin-block: 2rem 0;
 }
 
 .duration {
