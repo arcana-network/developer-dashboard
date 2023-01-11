@@ -6,13 +6,8 @@ import {
   getThemeLogo,
   fetchAppDelegates,
 } from '@/services/gateway.service'
-import calculateUserLimits from '@/utils/calculateUserLimits'
-import type {
-  Chain,
-  StorageRegion,
-  SocialAuthVerifier,
-} from '@/utils/constants'
-import { ChainMapping, RegionMapping, WalletMode, api } from '@/utils/constants'
+import type { Chain, SocialAuthVerifier } from '@/utils/constants'
+import { ChainMapping, WalletMode, api } from '@/utils/constants'
 
 type UserLimitUnit = 'MB' | 'GB'
 type UserLimitTarget = 'storage' | 'bandwidth'
@@ -52,6 +47,9 @@ type App = {
   id: AppId
   name: string
   address: string
+  totalUsers: number
+  createdAt: string
+  region: string
   logos: {
     dark: {
       horizontal?: string
@@ -76,30 +74,6 @@ type App = {
     }
     redirectUri: string
   }
-  store: {
-    userLimits: {
-      storage: UserLimitState
-      bandwidth: UserLimitState
-    }
-    region: StorageRegion
-  }
-}
-
-type AppOverview = {
-  id: AppId
-  name: string
-  bandwidth: {
-    allowed: number
-    consumed: number
-  }
-  storage: {
-    allowed: number
-    consumed: number
-  }
-  estimatedCost: number
-  noOfFiles: number
-  totalUsers: number
-  createdAt: string
 }
 
 type AppState = {
@@ -107,26 +81,21 @@ type AppState = {
   appsById: {
     [key: AppId]: App
   }
-  appsOverviewById: {
-    [key: AppId]: AppOverview
-  }
+  selectedAppId: AppId | null
 }
 
 const useAppsStore = defineStore('apps', {
   state: (): AppState => ({
     appIds: [],
     appsById: {},
-    appsOverviewById: {},
+    selectedAppId: null,
   }),
   getters: {
     apps: (state) => {
-      return state.appIds.map((id) => ({ ...state.appsOverviewById[id] }))
+      return state.appIds.map((id) => ({ ...state.appsById[id] }))
     },
     app: (state) => {
       return (id: AppId) => state.appsById[id]
-    },
-    appOverview: (state) => {
-      return (id: AppId) => state.appsOverviewById[id]
     },
     hasUiMode: (state) => {
       return (id: AppId) =>
@@ -135,6 +104,10 @@ const useAppsStore = defineStore('apps', {
     hasUiModeInGateway: (state) => {
       return (id: AppId) =>
         state.appsById[id].auth.wallet.walletTypeInGateway === WalletMode.UI
+    },
+    selectedApp: (state) => {
+      if (state.selectedAppId) return state.appsById[state.selectedAppId]
+      return null
     },
   },
   actions: {
@@ -145,12 +118,12 @@ const useAppsStore = defineStore('apps', {
       this.appIds.unshift(appId)
       this.appsById[appId] = { ...appDetails }
     },
-    addAppOverview(appId: AppId, overview: AppOverview) {
-      this.appsOverviewById[appId] = overview
-    },
     deleteApp(appId: AppId) {
       this.appIds = this.appIds.filter((id) => id !== appId)
       delete this.appsById[appId]
+    },
+    setSelectedAppId(appId: AppId) {
+      this.selectedAppId = appId
     },
     async fetchAndStoreAllApps() {
       this.appIds = []
@@ -161,25 +134,14 @@ const useAppsStore = defineStore('apps', {
       )
       const appConfigPromises: Promise<void>[] = []
       apps.forEach((app) => {
-        const appId = app.id
-        this.appIds.push(appId)
-        this.appsOverviewById[app.id] = {
+        this.appIds.push(app.id)
+        this.appsById[app.id] = {
           id: app.id,
           name: app.name,
-          bandwidth: {
-            allowed: app.bandwidth,
-            consumed: app.consumed_bandwidth,
-          },
-          storage: {
-            allowed: app.storage,
-            consumed: app.consumed_storage,
-          },
-          noOfFiles: app.no_of_files,
           totalUsers: app.total_users,
-          estimatedCost: app.estimated_cost,
           createdAt: app.created_at,
         }
-        appConfigPromises.push(this.fetchAndStoreAppConfig(appId))
+        appConfigPromises.push(this.fetchAndStoreAppConfig(app.id))
       })
       await Promise.all(appConfigPromises)
     },
@@ -206,6 +168,7 @@ const useAppsStore = defineStore('apps', {
         return delegateState
       })
       this.appsById[appId] = {
+        ...this.appsById[appId],
         id: appId,
         address: app.address,
         name: app.name,
@@ -224,13 +187,6 @@ const useAppsStore = defineStore('apps', {
             ? (ChainMapping[app.chain] as Chain)
             : 'none',
           delegates,
-        },
-        store: {
-          region: RegionMapping[app.region] as StorageRegion,
-          userLimits: {
-            storage: calculateUserLimits(app.storage_limit),
-            bandwidth: calculateUserLimits(app.bandwidth_limit),
-          },
         },
         logos: {
           dark: {
@@ -265,7 +221,6 @@ export type {
   Theme,
   App as AppConfig,
   AppId,
-  AppOverview,
   Delegate,
   DelegatePermission,
   DelegateId,

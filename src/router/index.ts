@@ -11,22 +11,17 @@ import constants from '@/utils/constants'
 const authStore = useAuthStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
-const AppConfigure = () => import('@/pages/AppConfigure.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')
-const AppUsers = () => import('@/pages/AppUsers.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 const ManageApps = () => import('@/pages/ManageApps.vue')
 const AppDetails = () => import('@/pages/AppDetails.vue')
 
-const GeneralSettings = () =>
-  import('@/components/app-configure/general/GeneralSettings.vue')
 const AuthSettings = () =>
   import('@/components/app-configure/auth/AuthSettings.vue')
-const StoreSettings = () =>
-  import('@/components/app-configure/store/StoreSettings.vue')
-const AccessSettings = () =>
-  import('@/components/app-configure/access/AccessSettings.vue')
+const WebWallet = () => import('@/components/app-configure/auth/WebWallet.vue')
+const AppBranding = () =>
+  import('@/components/app-configure/general/AppBranding.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -77,41 +72,33 @@ const routes: RouteRecordRaw[] = [
         },
       },
       {
-        name: 'Configure',
-        path: 'config',
-        component: AppConfigure,
+        name: 'Branding',
+        path: 'branding',
+        component: AppBranding,
         meta: {
           requiresAuth: true,
         },
-        props: true,
-        redirect: { name: 'GeneralSettings' },
-        children: [
-          {
-            name: 'GeneralSettings',
-            path: 'general',
-            component: GeneralSettings,
-          },
-          {
-            name: 'AuthSettings',
-            path: 'auth',
-            component: AuthSettings,
-          },
-          {
-            name: 'StoreSettings',
-            path: 'store',
-            component: StoreSettings,
-          },
-          {
-            name: 'AccessSettings',
-            path: 'access',
-            component: AccessSettings,
-          },
-        ],
       },
       {
-        name: 'Users',
-        path: '/apps/:appId/users',
-        component: AppUsers,
+        name: 'Social Auth',
+        path: 'socialAuth',
+        component: AuthSettings,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Arcana Wallet',
+        path: 'arcanaWallet',
+        component: WebWallet,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Profile',
+        path: 'profile',
+        component: AppProfile,
         meta: {
           requiresAuth: true,
         },
@@ -119,7 +106,7 @@ const routes: RouteRecordRaw[] = [
     ],
   },
   {
-    name: 'Profile',
+    name: 'AppProfile',
     path: '/profile',
     component: AppProfile,
     meta: {
