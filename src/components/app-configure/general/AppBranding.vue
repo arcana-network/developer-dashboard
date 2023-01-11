@@ -2,8 +2,10 @@
 import bytes from 'bytes'
 import { reactive } from 'vue'
 
+import WalletTheme from '@/components/app-configure/general/WalletTheme.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
@@ -108,14 +110,43 @@ async function handleFileRemove(
   <section name="app-branding">
     <SettingCard class="app-branding-card">
       <template #title>Branding</template>
-      <VStack direction="column" gap="1.5rem">
-        <h3 class="text-uppercase">Upload Logo</h3>
-        <VStack direction="column" gap="1rem">
-          <h4 class="text-uppercase font-700">Light Mode</h4>
+      <VStack direction="column" gap="2rem">
+        <VStack direction="column" gap="0.5rem">
+          <h3>Upload Logo</h3>
+          <VStack direction="column" gap="0.5rem" class="body-2">
+            <p class="body-2 description">
+              The actual shape of the logo does not need to be a rectangle, but
+              the live area should be like a wide rectangle to be used on your
+              website/ app etc.
+            </p>
+            <VStack gap="1rem">
+              <p class="flex justify-center flex-center example__logo-mark">
+                <span class="description">Ex: Logo Mark:</span>
+                <img
+                  src="@/assets/google-logo-mark.png"
+                  alt="google logo mark"
+                  class="example-logo"
+                />
+              </p>
+              <p
+                class="flex justify-center flex-center example__logo-horizontal"
+              >
+                <span class="description">Horizontal Logo:</span>
+                <img
+                  src="@/assets/google-horizontal-logo.png"
+                  alt="google horizontal logo"
+                  class="example-logo"
+                />
+              </p>
+            </VStack>
+          </VStack>
+        </VStack>
+        <VStack direction="column" gap="0.5rem">
+          <h4 class="font-700">Light Mode</h4>
           <VStack gap="4rem" md-gap="2rem" wrap>
             <VStack
               direction="column"
-              gap="0.625rem"
+              gap="0.375rem"
               class="file-upload-container"
             >
               <label for="light-logo">Logo Mark</label>
@@ -137,7 +168,7 @@ async function handleFileRemove(
             </VStack>
             <VStack
               direction="column"
-              gap="0.625rem"
+              gap="0.375rem"
               class="file-upload-container"
             >
               <label for="light-horizontal-logo">Horizontal Logo</label>
@@ -159,12 +190,12 @@ async function handleFileRemove(
             </VStack>
           </VStack>
         </VStack>
-        <VStack direction="column" gap="1rem">
+        <VStack direction="column" gap="0.5rem">
           <h4 class="text-uppercase font-700">Dark Mode</h4>
           <VStack gap="4rem" md-gap="2rem" wrap>
             <VStack
               direction="column"
-              gap="0.625rem"
+              gap="0.375rem"
               class="file-upload-container"
             >
               <label for="dark-logo">Logo Mark</label>
@@ -186,7 +217,7 @@ async function handleFileRemove(
             </VStack>
             <VStack
               direction="column"
-              gap="0.625rem"
+              gap="0.375rem"
               class="file-upload-container"
             >
               <label for="dark-horizontal-logo">Horizontal Logo</label>
@@ -209,13 +240,33 @@ async function handleFileRemove(
           </VStack>
         </VStack>
       </VStack>
+      <VSeperator />
+      <WalletTheme />
     </SettingCard>
   </section>
 </template>
 
 <style scoped>
-label {
+label,
+.description {
   color: var(--text-grey);
+}
+
+h3 {
+  font-size: 1.125rem;
+}
+
+.example__logo-mark {
+  margin-right: 10px;
+}
+
+.example__logo-horizontal {
+  margin-left: 10px;
+}
+
+.example-logo {
+  height: 16px;
+  margin-left: 5px;
 }
 
 .file-upload-container {
