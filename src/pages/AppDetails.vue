@@ -27,7 +27,7 @@ function switchTab(tab: string) {
   currentTab.value = tab
   router.push({
     params: { appId },
-    name: tab,
+    path: tab,
   })
 }
 
