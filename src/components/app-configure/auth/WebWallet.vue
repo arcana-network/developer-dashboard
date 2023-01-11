@@ -4,8 +4,6 @@ import { ref } from 'vue'
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
-import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -53,9 +51,6 @@ function clearWebsiteDomain() {
 
 function handleCancel() {
   walletWebsiteDomain.value = wallet.websiteDomain
-  selectedTheme.value = availableThemes.find(
-    (theme) => theme.value === wallet.selectedTheme
-  ) as ThemeData
   isEdited.value = false
 }
 
@@ -64,10 +59,7 @@ function isValidWebsiteDomain() {
 }
 
 function hasSameValuesInStore() {
-  return (
-    walletWebsiteDomain.value === wallet.websiteDomain &&
-    selectedTheme.value.value === wallet.selectedTheme
-  )
+  return walletWebsiteDomain.value === wallet.websiteDomain
 }
 
 async function handleSave() {
@@ -121,54 +113,6 @@ async function handleSave() {
               @blur="isEdited = true"
             />
           </VStack>
-          <VStack direction="column" gap="1rem" style="margin-bottom: 1rem">
-            <h3>Wallet Theme</h3>
-            <VStack direction="column" gap="0.5rem" align="start">
-              <h4 class="text-grey">Choose Theme</h4>
-              <VDropdown
-                v-model="selectedTheme"
-                :options="availableThemes"
-                display-field="label"
-                class="theme-dropdown"
-              />
-            </VStack>
-          </VStack>
-          <VStack direction="column" gap="1rem">
-            <h3>Preview Interface</h3>
-            <VStack gap="2.5rem" wrap>
-              <VStack direction="column" gap="0.5rem">
-                <h4 class="text-grey">Desktop</h4>
-                <img
-                  v-if="selectedTheme.value === 'light'"
-                  src="@/assets/web-wallet-preview-desktop-light.png"
-                  alt="Web wallet desktop preview"
-                  class="web-wallet-desktop-preview"
-                />
-                <img
-                  v-else
-                  src="@/assets/web-wallet-preview-desktop-dark.png"
-                  alt="Web wallet desktop preview"
-                  class="web-wallet-desktop-preview"
-                />
-              </VStack>
-              <VSeperator vertical />
-              <VStack direction="column" gap="0.5rem">
-                <h4 class="text-grey">Mobile</h4>
-                <img
-                  v-if="selectedTheme.value === 'light'"
-                  src="@/assets/web-wallet-preview-mobile-light.png"
-                  alt="Web wallet mobile preview"
-                  class="web-wallet-mobile-preview"
-                />
-                <img
-                  v-else
-                  src="@/assets/web-wallet-preview-mobile-dark.png"
-                  alt="Web wallet mobile preview"
-                  class="web-wallet-mobile-preview"
-                />
-              </VStack>
-            </VStack>
-          </VStack>
           <ConfigureActionButtons
             :save-disabled="hasSameValuesInStore() || !isValidWebsiteDomain()"
             :cancel-disabled="hasSameValuesInStore()"
@@ -181,10 +125,6 @@ async function handleSave() {
 </template>
 
 <style scoped>
-.theme-dropdown {
-  min-width: 16rem;
-}
-
 .text-grey {
   font-size: 1rem;
   font-weight: 500;
@@ -193,19 +133,5 @@ async function handleSave() {
 
 .web-wallet-input {
   max-width: 24rem;
-}
-
-.ui-mode-switch {
-  margin-top: 4px;
-}
-
-.web-wallet-desktop-preview {
-  width: 100%;
-  max-width: 38rem;
-}
-
-.web-wallet-mobile-preview {
-  width: 100%;
-  max-width: 12rem;
 }
 </style>

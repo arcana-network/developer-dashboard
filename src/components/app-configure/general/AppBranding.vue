@@ -2,8 +2,10 @@
 import bytes from 'bytes'
 import { reactive } from 'vue'
 
+import WalletTheme from '@/components/app-configure/general/WalletTheme.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VFileUpload from '@/components/lib/VFileUpload/VFileUpload.vue'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
@@ -238,6 +240,8 @@ async function handleFileRemove(
           </VStack>
         </VStack>
       </VStack>
+      <VSeperator />
+      <WalletTheme />
     </SettingCard>
   </section>
 </template>
