@@ -28,6 +28,8 @@ const slot = useSlots()
 
 <style scoped>
 .settings-card {
+  box-sizing: border-box;
+  width: 100%;
   padding: 2rem 1.5rem;
 }
 

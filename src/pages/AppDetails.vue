@@ -2,6 +2,7 @@
 import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -21,9 +22,11 @@ const router = useRouter()
 const appId = useAppId()
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
+const showMobileMenu = ref(false)
 const { logout } = useArcanaAuth()
 
 function switchTab(tab: string) {
+  showMobileMenu.value = false
   currentTab.value = tab
   router.push({
     params: { appId },
@@ -50,12 +53,12 @@ async function onLogout() {
 
 <template>
   <VStack direction="row" class="app-details__container">
-    <div class="app-details__sidebar">
+    <div class="app-details__sidebar mobile-remove">
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
     </div>
     <VStack direction="column" class="app-details__content">
       <VStack class="justify-end help-button__container" gap="1rem">
-        <div class="position-relative flex">
+        <div class="position-relative flex mobile-remove">
           <button
             class="help-button"
             @click.stop="showHelpMenu = !showHelpMenu"
@@ -82,6 +85,14 @@ async function onLogout() {
               </li>
             </ul>
           </VCard>
+        </div>
+        <div>
+          <button
+            class="help-button tablet-remove laptop-remove"
+            @click.stop="showMobileMenu = !showMobileMenu"
+          >
+            <img src="@/assets/iconography/menu.svg" alt="menu icon" />
+          </button>
         </div>
         <div class="position-relative flex">
           <img
@@ -127,6 +138,9 @@ async function onLogout() {
         <AppFooter class="footer-bleed" />
       </VStack>
     </VStack>
+    <ConfigureMobileMenu v-if="showMobileMenu" @close="showMobileMenu = false">
+      <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
+    </ConfigureMobileMenu>
   </VStack>
 </template>
 

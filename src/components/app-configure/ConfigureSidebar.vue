@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
@@ -72,7 +72,7 @@ function onLogoClick() {
 
 function onAppClick(appId: AppId) {
   appsStore.setSelectedAppId(appId)
-  // emit('switch-tab', 'Dashboard')
+  emit('switch-tab', 'dashboard')
   router.push({ name: 'AppDetails', params: { appId } })
   showAppsList.value = false
 }
@@ -87,6 +87,14 @@ function hasSubMenuSelected(tabLabel: string) {
   }
   return false
 }
+
+onMounted(() => {
+  const currentTab = props.currentTab
+  showConfigureSubmenu.value =
+    currentTab === 'branding' ||
+    currentTab === 'socialAuth' ||
+    currentTab === 'arcanaWallet'
+})
 </script>
 
 <template>
@@ -242,7 +250,7 @@ function hasSubMenuSelected(tabLabel: string) {
 }
 
 .configure-sidebar {
-  width: 16rem;
+  width: 100%;
   height: 100%;
 }
 
