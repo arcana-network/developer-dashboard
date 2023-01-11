@@ -72,7 +72,7 @@ function onLogoClick() {
 
 function onAppClick(appId: AppId) {
   appsStore.setSelectedAppId(appId)
-  emit('switch-tab', 'dashboard')
+  // emit('switch-tab', 'Dashboard')
   router.push({ name: 'AppDetails', params: { appId } })
   showAppsList.value = false
 }
@@ -96,9 +96,9 @@ function hasSubMenuSelected(tabLabel: string) {
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </button>
       <VStack direction="column" gap="1rem" class="configure-tabs flex-grow">
-        <VStack class="apps-name__container">
+        <VStack class="apps-name__container position-relative">
           <button
-            class="flex app-name__container"
+            class="flex app-name__container cursor-pointer"
             @click="showAppsList = !showAppsList"
           >
             <img
@@ -118,7 +118,10 @@ function hasSubMenuSelected(tabLabel: string) {
               }"
             />
           </button>
-          <div v-if="showAppsList" class="apps-name__list-container">
+          <VCard
+            v-if="showAppsList"
+            class="apps-name__list-container position-absolute"
+          >
             <VCardButton
               v-for="app in appsStore.apps"
               :key="app.name"
@@ -129,7 +132,19 @@ function hasSubMenuSelected(tabLabel: string) {
               <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
               <span class="app-name text-ellipsis">{{ app.name }}</span>
             </VCardButton>
-          </div>
+            <VSeperator class="app-full-bleed" />
+            <VCardButton
+              class="apps-name__list-item"
+              @click="router.push({ name: 'ManageApps' })"
+            >
+              <img
+                src="@/assets/iconography/manage.svg"
+                alt="manage apps"
+                class="app-icon"
+              />
+              <span class="app-name text-ellipsis">Manage Apps</span>
+            </VCardButton>
+          </VCard>
         </VStack>
         <VSeperator class="full-bleed" />
         <VCardButton
@@ -211,8 +226,19 @@ function hasSubMenuSelected(tabLabel: string) {
 }
 
 .app-logo {
-  width: 35px;
-  height: 35px;
+  width: 2rem;
+  height: 2rem;
+}
+
+.app-full-bleed {
+  width: calc(100% + 2.5rem);
+  margin-inline: -1.25rem;
+}
+
+.app-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0.25rem;
 }
 
 .configure-sidebar {
@@ -312,14 +338,20 @@ function hasSubMenuSelected(tabLabel: string) {
 }
 
 .apps-name__list-container {
+  top: 0;
+  right: -1rem;
+  left: 0;
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
-  margin-top: 1.25rem;
+  padding: 1.25rem;
+  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
 }
 
 .apps-name__list-item {
   display: flex;
+  gap: 0.5rem;
   align-items: center;
   justify-content: flex-start;
   padding: 0 !important;
