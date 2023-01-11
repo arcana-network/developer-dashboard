@@ -145,10 +145,11 @@ div.form-group {
 }
 
 label {
-  margin: 10px;
-  font-family: var(--font-body);
-  font-size: 1.125em;
-  font-weight: 400;
+  margin-bottom: 0.5rem;
+  margin-left: 0.25rem;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 500;
   line-height: 1.5em;
   color: var(--text-grey);
 }

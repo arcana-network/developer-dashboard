@@ -123,7 +123,7 @@ async function handleSave() {
           </VStack>
           <VStack direction="column" gap="1rem" style="margin-bottom: 1rem">
             <h3>Wallet Theme</h3>
-            <VStack direction="column" gap="0.75rem" align="start">
+            <VStack direction="column" gap="0.5rem" align="start">
               <h4 class="text-grey">Choose Theme</h4>
               <VDropdown
                 v-model="selectedTheme"
@@ -136,7 +136,7 @@ async function handleSave() {
           <VStack direction="column" gap="1rem">
             <h3>Preview Interface</h3>
             <VStack gap="2.5rem" wrap>
-              <VStack direction="column" gap="0.625rem">
+              <VStack direction="column" gap="0.5rem">
                 <h4 class="text-grey">Desktop</h4>
                 <img
                   v-if="selectedTheme.value === 'light'"
@@ -152,7 +152,7 @@ async function handleSave() {
                 />
               </VStack>
               <VSeperator vertical />
-              <VStack direction="column" gap="0.625rem">
+              <VStack direction="column" gap="0.5rem">
                 <h4 class="text-grey">Mobile</h4>
                 <img
                   v-if="selectedTheme.value === 'light'"
@@ -186,6 +186,8 @@ async function handleSave() {
 }
 
 .text-grey {
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--text-grey);
 }
 
