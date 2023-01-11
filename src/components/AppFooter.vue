@@ -68,7 +68,7 @@ const socialLinks = [
         </a>
       </VStack>
       <VStack gap="2.5rem" class="flex-grow" style="justify-content: end">
-        <VStack gap="1.5rem" align="center" class="footer-links mobile-remove">
+        <VStack gap="1rem" align="center" class="footer-links">
           <a
             class="body-2 footer-link"
             href="https://github.com/arcana-network/license/blob/main/TERMS.md"
@@ -84,12 +84,12 @@ const socialLinks = [
             Privacy Policy
           </a>
         </VStack>
-        <VStack gap="0.5rem" align="center">
+        <!-- <VStack gap="0.5rem" align="center">
           <span class="body-2">Powered by</span>
           <a href="https://arcana.network" target="_blank">
             <img src="@/assets/arcana-logo.svg" class="arcana-logo" />
           </a>
-        </VStack>
+        </VStack> -->
       </VStack>
     </VStack>
   </footer>

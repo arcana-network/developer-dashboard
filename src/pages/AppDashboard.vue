@@ -274,6 +274,7 @@ async function fetchActiveUsers() {
 
 .tutorials__container {
   display: flex;
+  gap: 1.25rem;
   margin-top: 10px;
 }
 
@@ -287,10 +288,6 @@ async function fetchActiveUsers() {
 
 .tutorial__card * + * {
   margin-top: 10px;
-}
-
-.tutorial__card:not(:last-child) {
-  margin-right: 20px;
 }
 
 .tutorial__thumbnail {
@@ -344,6 +341,10 @@ async function fetchActiveUsers() {
 @media only screen and (max-width: 1023px) {
   .smart-contract-copy {
     visibility: hidden;
+  }
+
+  .tutorials__container {
+    flex-direction: column;
   }
 }
 
