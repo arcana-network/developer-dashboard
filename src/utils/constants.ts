@@ -78,22 +78,22 @@ const regions: Region[] = [
 ]
 
 type ConfigureTabType =
-  | 'Dashboard'
-  | 'Configure'
-  | 'Branding'
-  | 'Social Auth'
-  | 'Arcana Wallet'
-  | 'Profile'
+  | 'dashboard'
+  | 'configure'
+  | 'branding'
+  | 'socialAuth'
+  | 'arcanaWallet'
+  | 'profile'
 
 type ConfigureTabSubMenu = {
-  type: string
+  type: ConfigureTabType
   label: string
   icon: string
 }
 
 type ConfigureTab = {
-  type: string
-  label: ConfigureTabType
+  type: ConfigureTabType
+  label: string
   icon: string
   subMenu?: ConfigureTabSubMenu[]
 }
