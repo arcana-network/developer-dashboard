@@ -100,7 +100,7 @@ function hasSubMenuSelected(tabLabel: string) {
       <VStack direction="column" gap="1rem" class="configure-tabs flex-grow">
         <VStack class="apps-name__container position-relative">
           <button
-            class="flex app-name__container"
+            class="flex app-name__container cursor-pointer"
             @click="showAppsList = !showAppsList"
           >
             <img
@@ -230,6 +230,11 @@ function hasSubMenuSelected(tabLabel: string) {
 .app-logo {
   width: 2rem;
   height: 2rem;
+}
+
+.app-full-bleed {
+  width: calc(100% + 2.5rem);
+  margin-inline: -1.25rem;
 }
 
 .app-icon {
