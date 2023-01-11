@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
@@ -14,10 +14,8 @@ import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
-import { useAuthStore } from '@/stores/auth.store'
 import { CONFIGURE_TABS, type ConfigureTabType } from '@/utils/constants'
 
-const authStore = useAuthStore()
 const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
 const showAppsList = ref(false)
@@ -52,18 +50,18 @@ type ConfigureProps = {
 }
 
 const props = withDefaults(defineProps<ConfigureProps>(), {
-  currentTab: 'Dashboard',
+  currentTab: 'dashboard',
 })
 
-function onClickOfMenu(tab) {
-  if (tab.subMenu) {
+function onClickOfMenu(tab: ConfigureTabType) {
+  if (tab === 'configure') {
     showConfigureSubmenu.value = !showConfigureSubmenu.value
   } else {
-    emit('switch-tab', tab.label)
+    emit('switch-tab', tab)
   }
 }
 
-function getlogo(appId) {
+function getlogo(appId: AppId) {
   const app = appsStore.app(appId)
   return app.logos.dark.vertical || app.logos.light.vertical || AppFallbackLogo
 }
@@ -139,10 +137,10 @@ function hasSubMenuSelected(tabLabel: string) {
           :key="`configure-sidebar-tab-${tab.type}`"
           :class="{
             'active-tab':
-              props.currentTab === tab.label || hasSubMenuSelected(tab.label),
+              props.currentTab === tab.type || hasSubMenuSelected(tab.label),
           }"
           class="sidebar__option"
-          @click.stop="onClickOfMenu(tab)"
+          @click.stop="onClickOfMenu(tab.type)"
         >
           <div class="sidebar__option-item">
             <img :src="tab.icon" alt="icon" class="sidebar__option-icon" />
@@ -167,8 +165,8 @@ function hasSubMenuSelected(tabLabel: string) {
               v-for="subTab in tab.subMenu"
               :key="subTab.label"
               class="sidebar__submenu-option"
-              :class="{ 'submenu-active': props.currentTab === subTab.label }"
-              @click.stop="onClickOfMenu(subTab)"
+              :class="{ 'submenu-active': props.currentTab === subTab.type }"
+              @click.stop="onClickOfMenu(subTab.type)"
             >
               <div class="sidebar__submenu-option-item">
                 <img
