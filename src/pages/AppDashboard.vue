@@ -10,6 +10,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
@@ -95,18 +96,11 @@ watch(
 
 async function copyAppAddress() {
   try {
-    SmartContractIcon.value = CheckIcon
-    smartContractTooltip.value = 'Copied'
     await copyToClipboard(appAddress.value)
     toast.success('App address copied')
   } catch (e) {
     console.error(e)
     toast.error('Failed to copy. Try again or contact support')
-  } finally {
-    setTimeout(() => {
-      SmartContractIcon.value = CopyIcon
-      smartContractTooltip.value = 'Click to copy'
-    }, 3000)
   }
 }
 
@@ -146,36 +140,24 @@ async function fetchActiveUsers() {
       <section class="flex dashboard-heading flex-wrap">
         <VStack justify="space-between" sm-direction="column" class="flex-grow">
           <h1 class="heading">DASHBOARD</h1>
-          <div
+          <VStack
+            gap="1rem"
             class="flex mobile-remove justify-content-center flex-center flex-wrap"
           >
-            <span
-              style="margin-right: 5px; color: var(--text-grey)"
-              class="body-1 mobile-remove"
-            >
+            <span style="color: var(--text-grey)" class="body-1 mobile-remove">
               App Address:
             </span>
-            <v-tooltip :title="appAddress" class="">
-              <div
-                class="text-ellipsis body-1 font-500"
-                style="max-width: 6em; color: var(--text-white)"
-              >
-                {{ appAddress }}
-              </div>
-            </v-tooltip>
-            <v-tooltip
-              :title="smartContractTooltip"
-              class="mobile-remove"
-              @click.stop="copyAppAddress"
-            >
-              <img
-                :src="SmartContractIcon"
-                class="cursor-pointer"
-                alt="Click to copy smart contract address"
-                style="margin-top: 4px"
-              />
-            </v-tooltip>
-          </div>
+            <VTextField
+              v-model="appAddress"
+              class="text-ellipsis"
+              disabled
+              :title="appAddress"
+              :icon="SmartContractIcon"
+              clickable-icon
+              no-message
+              @icon-clicked="copyAppAddress"
+            />
+          </VStack>
         </VStack>
       </section>
       <div
