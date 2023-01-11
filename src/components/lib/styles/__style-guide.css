@@ -511,14 +511,6 @@ a {
   }
 }
 @media only screen and (max-width: 1023px) {
-  .tablet-hide {
-    visibility: hidden !important;
-  }
-
-  .tablet-remove {
-    display: none !important;
-  }
-
   h1 {
     font-size: 2.225em;
     letter-spacing: 2px;
@@ -537,6 +529,14 @@ a {
   }
 }
 @media only screen and (min-width: 768px) and (max-width: 1023px) {
+  .tablet-hide {
+    visibility: hidden !important;
+  }
+
+  .tablet-remove {
+    display: none !important;
+  }
+
   .md-flex-start {
     align-items: flex-start;
   }
