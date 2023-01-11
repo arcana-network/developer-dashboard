@@ -360,7 +360,13 @@ async function fetchActiveUsers() {
   }
 
   .usage-container {
-    padding: 0.65em;
+    padding: 1em;
+  }
+
+  .full-bleed-separator {
+    width: calc(100% + 2rem);
+    margin-block: 1rem;
+    margin-inline: -1rem;
   }
 
   .duration {
