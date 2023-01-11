@@ -5,6 +5,7 @@ import { useRouter } from 'vue-router'
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import CreateApp from '@/components/app-configure/CreateApp.vue'
 import AppDelete from '@/components/app-configure/general/AppDelete.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -108,6 +109,7 @@ appsStore.$subscribe(() => {
         />
       </VStack>
     </main>
+    <AppFooter show-social-icons />
     <Transition name="fade" mode="out-in">
       <CreateApp v-if="canCreateApp" @close="canCreateApp = false" />
     </Transition>

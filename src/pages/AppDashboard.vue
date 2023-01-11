@@ -141,133 +141,135 @@ async function fetchActiveUsers() {
 </script>
 
 <template>
-  <main style="margin-bottom: 2rem">
-    <section class="flex dashboard-heading flex-wrap">
-      <VStack justify="space-between" sm-direction="column" class="flex-grow">
-        <h1 class="heading">DASHBOARD</h1>
-        <div
-          class="flex mobile-remove justify-content-center flex-center flex-wrap"
-        >
-          <span
-            style="margin-right: 5px; color: var(--text-grey)"
-            class="body-1 mobile-remove"
+  <div>
+    <main style="margin-bottom: 2rem">
+      <section class="flex dashboard-heading flex-wrap">
+        <VStack justify="space-between" sm-direction="column" class="flex-grow">
+          <h1 class="heading">DASHBOARD</h1>
+          <div
+            class="flex mobile-remove justify-content-center flex-center flex-wrap"
           >
-            App Address:
-          </span>
-          <v-tooltip :title="appAddress" class="">
-            <div
-              class="text-ellipsis body-1 font-500"
-              style="max-width: 6em; color: var(--text-white)"
+            <span
+              style="margin-right: 5px; color: var(--text-grey)"
+              class="body-1 mobile-remove"
             >
-              {{ appAddress }}
-            </div>
-          </v-tooltip>
-          <v-tooltip
-            :title="smartContractTooltip"
-            class="mobile-remove"
-            @click.stop="copyAppAddress"
-          >
-            <img
-              :src="SmartContractIcon"
-              class="cursor-pointer"
-              alt="Click to copy smart contract address"
-              style="margin-top: 4px"
-            />
-          </v-tooltip>
-        </div>
-      </VStack>
-    </section>
-    <div
-      class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
-    >
-      <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
-        App Address:
-      </span>
-      <v-tooltip :title="appAddress" class="">
-        <div
-          style="width: 6em; font-weight: 500; color: var(--text-white)"
-          class="body-1 text-ellipsis cursor-pointer"
-        >
-          {{ appAddress }}
-        </div>
-      </v-tooltip>
-      <v-tooltip
-        :title="smartContractTooltip"
-        class=""
-        @click.stop="copyAppAddress"
-      >
-        <img
-          :src="SmartContractIcon"
-          alt="Click to copy smart contract address"
-          style="margin-top: 4px"
-          class="cursor-pointer"
-        />
-      </v-tooltip>
-    </div>
-    <v-card
-      class="column usage-container"
-      variant="elevated"
-      style="align-items: stretch"
-    >
-      <div class="flex justify-space-between flex-center">
-        <h2>USERS</h2>
-        <div class="flex flex-wrap duration">
-          <v-card-button
-            label="Daily"
-            :active="durationSelected === 'day'"
-            :class="{ strong: durationSelected === 'day' }"
-            @click.stop="durationSelected = 'day'"
-          />
-          <v-card-button
-            label="Monthly"
-            :active="durationSelected === 'month'"
-            :class="{ strong: durationSelected === 'month' }"
-            @click.stop="durationSelected = 'month'"
-          />
-        </div>
-      </div>
-      <v-seperator class="full-bleed-separator" />
-      <section class="flex column">
-        <div v-if="showNoDataChart" class="users-count-empty-state">
-          <p>No Data</p>
-        </div>
-        <canvas
-          v-else
-          id="users-count-chart"
-          class="users-count-chart"
-        ></canvas>
+              App Address:
+            </span>
+            <v-tooltip :title="appAddress" class="">
+              <div
+                class="text-ellipsis body-1 font-500"
+                style="max-width: 6em; color: var(--text-white)"
+              >
+                {{ appAddress }}
+              </div>
+            </v-tooltip>
+            <v-tooltip
+              :title="smartContractTooltip"
+              class="mobile-remove"
+              @click.stop="copyAppAddress"
+            >
+              <img
+                :src="SmartContractIcon"
+                class="cursor-pointer"
+                alt="Click to copy smart contract address"
+                style="margin-top: 4px"
+              />
+            </v-tooltip>
+          </div>
+        </VStack>
       </section>
-    </v-card>
-    <v-card
-      class="column usage-container"
-      variant="elevated"
-      style="align-items: stretch"
-    >
-      <VStack justify="space-between" align="center" class="flex-grow">
-        <h2>TUTORIALS</h2>
-        <VButton variant="link" label="VIEW ALL" />
-      </VStack>
-      <VSeperator class="full-bleed-separator" />
-      <div class="tutorials__container">
-        <div
-          v-for="tutorial in tutorials"
-          :key="tutorial.id"
-          class="tutorial__card"
+      <div
+        class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
+      >
+        <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
+          App Address:
+        </span>
+        <v-tooltip :title="appAddress" class="">
+          <div
+            style="width: 6em; font-weight: 500; color: var(--text-white)"
+            class="body-1 text-ellipsis cursor-pointer"
+          >
+            {{ appAddress }}
+          </div>
+        </v-tooltip>
+        <v-tooltip
+          :title="smartContractTooltip"
+          class=""
+          @click.stop="copyAppAddress"
         >
           <img
-            :src="tutorial.thumbnail_url"
-            alt="thumbnail image"
-            class="tutorial__thumbnail"
+            :src="SmartContractIcon"
+            alt="Click to copy smart contract address"
+            style="margin-top: 4px"
+            class="cursor-pointer"
           />
-          <h3 class="tutorial__title">{{ tutorial.title }}</h3>
-          <p class="tutorial__description">{{ tutorial.description }}</p>
-          <a :href="tutorial.link" target="_blank" class="tutorial__link"
-            >Read More</a
-          >
-        </div>
+        </v-tooltip>
       </div>
-    </v-card>
-  </main>
+      <v-card
+        class="column usage-container"
+        variant="elevated"
+        style="align-items: stretch"
+      >
+        <div class="flex justify-space-between flex-center">
+          <h2>USERS</h2>
+          <div class="flex flex-wrap duration">
+            <v-card-button
+              label="Daily"
+              :active="durationSelected === 'day'"
+              :class="{ strong: durationSelected === 'day' }"
+              @click.stop="durationSelected = 'day'"
+            />
+            <v-card-button
+              label="Monthly"
+              :active="durationSelected === 'month'"
+              :class="{ strong: durationSelected === 'month' }"
+              @click.stop="durationSelected = 'month'"
+            />
+          </div>
+        </div>
+        <v-seperator class="full-bleed-separator" />
+        <section class="flex column">
+          <div v-if="showNoDataChart" class="users-count-empty-state">
+            <p>No Data</p>
+          </div>
+          <canvas
+            v-else
+            id="users-count-chart"
+            class="users-count-chart"
+          ></canvas>
+        </section>
+      </v-card>
+      <v-card
+        class="column usage-container"
+        variant="elevated"
+        style="align-items: stretch"
+      >
+        <VStack justify="space-between" align="center" class="flex-grow">
+          <h2>TUTORIALS</h2>
+          <VButton variant="link" label="VIEW ALL" />
+        </VStack>
+        <VSeperator class="full-bleed-separator" />
+        <div class="tutorials__container">
+          <div
+            v-for="tutorial in tutorials"
+            :key="tutorial.id"
+            class="tutorial__card"
+          >
+            <img
+              :src="tutorial.thumbnail_url"
+              alt="thumbnail image"
+              class="tutorial__thumbnail"
+            />
+            <h3 class="tutorial__title">{{ tutorial.title }}</h3>
+            <p class="tutorial__description">{{ tutorial.description }}</p>
+            <a :href="tutorial.link" target="_blank" class="tutorial__link"
+              >Read More</a
+            >
+          </div>
+        </div>
+      </v-card>
+    </main>
+  </div>
 </template>
 
 <style scoped>

@@ -1,8 +1,9 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref, type Ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -56,7 +57,10 @@ onBeforeMount(async () => {
           </li>
         </ul>
       </div>
-      <RouterView />
+      <VStack direction="column" gap="2rem" class="flex-grow">
+        <RouterView />
+        <AppFooter class="footer-bleed" />
+      </VStack>
     </VStack>
   </VStack>
 </template>
@@ -75,9 +79,13 @@ onBeforeMount(async () => {
   flex: 1;
   height: 100%;
   padding: 2rem;
-  margin-top: 1rem;
+  padding-bottom: 0;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.footer-bleed {
+  margin-inline: -2rem;
 }
 
 .help-button__container {

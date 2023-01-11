@@ -3,9 +3,13 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
+import DiscordIcon from '@/assets/discord-white.svg'
+import DiscourseIcon from '@/assets/discourse-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
 import profileIcon from '@/assets/iconography/profile.png'
+import TelegramIcon from '@/assets/telegram-white.svg'
+import TwitterIcon from '@/assets/twitter-white.svg'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
@@ -24,6 +28,29 @@ const emit = defineEmits(['switch-tab'])
 onMounted(() => {
   console.log(appsStore.selectedApp)
 })
+
+const socialLinks = [
+  {
+    href: 'https://twitter.com/arcananetwork',
+    image: TwitterIcon,
+    alt: 'Twitter',
+  },
+  {
+    href: 'https://t.me/ArcanaNetwork',
+    image: TelegramIcon,
+    alt: 'Telegram',
+  },
+  {
+    href: 'https://discord.gg/w6ej4FtqYS',
+    image: DiscordIcon,
+    alt: 'Discord',
+  },
+  {
+    href: 'https://forum.arcana.network/',
+    image: DiscourseIcon,
+    alt: 'Forum',
+  },
+]
 
 type ConfigureProps = {
   currentTab?: ConfigureTabType
@@ -169,6 +196,20 @@ function hasSubMenuSelected(tabLabel: string) {
           <span class="tab-label">{{ authStore.name }}</span>
         </VCardButton>
       </VStack>
+      <VStack gap="1.5rem" align="center" class="social-links">
+        <a
+          v-for="socialLink in socialLinks"
+          :key="socialLink.alt"
+          :href="socialLink.href"
+          target="_blank"
+        >
+          <img
+            :src="socialLink.image"
+            :alt="socialLink.alt"
+            class="social-icon"
+          />
+        </a>
+      </VStack>
     </VCard>
   </aside>
 </template>
@@ -207,6 +248,7 @@ function hasSubMenuSelected(tabLabel: string) {
   flex-grow: 1;
   height: 100%;
   padding: 2rem;
+  padding-bottom: 0.75rem;
   overflow-y: auto;
   border-radius: 0;
 }
@@ -218,6 +260,7 @@ function hasSubMenuSelected(tabLabel: string) {
 
 .configure-tabs {
   margin-top: 4rem;
+  margin-bottom: 2rem;
 }
 
 .sidebar__option {
@@ -357,5 +400,16 @@ function hasSubMenuSelected(tabLabel: string) {
 
 .submenu-active .sidebar__submenu-option-icon {
   filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
+}
+
+.social-icon {
+  width: 1.25rem;
+  vertical-align: middle;
+}
+
+@media only screen and (max-width: 767px) {
+  .social-icon {
+    width: 1rem;
+  }
 }
 </style>

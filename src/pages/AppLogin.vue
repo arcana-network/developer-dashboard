@@ -149,7 +149,7 @@ onMounted(async () => {
         </div>
       </section>
     </main>
-    <AppFooter />
+    <AppFooter show-social-icons />
   </div>
 </template>
 
