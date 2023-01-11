@@ -250,7 +250,7 @@ onMounted(() => {
 }
 
 .configure-sidebar {
-  width: 100%;
+  width: 16rem;
   height: 100%;
 }
 
@@ -434,6 +434,10 @@ onMounted(() => {
 @media only screen and (max-width: 767px) {
   .social-icon {
     width: 1rem;
+  }
+
+  .configure-sidebar {
+    width: 100%;
   }
 }
 </style>
