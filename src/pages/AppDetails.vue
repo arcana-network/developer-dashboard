@@ -153,6 +153,10 @@ async function onLogout() {
   overflow: hidden;
 }
 
+.app-details__sidebar {
+  min-width: 20%;
+}
+
 .app-details__content {
   box-sizing: border-box;
   flex: 1;
