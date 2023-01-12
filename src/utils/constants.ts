@@ -1,6 +1,19 @@
 import bytes from 'bytes'
 
+import brandingIcon from '@/assets/iconography/branding.svg'
+import dashboardIcon from '@/assets/iconography/dashboard.svg'
+import DocsIcon from '@/assets/iconography/docs.svg'
+import InvoiceIcon from '@/assets/iconography/invoices.svg'
+import passcodeLockIcon from '@/assets/iconography/passcode-lock.svg'
+import PassportIcon from '@/assets/iconography/passport.svg'
+import ScheduleIcon from '@/assets/iconography/schedule.svg'
+import settingsIcon from '@/assets/iconography/settings.svg'
+import socialMediaIcon from '@/assets/iconography/user.svg'
+import usersGroupIcon from '@/assets/iconography/users.svg'
+import walletIcon from '@/assets/iconography/wallet.svg'
 import type { UserLimitState } from '@/stores/apps.store'
+
+const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -64,20 +77,53 @@ const regions: Region[] = [
   },
 ]
 
-type ConfigureTabType = 'general' | 'auth' | 'store' | 'access' | 'wallet'
+type ConfigureTabType =
+  | 'dashboard'
+  | 'configure'
+  | 'branding'
+  | 'socialAuth'
+  | 'arcanaWallet'
+  | 'profile'
+
+type ConfigureTabSubMenu = {
+  type: ConfigureTabType
+  label: string
+  icon: string
+}
 
 type ConfigureTab = {
   type: ConfigureTabType
   label: string
+  icon: string
+  subMenu?: ConfigureTabSubMenu[]
 }
 
 const userLimitOptions: string[] = ['Limited', 'Unlimited']
 
 const CONFIGURE_TABS: readonly ConfigureTab[] = [
-  { type: 'general', label: 'General' },
-  { type: 'auth', label: 'Auth' },
-  { type: 'store', label: 'Store' },
-  { type: 'access', label: 'Access' },
+  { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
+  {
+    type: 'configure',
+    label: 'Configure',
+    icon: settingsIcon,
+    subMenu: [
+      {
+        type: 'branding',
+        label: 'Branding',
+        icon: brandingIcon,
+      },
+      {
+        type: 'socialAuth',
+        label: 'Social Auth',
+        icon: socialMediaIcon,
+      },
+      {
+        type: 'arcanaWallet',
+        label: 'Arcana Wallet',
+        icon: walletIcon,
+      },
+    ],
+  },
 ]
 
 type BandwidthLimitUnit = {
@@ -184,6 +230,30 @@ enum WalletMode {
 
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
+const HelpItems = [
+  {
+    label: 'View Docs',
+    link: docs_url,
+    icon: DocsIcon,
+  },
+  {
+    label: 'Schedule a Demo',
+    link: 'https://calendly.com/arcana-network/arcana-demo-walkthrough',
+    icon: ScheduleIcon,
+  },
+]
+
+const ProfileItems = [
+  {
+    label: 'Profile',
+    icon: PassportIcon,
+  },
+  // {
+  //   label: 'Invoices',
+  //   icon: InvoiceIcon,
+  // },
+]
+
 const constants = {
   sentry,
   api,
@@ -212,6 +282,8 @@ export {
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   DOCS_URL,
+  HelpItems,
+  ProfileItems,
 }
 
 export type {

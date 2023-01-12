@@ -1,5 +1,4 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
-import bytes from 'bytes'
 
 import store from '@/stores'
 import type {
@@ -16,8 +15,6 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
-  MAX_DATA_TRANSFER_BYTES,
-  RegionMapping,
   WalletMode,
   type SocialAuthVerifier,
 } from '@/utils/constants'
@@ -126,21 +123,6 @@ function deleteCred(appId: AppId, authToRemove: SocialAuthState[]) {
 }
 
 function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
-  let storage_limit: number, bandwidth_limit: number
-  const storageLimit = app.store.userLimits.storage
-  const bandwidthLimit = app.store.userLimits.bandwidth
-  if (storageLimit.isUnlimited) {
-    storage_limit = MAX_DATA_TRANSFER_BYTES
-  } else {
-    storage_limit = bytes(`${storageLimit.value} ${storageLimit.unit}`)
-  }
-
-  if (bandwidthLimit.isUnlimited) {
-    bandwidth_limit = MAX_DATA_TRANSFER_BYTES
-  } else {
-    bandwidth_limit = bytes(`${bandwidthLimit.value} ${bandwidthLimit.unit}`)
-  }
-
   const { social, wallet } = app.auth
   const cred: AppConfigCred[] = social.map((authType) => {
     return {
@@ -155,12 +137,12 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
   return {
     name: app.name,
     address: app.address,
-    storage_limit,
-    bandwidth_limit,
+    storage_limit: 0,
+    bandwidth_limit: 0,
     cred,
     aggregate_login: true,
     chain: ChainMapping[app.access.selectedChain],
-    region: RegionMapping[app.store.region],
+    region: 1,
     theme: wallet.selectedTheme,
     wallet_domain: wallet.websiteDomain,
     wallet_type,
@@ -260,6 +242,16 @@ function fetchMonthlyUsers(appId: AppId) {
   return gatewayAuthorizedInstance.get(
     `${getEnvApi()}/no-of-users/?id=${appId}`
   )
+}
+
+function fetchDau(appAddress: string) {
+  const api = `/get-dau/?app=${appAddress}`
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
+}
+
+function fetchMau(appAddress: string) {
+  const api = `/get-mau/?app=${appAddress}`
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
 }
 
 function getNonce(address: string) {
@@ -432,6 +424,8 @@ export {
   editDelegate,
   deleteDelegate,
   getAccountStatus,
+  fetchDau,
+  fetchMau,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

@@ -3,14 +3,15 @@ import { onBeforeMount, ref, type Ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
+import CloseIcon from '@/assets/iconography/close.svg'
 import CreateApp from '@/components/app-configure/CreateApp.vue'
 import AppDelete from '@/components/app-configure/general/AppDelete.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import AppStatusBanner from '@/components/AppStatusBanner.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
-import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -19,14 +20,12 @@ import {
   updateApp,
   type AccountStatus,
 } from '@/services/gateway.service'
-import { useAppsStore, type AppOverview, type AppId } from '@/stores/apps.store'
+import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
 
 const router = useRouter()
 const appsStore = useAppsStore()
 
-type AppData = AppOverview & {
-  storageUsedPercent?: number
-  bandwidthUsedPercent?: number
+type AppData = AppConfig & {
   editState?: boolean
 }
 
@@ -60,11 +59,8 @@ onMounted(() => {
 })
 
 function goToDashboard(appId: AppId) {
+  appsStore.setSelectedAppId(appId)
   router.push({ name: 'AppDetails', params: { appId } })
-}
-
-function calculatePercentageLimitUsed(limitUsed: number, limitAllowed: number) {
-  return (limitUsed / limitAllowed) * 100
 }
 
 function handleDelete(appId: AppId) {
@@ -72,38 +68,34 @@ function handleDelete(appId: AppId) {
   appToDelete.value = appId
 }
 
-function calculateAppLimits() {
-  apps.value.forEach((app) => {
-    app.storageUsedPercent = calculatePercentageLimitUsed(
-      app.storage.consumed,
-      app.storage.allowed
-    )
-    app.bandwidthUsedPercent = calculatePercentageLimitUsed(
-      app.bandwidth.consumed,
-      app.bandwidth.allowed
-    )
-  })
-}
-
 function getImageUrl(appId: AppId) {
-  const appLogos = appsStore.app(appId).logos
-  return appLogos.dark.vertical || appLogos.light.vertical || AppFallbackLogo
+  const appInfo = appsStore.app(appId)
+  if (appInfo && appInfo.logos) {
+    return (
+      appInfo.logos.dark.vertical ||
+      appInfo.logos.light.vertical ||
+      AppFallbackLogo
+    )
+  }
+  return AppFallbackLogo
 }
 
 onBeforeMount(async () => {
   accountStatus.value = (await getAccountStatus()).data
-  calculateAppLimits()
 })
 
 appsStore.$subscribe(() => {
   apps.value = appsStore.apps
-  calculateAppLimits()
 })
 
 async function handleAppNameSave(app: AppData) {
-  app.editState = false
-  await updateApp(app.id, { name: app.name })
-  toast.success('App name saved')
+  if (app.name.trim().length) {
+    app.editState = false
+    await updateApp(app.id, { name: app.name })
+    toast.success('App name saved')
+  } else {
+    toast.error('App name is required')
+  }
 }
 </script>
 
@@ -117,12 +109,6 @@ async function handleAppNameSave(app: AppData) {
     <main>
       <VStack direction="column" gap="2rem" class="container">
         <VStack gap="2rem">
-          <img
-            src="@/assets/iconography/back.svg"
-            class="cursor-pointer back-icon"
-            alt="Go Back"
-            @click.stop="router.back()"
-          />
           <h1>MANAGE APPS</h1>
         </VStack>
         <VStack gap="1.25rem" md-direction="column" sm-direction="column">
@@ -212,21 +198,23 @@ async function handleAppNameSave(app: AppData) {
                 : void 0
             "
           >
-            <VStack direction="column" align="center" class="app-container">
+            <VStack
+              direction="column"
+              align="center"
+              class="app-container justify-space-between"
+            >
               <img :src="getImageUrl(app.id)" class="app-logo" />
-              <VStack
-                gap="0.5rem"
-                style="max-width: 100%"
-                :style="{ marginBottom: app.editState ? '-1rem' : '' }"
-              >
-                <input
+              <VStack gap="0.5rem" style="max-width: 100%">
+                <VTextField
                   v-if="app.editState"
                   v-model="app.name"
-                  class="sub-heading-3 app-name text-ellipsis app-name-input"
+                  class="text-ellipsis"
                   type="text"
                   no-message
-                  style="max-width: calc(100% - 1rem)"
-                  @keyup.enter.prevent="handleAppNameSave(app)"
+                  :icon="CloseIcon"
+                  clickable-icon
+                  @icon-clicked="app.name = ''"
+                  @keyup.enter.stop="handleAppNameSave(app)"
                 />
                 <span
                   v-else
@@ -237,14 +225,7 @@ async function handleAppNameSave(app: AppData) {
                   {{ app.name }}
                 </span>
                 <img
-                  v-if="app.editState"
-                  src="@/assets/iconography/check-white.svg"
-                  class="edit-icon"
-                  title="Save app name"
-                  @click.stop="handleAppNameSave(app)"
-                />
-                <img
-                  v-else
+                  v-if="!app.editState"
                   src="@/assets/iconography/pencil.svg"
                   class="edit-icon"
                   title="Edit app name"
@@ -281,6 +262,7 @@ async function handleAppNameSave(app: AppData) {
         />
       </VStack>
     </main>
+    <AppFooter show-social-icons />
     <Transition name="fade" mode="out-in">
       <CreateApp v-if="canCreateApp" @close="canCreateApp = false" />
     </Transition>
@@ -288,17 +270,17 @@ async function handleAppNameSave(app: AppData) {
 </template>
 
 <style scoped>
+main {
+  padding-block: 2rem 4rem;
+}
+
 .container {
-  margin-block: 2rem;
+  width: auto;
+  margin: 0 2rem;
 }
 
 .back-icon {
   width: 2.25rem;
-}
-
-.description {
-  font-size: 1.25rem;
-  color: var(--text-grey);
 }
 
 .app-card {
@@ -306,8 +288,8 @@ async function handleAppNameSave(app: AppData) {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(20rem, 30vw, 25rem);
-  height: 24rem;
+  width: 19rem;
+  min-height: 350px;
   cursor: pointer;
 }
 
@@ -324,7 +306,6 @@ async function handleAppNameSave(app: AppData) {
 .app-logo {
   width: 5.5rem;
   height: 5.5rem;
-  margin-top: 0.75rem;
   background: var(--primary-dark);
   border-radius: 50%;
 }
@@ -337,29 +318,18 @@ async function handleAppNameSave(app: AppData) {
 
 .app-action-button {
   width: 100%;
+  min-width: unset !important;
   text-transform: uppercase;
 }
 
-.delete-button {
-  background: transparent !important;
-  border: 2px solid #ee193f !important;
-}
-
-.delete-button:hover {
-  color: #ee193f !important;
-}
-
 .stats-card {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
   width: 100%;
-  height: 4.5rem;
-  margin-block: 2rem;
-}
-
-.stats-separator {
-  height: calc(100% - 1.25rem);
+  padding: 10px;
+  margin: 0;
 }
 
 .stats-title {
