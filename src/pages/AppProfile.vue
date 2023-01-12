@@ -2,6 +2,7 @@
 import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
@@ -87,6 +88,7 @@ function resetOrganisationDetails() {
 
 <template>
   <div>
+    <AppHeader container />
     <main :class="{ container: route.name === 'AppProfile' }">
       <VStack class="heading" gap="1.5rem">
         <img

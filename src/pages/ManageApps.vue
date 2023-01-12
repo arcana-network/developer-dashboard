@@ -271,7 +271,7 @@ async function handleAppNameSave(app: AppData) {
 
 <style scoped>
 main {
-  padding-block: 2rem 4rem;
+  padding-block: 1rem 4rem;
 }
 
 .container {
