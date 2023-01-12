@@ -31,7 +31,7 @@ function switchTab(tab: string) {
   currentTab.value = tab
   router.push({
     params: { appId },
-    path: tab,
+    name: tab,
   })
 }
 
@@ -147,7 +147,10 @@ async function onLogout() {
         <AppFooter class="footer-bleed" />
       </VStack>
     </VStack>
-    <ConfigureMobileMenu v-if="showMobileMenu" @close="showMobileMenu = false">
+    <ConfigureMobileMenu
+      :show-mobile-menu="showMobileMenu"
+      @close="showMobileMenu = false"
+    >
       <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
     </ConfigureMobileMenu>
   </VStack>

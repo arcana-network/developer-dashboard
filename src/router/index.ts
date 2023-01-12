@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Branding',
-        path: 'branding',
+        path: 'configure/branding',
         component: AppBranding,
         meta: {
           requiresAuth: true,
@@ -81,7 +81,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Social Auth',
-        path: 'socialAuth',
+        path: 'configure/social',
         component: AuthSettings,
         meta: {
           requiresAuth: true,
@@ -89,7 +89,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Arcana Wallet',
-        path: 'arcanaWallet',
+        path: 'configure/wallet',
         component: WebWallet,
         meta: {
           requiresAuth: true,
