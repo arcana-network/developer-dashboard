@@ -196,7 +196,6 @@ function deleteSecondary() {
                 <VTextField
                   v-model.trim="organisationDetails.country"
                   class="app-name-input"
-                  no-message
                 />
               </div>
             </VStack>
@@ -258,7 +257,6 @@ function deleteSecondary() {
               align="center"
               md-direction="column"
               class="flex sm-column flex-wrap justify-space-between payment-container"
-              gap="4vw"
             >
               <VStack direction="column" gap="1.25rem">
                 <span class="payment-title">Primary</span>
@@ -300,7 +298,7 @@ function deleteSecondary() {
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">CVV Number</label>
+                    <label for="light-horizontal-logo">CVV</label>
                     <VTextField
                       v-model.trim="paymentDetails.primary.cvv"
                       class="app-name-input cvv"
@@ -373,7 +371,7 @@ function deleteSecondary() {
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">CVV Number</label>
+                    <label for="light-horizontal-logo">CVV</label>
                     <VTextField
                       v-model.trim="paymentDetails.secondary.cvv"
                       class="app-name-input cvv"
@@ -444,7 +442,7 @@ label {
 
 .payment-input {
   display: grid;
-  grid-template-columns: 20vw 14vw;
+  grid-template-columns: 18vw 10vw;
   gap: 1.25rem;
 }
 
@@ -471,6 +469,7 @@ label {
   }
 
   .payment-container {
+    gap: 2rem;
     align-items: stretch;
   }
 
@@ -484,8 +483,8 @@ label {
 
   .payment-input {
     display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 1.25rem;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 }
 </style>
