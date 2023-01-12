@@ -179,7 +179,6 @@ function convertToBytes(value: number) {
 
 <template>
   <div>
-    <app-header />
     <main class="container" style="margin-top: 2rem">
       <h1>USERS</h1>
       <div

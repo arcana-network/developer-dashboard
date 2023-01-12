@@ -1,11 +1,10 @@
 <script lang="ts" setup>
 import { ref, onBeforeMount, type Ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
@@ -13,12 +12,10 @@ import { useToast } from '@/components/lib/VToast'
 import { fetchProfile, updateOrganization } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
-import useArcanaAuth from '@/use/arcanaAuth'
 
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const toast = useToast()
-const { logout } = useArcanaAuth()
 
 type OrganizationDetails = {
   name: string
@@ -56,11 +53,10 @@ const paymentDetails = reactive({
     cardName: '',
   },
 })
-const name = ref('')
-name.value = authStore.name
-const email = ref('')
-email.value = authStore.email
+const name = ref(authStore.name)
+const email = ref(authStore.email)
 const router = useRouter()
+const route = useRoute()
 
 let organisationDetailsResetState: OrganizationDetails
 
@@ -103,13 +99,6 @@ onBeforeMount(() => {
   })
 })
 
-async function onLogout() {
-  await logout()
-  localStorage.clear()
-  router.push({ name: 'Login' })
-  window.location.reload()
-}
-
 function resetOrganisationDetails() {
   editOrganisationDetails.value = false
   organisationDetails.value = { ...organisationDetailsResetState }
@@ -138,9 +127,16 @@ function deleteSecondary() {
 
 <template>
   <div>
-    <app-header />
-    <main class="container">
-      <h1 class="heading">PROFILE DETAILS</h1>
+    <main :class="{ container: route.name === 'AppProfile' }">
+      <VStack class="heading" gap="1.5rem">
+        <img
+          v-if="route.name === 'AppProfile'"
+          src="@/assets/iconography/back.svg"
+          class="cursor-pointer"
+          @click.stop="router.back()"
+        />
+        <h1>PROFILE DETAILS</h1>
+      </VStack>
       <section class="personal-details">
         <SettingCard>
           <template #title>PERSONAL DETAILS</template>
@@ -180,6 +176,7 @@ function deleteSecondary() {
                 <VTextField
                   v-model.trim="organisationDetails.name"
                   class="app-name-input"
+                  no-message
                 />
               </div>
               <div class="flex column details flex-grow">
@@ -188,23 +185,18 @@ function deleteSecondary() {
                   v-model.trim="organisationDetails.size"
                   class="app-name-input"
                   type="number"
+                  :message="organisationDetails.sizeErrorMessage"
+                  :message-type="
+                    organisationDetails.sizeErrorMessage ? 'error' : ''
+                  "
                 />
-                <span
-                  :style="{
-                    visibility: organisationDetails.sizeErrorMessage
-                      ? 'visible'
-                      : 'hidden',
-                  }"
-                  class="body-3"
-                >
-                  {{ organisationDetails.sizeErrorMessage }}
-                </span>
               </div>
               <div class="flex column details flex-grow">
                 <label for="light-horizontal-logo">Country</label>
                 <VTextField
                   v-model.trim="organisationDetails.country"
                   class="app-name-input"
+                  no-message
                 />
               </div>
             </VStack>
@@ -231,6 +223,7 @@ function deleteSecondary() {
                   class="app-name-input text-ellipsis"
                   :icon="CloseIcon"
                   clickable-icon
+                  no-message
                   @icon-clicked="invoiceDetails.name = ''"
                 />
               </div>
@@ -241,6 +234,7 @@ function deleteSecondary() {
                   class="app-name-input text-ellipsis"
                   :icon="CloseIcon"
                   clickable-icon
+                  no-message
                   @icon-clicked="invoiceDetails.address = ''"
                 />
               </div>
@@ -402,17 +396,6 @@ function deleteSecondary() {
           </form>
         </SettingCard>
       </section>
-      <div
-        class="flex"
-        style="justify-content: flex-end; margin-top: 2em; margin-bottom: 2em"
-      >
-        <v-button
-          v-wave="{ color: 'rgb(40, 198, 250)' }"
-          variant="secondary"
-          label="LOGOUT"
-          @click.stop="onLogout"
-        />
-      </div>
     </main>
   </div>
 </template>

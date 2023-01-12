@@ -40,7 +40,6 @@ defineProps({
   color: #13a3fd;
 }
 
-.card-button:not(:disabled):active,
 .card-button.active:not(:disabled) {
   color: #13a3fd;
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
