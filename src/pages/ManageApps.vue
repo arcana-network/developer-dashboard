@@ -21,7 +21,6 @@ const showDeletePopup = ref(false)
 const appToDelete = ref(0)
 
 function goToDashboard(appId: AppId) {
-  appsStore.setSelectedAppId(appId)
   router.push({ name: 'AppDetails', params: { appId } })
 }
 

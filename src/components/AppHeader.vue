@@ -3,14 +3,12 @@ import { onMounted, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
-import BlueCloseIcon from '@/assets/iconography/close.svg'
-import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppsStore } from '@/stores/apps.store'
 import useArcanaAuth from '@/use/arcanaAuth'
+import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
 
 const router = useRouter()
@@ -18,12 +16,12 @@ const canShowBanner = ref(true)
 const hideHeader = ref(false)
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
-const showMenu = ref(false)
-const appsStore = useAppsStore()
 const { logout } = useArcanaAuth()
+const profile_menu = ref(null)
+const help_menu = ref(null)
 
 type HeaderProps = {
-  container: boolean
+  container?: boolean
 }
 
 const props = defineProps<HeaderProps>()
@@ -40,9 +38,18 @@ function onCloseBanner() {
   canShowBanner.value = false
 }
 
+useClickOutside(profile_menu, () => {
+  showProfileMenu.value = false
+})
+
+useClickOutside(help_menu, () => {
+  showHelpMenu.value = false
+})
+
 onMounted(() => {
   canShowBanner.value = !sessionStorage.getItem('hide-banner')
   document.querySelector('#app')?.addEventListener('scroll', handleScroll)
+  console.log(profile_menu)
 })
 
 onUnmounted(() => {
@@ -68,6 +75,16 @@ async function onLogout() {
   router.push({ name: 'Login' })
   window.location.reload()
 }
+
+function toggleHelpMenu() {
+  showHelpMenu.value = !showHelpMenu.value
+  showProfileMenu.value = false
+}
+
+function toggleProfileMenu() {
+  showProfileMenu.value = !showProfileMenu.value
+  showHelpMenu.value = false
+}
 </script>
 
 <template>
@@ -82,7 +99,7 @@ async function onLogout() {
         <CloseIcon color="#FFFFFF" />
       </span>
     </div>
-    <header class="flex" :class="{ container }">
+    <header class="flex" :class="{ container: props.container }">
       <div class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </div>
@@ -91,13 +108,8 @@ async function onLogout() {
         align="center"
         gap="1rem"
       >
-        <div class="position-relative flex">
-          <button
-            class="help-button"
-            @click.stop="showHelpMenu = !showHelpMenu"
-          >
-            Help
-          </button>
+        <div id="help_menu" ref="help_menu" class="position-relative flex">
+          <button class="help-button" @click.stop="toggleHelpMenu">Help</button>
           <VCard v-if="showHelpMenu" class="help-menu-items position-absolute">
             <ul style="margin: 0">
               <li
@@ -119,11 +131,15 @@ async function onLogout() {
             </ul>
           </VCard>
         </div>
-        <div class="position-relative flex">
+        <div
+          id="profile_menu"
+          ref="profile_menu"
+          class="position-relative flex"
+        >
           <img
             src="@/assets/iconography/profile.svg"
             class="cursor-pointer"
-            @click.stop="showProfileMenu = !showProfileMenu"
+            @click.stop="toggleProfileMenu"
           />
           <VCard
             v-if="showProfileMenu"

@@ -3,7 +3,6 @@ import type { Chart } from 'chart.js'
 import moment from 'moment'
 import { onMounted, ref, watch, type Ref } from 'vue'
 
-import CheckIcon from '@/assets/iconography/check.svg'
 import CopyIcon from '@/assets/iconography/copy.svg'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -15,7 +14,7 @@ import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
-import { useLoaderStore } from '@/stores/loader.store'
+import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -37,11 +36,12 @@ const chartConfig = chartUtils.getInitialUsersChartConfig(
   Object.values(initialDailyData)
 )
 const appsStore = useAppsStore()
-const { showLoader, hideLoader } = useLoaderStore()
+const appId = useAppId()
 const toast = useToast()
 const durationSelected: Ref<Duration> = ref('day')
-const appAddress = ref(appsStore.selectedApp?.address)
-const appName = ref(appsStore.selectedApp?.name)
+const selectedApp = appsStore.app(appId)
+const appAddress = ref(selectedApp.address)
+const appName = ref(selectedApp.name)
 const showNoDataChart = ref(false)
 
 const tutorials = [
@@ -86,10 +86,11 @@ onMounted(() => {
 watch(() => durationSelected.value, fetchActiveUsers)
 
 watch(
-  () => appsStore.selectedAppId,
+  () => appId,
   () => {
-    appName.value = appsStore.selectedApp?.name
-    appAddress.value = appsStore.selectedApp?.address
+    const app = appsStore.app(appId)
+    appName.value = app.name
+    appAddress.value = app.address
     fetchActiveUsers()
   }
 )
@@ -109,26 +110,25 @@ async function fetchActiveUsers() {
     let activeUsers = []
     let dataTemplate = {}
     if (durationSelected.value === 'day') {
-      const { data } = await fetchDau(appsStore.selectedApp?.address)
+      const { data } = await fetchDau(selectedApp.address)
       activeUsers = data
       dataTemplate = initialDailyData
     } else if (durationSelected.value === 'month') {
-      const { data } = await fetchMau(appsStore.selectedApp?.address)
+      const { data } = await fetchMau(selectedApp.address)
       activeUsers = data
       dataTemplate = initialMonthlyData
     }
     showNoDataChart.value = !activeUsers.length
-    activeUsers.forEach((item) => {
-      const formattedDate = item.Date.split(' ').join('-')
-      dataTemplate[formattedDate] = item.Value
-    })
+    // activeUsers.forEach((item) => {
+    //   const formattedDate = item.Date.split(' ').join('-')
+    //   dataTemplate[formattedDate] = item.Value
+    // })
     const dataSet = chartConfig.data.datasets[0]
     const labels = Object.keys(dataTemplate)
     const values = activeUsers.length ? Object.values(dataTemplate) : []
     const newDataSet = { ...dataSet, data: values }
     chartUtils.updateChartView(chart, labels, [newDataSet])
   } catch (e) {
-    toast.error('Error fetching chart data')
     console.log(e)
   }
 }
