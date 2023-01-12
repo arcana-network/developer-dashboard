@@ -136,9 +136,8 @@ function handleInputDelete(
         Provide easy onboarding for dApp users with familiar social
         authentication mechanisms. Arcana securely manages public-private key
         pair for each authenticated user using distributed key generation.
-        <br />
         <a :href="`${DOCS_URL}/docs/dkg`" target="_blank" class="learn-more">
-          Learn More...
+          LEARN MORE
         </a>
       </template>
       <VStack gap="1.5rem">
@@ -228,8 +227,9 @@ function handleInputDelete(
 }
 
 .social-auth-separator {
-  height: 5rem;
+  height: 4rem;
   margin-top: -2.5rem;
+  border: 1px solid rgb(141 141 141 / 10%);
 }
 
 .social-auth-content-separator {

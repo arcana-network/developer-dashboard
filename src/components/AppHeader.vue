@@ -1,95 +1,29 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref, onUnmounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, ref, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 
-import AccountUserIcon from '@/assets/iconography/account-user.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
-import ArcanaFavicon from '@/assets/iconography/arcana-favicon.svg'
+import BlueCloseIcon from '@/assets/iconography/close.svg'
 import MenuIcon from '@/assets/iconography/menu.svg'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
-import VHeader from '@/components/lib/VHeader/VHeader.vue'
-import { useAuthStore } from '@/stores/auth.store'
-import { useAppId } from '@/use/getAppId'
-import constants from '@/utils/constants'
+import VButton from '@/components/lib/VButton/VButton.vue'
+import VCard from '@/components/lib/VCard/VCard.vue'
+import VStack from '@/components/lib/VStack/VStack.vue'
+import { useAppsStore } from '@/stores/apps.store'
+import useArcanaAuth from '@/use/arcanaAuth'
+import { HelpItems, ProfileItems } from '@/utils/constants'
 
-const route = useRoute()
 const router = useRouter()
-const authStore = useAuthStore()
-const appId = useAppId()
 const canShowBanner = ref(true)
 const hideHeader = ref(false)
+const showHelpMenu = ref(false)
+const showProfileMenu = ref(false)
+const showMenu = ref(false)
+const appsStore = useAppsStore()
+const { logout } = useArcanaAuth()
 
 let lastScrollTop = 0
 const scrollDelta = 10
-
-const menuItems = computed(() => {
-  let arr = [
-    {
-      label: 'Apps',
-      action() {
-        router.push({ name: 'ManageApps' })
-      },
-      selected: false,
-    },
-    {
-      label: 'Dashboard',
-      action() {
-        router.push({ name: 'Dashboard', params: { appId } })
-      },
-      selected: false,
-      disabled: false,
-    },
-    {
-      label: 'Users',
-      action() {
-        router.push({ name: 'Users', params: { appId } })
-      },
-      selected: false,
-      disabled: false,
-    },
-    {
-      label: 'Docs',
-      action() {
-        window.open(`${constants.DOCS_URL}`)
-      },
-      selected: false,
-    },
-  ]
-  if (route.name === 'ManageApps') {
-    arr[0].selected = true
-  } else if (route.name === 'Dashboard') {
-    arr[1].selected = true
-  } else if (route.name === 'Users') {
-    arr[2].selected = true
-  }
-
-  if (route.name === 'ManageApps' || route.name === 'Profile') {
-    arr[1].disabled = true
-    arr[2].disabled = true
-  }
-  if (route.name === 'Dashboard' || route.name === 'Users') {
-    arr[1].disabled = false
-    arr[2].disabled = false
-  }
-  return arr
-})
-
-const loggedInUser = {
-  name: authStore.name,
-  action() {
-    router.push({ name: 'Profile', params: { appId } })
-  },
-}
-
-const selectedItem = computed(() => {
-  if (route.name === 'Profile') {
-    return 'profile'
-  } else if (route.name === 'Notification') {
-    return 'notification'
-  } else {
-    return 'menu-item'
-  }
-})
 
 function onLogoClick() {
   router.push('/')
@@ -121,10 +55,17 @@ function handleScroll(ev: any) {
   }
   lastScrollTop = ev.target.scrollTop
 }
+
+async function onLogout() {
+  await logout()
+  localStorage.clear()
+  router.push({ name: 'Login' })
+  window.location.reload()
+}
 </script>
 
 <template>
-  <section :class="hideHeader ? 'hide-header' : ''">
+  <section class="header-section" :class="hideHeader ? 'hide-header' : ''">
     <div v-if="canShowBanner" class="banner">
       <h4>Caution:</h4>
       <h5>
@@ -135,22 +76,86 @@ function handleScroll(ev: any) {
         <CloseIcon color="#FFFFFF" />
       </span>
     </div>
-    <v-header
-      :logo-src="ArcanaLogo"
-      logo-alt="Arcana Logo"
-      :logged-in-user="loggedInUser"
-      :menu-items="menuItems"
-      :selected-item="selectedItem"
-      :mobile-menu-icon="MenuIcon"
-      :mobile-logo="ArcanaFavicon"
-      :mobile-account-icon="AccountUserIcon"
-      @logo-click="onLogoClick"
-    />
+    <header class="flex">
+      <div class="logo" @click.stop="onLogoClick">
+        <img :src="ArcanaLogo" alt="Arcana Logo" />
+      </div>
+      <VStack class="justify-end help-button__container" gap="1rem">
+        <div class="position-relative flex">
+          <button
+            class="help-button"
+            @click.stop="showHelpMenu = !showHelpMenu"
+          >
+            Help
+          </button>
+          <VCard v-if="showHelpMenu" class="help-menu-items position-absolute">
+            <ul style="margin: 0">
+              <li
+                v-for="helpItem in HelpItems"
+                :key="helpItem.label"
+                class="cursor-pointer help-menu-item"
+                @click.stop="showHelpMenu = false"
+              >
+                <a
+                  :href="helpItem.link"
+                  class="flex"
+                  style="gap: 0.75rem"
+                  target="_blank"
+                >
+                  <img :src="helpItem.icon" />
+                  <span>{{ helpItem.label }} </span></a
+                >
+              </li>
+            </ul>
+          </VCard>
+        </div>
+        <div class="position-relative flex">
+          <img
+            src="@/assets/iconography/profile.svg"
+            class="cursor-pointer"
+            @click.stop="showProfileMenu = !showProfileMenu"
+          />
+          <VCard
+            v-if="showProfileMenu"
+            class="help-menu-items position-absolute"
+          >
+            <ul style="margin: 0">
+              <li
+                v-for="profileItem in ProfileItems"
+                :key="profileItem.label"
+                class="cursor-pointer help-menu-item"
+                @click.stop="showProfileMenu = false"
+              >
+                <RouterLink
+                  :to="{
+                    name: `App${profileItem.label}`,
+                  }"
+                  class="flex"
+                  style="gap: 0.75rem"
+                  ><img :src="profileItem.icon" />
+                  <span>{{ profileItem.label }} </span></RouterLink
+                >
+              </li>
+              <li
+                class="cursor-pointer help-menu-item"
+                style="margin-top: 1.5rem"
+              >
+                <VButton
+                  label="LOGOUT"
+                  variant="secondary"
+                  @click.stop="onLogout"
+                />
+              </li>
+            </ul>
+          </VCard>
+        </div>
+      </VStack>
+    </header>
   </section>
 </template>
 
 <style scoped>
-section {
+.header-section {
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -158,9 +163,100 @@ section {
   transition: transform 0.4s;
 }
 
+header {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  visibility: visible;
+  background: #1f1f1f;
+  transition: transform 0.6s;
+}
+
+.mobile-menu-icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  margin-right: 1rem;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.hide-header {
+  transform: translateY(-100%);
+}
+
+.logo {
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.logo:hover {
+  opacity: 0.6;
+}
+
+.help-button__container {
+  margin-bottom: 2rem;
+}
+
+.help-button {
+  font-family: var(--font-body);
+  color: var(--primary);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.help-menu-items {
+  top: calc(100% + 0.75rem);
+  right: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  padding-top: 1.25rem;
+  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
+}
+
+.help-menu-items ul {
+  padding: 0;
+}
+
+.help-menu-item {
+  width: 100%;
+  padding-inline: 1.25rem;
+  padding-bottom: 1.25rem;
+  font-family: var(--font-body);
+  color: var(--text-white);
+  white-space: nowrap;
+  list-style: none;
+}
+
+.help-menu-items a {
+  color: white;
+  text-decoration: none;
+}
+
+@media only screen and (min-width: 768px) {
+  .mobile-menu-icon-button {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+  header {
+    padding: 1rem 0;
+  }
+}
+
 .banner {
   position: relative;
-  padding: 0.75em 1.5em;
+  padding: 0.25em 1.5em;
   font-family: var(--font-body);
   line-height: 1.5em;
   color: white;
@@ -170,6 +266,7 @@ section {
 
 .banner h4 {
   display: inline-block;
+  font-size: 1.125rem;
   font-weight: 600;
   text-transform: uppercase;
 }
@@ -178,6 +275,7 @@ section {
   display: inline-block;
   margin-right: 2em;
   margin-left: 1em;
+  font-size: 1rem;
   font-weight: 400;
 }
 
@@ -188,10 +286,7 @@ section {
 .banner-close {
   position: absolute;
   right: 2em;
+  margin-top: 2px;
   cursor: pointer;
-}
-
-.hide-header {
-  transform: translateY(-100%);
 }
 </style>
