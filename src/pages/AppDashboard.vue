@@ -128,7 +128,6 @@ async function fetchActiveUsers() {
     const newDataSet = { ...dataSet, data: values }
     chartUtils.updateChartView(chart, labels, [newDataSet])
   } catch (e) {
-    toast.error('Error fetching chart data')
     console.log(e)
   }
 }
