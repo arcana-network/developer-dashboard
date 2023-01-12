@@ -23,7 +23,7 @@ const appsStore = useAppsStore()
 const { logout } = useArcanaAuth()
 
 type HeaderProps = {
-  container: boolean
+  container?: boolean
 }
 
 const props = defineProps<HeaderProps>()
@@ -82,7 +82,7 @@ async function onLogout() {
         <CloseIcon color="#FFFFFF" />
       </span>
     </div>
-    <header class="flex" :class="{ container }">
+    <header class="flex" :class="{ container: props.container }">
       <div class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </div>

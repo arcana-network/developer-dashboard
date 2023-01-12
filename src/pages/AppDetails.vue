@@ -26,6 +26,8 @@ const showProfileMenu = ref(false)
 const showMobileMenu = ref(false)
 const { logout } = useArcanaAuth()
 
+appsStore.setSelectedAppId(appId)
+
 function switchTab(tab: string) {
   showMobileMenu.value = false
   currentTab.value = tab
