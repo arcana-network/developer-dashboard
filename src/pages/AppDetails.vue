@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
@@ -9,10 +9,10 @@ import AppFooter from '@/components/AppFooter.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppsStore } from '@/stores/apps.store'
+import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
-import { useAppId } from '@/use/getAppId'
+import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
@@ -20,25 +20,43 @@ const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const currentTab = ref('Dashboard')
 const router = useRouter()
-const appId = useAppId()
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
 const showMobileMenu = ref(false)
+const profile_menu = ref(null)
+const help_menu = ref(null)
+const mobile_menu = ref(null)
 const { logout } = useArcanaAuth()
+const route = useRoute()
 
-appsStore.setSelectedAppId(appId)
+useClickOutside(profile_menu, () => {
+  showProfileMenu.value = false
+})
+
+useClickOutside(help_menu, () => {
+  showHelpMenu.value = false
+})
+
+function switchApp(selectedAppId: AppId) {
+  showMobileMenu.value = false
+  currentTab.value = 'Dashboard'
+  router.push({
+    params: { appId: selectedAppId },
+    name: 'Dashboard',
+  })
+}
 
 function switchTab(tab: string) {
   showMobileMenu.value = false
   currentTab.value = tab
   router.push({
-    params: { appId },
+    params: { appId: route.params.appId },
     name: tab,
   })
 }
 
 onBeforeMount(async () => {
-  const appId = useAppId()
+  const appId = Number(route.params.appId)
   loaderStore.showLoader('Fetching app config')
   await appsStore.fetchAndStoreAppConfig(appId)
   const address = appsStore.app(appId).address
@@ -52,24 +70,46 @@ async function onLogout() {
   router.push({ name: 'Login' })
   window.location.reload()
 }
+
+function toggleProfileMenu() {
+  showProfileMenu.value = !showProfileMenu.value
+  showHelpMenu.value = false
+  showMobileMenu.value = false
+}
+
+function toggleHelpMenu() {
+  showProfileMenu.value = false
+  showHelpMenu.value = !showHelpMenu.value
+  showMobileMenu.value = false
+}
+
+function toggleMobileMenu() {
+  showProfileMenu.value = false
+  showHelpMenu.value = false
+  showMobileMenu.value = !showMobileMenu.value
+}
 </script>
 
 <template>
   <VStack direction="row" class="app-details__container">
     <div class="app-details__sidebar mobile-remove">
-      <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
+      <ConfigureSidebar
+        :current-tab="currentTab"
+        @switch-tab="switchTab"
+        @switch-app="switchApp"
+      />
     </div>
     <VStack direction="column" class="app-details__content">
       <VStack justify="space-between">
-        <div class="logo tablet-remove laptop-remove" @click.stop="onLogoClick">
+        <div
+          class="logo tablet-remove laptop-remove"
+          @click.stop="router.push({ name: 'ManageApps' })"
+        >
           <img :src="ArcanaLogo" alt="Arcana Logo" />
         </div>
         <VStack class="justify-end help-button__container flex-grow">
-          <div class="position-relative flex">
-            <button
-              class="help-button"
-              @click.stop="showHelpMenu = !showHelpMenu"
-            >
+          <div id="help_menu" ref="help_menu" class="position-relative flex">
+            <button class="help-button" @click.stop="toggleHelpMenu">
               Help
             </button>
             <VCard
@@ -97,18 +137,19 @@ async function onLogout() {
             </VCard>
           </div>
           <div class="tablet-remove laptop-remove">
-            <button
-              class="help-button"
-              @click.stop="showMobileMenu = !showMobileMenu"
-            >
+            <button class="help-button" @click.stop="toggleMobileMenu">
               <img src="@/assets/iconography/menu.svg" alt="menu icon" />
             </button>
           </div>
-          <div class="position-relative flex">
+          <div
+            id="profile_menu"
+            ref="profile_menu"
+            class="position-relative flex"
+          >
             <img
               src="@/assets/iconography/profile.svg"
               class="cursor-pointer"
-              @click.stop="showProfileMenu = !showProfileMenu"
+              @click.stop="toggleProfileMenu"
             />
             <VCard
               v-if="showProfileMenu"
@@ -150,10 +191,15 @@ async function onLogout() {
       </VStack>
     </VStack>
     <ConfigureMobileMenu
+      ref="mobile_menu"
       :show-mobile-menu="showMobileMenu"
       @close="showMobileMenu = false"
     >
-      <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
+      <ConfigureSidebar
+        :current-tab="currentTab"
+        @switch-tab="switchTab"
+        @switch-app="switchApp"
+      />
     </ConfigureMobileMenu>
   </VStack>
 </template>
