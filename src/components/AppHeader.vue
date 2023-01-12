@@ -22,6 +22,12 @@ const showMenu = ref(false)
 const appsStore = useAppsStore()
 const { logout } = useArcanaAuth()
 
+type HeaderProps = {
+  container: boolean
+}
+
+const props = defineProps<HeaderProps>()
+
 let lastScrollTop = 0
 const scrollDelta = 10
 
@@ -76,11 +82,15 @@ async function onLogout() {
         <CloseIcon color="#FFFFFF" />
       </span>
     </div>
-    <header class="flex">
+    <header class="flex" :class="{ container }">
       <div class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </div>
-      <VStack class="justify-end help-button__container" gap="1rem">
+      <VStack
+        class="justify-end help-button__container"
+        align="center"
+        gap="1rem"
+      >
         <div class="position-relative flex">
           <button
             class="help-button"
@@ -196,10 +206,6 @@ header {
 
 .logo:hover {
   opacity: 0.6;
-}
-
-.help-button__container {
-  margin-bottom: 2rem;
 }
 
 .help-button {
