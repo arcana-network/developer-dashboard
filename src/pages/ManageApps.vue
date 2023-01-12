@@ -59,7 +59,6 @@ onMounted(() => {
 })
 
 function goToDashboard(appId: AppId) {
-  appsStore.setSelectedAppId(appId)
   router.push({ name: 'AppDetails', params: { appId } })
 }
 

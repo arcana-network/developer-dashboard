@@ -14,6 +14,7 @@ import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
 import {
   CONFIGURE_TABS,
   type ConfigureTab,
@@ -24,7 +25,7 @@ const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
 const showAppsList = ref(false)
 const router = useRouter()
-const emit = defineEmits(['switch-tab'])
+const emit = defineEmits(['switch-tab', 'switch-app'])
 
 const socialLinks = [
   {
@@ -74,10 +75,8 @@ function onLogoClick() {
   router.push('/')
 }
 
-function onAppClick(appId: AppId) {
-  appsStore.setSelectedAppId(appId)
-  emit('switch-tab', 'dashboard')
-  router.push({ name: 'AppDetails', params: { appId } })
+function onAppClick(selectedAppId: AppId) {
+  emit('switch-app', selectedAppId)
   showAppsList.value = false
 }
 
@@ -113,13 +112,9 @@ onMounted(() => {
             class="flex app-name__container cursor-pointer"
             @click="showAppsList = !showAppsList"
           >
-            <img
-              :src="getlogo(appsStore.selectedAppId)"
-              alt="app logo"
-              class="app-logo"
-            />
+            <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
             <label class="selected-app text-ellipsis">{{
-              appsStore.selectedApp?.name
+              appsStore.app(useAppId()).name
             }}</label>
             <img
               :src="arrowIcon"
@@ -138,7 +133,7 @@ onMounted(() => {
               v-for="app in appsStore.apps"
               :key="app.name"
               class="apps-name__list-item"
-              :class="{ 'active-app': appsStore.selectedAppId === app.id }"
+              :class="{ 'active-app': useAppId() === app.id }"
               @click="onAppClick(app.id)"
             >
               <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />

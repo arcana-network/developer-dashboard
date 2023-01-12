@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import DiscordIcon from '@/assets/discord-white.svg'
@@ -7,19 +6,12 @@ import DiscourseIcon from '@/assets/discourse-white.svg'
 import TelegramIcon from '@/assets/telegram-white.svg'
 import TwitterIcon from '@/assets/twitter-white.svg'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import constants from '@/utils/constants'
-
-const route = useRoute()
 
 type FooterProps = {
   showSocialIcons?: boolean
 }
 
 const props = defineProps<FooterProps>()
-
-const canShowDocs = computed(() => {
-  return route.name === 'Login'
-})
 
 const socialLinks = [
   {

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onMounted, ref, computed } from '@vue/runtime-core'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, type RouteRecordName } from 'vue-router'
 
 import AppFooter from '@/components/AppFooter.vue'
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
@@ -17,6 +17,7 @@ import { generateLoginInfo } from '@/utils/signerUtils'
 import { isValidEmail } from '@/utils/validation'
 
 const router = useRouter()
+const route = useRoute()
 const appsStore = useAppsStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
@@ -44,7 +45,14 @@ async function fetchAndStoreDetails() {
   loaderStore.showLoader('Fetching user info...')
   await fetchAndStoreUserInfo()
   await appsStore.fetchAndStoreAllApps()
-  router.push({ name: 'ManageApps' })
+  if (route.params.redirectTo) {
+    router.push({
+      name: route.params.redirectTo as RouteRecordName,
+      ...route.params,
+    })
+  } else {
+    router.push({ name: 'ManageApps' })
+  }
   loaderStore.hideLoader()
 }
 

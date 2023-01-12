@@ -60,7 +60,6 @@ const routes: RouteRecordRaw[] = [
     name: 'AppDetails',
     path: '/apps/:appId',
     component: AppDetails,
-    props: true,
     redirect: { name: 'Dashboard' },
     children: [
       {

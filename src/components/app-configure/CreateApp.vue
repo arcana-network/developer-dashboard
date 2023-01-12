@@ -78,7 +78,6 @@ async function handleCreateApp() {
     })
     createTransactionSigner(app.address)
     loaderStore.hideLoader()
-    appsStore.setSelectedAppId(app.ID)
     router.push({ name: 'AppDetails', params: { appId: app.ID } })
   } catch (e) {
     loaderStore.hideLoader()
