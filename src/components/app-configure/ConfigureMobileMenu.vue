@@ -1,9 +1,20 @@
 <script lang="ts" setup>
+import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+
 const emit = defineEmits(['close'])
+
+type MobileMenuProps = {
+  showMobileMenu: boolean
+}
+
+const props = defineProps<MobileMenuProps>()
 </script>
 
 <template>
-  <div class="position-absolute configure-mobile--container">
+  <div
+    class="position-absolute configure-mobile--container"
+    :class="{ show: props.showMobileMenu }"
+  >
     <button class="configure-mobile__close-btn" @click="emit('close')">
       <img src="@/assets/iconography/close.svg" alt="close icon" />
     </button>
@@ -15,9 +26,11 @@ const emit = defineEmits(['close'])
 .configure-mobile--container {
   z-index: 1000;
   box-sizing: border-box;
-  width: 100%;
+  width: 20rem;
   height: 100%;
   background-color: #262626;
+  transition: transform 0.3s;
+  transform: translateX(-20.5rem);
 }
 
 .configure-mobile__close-btn {
@@ -29,5 +42,9 @@ const emit = defineEmits(['close'])
   background-color: transparent;
   border: none;
   outline: none;
+}
+
+.show {
+  transform: translateX(0);
 }
 </style>
