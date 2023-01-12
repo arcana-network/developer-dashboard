@@ -120,7 +120,7 @@ async function onLogout() {
                   @click.stop="showProfileMenu = false"
                 >
                   <RouterLink
-                    :to="{ name: profileItem.label }"
+                    :to="{ name: `App${profileItem.label}` }"
                     class="flex"
                     style="gap: 0.75rem"
                     ><img :src="profileItem.icon" />

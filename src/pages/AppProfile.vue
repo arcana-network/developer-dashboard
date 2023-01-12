@@ -5,6 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
@@ -127,6 +128,7 @@ function deleteSecondary() {
 
 <template>
   <div>
+    <AppHeader container />
     <main :class="{ container: route.name === 'AppProfile' }">
       <VStack class="heading" gap="1.5rem">
         <img
