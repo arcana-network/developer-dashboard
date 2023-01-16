@@ -16,7 +16,7 @@ const props = defineProps({
 })
 
 const value = computed(() => {
-  return !props.percentage || props.percentage < 2 ? 2 : props.percentage
+  return !props.percentage || props.percentage < 0 ? 0 : props.percentage
 })
 </script>
 
