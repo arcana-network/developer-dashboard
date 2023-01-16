@@ -373,6 +373,10 @@ function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
 
 type AccountStatus = 'active' | 'overlimit' | 'overdue'
 
+function getAuthOverview(): Promise<AxiosResponse<any>> {
+  return gatewayAuthorizedInstance.delete(`${getEnvApi()}/auth-overview/`)
+}
+
 function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
   // Mocking the account details for now
   const localStatus = localStorage.getItem('account-status')?.toLowerCase()
@@ -426,6 +430,7 @@ export {
   getAccountStatus,
   fetchDau,
   fetchMau,
+  getAuthOverview,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

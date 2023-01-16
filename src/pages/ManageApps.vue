@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref, type Ref, onMounted } from 'vue'
+import { onBeforeMount, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
@@ -17,6 +17,7 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import {
   getAccountStatus,
+  getAuthOverview,
   updateApp,
   type AccountStatus,
 } from '@/services/gateway.service'
@@ -34,29 +35,13 @@ const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
 const accountStatus: Ref<AccountStatus> = ref('active')
 const appToDelete = ref(0)
-const estimatedCost = ref(100)
+const estimatedCost = ref(0)
 const freeMausUsed = ref(0)
 const percentageFreeMaus = ref(0)
 const paidMausUsed = ref(0)
 const freeMausWidth = ref(100)
 const paidMausWidth = ref(0)
 const toast = useToast()
-
-onMounted(() => {
-  const mausUsed = 1300
-  const allowedFreeMaus = 1000
-
-  if (mausUsed > allowedFreeMaus) {
-    freeMausUsed.value = allowedFreeMaus
-    paidMausUsed.value = mausUsed - allowedFreeMaus
-    percentageFreeMaus.value = 100
-    freeMausWidth.value = (freeMausUsed.value / mausUsed) * 100
-    paidMausWidth.value = (paidMausUsed.value / mausUsed) * 100
-  } else {
-    freeMausUsed.value = mausUsed
-    percentageFreeMaus.value = (mausUsed / allowedFreeMaus) * 100
-  }
-})
 
 function goToDashboard(appId: AppId) {
   router.push({ name: 'AppDetails', params: { appId } })
@@ -81,6 +66,22 @@ function getImageUrl(appId: AppId) {
 
 onBeforeMount(async () => {
   accountStatus.value = (await getAccountStatus()).data
+  const authOverview = (await getAuthOverview()).data
+
+  const mausUsed = authOverview.mau
+  estimatedCost.value = authOverview.bill
+  const allowedFreeMaus = 2000
+
+  if (mausUsed > allowedFreeMaus) {
+    freeMausUsed.value = allowedFreeMaus
+    paidMausUsed.value = mausUsed - allowedFreeMaus
+    percentageFreeMaus.value = 100
+    freeMausWidth.value = (freeMausUsed.value / mausUsed) * 100
+    paidMausWidth.value = (paidMausUsed.value / mausUsed) * 100
+  } else {
+    freeMausUsed.value = mausUsed
+    percentageFreeMaus.value = (mausUsed / allowedFreeMaus) * 100
+  }
 })
 
 appsStore.$subscribe(() => {
