@@ -1,13 +1,13 @@
 <script lang="ts" setup>
 import type { Chart } from 'chart.js'
 import moment from 'moment'
-import { onMounted, ref, watch, type Ref } from 'vue'
+import { onMounted, ref, watch, type Ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
 import TutorialPasswordlessAuth from '@/assets/Tutorial-passwordless-auth.png'
 import TutorialPlugAndPlayAuth from '@/assets/Tutorial-plug-and-play-auth.png'
 import TutorialSocialAuth from '@/assets/Tutorial-social-auth.png'
-import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
@@ -17,7 +17,6 @@ import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
-import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -33,19 +32,27 @@ const initialMonthlyData = [
   return a
 }, {})
 
-let chart: Chart | null = null
+let chart: Chart
 const chartConfig = chartUtils.getInitialUsersChartConfig(
   Object.keys(initialDailyData),
   Object.values(initialDailyData)
 )
 const appsStore = useAppsStore()
-const appId = useAppId()
+const route = useRoute()
+const appId = ref(Number(route.params.appId))
 const toast = useToast()
 const durationSelected: Ref<Duration> = ref('day')
-const selectedApp = appsStore.app(appId)
-const appAddress = ref(selectedApp.address)
-const appName = ref(selectedApp.name)
+const selectedApp = computed(() => appsStore.app(appId.value))
+const appAddress = computed(() => selectedApp.value.address)
 const showNoDataChart = ref(false)
+
+watch(
+  () => route.params.appId,
+  () => {
+    appId.value = Number(route.params.appId)
+    fetchActiveUsers()
+  }
+)
 
 const tutorials = [
   {
@@ -85,16 +92,6 @@ onMounted(() => {
 
 watch(() => durationSelected.value, fetchActiveUsers)
 
-watch(
-  () => appId,
-  () => {
-    const app = appsStore.app(appId)
-    appName.value = app.name
-    appAddress.value = app.address
-    fetchActiveUsers()
-  }
-)
-
 async function copyAppAddress() {
   try {
     await copyToClipboard(appAddress.value)
@@ -110,11 +107,11 @@ async function fetchActiveUsers() {
     let activeUsers = []
     let dataTemplate = {}
     if (durationSelected.value === 'day') {
-      const { data } = await fetchDau(selectedApp.address)
+      const { data } = await fetchDau(selectedApp.value.address)
       activeUsers = data
       dataTemplate = initialDailyData
     } else if (durationSelected.value === 'month') {
-      const { data } = await fetchMau(selectedApp.address)
+      const { data } = await fetchMau(selectedApp.value.address)
       activeUsers = data
       dataTemplate = initialMonthlyData
     }
@@ -135,7 +132,7 @@ async function fetchActiveUsers() {
 </script>
 
 <template>
-  <div>
+  <div :key="appId">
     <main style="margin-bottom: 2rem">
       <section class="flex dashboard-heading flex-wrap">
         <VStack justify="space-between" sm-direction="column" class="flex-grow">
