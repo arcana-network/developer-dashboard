@@ -12,6 +12,7 @@ const authStore = useAuthStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')
+const AppInvoices = () => import('@/pages/AppInvoices.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 const ManageApps = () => import('@/pages/ManageApps.vue')
@@ -108,6 +109,14 @@ const routes: RouteRecordRaw[] = [
     name: 'AppProfile',
     path: '/profile',
     component: AppProfile,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    name: 'Invoices',
+    path: '/invoices',
+    component: AppInvoices,
     meta: {
       requiresAuth: true,
     },
