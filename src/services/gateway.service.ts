@@ -1,5 +1,4 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
-import bytes from 'bytes'
 
 import store from '@/stores'
 import type {
@@ -16,8 +15,6 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
-  MAX_DATA_TRANSFER_BYTES,
-  RegionMapping,
   WalletMode,
   type SocialAuthVerifier,
 } from '@/utils/constants'
@@ -145,7 +142,7 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     cred,
     aggregate_login: true,
     chain: ChainMapping[app.access.selectedChain],
-    region: RegionMapping[app.region],
+    region: 1,
     theme: wallet.selectedTheme,
     wallet_domain: wallet.websiteDomain,
     wallet_type,
@@ -374,6 +371,34 @@ function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
   )
 }
 
+type AccountStatus = 'active' | 'overlimit' | 'overdue'
+
+function getAuthOverview(): Promise<AxiosResponse<any>> {
+  return gatewayAuthorizedInstance.delete(`${getEnvApi()}/auth-overview/`)
+}
+
+function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
+  // Mocking the account details for now
+  const localStatus = localStorage.getItem('account-status')?.toLowerCase()
+  if (localStatus === 'overdue' || localStatus === 'overlimit') {
+    return Promise.resolve({
+      status: 200,
+      statusText: 'Success',
+      headers: {},
+      config: {},
+      data: localStatus,
+    })
+  } else {
+    return Promise.resolve({
+      status: 200,
+      statusText: 'Success',
+      headers: {},
+      config: {},
+      data: 'active',
+    })
+  }
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -402,11 +427,14 @@ export {
   listDelegateKeys,
   editDelegate,
   deleteDelegate,
+  getAccountStatus,
   fetchDau,
   fetchMau,
+  getAuthOverview,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
   type Duration,
   type AppConfigRequiredProps,
+  type AccountStatus,
 }

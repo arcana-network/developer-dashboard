@@ -4,6 +4,9 @@ import moment from 'moment'
 import { onMounted, ref, watch, type Ref } from 'vue'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
+import TutorialPasswordlessAuth from '@/assets/Tutorial-passwordless-auth.png'
+import TutorialPlugAndPlayAuth from '@/assets/Tutorial-plug-and-play-auth.png'
+import TutorialSocialAuth from '@/assets/Tutorial-social-auth.png'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
@@ -50,27 +53,24 @@ const tutorials = [
     title: 'How to set up social auth',
     description:
       'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy first stack for your own ',
-    thumbnail_url:
-      'https://images.unsplash.com/photo-1518461845661-a2640bd93759?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=360&q=80',
-    link: 'https://docs.beta.arcana.network/docs/config_social',
+    thumbnail_url: TutorialSocialAuth,
+    link: 'https://docs.arcana.network/howto/config_social_providers.html',
   },
   {
     id: '2',
     title: 'How to enable up passwordless login',
     description:
       'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy first stack for your own ',
-    thumbnail_url:
-      'https://images.unsplash.com/photo-1518461845661-a2640bd93759?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=360&q=80',
-    link: 'https://docs.beta.arcana.network/docs/pwdlessauth',
+    thumbnail_url: TutorialPasswordlessAuth,
+    link: 'https://docs.arcana.network/howto/onboard_users/wallet_pwdless_login.html',
   },
   {
     id: '3',
     title: 'How to enable plug & play auth',
     description:
       'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy...',
-    thumbnail_url:
-      'https://images.unsplash.com/photo-1518461845661-a2640bd93759?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=360&q=80',
-    link: 'https://docs.beta.arcana.network/docs/authplugnplay',
+    thumbnail_url: TutorialPlugAndPlayAuth,
+    link: 'https://docs.arcana.network/howto/onboard_users/wallet_plugnplay.html',
   },
 ]
 
@@ -228,7 +228,7 @@ async function fetchActiveUsers() {
       >
         <VStack justify="space-between" align="center" class="flex-grow">
           <h2>TUTORIALS</h2>
-          <VButton variant="link" label="VIEW ALL" />
+          <!-- <VButton variant="link" label="VIEW ALL" /> -->
         </VStack>
         <VSeperator class="full-bleed-separator" />
         <div class="tutorials__container">
