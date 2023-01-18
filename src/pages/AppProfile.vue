@@ -209,7 +209,7 @@ function deleteSecondary() {
           </form>
         </SettingCard>
       </section>
-      <section style="margin-top: 3em">
+      <!-- <section style="margin-top: 3em">
         <SettingCard>
           <template #title>INVOICING DETAILS</template>
           <form>
@@ -395,7 +395,7 @@ function deleteSecondary() {
             />
           </form>
         </SettingCard>
-      </section>
+      </section> -->
     </main>
   </div>
 </template>
@@ -405,6 +405,10 @@ function deleteSecondary() {
   gap: 0.5rem;
   width: 280px;
   margin-top: 1em;
+}
+
+main {
+  padding-bottom: 4rem;
 }
 
 .payment-details-input {
