@@ -12,6 +12,7 @@ const authStore = useAuthStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')
+const AppInvoices = () => import('@/pages/AppInvoices.vue')
 const AppLogin = () => import('@/pages/AppLogin.vue')
 const AppDownNotification = () => import('@/pages/AppDownNotification.vue')
 const ManageApps = () => import('@/pages/ManageApps.vue')
@@ -60,7 +61,6 @@ const routes: RouteRecordRaw[] = [
     name: 'AppDetails',
     path: '/apps/:appId',
     component: AppDetails,
-    props: true,
     redirect: { name: 'Dashboard' },
     children: [
       {
@@ -73,7 +73,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Branding',
-        path: 'branding',
+        path: 'configure/branding',
         component: AppBranding,
         meta: {
           requiresAuth: true,
@@ -81,7 +81,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Social Auth',
-        path: 'socialAuth',
+        path: 'configure/social',
         component: AuthSettings,
         meta: {
           requiresAuth: true,
@@ -89,7 +89,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         name: 'Arcana Wallet',
-        path: 'arcanaWallet',
+        path: 'configure/wallet',
         component: WebWallet,
         meta: {
           requiresAuth: true,
@@ -109,6 +109,14 @@ const routes: RouteRecordRaw[] = [
     name: 'AppProfile',
     path: '/profile',
     component: AppProfile,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    name: 'Invoices',
+    path: '/invoices',
+    component: AppInvoices,
     meta: {
       requiresAuth: true,
     },

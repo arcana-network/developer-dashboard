@@ -14,13 +14,18 @@ import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
-import { CONFIGURE_TABS, type ConfigureTabType } from '@/utils/constants'
+import { useAppId } from '@/use/getAppId'
+import {
+  CONFIGURE_TABS,
+  type ConfigureTab,
+  type ConfigureTabType,
+} from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
 const showAppsList = ref(false)
 const router = useRouter()
-const emit = defineEmits(['switch-tab'])
+const emit = defineEmits(['switch-tab', 'switch-app'])
 
 const socialLinks = [
   {
@@ -50,14 +55,14 @@ type ConfigureProps = {
 }
 
 const props = withDefaults(defineProps<ConfigureProps>(), {
-  currentTab: 'dashboard',
+  currentTab: 'Dashboard',
 })
 
-function onClickOfMenu(tab: ConfigureTabType) {
-  if (tab === 'configure') {
+function onClickOfMenu(tab: ConfigureTab) {
+  if (tab.subMenu) {
     showConfigureSubmenu.value = !showConfigureSubmenu.value
   } else {
-    emit('switch-tab', tab)
+    emit('switch-tab', tab.label)
   }
 }
 
@@ -70,10 +75,8 @@ function onLogoClick() {
   router.push('/')
 }
 
-function onAppClick(appId: AppId) {
-  appsStore.setSelectedAppId(appId)
-  emit('switch-tab', 'dashboard')
-  router.push({ name: 'AppDetails', params: { appId } })
+function onAppClick(selectedAppId: AppId) {
+  emit('switch-app', selectedAppId)
   showAppsList.value = false
 }
 
@@ -91,9 +94,9 @@ function hasSubMenuSelected(tabLabel: string) {
 onMounted(() => {
   const currentTab = props.currentTab
   showConfigureSubmenu.value =
-    currentTab === 'branding' ||
-    currentTab === 'socialAuth' ||
-    currentTab === 'arcanaWallet'
+    currentTab === 'Branding' ||
+    currentTab === 'Social Auth' ||
+    currentTab === 'Arcana Wallet'
 })
 </script>
 
@@ -109,13 +112,9 @@ onMounted(() => {
             class="flex app-name__container cursor-pointer"
             @click="showAppsList = !showAppsList"
           >
-            <img
-              :src="getlogo(appsStore.selectedAppId)"
-              alt="app logo"
-              class="app-logo"
-            />
+            <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
             <label class="selected-app text-ellipsis">{{
-              appsStore.selectedApp?.name
+              appsStore.app(useAppId()).name
             }}</label>
             <img
               :src="arrowIcon"
@@ -134,7 +133,7 @@ onMounted(() => {
               v-for="app in appsStore.apps"
               :key="app.name"
               class="apps-name__list-item"
-              :class="{ 'active-app': appsStore.selectedAppId === app.id }"
+              :class="{ 'active-app': useAppId() === app.id }"
               @click="onAppClick(app.id)"
             >
               <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
@@ -160,10 +159,10 @@ onMounted(() => {
           :key="`configure-sidebar-tab-${tab.type}`"
           :class="{
             'active-tab':
-              props.currentTab === tab.type || hasSubMenuSelected(tab.label),
+              props.currentTab === tab.label || hasSubMenuSelected(tab.label),
           }"
           class="sidebar__option"
-          @click.stop="onClickOfMenu(tab.type)"
+          @click.stop="onClickOfMenu(tab)"
         >
           <div class="sidebar__option-item">
             <img :src="tab.icon" alt="icon" class="sidebar__option-icon" />
@@ -188,8 +187,8 @@ onMounted(() => {
               v-for="subTab in tab.subMenu"
               :key="subTab.label"
               class="sidebar__submenu-option"
-              :class="{ 'submenu-active': props.currentTab === subTab.type }"
-              @click.stop="onClickOfMenu(subTab.type)"
+              :class="{ 'submenu-active': props.currentTab === subTab.label }"
+              @click.stop="onClickOfMenu(subTab)"
             >
               <div class="sidebar__submenu-option-item">
                 <img

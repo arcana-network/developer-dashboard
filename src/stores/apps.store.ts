@@ -81,14 +81,12 @@ type AppState = {
   appsById: {
     [key: AppId]: App
   }
-  selectedAppId: AppId | null
 }
 
 const useAppsStore = defineStore('apps', {
   state: (): AppState => ({
     appIds: [],
     appsById: {},
-    selectedAppId: null,
   }),
   getters: {
     apps: (state) => {
@@ -105,10 +103,6 @@ const useAppsStore = defineStore('apps', {
       return (id: AppId) =>
         state.appsById[id].auth.wallet.walletTypeInGateway === WalletMode.UI
     },
-    selectedApp: (state) => {
-      if (state.selectedAppId) return state.appsById[state.selectedAppId]
-      return null
-    },
   },
   actions: {
     updateApp(appId: AppId, appDetails: App) {
@@ -121,9 +115,6 @@ const useAppsStore = defineStore('apps', {
     deleteApp(appId: AppId) {
       this.appIds = this.appIds.filter((id) => id !== appId)
       delete this.appsById[appId]
-    },
-    setSelectedAppId(appId: AppId) {
-      this.selectedAppId = appId
     },
     async fetchAndStoreAllApps() {
       this.appIds = []

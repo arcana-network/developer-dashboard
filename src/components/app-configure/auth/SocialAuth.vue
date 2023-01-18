@@ -23,6 +23,8 @@ const loaderStore = useLoaderStore()
 const toast = useToast()
 const app = appsStore.app(appId)
 
+console.log(appId)
+
 const socialAuth = socialLogins.map((login) => {
   const auth = app.auth.social.find((el) => el.verifier === login.verifier)
   if (auth) {

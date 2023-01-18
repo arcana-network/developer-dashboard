@@ -107,7 +107,7 @@ async function handleSave() {
                 class="web-wallet-desktop-preview"
               />
             </VStack>
-            <VSeperator vertical />
+            <VSeperator vertical class="tablet-remove mobile-remove" />
             <VStack direction="column" gap="0.5rem">
               <h4 class="text-grey">Mobile</h4>
               <img
