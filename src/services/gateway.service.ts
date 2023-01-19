@@ -383,7 +383,7 @@ function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
 type AccountStatus = 'active' | 'overlimit' | 'overdue'
 
 function getAuthOverview(): Promise<AxiosResponse<any>> {
-  return gatewayAuthorizedInstance.delete(`${getEnvApi()}/auth-overview/`)
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/auth-overview/`)
 }
 
 function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {

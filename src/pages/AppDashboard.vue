@@ -32,7 +32,7 @@ type ChartData = {
 
 const initialDailyData = [-6, -5, -4, -3, -2, -1, 0].reduce((a, b) => {
   a.push({
-    label: moment().day(b).format('YYYY-MM-DD'),
+    label: moment().add(b, 'day').format('YYYY-MM-DD'),
     data: 0,
   })
   return a
@@ -42,7 +42,7 @@ const initialMonthlyData = [
   -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
 ].reduce((a, b) => {
   a.push({
-    label: moment().day(b).format('YYYY-MM'),
+    label: moment().add(b, 'month').format('YYYY-MM'),
     data: 0,
   })
   return a
@@ -127,16 +127,33 @@ async function fetchActiveUsers() {
     if (durationSelected.value === 'day') {
       const { data } = await fetchDau(selectedApp.value.address)
       activeUsers = data
-      dataTemplate = initialDailyData
+      dataTemplate = [-6, -5, -4, -3, -2, -1, 0].reduce((a, b) => {
+        a.push({
+          label: moment().add(b, 'day').format('YYYY-MM-DD'),
+          data: 0,
+        })
+        return a
+      }, [] as ChartData[])
     } else if (durationSelected.value === 'month') {
       const { data } = await fetchMau(selectedApp.value.address)
       activeUsers = data
-      dataTemplate = initialMonthlyData
+      dataTemplate = [-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0].reduce(
+        (a, b) => {
+          a.push({
+            label: moment().add(b, 'month').format('YYYY-MM'),
+            data: 0,
+          })
+          return a
+        },
+        [] as ChartData[]
+      )
     }
+    console.log({ initialDailyData, initialMonthlyData })
     // showNoDataChart.value = !activeUsers.length
     activeUsers.forEach((item) => {
       const formattedDate = item.Date.split(' ').join('-')
       const index = dataTemplate.findIndex((el) => el.label === formattedDate)
+      console.log(index)
       if (index > -1) {
         dataTemplate[index].data = item.Value
       }
