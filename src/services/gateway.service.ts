@@ -244,12 +244,21 @@ function fetchMonthlyUsers(appId: AppId) {
   )
 }
 
-function fetchDau(appAddress: string) {
+type ActiveUsersChartData = {
+  Date: string
+  Value: number
+}
+
+function fetchDau(
+  appAddress: string
+): Promise<AxiosResponse<ActiveUsersChartData[]>> {
   const api = `/get-dau/?app=${appAddress}`
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
 }
 
-function fetchMau(appAddress: string) {
+function fetchMau(
+  appAddress: string
+): Promise<AxiosResponse<ActiveUsersChartData[]>> {
   const api = `/get-mau/?app=${appAddress}`
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
 }
@@ -437,4 +446,5 @@ export {
   type Duration,
   type AppConfigRequiredProps,
   type AccountStatus,
+  type ActiveUsersChartData,
 }

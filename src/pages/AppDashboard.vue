@@ -15,27 +15,43 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import { type Duration, fetchDau, fetchMau } from '@/services/gateway.service'
+import {
+  type Duration,
+  fetchDau,
+  fetchMau,
+  type ActiveUsersChartData,
+} from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
+type ChartData = {
+  label: string
+  data: number
+}
+
 const initialDailyData = [-6, -5, -4, -3, -2, -1, 0].reduce((a, b) => {
-  a[moment().day(b).format('YYYY-MM-DD')] = 0
+  a.push({
+    label: moment().day(b).format('YYYY-MM-DD'),
+    data: 0,
+  })
   return a
-}, {})
+}, [] as ChartData[])
 
 const initialMonthlyData = [
   -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
 ].reduce((a, b) => {
-  a[moment().month(b).format('YYYY-MM')] = 0
+  a.push({
+    label: moment().day(b).format('YYYY-MM'),
+    data: 0,
+  })
   return a
-}, {})
+}, [] as ChartData[])
 
 let chart: Chart
 const chartConfig = chartUtils.getInitialUsersChartConfig(
-  Object.keys(initialDailyData),
-  Object.values(initialDailyData)
+  initialDailyData.map((el) => el.label),
+  initialDailyData.map((el) => el.data)
 )
 const appsStore = useAppsStore()
 const route = useRoute()
@@ -85,7 +101,9 @@ const SmartContractIcon = ref(CopyIcon)
 const smartContractTooltip = ref('Click to copy')
 
 onMounted(() => {
-  const chartCtx = document.getElementById('users-count-chart').getContext('2d')
+  const chartCtx = (
+    document.getElementById('users-count-chart') as HTMLCanvasElement
+  ).getContext('2d')
   chart = chartUtils.createChartView(chartCtx, chartConfig)
   fetchActiveUsers()
 })
@@ -104,8 +122,8 @@ async function copyAppAddress() {
 
 async function fetchActiveUsers() {
   try {
-    let activeUsers = []
-    let dataTemplate = {}
+    let activeUsers: ActiveUsersChartData[] = []
+    let dataTemplate: ChartData[] = []
     if (durationSelected.value === 'day') {
       const { data } = await fetchDau(selectedApp.value.address)
       activeUsers = data
@@ -115,16 +133,26 @@ async function fetchActiveUsers() {
       activeUsers = data
       dataTemplate = initialMonthlyData
     }
-    showNoDataChart.value = !activeUsers.length
-    // activeUsers.forEach((item) => {
-    //   const formattedDate = item.Date.split(' ').join('-')
-    //   dataTemplate[formattedDate] = item.Value
-    // })
-    const dataSet = chartConfig.data.datasets[0]
-    const labels = Object.keys(dataTemplate)
-    const values = activeUsers.length ? Object.values(dataTemplate) : []
-    const newDataSet = { ...dataSet, data: values }
-    chartUtils.updateChartView(chart, labels, [newDataSet])
+    // showNoDataChart.value = !activeUsers.length
+    activeUsers.forEach((item) => {
+      const formattedDate = item.Date.split(' ').join('-')
+      const index = dataTemplate.findIndex((el) => el.label === formattedDate)
+      if (index > -1) {
+        dataTemplate[index].data = item.Value
+      }
+    })
+    const labels = dataTemplate.map((el) => el.label)
+    const values = dataTemplate.map((el) => el.data)
+    const datasets = [
+      {
+        label: 'No of active users',
+        data: values,
+        borderColor: 'white',
+        borderWidth: 4,
+        lineTension: 0.2,
+      },
+    ]
+    chartUtils.updateChartView(chart, labels, datasets)
   } catch (e) {
     console.log(e)
   }
@@ -208,11 +236,11 @@ async function fetchActiveUsers() {
         </div>
         <v-seperator class="full-bleed-separator" />
         <section class="flex column">
-          <div v-if="showNoDataChart" class="users-count-empty-state">
+          <div v-show="showNoDataChart" class="users-count-empty-state">
             <p>No Data</p>
           </div>
           <canvas
-            v-else
+            v-show="!showNoDataChart"
             id="users-count-chart"
             class="users-count-chart"
           ></canvas>
