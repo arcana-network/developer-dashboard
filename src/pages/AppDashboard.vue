@@ -7,7 +7,6 @@ import CopyIcon from '@/assets/iconography/copy.svg'
 import TutorialPasswordlessAuth from '@/assets/Tutorial-passwordless-auth.png'
 import TutorialPlugAndPlayAuth from '@/assets/Tutorial-plug-and-play-auth.png'
 import TutorialSocialAuth from '@/assets/Tutorial-social-auth.png'
-import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
@@ -138,7 +137,11 @@ async function fetchActiveUsers() {
   <div>
     <main style="margin-bottom: 2rem">
       <section class="flex dashboard-heading flex-wrap">
-        <VStack justify="space-between" sm-direction="column" class="flex-grow">
+        <VStack
+          justify="space-between"
+          sm-direction="column"
+          class="flex-grow flex-wrap"
+        >
           <h1 class="heading">DASHBOARD</h1>
           <VStack
             gap="1rem"
@@ -161,7 +164,7 @@ async function fetchActiveUsers() {
         </VStack>
       </section>
       <div
-        class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
+        class="flex laptop-remove smart-contract-copy justify-start flex-center flex-wrap"
       >
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
           App Address:
@@ -375,11 +378,6 @@ async function fetchActiveUsers() {
 
   h4 {
     font-size: 0.85em;
-  }
-
-  .flex {
-    width: 90%;
-    margin-left: 20px;
   }
 }
 </style>
