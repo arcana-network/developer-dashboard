@@ -65,8 +65,16 @@ const showNoDataChart = ref(false)
 watch(
   () => route.params.appId,
   () => {
-    appId.value = Number(route.params.appId)
-    fetchActiveUsers()
+    if (route.params.appId) {
+      appId.value = Number(route.params.appId)
+      setTimeout(() => {
+        const chartCtx = (
+          document.getElementById('users-count-chart') as HTMLCanvasElement
+        ).getContext('2d')
+        chart = chartUtils.createChartView(chartCtx, chartConfig)
+        fetchActiveUsers()
+      }, 1)
+    }
   }
 )
 
@@ -148,12 +156,10 @@ async function fetchActiveUsers() {
         [] as ChartData[]
       )
     }
-    console.log({ initialDailyData, initialMonthlyData })
     // showNoDataChart.value = !activeUsers.length
     activeUsers.forEach((item) => {
       const formattedDate = item.Date.split(' ').join('-')
       const index = dataTemplate.findIndex((el) => el.label === formattedDate)
-      console.log(index)
       if (index > -1) {
         dataTemplate[index].data = item.Value
       }

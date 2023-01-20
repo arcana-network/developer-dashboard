@@ -49,7 +49,6 @@ useClickOutside(help_menu, () => {
 onMounted(() => {
   canShowBanner.value = !sessionStorage.getItem('hide-banner')
   document.querySelector('#app')?.addEventListener('scroll', handleScroll)
-  console.log(profile_menu)
 })
 
 onUnmounted(() => {
