@@ -8,6 +8,7 @@ import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
+import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -15,6 +16,17 @@ import useArcanaAuth from '@/use/arcanaAuth'
 import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
 import { createTransactionSigner } from '@/utils/signerUtils'
+
+const NetworkOptions = [
+  {
+    label: 'Mainnet',
+    value: 'mainnet',
+  },
+  {
+    label: 'Testnet',
+    value: 'testnet',
+  },
+]
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
@@ -28,6 +40,7 @@ const help_menu = ref(null)
 const mobile_menu = ref(null)
 const { logout } = useArcanaAuth()
 const route = useRoute()
+const currentNetwork = ref(NetworkOptions[1])
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -186,6 +199,12 @@ function toggleMobileMenu() {
         </VStack>
       </VStack>
       <VStack direction="column" gap="2rem" class="flex-grow">
+        <VDropdown
+          v-model="currentNetwork"
+          :options="NetworkOptions"
+          display-field="label"
+          class="app-details__network-dropdown"
+        />
         <RouterView />
         <AppFooter class="footer-bleed" />
       </VStack>
@@ -282,5 +301,10 @@ function toggleMobileMenu() {
 .logo {
   cursor: pointer;
   transition: opacity 0.3s;
+}
+
+.app-details__network-dropdown {
+  align-self: flex-end;
+  width: 16rem;
 }
 </style>
