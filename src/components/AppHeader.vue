@@ -263,18 +263,6 @@ header {
   text-decoration: none;
 }
 
-@media only screen and (min-width: 768px) {
-  .mobile-menu-icon-button {
-    display: none;
-  }
-}
-
-@media only screen and (max-width: 1023px) {
-  header {
-    padding: 1rem 0;
-  }
-}
-
 .banner {
   position: relative;
   padding: 0.25em 1.5em;
