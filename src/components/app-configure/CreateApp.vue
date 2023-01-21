@@ -40,10 +40,13 @@ async function handleCreateApp() {
     loaderStore.showLoader('Creating App...')
     hasAppNameError.value = false
     const app = (
-      await createApp({
-        name: appName.value,
-        region: RegionMapping[selectedRegion.value.value],
-      })
+      await createApp(
+        {
+          name: appName.value,
+          region: RegionMapping[selectedRegion.value.value],
+        },
+        'testnet'
+      )
     ).data.app
 
     appsStore.addApp(app.ID, {
@@ -73,7 +76,7 @@ async function handleCreateApp() {
           websiteDomain: app.wallet_domain,
           selectedTheme: app.theme || 'dark',
         },
-        redirectUri: `${api.verify}/${app.ID}/`,
+        redirectUri: `${api.verify.testnet}/${app.ID}/`,
       },
     })
     createTransactionSigner(app.address)

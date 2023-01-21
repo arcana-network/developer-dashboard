@@ -103,6 +103,9 @@ const useAppsStore = defineStore('apps', {
       return (id: AppId) =>
         state.appsById[id].auth.wallet.walletTypeInGateway === WalletMode.UI
     },
+    appNetwork: (): Network => {
+      return 'testnet'
+    },
   },
   actions: {
     updateApp(appId: AppId, appDetails: App) {
@@ -171,7 +174,7 @@ const useAppsStore = defineStore('apps', {
             websiteDomain: app.wallet_domain,
             selectedTheme: app.theme || 'dark',
           },
-          redirectUri: `${api.verify}/${app.address}/`,
+          redirectUri: `${api.verify.testnet}/${app.address}/`,
           social: socialAuth,
         },
         access: {
