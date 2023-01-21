@@ -66,7 +66,7 @@ function getImageUrl(appId: AppId) {
 
 onBeforeMount(async () => {
   accountStatus.value = (await getAccountStatus()).data
-  const authOverview = (await getAuthOverview()).data
+  const authOverview = (await getAuthOverview('mainnet')).data
 
   const mausUsed = authOverview.mau
   estimatedCost.value = authOverview.bill
