@@ -19,12 +19,12 @@ const sentry = {
 
 const api = {
   gateway: {
-    mainnet: import.meta.env.VITE_ARCANA_GATEWAY_TESTNET_URL,
-    testnet: import.meta.env.VITE_ARCANA_GATEWAY_MAINNET_URL,
+    mainnet: import.meta.env.VITE_ARCANA_GATEWAY_MAINNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_GATEWAY_TESTNET_URL,
   },
   verify: {
-    mainnet: import.meta.env.VITE_ARCANA_VERIFY_TESTNET_URL,
-    testnet: import.meta.env.VITE_ARCANA_VERIFY_MAINNET_URL,
+    mainnet: import.meta.env.VITE_ARCANA_VERIFY_MAINNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_VERIFY_TESTNET_URL,
   },
 }
 
