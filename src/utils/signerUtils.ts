@@ -66,7 +66,7 @@ function hashJson(data: any) {
 
 async function generateLoginInfo(network: Network) {
   const provider = window.arcana.provider
-  const gateway = getEnvApi(undefined, network)
+  const gateway = api.gateway[network]
   return await window.transactionSigner.generateLoginInfo({
     provider,
     gateway,
