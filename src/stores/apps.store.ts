@@ -50,6 +50,8 @@ type App = {
   totalUsers: number
   createdAt: string
   region: string
+  network: Network
+  global_id: AppId
   logos: {
     dark: {
       horizontal?: string
@@ -110,18 +112,30 @@ const useAppsStore = defineStore('apps', {
     appNetwork: (): Network => {
       return 'testnet'
     },
+    getMainnetApp: (state) => {
+      const mainnetAppsList = Object.values(state.mainnetApps)
+      return (id: AppId) =>
+        mainnetAppsList.find((app) => app.global_id === id) || null
+    },
   },
   actions: {
-    updateApp(appId: AppId, appDetails: App) {
-      this.appsById[appId] = appDetails
+    updateApp(appId: AppId, appDetails: App, network: Network) {
+      if (network === 'mainnet') this.mainnetApps[appId] = appDetails
+      else this.appsById[appId] = appDetails
     },
-    addApp(appId: AppId, appDetails: App) {
-      this.appIds.unshift(appId)
-      this.appsById[appId] = { ...appDetails }
+    addApp(appId: AppId, appDetails: App, network: Network) {
+      if (network === 'mainnet') this.mainnetApps[appId] = appDetails
+      else {
+        this.appIds.unshift(appId)
+        this.appsById[appId] = { ...appDetails }
+      }
     },
-    deleteApp(appId: AppId) {
-      this.appIds = this.appIds.filter((id) => id !== appId)
-      delete this.appsById[appId]
+    deleteApp(appId: AppId, network: Network) {
+      if (network === 'mainnet') delete this.mainnetApps[appId]
+      else {
+        this.appIds = this.appIds.filter((id) => id !== appId)
+        delete this.appsById[appId]
+      }
     },
     async fetchAndStoreAllApps(network: Network) {
       if (network === 'testnet') this.appIds = []
@@ -138,10 +152,17 @@ const useAppsStore = defineStore('apps', {
           totalUsers: app.total_users,
           createdAt: app.created_at,
         }
-        if (network === 'mainnet') this.mainnetApps[appInfo.id] = appInfo
-        else {
+        if (network === 'mainnet') {
+          this.mainnetApps[appInfo.id] = {
+            ...appInfo,
+            network,
+          }
+        } else {
           this.appIds.push(app.id)
-          this.appsById[app.id] = appInfo
+          this.appsById[app.id] = {
+            ...appInfo,
+            network,
+          }
         }
         appConfigPromises.push(this.fetchAndStoreAppConfig(app.id, network))
       })
