@@ -1,5 +1,6 @@
 import { getConfig } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
+import type { Network } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore()
@@ -63,9 +64,9 @@ function hashJson(data: any) {
   return window.transactionSigner.hashJson(data)
 }
 
-async function generateLoginInfo() {
+async function generateLoginInfo(network: Network) {
   const provider = window.arcana.provider
-  const gateway = getEnvApi()
+  const gateway = getEnvApi(undefined, network)
   return await window.transactionSigner.generateLoginInfo({
     provider,
     gateway,
