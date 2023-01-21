@@ -22,7 +22,10 @@ const api = {
     mainnet: import.meta.env.VITE_ARCANA_GATEWAY_TESTNET_URL,
     testnet: import.meta.env.VITE_ARCANA_GATEWAY_MAINNET_URL,
   },
-  verify: import.meta.env.VITE_ARCANA_VERIFY_URL,
+  verify: {
+    mainnet: import.meta.env.VITE_ARCANA_VERIFY_TESTNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_VERIFY_MAINNET_URL,
+  },
 }
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
