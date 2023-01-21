@@ -16,6 +16,7 @@ import { useAuthStore } from '@/stores/auth.store'
 import {
   ChainMapping,
   WalletMode,
+  type Network,
   type SocialAuthVerifier,
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
@@ -58,12 +59,16 @@ type AppConfig = {
 }
 
 const gatewayAuthorizedInstance = axios.create()
-gatewayAuthorizedInstance.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
-    config.headers.Authorization = `Bearer ${authStore.accessToken}`
-    return config
-  }
-)
+
+function getGatewayAuthorizedInstance(network: Network) {
+  gatewayAuthorizedInstance.interceptors.request.use(
+    (config: AxiosRequestConfig) => {
+      config.headers.Authorization = `Bearer ${authStore.accessToken[network]}`
+      return config
+    }
+  )
+  return gatewayAuthorizedInstance
+}
 
 type CreateAppRequestBody = {
   name: string
@@ -91,32 +96,41 @@ type AppsListResponse = {
 }
 
 function createApp(
-  config: CreateAppRequestBody
+  config: CreateAppRequestBody,
+  network: Network
 ): Promise<AxiosResponse<CreateAppResponse>> {
   const defaultAppConfig = {
     name: config.name,
     region: config.region,
   }
-  return gatewayAuthorizedInstance.post(
-    `${getEnvApi('v2')}/app/`,
+  return getGatewayAuthorizedInstance(network).post(
+    `${getEnvApi('v2', network)}/app/`,
     defaultAppConfig
   )
 }
 
-function updateApp(appId: AppId, fieldsToUpdate: Partial<AppState>) {
+function updateApp(
+  appId: AppId,
+  fieldsToUpdate: Partial<AppState>,
+  network: Network
+) {
   const app = appsStore.app(appId)
   const updatedAppConfig = { ...app, ...fieldsToUpdate }
   const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
-  return gatewayAuthorizedInstance.patch(
-    `${getEnvApi('v2')}/app/?id=${appId}`,
+  return getGatewayAuthorizedInstance(network).patch(
+    `${getEnvApi('v2', network)}/app/?id=${appId}`,
     appConfigRequestBody
   )
 }
 
-function deleteCred(appId: AppId, authToRemove: SocialAuthState[]) {
+function deleteCred(
+  appId: AppId,
+  authToRemove: SocialAuthState[],
+  network: Network
+) {
   const deleteCredPromises = authToRemove.map((auth) => {
-    return gatewayAuthorizedInstance.delete(
-      `${getEnvApi('v2')}/cred/?id=${appId}&verifier=${auth.verifier}`
+    return getGatewayAuthorizedInstance(network).delete(
+      `${getEnvApi('v2', network)}/cred/?id=${appId}&verifier=${auth.verifier}`
     )
   })
   return Promise.all(deleteCredPromises)
@@ -149,12 +163,21 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
   }
 }
 
-function fetchAllApps(): Promise<AxiosResponse<AppsListResponse[]>> {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/user-app/`)
+function fetchAllApps(
+  network: Network
+): Promise<AxiosResponse<AppsListResponse[]>> {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/user-app/`
+  )
 }
 
-function fetchApp(appId: AppId): Promise<AxiosResponse<AppConfig>> {
-  return gatewayAuthorizedInstance.get(`${getEnvApi('v2')}/app/?id=${appId}`)
+function fetchApp(
+  appId: AppId,
+  network: Network
+): Promise<AxiosResponse<AppConfig>> {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi('v2', network)}/app/?id=${appId}`
+  )
 }
 
 type StatsResponse = {
@@ -175,22 +198,35 @@ type StatsResponse = {
   bandwidth: number
 }
 
-function fetchStats(appId: AppId): Promise<AxiosResponse<StatsResponse>> {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/overview/?id=${appId}`)
-}
-
-function fetchPeriodicUsage(appId: AppId, period: Duration = 'month') {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/app-usage/?id=${appId}&period=${period}`
+function fetchStats(
+  appId: AppId,
+  network: Network
+): Promise<AxiosResponse<StatsResponse>> {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/overview/?id=${appId}`
   )
 }
 
-function deleteApp(appId: AppId) {
-  return gatewayAuthorizedInstance.delete(`${getEnvApi('v2')}/app/?id=${appId}`)
+function fetchPeriodicUsage(
+  appId: AppId,
+  period: Duration = 'month',
+  network: Network
+) {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/app-usage/?id=${appId}&period=${period}`
+  )
+}
+
+function deleteApp(appId: AppId, network: Network) {
+  return getGatewayAuthorizedInstance(network).delete(
+    `${getEnvApi('v2', 'mainnet')}/app/?id=${appId}`
+  )
 }
 
 async function fetchAndStoreConfig() {
-  const config = (await axios.get(`${getEnvApi()}/get-config/`)).data
+  const config = (
+    await axios.get(`${getEnvApi(undefined, 'mainnet')}/get-config/`)
+  ).data
   forwarder = config?.Forwarder
   rpcUrl = config?.RPC_URL
 }
@@ -203,7 +239,9 @@ function getConfig() {
 }
 
 function fetchProfile() {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/profile/`)
+  return getGatewayAuthorizedInstance('mainnet').get(
+    `${getEnvApi(undefined, 'mainnet')}/profile/`
+  )
 }
 
 type OrganizationOptions = {
@@ -213,61 +251,91 @@ type OrganizationOptions = {
 }
 
 function updateOrganization({ name, country, size }: OrganizationOptions) {
-  return gatewayAuthorizedInstance.patch(`${getEnvApi('v2')}/organization/`, {
-    name,
-    country,
-    size,
-  })
-}
-
-function fetchAllUsers(appId: AppId, offset: number, count: number) {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-details/?id=${appId}&offset=${offset}&count=${count}`
+  return getGatewayAuthorizedInstance('mainnet').patch(
+    `${getEnvApi('v2', 'mainnet')}/organization/`,
+    {
+      name,
+      country,
+      size,
+    }
   )
 }
 
-function searchUsers(appId: AppId, address: string) {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
+function fetchAllUsers(
+  appId: AppId,
+  offset: number,
+  count: number,
+  network: Network
+) {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(
+      undefined,
+      network
+    )}/user-details/?id=${appId}&offset=${offset}&count=${count}`
   )
 }
 
-function fetchAllUserTransactions(appId: AppId, address: string) {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/user-transactions/?id=${appId}&address=${address}`
+function searchUsers(appId: AppId, address: string, network: Network) {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(
+      undefined,
+      network
+    )}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchMonthlyUsers(appId: AppId) {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/no-of-users/?id=${appId}`
+function fetchAllUserTransactions(
+  appId: AppId,
+  address: string,
+  network: Network
+) {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(
+      undefined,
+      network
+    )}/user-transactions/?id=${appId}&address=${address}`
   )
 }
 
-function fetchDau(appAddress: string) {
+function fetchMonthlyUsers(appId: AppId, network: Network) {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/no-of-users/?id=${appId}`
+  )
+}
+
+function fetchDau(appAddress: string, network: Network) {
   const api = `/get-dau/?app=${appAddress}`
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/${api}`
+  )
 }
 
-function fetchMau(appAddress: string) {
+function fetchMau(appAddress: string, network: Network) {
   const api = `/get-mau/?app=${appAddress}`
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/${api}`
+  )
 }
 
-function getNonce(address: string) {
-  return axios.get(`${getEnvApi()}/get-nonce/?address=${address}`)
+function getNonce(address: string, network: Network) {
+  return axios.get(
+    `${getEnvApi(undefined, network)}/get-nonce/?address=${address}`
+  )
 }
 
-function loginUser({
-  signature,
-  email,
-  address,
-}: {
-  signature: string
-  email: string
-  address: string
-}) {
-  return axios.post(`${getEnvApi()}/login/`, {
+function loginUser(
+  {
+    signature,
+    email,
+    address,
+  }: {
+    signature: string
+    email: string
+    address: string
+  },
+  network: Network
+) {
+  return axios.post(`${getEnvApi(undefined, network)}/login/`, {
     signature,
     email,
     address,
@@ -277,9 +345,10 @@ function loginUser({
 function getThemeLogo(
   appId: AppId,
   mode: 'dark' | 'light',
-  orientation: 'horizontal' | 'vertical'
+  orientation: 'horizontal' | 'vertical',
+  network: Network
 ) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${appId}/logo`
+  const logoFetchUrl = `${getEnvApi('v2', network)}/app/${appId}/logo`
   return {
     mode,
     orientation,
@@ -295,8 +364,8 @@ function uploadThemeLogo(
 ) {
   const formData: FormData = new FormData()
   formData.append('file', file)
-  return gatewayAuthorizedInstance.put(
-    `${getEnvApi('v2')}/app/${appId}/logo`,
+  return getGatewayAuthorizedInstance(appsStore.appNetwork).put(
+    `${getEnvApi('v2', appsStore.appNetwork)}/app/${appId}/logo`,
     formData,
     {
       params: { type: mode, orientation },
@@ -309,8 +378,8 @@ function removeThemeLogo(
   mode: 'dark' | 'light',
   orientation?: 'horizontal' | 'vertical'
 ) {
-  return gatewayAuthorizedInstance.delete(
-    `${getEnvApi('v2')}/app/${appId}/logo`,
+  return getGatewayAuthorizedInstance(appsStore.appNetwork).delete(
+    `${getEnvApi('v2', appsStore.appNetwork)}/app/${appId}/logo`,
     {
       params: { type: mode, orientation },
     }
@@ -320,10 +389,11 @@ function removeThemeLogo(
 type DelegateResponse = Omit<Delegate, 'createdDate'> & { created_at: string }
 
 async function fetchAppDelegates(
-  appId: AppId
+  appId: AppId,
+  network: Network
 ): Promise<AxiosResponse<DelegateResponse[] | null>> {
-  return gatewayAuthorizedInstance.get(
-    `${getEnvApi()}/delegates/?app_id=${appId}`
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/delegates/?app_id=${appId}`
   )
 }
 
@@ -341,40 +411,56 @@ type CreateDelegateResponse = Delegate & {
 
 async function createDelegate(
   appId: AppId,
-  data: CreateDelegateRequest
+  data: CreateDelegateRequest,
+  network: Network
 ): Promise<AxiosResponse<CreateDelegateResponse>> {
-  return gatewayAuthorizedInstance.post(`${getEnvApi()}/delegates/`, {
-    appId,
-    ...data,
-  })
+  return getGatewayAuthorizedInstance(network).post(
+    `${getEnvApi(undefined, network)}/delegates/`,
+    {
+      appId,
+      ...data,
+    }
+  )
 }
 
 function listDelegateKeys(
-  appAddress: string
+  appAddress: string,
+  network: Network
 ): Promise<AxiosResponse<DelegateKey[]>> {
-  return gatewayAuthorizedInstance.get(`${getEnvApi()}/keys/?app=${appAddress}`)
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/keys/?app=${appAddress}`
+  )
 }
 
 function editDelegate(
   appId: AppId,
-  data: CreateDelegateRequest
+  data: CreateDelegateRequest,
+  network: Network
 ): Promise<AxiosResponse<CreateDelegateResponse>> {
-  return gatewayAuthorizedInstance.patch(`${getEnvApi()}/delegates/`, {
-    appId,
-    ...data,
-  })
+  return getGatewayAuthorizedInstance(network).patch(
+    `${getEnvApi(undefined, network)}/delegates/`,
+    {
+      appId,
+      ...data,
+    }
+  )
 }
 
-function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
-  return gatewayAuthorizedInstance.delete(
-    `${getEnvApi()}/delegates/?id=${delegateId}`
+function deleteDelegate(
+  delegateId: DelegateId,
+  network: Network
+): Promise<AxiosResponse<any>> {
+  return getGatewayAuthorizedInstance(network).delete(
+    `${getEnvApi(undefined, network)}/delegates/?id=${delegateId}`
   )
 }
 
 type AccountStatus = 'active' | 'overlimit' | 'overdue'
 
-function getAuthOverview(): Promise<AxiosResponse<any>> {
-  return gatewayAuthorizedInstance.delete(`${getEnvApi()}/auth-overview/`)
+function getAuthOverview(network: Network): Promise<AxiosResponse<any>> {
+  return getGatewayAuthorizedInstance(network).get(
+    `${getEnvApi(undefined, network)}/auth-overview/`
+  )
 }
 
 function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
