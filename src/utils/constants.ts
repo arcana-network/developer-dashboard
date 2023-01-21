@@ -21,7 +21,10 @@ const sentry = {
 }
 
 const api = {
-  gateway: import.meta.env.VITE_ARCANA_GATEWAY_URL,
+  gateway: {
+    mainnet: import.meta.env.VITE_ARCANA_GATEWAY_TESTNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_GATEWAY_MAINNET_URL,
+  },
   verify: import.meta.env.VITE_ARCANA_VERIFY_URL,
 }
 
