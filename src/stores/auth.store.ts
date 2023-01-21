@@ -1,8 +1,13 @@
 import { defineStore } from 'pinia'
 
+import type { Network } from '@/utils/constants'
+
 interface AuthState {
   email: string
-  accessToken: string
+  accessToken: {
+    mainnet: string
+    testnet: string
+  }
   name: string
   walletAddress: string
 }
@@ -10,13 +15,16 @@ interface AuthState {
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     email: '',
-    accessToken: '',
+    accessToken: {
+      mainnet: '',
+      testnet: '',
+    },
     name: '',
     walletAddress: '',
   }),
   actions: {
-    updateAccessToken(accessToken: string) {
-      this.accessToken = accessToken
+    updateAccessToken(accessToken: string, network: Network) {
+      this.accessToken[network] = accessToken
     },
     updateWalletAddress(walletAddress: string) {
       this.walletAddress = walletAddress
