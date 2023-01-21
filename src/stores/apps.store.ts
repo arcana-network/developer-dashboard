@@ -6,7 +6,7 @@ import {
   getThemeLogo,
   fetchAppDelegates,
 } from '@/services/gateway.service'
-import type { Chain, SocialAuthVerifier } from '@/utils/constants'
+import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
 import { ChainMapping, WalletMode, api } from '@/utils/constants'
 
 type UserLimitUnit = 'MB' | 'GB'
@@ -118,7 +118,7 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAllApps() {
       this.appIds = []
-      const apps = (await fetchAllApps()).data || []
+      const apps = (await fetchAllApps('testnet')).data || []
       apps.sort(
         (app1, app2) =>
           Date.parse(app2.created_at) - Date.parse(app1.created_at)
@@ -137,8 +137,9 @@ const useAppsStore = defineStore('apps', {
       await Promise.all(appConfigPromises)
     },
     async fetchAndStoreAppConfig(appId: AppId) {
-      const app = (await fetchApp(appId)).data
-      const appDelegates = (await fetchAppDelegates(appId)).data || []
+      const app = (await fetchApp(appId, 'testnet')).data
+      const appDelegates =
+        (await fetchAppDelegates(appId, 'testnet')).data || []
       const socialAuth: SocialAuthState[] = []
       if (app.cred?.length) {
         app.cred.forEach((authDetail) => {
@@ -182,18 +183,18 @@ const useAppsStore = defineStore('apps', {
         logos: {
           dark: {
             horizontal: app.logo?.dark_horizontal
-              ? getThemeLogo(appId, 'dark', 'horizontal').url
+              ? getThemeLogo(appId, 'dark', 'horizontal', 'testnet').url
               : '',
             vertical: app.logo?.dark_vertical
-              ? getThemeLogo(appId, 'dark', 'vertical').url
+              ? getThemeLogo(appId, 'dark', 'vertical', 'testnet').url
               : '',
           },
           light: {
             horizontal: app.logo?.light_horizontal
-              ? getThemeLogo(appId, 'light', 'horizontal').url
+              ? getThemeLogo(appId, 'light', 'horizontal', 'testnet').url
               : '',
             vertical: app.logo?.light_vertical
-              ? getThemeLogo(appId, 'light', 'vertical').url
+              ? getThemeLogo(appId, 'light', 'vertical', 'testnet').url
               : '',
           },
         },
