@@ -81,12 +81,16 @@ type AppState = {
   appsById: {
     [key: AppId]: App
   }
+  mainnetApps: {
+    [key: AppId]: App
+  }
 }
 
 const useAppsStore = defineStore('apps', {
   state: (): AppState => ({
     appIds: [],
     appsById: {},
+    mainnetApps: {},
   }),
   getters: {
     apps: (state) => {
@@ -119,30 +123,33 @@ const useAppsStore = defineStore('apps', {
       this.appIds = this.appIds.filter((id) => id !== appId)
       delete this.appsById[appId]
     },
-    async fetchAndStoreAllApps() {
-      this.appIds = []
-      const apps = (await fetchAllApps('testnet')).data || []
+    async fetchAndStoreAllApps(network: Network) {
+      if (network === 'testnet') this.appIds = []
+      const apps = (await fetchAllApps(network)).data || []
       apps.sort(
         (app1, app2) =>
           Date.parse(app2.created_at) - Date.parse(app1.created_at)
       )
       const appConfigPromises: Promise<void>[] = []
       apps.forEach((app) => {
-        this.appIds.push(app.id)
-        this.appsById[app.id] = {
+        const appInfo = {
           id: app.id,
           name: app.name,
           totalUsers: app.total_users,
           createdAt: app.created_at,
         }
-        appConfigPromises.push(this.fetchAndStoreAppConfig(app.id))
+        if (network === 'mainnet') this.mainnetApps[appInfo.id] = appInfo
+        else {
+          this.appIds.push(app.id)
+          this.appsById[app.id] = appInfo
+        }
+        appConfigPromises.push(this.fetchAndStoreAppConfig(app.id, network))
       })
       await Promise.all(appConfigPromises)
     },
-    async fetchAndStoreAppConfig(appId: AppId) {
-      const app = (await fetchApp(appId, 'testnet')).data
-      const appDelegates =
-        (await fetchAppDelegates(appId, 'testnet')).data || []
+    async fetchAndStoreAppConfig(appId: AppId, network: Network) {
+      const app = (await fetchApp(appId, network)).data
+      const appDelegates = (await fetchAppDelegates(appId, network)).data || []
       const socialAuth: SocialAuthState[] = []
       if (app.cred?.length) {
         app.cred.forEach((authDetail) => {
@@ -162,8 +169,7 @@ const useAppsStore = defineStore('apps', {
         }
         return delegateState
       })
-      this.appsById[appId] = {
-        ...this.appsById[appId],
+      const configInfo = {
         id: appId,
         address: app.address,
         name: app.name,
@@ -186,21 +192,32 @@ const useAppsStore = defineStore('apps', {
         logos: {
           dark: {
             horizontal: app.logo?.dark_horizontal
-              ? getThemeLogo(appId, 'dark', 'horizontal', 'testnet').url
+              ? getThemeLogo(appId, 'dark', 'horizontal', network).url
               : '',
             vertical: app.logo?.dark_vertical
-              ? getThemeLogo(appId, 'dark', 'vertical', 'testnet').url
+              ? getThemeLogo(appId, 'dark', 'vertical', network).url
               : '',
           },
           light: {
             horizontal: app.logo?.light_horizontal
-              ? getThemeLogo(appId, 'light', 'horizontal', 'testnet').url
+              ? getThemeLogo(appId, 'light', 'horizontal', network).url
               : '',
             vertical: app.logo?.light_vertical
-              ? getThemeLogo(appId, 'light', 'vertical', 'testnet').url
+              ? getThemeLogo(appId, 'light', 'vertical', network).url
               : '',
           },
         },
+      }
+      if (network === 'mainnet') {
+        this.mainnetApps[appId] = {
+          ...this.mainnetApps[appId],
+          ...configInfo,
+        }
+      } else {
+        this.appsById[appId] = {
+          ...this.appsById[appId],
+          ...configInfo,
+        }
       }
     },
   },

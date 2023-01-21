@@ -42,18 +42,24 @@ async function launchLogin(type: string) {
 }
 
 async function fetchAndStoreDetails() {
-  loaderStore.showLoader('Fetching user info...')
-  await fetchAndStoreUserInfo()
-  await appsStore.fetchAndStoreAllApps()
-  if (route.params.redirectTo) {
-    router.push({
-      name: route.params.redirectTo as RouteRecordName,
-      ...route.params,
-    })
-  } else {
-    router.push({ name: 'ManageApps' })
+  try {
+    loaderStore.showLoader('Fetching user info...')
+    await fetchAndStoreUserInfo()
+    await appsStore.fetchAndStoreAllApps('testnet')
+    await appsStore.fetchAndStoreAllApps('mainnet')
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    if (route.params.redirectTo) {
+      router.push({
+        name: route.params.redirectTo as RouteRecordName,
+        ...route.params,
+      })
+    } else {
+      router.push({ name: 'ManageApps' })
+    }
+    loaderStore.hideLoader()
   }
-  loaderStore.hideLoader()
 }
 
 async function fetchAndStoreUserInfo() {
