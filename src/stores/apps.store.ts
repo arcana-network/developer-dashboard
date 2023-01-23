@@ -100,7 +100,7 @@ const useAppsStore = defineStore('apps', {
     },
     app: (state) => {
       return (id: AppId) => {
-        return state.mainnetApps[id] || state.appsById[id]
+        return state.mainnetApps[id] || state.appsById[id] || null
       }
     },
     hasUiMode: (state) => {
@@ -118,6 +118,11 @@ const useAppsStore = defineStore('apps', {
       const mainnetAppsList = Object.values(state.mainnetApps)
       return (id: AppId) =>
         mainnetAppsList.find((app) => app.global_id === id) || null
+    },
+    getTestnetApp: (state) => {
+      const testnetAppsList = Object.values(state.appsById)
+      return (id: AppId) =>
+        testnetAppsList.find((app) => app.global_id === id) || null
     },
   },
   actions: {
@@ -153,6 +158,7 @@ const useAppsStore = defineStore('apps', {
           name: app.name,
           totalUsers: app.total_users,
           createdAt: app.created_at,
+          global_id: app.global_id,
         }
         if (network === 'mainnet') {
           this.mainnetApps[appInfo.id] = {
@@ -172,7 +178,6 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAppConfig(appId: AppId, network: Network) {
       const app = (await fetchApp(appId, network)).data
-      console.log({ app }, network)
       const appDelegates = (await fetchAppDelegates(appId, network)).data || []
       const socialAuth: SocialAuthState[] = []
       if (app.cred?.length) {
