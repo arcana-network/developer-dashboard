@@ -96,7 +96,8 @@ async function handleFileRemove(
 ) {
   themeLogos[mode][orientation].isLoading = true
   try {
-    await removeThemeLogo(appId, mode, orientation)
+    const app = appsStore.app(appId)
+    await removeThemeLogo(appId, mode, app.network, orientation)
     toast.success('Logo removed successfully')
     themeLogos[mode][orientation].logo = ''
   } catch (e) {
