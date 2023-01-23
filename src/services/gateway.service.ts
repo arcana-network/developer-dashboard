@@ -347,7 +347,8 @@ function loginUser(
   },
   network: Network
 ) {
-  return getGatewayInstance(network).post(`${getEnvApi()}/login/`, {
+  const instance = getGatewayInstance(network)
+  return instance.post(`${getEnvApi()}/login/`, {
     signature,
     email,
     address,
