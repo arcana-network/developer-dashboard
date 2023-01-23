@@ -30,7 +30,7 @@ function hasSameAppName() {
 async function handleSave() {
   try {
     loaderStore.showLoader('Saving app name...')
-    await updateApp(appId, { name: appName.value })
+    await updateApp(appId, { name: appName.value }, app.network)
     toast.success('Saved app name')
     loaderStore.showLoader('Saving app config in smart contract...')
     await setAppConfig(app.name, app.auth.social)

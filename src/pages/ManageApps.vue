@@ -91,7 +91,7 @@ appsStore.$subscribe(() => {
 async function handleAppNameSave(app: AppData) {
   if (app.name.trim().length) {
     app.editState = false
-    await updateApp(app.id, { name: app.name })
+    await updateApp(app.id, { name: app.name }, app.network)
     toast.success('App name saved')
   } else {
     toast.error('App name is required')

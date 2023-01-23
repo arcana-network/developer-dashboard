@@ -37,8 +37,8 @@ async function handleAppDeletion() {
   loaderStore.showLoader('Deleting App...')
   try {
     const appId = props.appId as number
-    await deleteApp(appId)
-    appsStore.deleteApp(appId)
+    await deleteApp(appId, 'testnet')
+    appsStore.deleteApp(appId, 'testnet')
     toast.success('App deleted successfully')
     router.push({ name: 'ManageApps' })
   } catch (e) {

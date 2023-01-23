@@ -79,7 +79,7 @@ async function handleFileChange(
     )}/app/${appId}/logo?type=${mode}&orientation=${orientation}`
     themeLogos[mode][orientation].logo = logoUrl
     currentApp.logos[mode][orientation] = logoUrl
-    appsStore.updateApp(appId, currentApp)
+    appsStore.updateApp(appId, currentApp, currentApp.network)
   } catch (e) {
     console.error(e)
     toast.error("Couldn't upload logo. Please try again or contact support")

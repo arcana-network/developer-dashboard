@@ -109,11 +109,11 @@ async function fetchActiveUsers() {
     let activeUsers = []
     let dataTemplate = {}
     if (durationSelected.value === 'day') {
-      const { data } = await fetchDau(selectedApp.address)
+      const { data } = await fetchDau(selectedApp.address, selectedApp.network)
       activeUsers = data
       dataTemplate = initialDailyData
     } else if (durationSelected.value === 'month') {
-      const { data } = await fetchMau(selectedApp.address)
+      const { data } = await fetchMau(selectedApp.address, selectedApp.network)
       activeUsers = data
       dataTemplate = initialMonthlyData
     }
