@@ -10,11 +10,23 @@ import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppsStore, type AppId } from '@/stores/apps.store'
+import {
+  createApp,
+  updateApp,
+  type AppConfig as AppResponse,
+} from '@/services/gateway.service'
+import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { useClickOutside } from '@/use/clickOutside'
-import { HelpItems, ProfileItems } from '@/utils/constants'
+import {
+  HelpItems,
+  ProfileItems,
+  type Network,
+  regions,
+  RegionMapping,
+} from '@/utils/constants'
+import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const NetworkOptions = [
@@ -41,6 +53,7 @@ const mobile_menu = ref(null)
 const { logout } = useArcanaAuth()
 const route = useRoute()
 const currentNetwork = ref(NetworkOptions[1])
+const selectedRegion = ref(regions[0])
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -71,9 +84,9 @@ function switchTab(tab: string) {
 onBeforeMount(async () => {
   const appId = Number(route.params.appId)
   loaderStore.showLoader('Fetching app config')
-  await appsStore.fetchAndStoreAppConfig(appId)
+  await appsStore.fetchAndStoreAppConfig(appId, 'testnet')
   const address = appsStore.app(appId).address
-  createTransactionSigner(address)
+  createTransactionSigner(address, 'testnet')
   loaderStore.hideLoader()
 })
 
@@ -100,6 +113,63 @@ function toggleMobileMenu() {
   showProfileMenu.value = false
   showHelpMenu.value = false
   showMobileMenu.value = !showMobileMenu.value
+}
+
+async function createMainnetApp(app: AppConfig): Promise<AppResponse | null> {
+  try {
+    const mainnetApp = (
+      await createApp(
+        {
+          name: app.name,
+          region: RegionMapping[selectedRegion.value.value],
+        },
+        'mainnet'
+      )
+    ).data.app
+    return mainnetApp
+  } catch (e) {
+    throw new Error(e)
+  }
+}
+
+async function handleCreateMainnetApp(appId: AppId) {
+  const app = appsStore.app(appId)
+  const mainnetApp = await createMainnetApp(app)
+  const mainnetAppConfig = createAppConfig(mainnetApp, 'mainnet')
+  appsStore.addApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
+
+  const updatedMainnetApp = (
+    await updateApp(mainnetApp?.ID, { global_id: app.id }, 'mainnet')
+  ).data.app
+  mainnetAppConfig['global_id'] = updatedMainnetApp.global_id
+
+  appsStore.updateApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
+
+  const updatedTestnetApp = (
+    await updateApp(app.id, { global_id: mainnetApp?.ID }, 'testnet')
+  ).data.app
+
+  app.global_id = updatedTestnetApp.global_id
+  appsStore.updateApp(app.id, app, 'testnet')
+
+  router.push({ name: 'Dashboard', params: { appId: mainnetApp?.ID } })
+}
+
+function onNetworkSwitch(networkOption) {
+  const appId = Number(route.params.appId)
+  const network: Network = networkOption.value
+  if (network === 'mainnet') {
+    const mainnetApp = appsStore.getMainnetApp(appId)
+    console.log({ mainnetApp })
+    if (mainnetApp) {
+      router.push({
+        params: { appId: mainnetApp?.id },
+        name: 'Dashboard',
+      })
+    } else {
+      handleCreateMainnetApp(appId)
+    }
+  }
 }
 </script>
 
@@ -204,6 +274,7 @@ function toggleMobileMenu() {
           :options="NetworkOptions"
           display-field="label"
           class="app-details__network-dropdown"
+          @change="(_, option) => onNetworkSwitch(option)"
         />
         <RouterView />
         <AppFooter class="footer-bleed" />
