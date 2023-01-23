@@ -88,6 +88,7 @@ type AppsListResponse = {
   consumed_bandwidth: number
   estimated_cost: number
   created_at: string
+  mau: number
 }
 
 function createApp(
@@ -244,12 +245,21 @@ function fetchMonthlyUsers(appId: AppId) {
   )
 }
 
-function fetchDau(appAddress: string) {
+type ActiveUsersChartData = {
+  Date: string
+  Value: number
+}
+
+function fetchDau(
+  appAddress: string
+): Promise<AxiosResponse<ActiveUsersChartData[]>> {
   const api = `/get-dau/?app=${appAddress}`
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
 }
 
-function fetchMau(appAddress: string) {
+function fetchMau(
+  appAddress: string
+): Promise<AxiosResponse<ActiveUsersChartData[]>> {
   const api = `/get-mau/?app=${appAddress}`
   return gatewayAuthorizedInstance.get(`${getEnvApi()}/${api}`)
 }
@@ -374,7 +384,7 @@ function deleteDelegate(delegateId: DelegateId): Promise<AxiosResponse<any>> {
 type AccountStatus = 'active' | 'overlimit' | 'overdue'
 
 function getAuthOverview(): Promise<AxiosResponse<any>> {
-  return gatewayAuthorizedInstance.delete(`${getEnvApi()}/auth-overview/`)
+  return gatewayAuthorizedInstance.get(`${getEnvApi()}/auth-overview/`)
 }
 
 function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
@@ -437,4 +447,5 @@ export {
   type Duration,
   type AppConfigRequiredProps,
   type AccountStatus,
+  type ActiveUsersChartData,
 }

@@ -17,7 +17,6 @@ function useArcanaAuth() {
       authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
         network: ARCANA_AUTH_NETWORK,
         debug: true,
-        alwaysVisible: false,
       })
       await authInstance.init()
     }

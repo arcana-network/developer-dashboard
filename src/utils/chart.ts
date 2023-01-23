@@ -34,7 +34,7 @@ function getInitialUsersChartConfig(
       labels,
       datasets: [
         {
-          label: 'No of users',
+          label: 'No of active users',
           data,
           borderColor: 'white',
           borderWidth: 4,

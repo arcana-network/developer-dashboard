@@ -129,7 +129,7 @@ const useAppsStore = defineStore('apps', {
         this.appsById[app.id] = {
           id: app.id,
           name: app.name,
-          totalUsers: app.total_users,
+          totalUsers: app.mau,
           createdAt: app.created_at,
         }
         appConfigPromises.push(this.fetchAndStoreAppConfig(app.id))
