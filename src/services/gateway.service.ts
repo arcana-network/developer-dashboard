@@ -86,7 +86,7 @@ type CreateAppResponse = {
   txHash: string
 }
 
-type AppConfigRequiredProps = Omit<AppConfig, 'ID' | 'logo'>
+type AppConfigRequiredProps = Omit<AppConfig, 'ID'>
 
 type AppsListResponse = {
   id: AppId
@@ -168,6 +168,16 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     theme: wallet.selectedTheme,
     wallet_domain: wallet.websiteDomain,
     wallet_type,
+    logo: {
+      dark: {
+        horizontal: app.logos.dark.horizontal,
+        vertical: app.logos.dark.vertical,
+      },
+      light: {
+        horizontal: app.logos.light.horizontal,
+        vertical: app.logos.light.vertical,
+      },
+    },
   }
 }
 
