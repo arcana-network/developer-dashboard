@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, watch, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
@@ -10,6 +10,7 @@ import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import SwitchToMainnetConfirmation from '@/components/SwitchToMainnetConfirmation.vue'
 import {
   createApp,
   updateApp,
@@ -54,6 +55,7 @@ const { logout } = useArcanaAuth()
 const route = useRoute()
 const currentNetwork = ref(NetworkOptions[1])
 const selectedRegion = ref(regions[0])
+const showMainnetConfirmation = ref(false)
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -83,10 +85,11 @@ function switchTab(tab: string) {
 
 onBeforeMount(async () => {
   const appId = Number(route.params.appId)
+  const app = appsStore.app(appId)
   loaderStore.showLoader('Fetching app config')
-  await appsStore.fetchAndStoreAppConfig(appId, 'testnet')
+  await appsStore.fetchAndStoreAppConfig(appId, app.network)
   const address = appsStore.app(appId).address
-  createTransactionSigner(address, 'testnet')
+  createTransactionSigner(address, app.network)
   loaderStore.hideLoader()
 })
 
@@ -132,27 +135,40 @@ async function createMainnetApp(app: AppConfig): Promise<AppResponse | null> {
   }
 }
 
-async function handleCreateMainnetApp(appId: AppId) {
-  const app = appsStore.app(appId)
-  const mainnetApp = await createMainnetApp(app)
-  const mainnetAppConfig = createAppConfig(mainnetApp, 'mainnet')
-  appsStore.addApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
+async function handleCreateMainnetApp({ shouldCopyTestnetConfig }) {
+  try {
+    showMainnetConfirmation.value = false
+    loaderStore.showLoader('Creating app...')
+    const testnetAppId = Number(route.params.appId)
+    const testnetApp = appsStore.app(testnetAppId)
 
-  const updatedMainnetApp = (
-    await updateApp(mainnetApp?.ID, { global_id: app.id }, 'mainnet')
-  ).data.app
-  mainnetAppConfig['global_id'] = updatedMainnetApp.global_id
+    const mainnetApp = await createMainnetApp(testnetApp)
+    const mainnetAppConfig = createAppConfig(mainnetApp, 'mainnet')
 
-  appsStore.updateApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
+    appsStore.addApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
 
-  const updatedTestnetApp = (
-    await updateApp(app.id, { global_id: mainnetApp?.ID }, 'testnet')
-  ).data.app
+    const updatedMainnetAppConfig = shouldCopyTestnetConfig
+      ? { ...testnetApp, global_id: testnetApp.id }
+      : { global_id: testnetApp.id }
 
-  app.global_id = updatedTestnetApp.global_id
-  appsStore.updateApp(app.id, app, 'testnet')
+    loaderStore.showLoader('Updating app...')
+    const updatedMainnetApp = (
+      await updateApp(mainnetApp?.ID, updatedMainnetAppConfig, 'mainnet')
+    ).data.app
+    mainnetAppConfig['global_id'] = updatedMainnetApp.global_id
+    appsStore.updateApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
 
-  router.push({ name: 'Dashboard', params: { appId: mainnetApp?.ID } })
+    const updatedTestnetApp = (
+      await updateApp(testnetApp.id, { global_id: mainnetApp?.ID }, 'testnet')
+    ).data.app
+    testnetApp.global_id = updatedTestnetApp.global_id
+    appsStore.updateApp(testnetApp.id, testnetApp, 'testnet')
+    if (mainnetApp) {
+      router.push({ name: 'Dashboard', params: { appId: mainnetApp?.ID } })
+    }
+  } finally {
+    loaderStore.hideLoader()
+  }
 }
 
 function onNetworkSwitch(networkOption) {
@@ -160,17 +176,43 @@ function onNetworkSwitch(networkOption) {
   const network: Network = networkOption.value
   if (network === 'mainnet') {
     const mainnetApp = appsStore.getMainnetApp(appId)
-    console.log({ mainnetApp })
     if (mainnetApp) {
       router.push({
         params: { appId: mainnetApp?.id },
         name: 'Dashboard',
       })
-    } else {
-      handleCreateMainnetApp(appId)
+    } else showMainnetConfirmation.value = true
+  } else {
+    const testnetApp = appsStore.getTestnetApp(appId)
+    if (testnetApp) {
+      router.push({
+        params: { appId: testnetApp?.id },
+        name: 'Dashboard',
+      })
     }
   }
 }
+
+onMounted(() => {
+  const appId = Number(route.params.appId)
+  if (!appId) return
+  const app = appsStore.app(appId)
+  currentNetwork.value = NetworkOptions.find(
+    (option) => option.value === app.network
+  )
+})
+
+watch(
+  () => Number(route.params.appId),
+  () => {
+    const appId = Number(route.params.appId)
+    if (!appId) return
+    const app = appsStore.app(appId)
+    currentNetwork.value = NetworkOptions.find(
+      (option) => option.value === app.network
+    )
+  }
+)
 </script>
 
 <template>
@@ -280,6 +322,11 @@ function onNetworkSwitch(networkOption) {
         <AppFooter class="footer-bleed" />
       </VStack>
     </VStack>
+    <SwitchToMainnetConfirmation
+      :show="showMainnetConfirmation"
+      @cancel="showMainnetConfirmation = false"
+      @proceed="handleCreateMainnetApp"
+    />
     <ConfigureMobileMenu
       ref="mobile_menu"
       :show-mobile-menu="showMobileMenu"
