@@ -93,6 +93,7 @@ type AppsListResponse = {
   name: string
   no_of_files: number
   total_users: number
+  global_id: number
   storage: number
   bandwidth: number
   consumed_storage: number
