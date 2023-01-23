@@ -72,7 +72,8 @@ async function handleFileChange(
   themeLogos[mode][orientation].hasError = false
   themeLogos[mode][orientation].isLoading = true
   try {
-    await uploadThemeLogo(appId, files[0], mode, orientation)
+    const app = appsStore.app(appId)
+    await uploadThemeLogo(appId, files[0], mode, app.network, orientation)
     toast.success('Logo uploaded successfully')
     const logoUrl = `${getEnvApi(
       'v2'
