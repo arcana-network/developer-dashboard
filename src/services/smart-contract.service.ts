@@ -30,8 +30,9 @@ async function grantDelegate(
   keyAddress: string,
   permissions: DelegatePermission[]
 ) {
+  const app = appsStore.app(appId)
   const { appAddress, gateway, forwarderAddress, accessToken } =
-    getTransactionRequestProps(appsStore.app(appId).address)
+    getTransactionRequestProps(app.address, app.network)
   const provider = window.arcana.provider
   await delegator.grant({
     roles: permissions,
@@ -46,8 +47,9 @@ async function grantDelegate(
 }
 
 async function revokeDelegate(appId: AppId, keyAddress: string) {
+  const app = appsStore.app(appId)
   const { appAddress, gateway, forwarderAddress, accessToken } =
-    getTransactionRequestProps(appsStore.app(appId).address)
+    getTransactionRequestProps(app.address, app.network)
   const provider = window.arcana.provider
   await delegator.revoke({
     provider,
