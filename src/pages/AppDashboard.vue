@@ -2,6 +2,7 @@
 import type { Chart } from 'chart.js'
 import moment from 'moment'
 import { onMounted, ref, watch, type Ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
 import TutorialPasswordlessAuth from '@/assets/Tutorial-passwordless-auth.png'
@@ -45,6 +46,7 @@ const selectedApp = appsStore.app(appId)
 const appAddress = ref(selectedApp.address)
 const appName = ref(selectedApp.name)
 const showNoDataChart = ref(false)
+const route = useRoute()
 
 const tutorials = [
   {
@@ -88,6 +90,17 @@ watch(
   () => appId,
   () => {
     const app = appsStore.app(appId)
+    appName.value = app.name
+    appAddress.value = app.address
+    fetchActiveUsers()
+  }
+)
+
+watch(
+  () => Number(route.params.appId),
+  () => {
+    const app = appsStore.app(Number(route.params.appId))
+    if (!app) return
     appName.value = app.name
     appAddress.value = app.address
     fetchActiveUsers()
