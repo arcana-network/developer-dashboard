@@ -3,11 +3,11 @@ import { defineStore } from 'pinia'
 import {
   fetchAllApps,
   fetchApp,
-  getThemeLogo,
   fetchAppDelegates,
 } from '@/services/gateway.service'
 import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
-import { ChainMapping, WalletMode, api } from '@/utils/constants'
+import { WalletMode } from '@/utils/constants'
+import { createAppConfig } from '@/utils/createAppConfig'
 
 type UserLimitUnit = 'MB' | 'GB'
 type UserLimitTarget = 'storage' | 'bandwidth'
@@ -99,7 +99,9 @@ const useAppsStore = defineStore('apps', {
       return state.appIds.map((id) => ({ ...state.appsById[id] }))
     },
     app: (state) => {
-      return (id: AppId) => state.appsById[id]
+      return (id: AppId) => {
+        return state.mainnetApps[id] || state.appsById[id]
+      }
     },
     hasUiMode: (state) => {
       return (id: AppId) =>
@@ -170,6 +172,7 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAppConfig(appId: AppId, network: Network) {
       const app = (await fetchApp(appId, network)).data
+      console.log({ app }, network)
       const appDelegates = (await fetchAppDelegates(appId, network)).data || []
       const socialAuth: SocialAuthState[] = []
       if (app.cred?.length) {
@@ -190,45 +193,9 @@ const useAppsStore = defineStore('apps', {
         }
         return delegateState
       })
-      const configInfo = {
-        id: appId,
-        address: app.address,
-        name: app.name,
-        auth: {
-          wallet: {
-            walletType: app.wallet_type,
-            walletTypeInGateway: app.wallet_type,
-            websiteDomain: app.wallet_domain,
-            selectedTheme: app.theme || 'dark',
-          },
-          redirectUri: `${api.verify.testnet}/${app.address}/`,
-          social: socialAuth,
-        },
-        access: {
-          selectedChain: app.chain
-            ? (ChainMapping[app.chain] as Chain)
-            : 'none',
-          delegates,
-        },
-        logos: {
-          dark: {
-            horizontal: app.logo?.dark_horizontal
-              ? getThemeLogo(appId, 'dark', 'horizontal', network).url
-              : '',
-            vertical: app.logo?.dark_vertical
-              ? getThemeLogo(appId, 'dark', 'vertical', network).url
-              : '',
-          },
-          light: {
-            horizontal: app.logo?.light_horizontal
-              ? getThemeLogo(appId, 'light', 'horizontal', network).url
-              : '',
-            vertical: app.logo?.light_vertical
-              ? getThemeLogo(appId, 'light', 'vertical', network).url
-              : '',
-          },
-        },
-      }
+      app.ID = appId
+      const configInfo = createAppConfig(app, network)
+      configInfo.access.delegates = delegates
       if (network === 'mainnet') {
         this.mainnetApps[appId] = {
           ...this.mainnetApps[appId],
