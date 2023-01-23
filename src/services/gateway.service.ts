@@ -100,6 +100,7 @@ type AppsListResponse = {
   consumed_bandwidth: number
   estimated_cost: number
   created_at: string
+  mau: number
 }
 
 function createApp(
@@ -304,12 +305,23 @@ function fetchMonthlyUsers(appId: AppId, network: Network) {
   )
 }
 
-function fetchDau(appAddress: string, network: Network) {
+type ActiveUsersChartData = {
+  Date: string
+  Value: number
+}
+
+function fetchDau(
+  appAddress: string,
+  network: Network
+): Promise<AxiosResponse<ActiveUsersChartData[]>> {
   const api = `/get-dau/?app=${appAddress}`
   return getGatewayInstance(network).get(`${getEnvApi()}/${api}`)
 }
 
-function fetchMau(appAddress: string, network: Network) {
+function fetchMau(
+  appAddress: string,
+  network: Network
+): Promise<AxiosResponse<ActiveUsersChartData[]>> {
   const api = `/get-mau/?app=${appAddress}`
   return getGatewayInstance(network).get(`${getEnvApi()}/${api}`)
 }
@@ -522,4 +534,5 @@ export {
   type AppConfigRequiredProps,
   type AccountStatus,
   type CreateAppResponse,
+  type ActiveUsersChartData,
 }
