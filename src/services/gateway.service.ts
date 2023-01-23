@@ -347,8 +347,7 @@ function loginUser(
   },
   network: Network
 ) {
-  const URL = api.gateway['testnet']
-  return axios.post(`${URL}${getEnvApi()}/login/`, {
+  return getGatewayInstance(network).post(`${getEnvApi()}/login/`, {
     signature,
     email,
     address,
