@@ -336,9 +336,12 @@ function loginUser(
 function getThemeLogo(
   appId: AppId,
   mode: 'dark' | 'light',
-  orientation: 'horizontal' | 'vertical'
+  orientation: 'horizontal' | 'vertical',
+  network: Network
 ) {
-  const logoFetchUrl = `${getEnvApi('v2')}/app/${appId}/logo`
+  const logoFetchUrl = `${api.gateway[network]}${getEnvApi(
+    'v2'
+  )}/app/${appId}/logo`
   return {
     mode,
     orientation,
@@ -350,11 +353,12 @@ function uploadThemeLogo(
   appId: AppId,
   file: File,
   mode: 'dark' | 'light',
+  network: Network,
   orientation?: 'horizontal' | 'vertical'
 ) {
   const formData: FormData = new FormData()
   formData.append('file', file)
-  return getGatewayInstance(appsStore.appNetwork).put(
+  return getGatewayInstance(network).put(
     `${getEnvApi('v2')}/app/${appId}/logo`,
     formData,
     {
@@ -366,9 +370,10 @@ function uploadThemeLogo(
 function removeThemeLogo(
   appId: AppId,
   mode: 'dark' | 'light',
+  network: Network,
   orientation?: 'horizontal' | 'vertical'
 ) {
-  return getGatewayInstance(appsStore.appNetwork).delete(
+  return getGatewayInstance(network).delete(
     `${getEnvApi('v2')}/app/${appId}/logo`,
     {
       params: { type: mode, orientation },

@@ -18,18 +18,18 @@ export function createAppConfig(
     logos: {
       dark: {
         horizontal: app.logo?.dark_horizontal
-          ? getThemeLogo(app.ID, 'dark', 'horizontal').url
+          ? getThemeLogo(app.ID, 'dark', 'horizontal', network).url
           : '',
         vertical: app.logo?.dark_vertical
-          ? getThemeLogo(app.ID, 'dark', 'vertical').url
+          ? getThemeLogo(app.ID, 'dark', 'vertical', network).url
           : '',
       },
       light: {
         horizontal: app.logo?.light_horizontal
-          ? getThemeLogo(app.ID, 'light', 'horizontal').url
+          ? getThemeLogo(app.ID, 'light', 'horizontal', network).url
           : '',
         vertical: app.logo?.light_vertical
-          ? getThemeLogo(app.ID, 'light', 'vertical').url
+          ? getThemeLogo(app.ID, 'light', 'vertical', network).url
           : '',
       },
     },
