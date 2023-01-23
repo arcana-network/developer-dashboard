@@ -141,16 +141,13 @@ const router: Router = createRouter({
 router.beforeEach((to, from, next) => {
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
-    !authStore.accessToken[appsStore.appNetwork]
+    !authStore.accessToken.testnet
   ) {
     router.push({
       name: 'Login',
       params: { redirectTo: String(to.name), ...to.params },
     })
-  } else if (
-    to.name === 'Login' &&
-    authStore.accessToken[appsStore.appNetwork]
-  ) {
+  } else if (to.name === 'Login' && authStore.accessToken.testnet) {
     router.push({ name: 'ManageApps' })
   }
   return next()
