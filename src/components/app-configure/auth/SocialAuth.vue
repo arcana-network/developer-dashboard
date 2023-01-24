@@ -10,7 +10,6 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { deleteCred, updateApp } from '@/services/gateway.service'
-import { setAppConfig } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
@@ -107,9 +106,6 @@ async function handleSave() {
     await updateApp(appId, { auth }, app.network)
     await deleteCred(appId, authToRemove, app.network)
     toast.success('Saved social auth credentials')
-    loaderStore.showLoader('Saving app config in smart contract...')
-    await setAppConfig(app.name, socialAuthRef)
-    toast.success('App config saved in blockchain')
     app.auth.social = [...social]
   } catch (e) {
     toast.error('Error occured while saving the social auth.')
