@@ -1,22 +1,9 @@
 import { defineStore } from 'pinia'
 
-import {
-  fetchAllApps,
-  fetchApp,
-  fetchAppDelegates,
-} from '@/services/gateway.service'
+import { fetchAllApps, fetchApp } from '@/services/gateway.service'
 import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
 import { WalletMode } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
-
-type UserLimitUnit = 'MB' | 'GB'
-type UserLimitTarget = 'storage' | 'bandwidth'
-
-type UserLimitState = {
-  isUnlimited: boolean
-  value?: number
-  unit?: UserLimitUnit
-}
 
 type SocialAuthState = {
   verifier: SocialAuthVerifier
@@ -29,19 +16,6 @@ type Theme = 'light' | 'dark'
 type AppId = number
 
 type WalletModeKind = WalletMode.NoUI | WalletMode.UI
-
-type DelegatePermission = 'Download' | 'Share and Revoke'
-type DelegateOperation = 'create' | 'edit'
-type DelegateId = number | string
-type DelegateKey = { name: string; address: string }
-
-type Delegate = {
-  id: DelegateId
-  name: string
-  address: string
-  permissions: DelegatePermission[]
-  createdDate: string
-}
 
 type App = {
   id: AppId
@@ -64,7 +38,6 @@ type App = {
   }
   access: {
     selectedChain: Chain
-    delegates: Delegate[]
   }
   auth: {
     social: SocialAuthState[]
@@ -110,9 +83,6 @@ const useAppsStore = defineStore('apps', {
     hasUiModeInGateway: (state) => {
       return (id: AppId) =>
         state.appsById[id].auth.wallet.walletTypeInGateway === WalletMode.UI
-    },
-    appNetwork: (): Network => {
-      return 'testnet'
     },
     getMainnetApp: (state) => {
       const mainnetAppsList = Object.values(state.mainnetApps)
@@ -178,29 +148,9 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAppConfig(appId: AppId, network: Network) {
       const app = (await fetchApp(appId, network)).data
-      const appDelegates = (await fetchAppDelegates(appId, network)).data || []
-      const socialAuth: SocialAuthState[] = []
-      if (app.cred?.length) {
-        app.cred.forEach((authDetail) => {
-          socialAuth.push({
-            verifier: authDetail.verifier,
-            clientId: authDetail.clientId,
-            clientSecret: authDetail.clientSecret,
-          })
-        })
-      }
-      const delegates: Delegate[] = appDelegates.map((delegate) => {
-        const createdDate = delegate.created_at
-        const delegateState = {
-          ...delegate,
-          createdDate,
-          created_at: undefined,
-        }
-        return delegateState
-      })
+      console.log({ app })
       app.ID = appId
       const configInfo = createAppConfig(app, network)
-      configInfo.access.delegates = delegates
       if (network === 'mainnet') {
         this.mainnetApps[appId] = {
           ...this.mainnetApps[appId],
@@ -218,17 +168,4 @@ const useAppsStore = defineStore('apps', {
 
 export { useAppsStore }
 
-export type {
-  UserLimitState,
-  UserLimitTarget,
-  UserLimitUnit,
-  SocialAuthState,
-  Theme,
-  App as AppConfig,
-  AppId,
-  Delegate,
-  DelegatePermission,
-  DelegateId,
-  DelegateOperation,
-  DelegateKey,
-}
+export type { SocialAuthState, Theme, App as AppConfig, AppId }
