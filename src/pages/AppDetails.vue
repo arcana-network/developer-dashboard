@@ -156,13 +156,14 @@ async function handleCreateMainnetApp({ shouldCopyTestnetConfig }) {
       await updateApp(mainnetApp?.ID, updatedMainnetAppConfig, 'mainnet')
     ).data.app
     mainnetAppConfig['global_id'] = updatedMainnetApp.global_id
-    appsStore.updateApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
+    await appsStore.fetchAndStoreAppConfig(mainnetApp?.ID, 'mainnet')
 
     const updatedTestnetApp = (
       await updateApp(testnetApp.id, { global_id: mainnetApp?.ID }, 'testnet')
     ).data.app
     testnetApp.global_id = updatedTestnetApp.global_id
-    appsStore.updateApp(testnetApp.id, testnetApp, 'testnet')
+    await appsStore.fetchAndStoreAppConfig(updatedTestnetApp?.ID, 'testnet')
+
     if (mainnetApp) {
       router.push({ name: 'Dashboard', params: { appId: mainnetApp?.ID } })
     }
