@@ -6,10 +6,6 @@ import type {
   Theme,
   AppConfig as AppState,
   SocialAuthState,
-  Delegate,
-  DelegatePermission,
-  DelegateId,
-  DelegateKey,
 } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
@@ -86,7 +82,7 @@ type CreateAppResponse = {
   txHash: string
 }
 
-type AppConfigRequiredProps = Omit<AppConfig, 'ID'>
+type AppConfigRequiredProps = Omit<AppConfig, 'ID' | 'logo'>
 
 type AppsListResponse = {
   id: AppId
@@ -169,16 +165,6 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     theme: wallet.selectedTheme,
     wallet_domain: wallet.websiteDomain,
     wallet_type,
-    logo: {
-      dark: {
-        horizontal: app.logos.dark.horizontal,
-        vertical: app.logos.dark.vertical,
-      },
-      light: {
-        horizontal: app.logos.light.horizontal,
-        vertical: app.logos.light.vertical,
-      },
-    },
   }
 }
 
@@ -326,8 +312,6 @@ function fetchMau(
   return getGatewayInstance(network).get(`${getEnvApi()}/${api}`)
 }
 
-// `${getEnvApi()}/get-nonce/?address=${address}`
-
 function getNonce(address: string) {
   const URL = api.gateway.mainnet
   return axios.get(`${URL}${getEnvApi()}/get-nonce/`, {
@@ -361,13 +345,11 @@ function getThemeLogo(
   orientation: 'horizontal' | 'vertical',
   network: Network
 ) {
-  const logoFetchUrl = `${api.gateway[network]}${getEnvApi(
-    'v2'
-  )}/app/${appId}/logo`
+  const url = `${api.gateway[network]}${getEnvApi('v2')}/app/${appId}/logo`
   return {
     mode,
     orientation,
-    url: `${logoFetchUrl}?type=${mode}&orientation=${orientation}`,
+    url: `${url}?type=${mode}&orientation=${orientation}`,
   }
 }
 
@@ -400,69 +382,6 @@ function removeThemeLogo(
     {
       params: { type: mode, orientation },
     }
-  )
-}
-
-type DelegateResponse = Omit<Delegate, 'createdDate'> & { created_at: string }
-
-async function fetchAppDelegates(
-  appId: AppId,
-  network: Network
-): Promise<AxiosResponse<DelegateResponse[] | null>> {
-  return getGatewayInstance(network).get(
-    `${getEnvApi()}/delegates/?app_id=${appId}`
-  )
-}
-
-type CreateDelegateRequest = {
-  name: string
-  address: string
-  permissions: DelegatePermission[]
-}
-
-type CreateDelegateResponse = Delegate & {
-  err?: string
-  CreatedAt: string
-  ID: DelegateId
-}
-
-async function createDelegate(
-  appId: AppId,
-  data: CreateDelegateRequest,
-  network: Network
-): Promise<AxiosResponse<CreateDelegateResponse>> {
-  return getGatewayInstance(network).post(`${getEnvApi()}/delegates/`, {
-    appId,
-    ...data,
-  })
-}
-
-function listDelegateKeys(
-  appAddress: string,
-  network: Network
-): Promise<AxiosResponse<DelegateKey[]>> {
-  return getGatewayInstance(network).get(
-    `${getEnvApi()}/keys/?app=${appAddress}`
-  )
-}
-
-function editDelegate(
-  appId: AppId,
-  data: CreateDelegateRequest,
-  network: Network
-): Promise<AxiosResponse<CreateDelegateResponse>> {
-  return getGatewayInstance(network).patch(`${getEnvApi()}/delegates/`, {
-    appId,
-    ...data,
-  })
-}
-
-function deleteDelegate(
-  delegateId: DelegateId,
-  network: Network
-): Promise<AxiosResponse<any>> {
-  return getGatewayInstance(network).delete(
-    `${getEnvApi()}/delegates/?id=${delegateId}`
   )
 }
 
@@ -517,11 +436,6 @@ export {
   uploadThemeLogo,
   removeThemeLogo,
   deleteCred,
-  fetchAppDelegates,
-  createDelegate,
-  listDelegateKeys,
-  editDelegate,
-  deleteDelegate,
   getAccountStatus,
   fetchDau,
   fetchMau,
