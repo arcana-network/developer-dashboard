@@ -7,7 +7,17 @@ import { ChainMapping, api, type Chain } from '@/utils/constants'
 export function createAppConfig(
   app: ApiAppResponse,
   network: Network
-): AppConfig {
+): Partial<AppConfig> {
+  const socialAuths = app.cred?.length
+    ? app.cred.map((authDetail) => {
+        return {
+          verifier: authDetail.verifier,
+          clientId: authDetail.clientId,
+          clientSecret: authDetail.clientSecret,
+        }
+      })
+    : []
+
   return {
     id: app.ID,
     name: app.name as string,
@@ -37,7 +47,7 @@ export function createAppConfig(
       selectedChain: app.chain ? (ChainMapping[app.chain] as Chain) : 'none',
     },
     auth: {
-      social: [],
+      social: socialAuths,
       wallet: {
         walletType: app.wallet_type,
         walletTypeInGateway: app.wallet_type,
