@@ -148,7 +148,6 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchAndStoreAppConfig(appId: AppId, network: Network) {
       const app = (await fetchApp(appId, network)).data
-      console.log({ app })
       app.ID = appId
       const configInfo = createAppConfig(app, network)
       if (network === 'mainnet') {
