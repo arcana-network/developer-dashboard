@@ -54,7 +54,7 @@ export function createAppConfig(
         websiteDomain: app.wallet_domain,
         selectedTheme: app.theme || 'dark',
       },
-      redirectUri: `${api.verify[network]}/${app.ID}/`,
+      redirectUri: `${api.verify[network]}/${app.address}/`,
     },
   }
 }
