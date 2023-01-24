@@ -29,7 +29,7 @@ declare global {
     VITE_IS_APP_DOWN?: boolean
 
     VITE_ARCANA_APP_ADDRESS: string
-    VITE_ARCANA_AUTH_NETWORK: 'dev' | 'testnet'
+    VITE_ARCANA_AUTH_NETWORK: 'dev' | 'testnet' | 'mainnet'
     VITE_ARCANA_DOCS_URL: string
     VITE_ARCANA_GATEWAY_API_VERSION: string
     VITE_ARCANA_GATEWAY_URL: string
