@@ -166,6 +166,9 @@ async function handleCreateMainnetApp({ shouldCopyTestnetConfig }) {
     if (mainnetApp) {
       router.push({ name: 'Dashboard', params: { appId: mainnetApp?.ID } })
     }
+  } catch (e) {
+    console.log(e)
+    currentNetwork.value = NetworkOptions[1]
   } finally {
     loaderStore.hideLoader()
   }
@@ -191,6 +194,11 @@ function onNetworkSwitch(networkOption) {
       })
     }
   }
+}
+
+function onNetworkSwitchCancel() {
+  showMainnetConfirmation.value = false
+  currentNetwork.value = NetworkOptions[1]
 }
 
 onMounted(() => {
@@ -324,7 +332,7 @@ watch(
     </VStack>
     <SwitchToMainnetConfirmation
       :show="showMainnetConfirmation"
-      @cancel="showMainnetConfirmation = false"
+      @cancel="onNetworkSwitchCancel"
       @proceed="handleCreateMainnetApp"
     />
     <ConfigureMobileMenu
