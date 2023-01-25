@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { useAttrs } from 'vue'
 
+import VStack from '@/components/lib/VStack/VStack.vue'
+
 defineProps({
   label: {
     type: String,
@@ -25,8 +27,7 @@ const attrs = useAttrs()
 </script>
 
 <template>
-  <div class="flex flex-center justify-space-between">
-    <label class="body-1" :for="value">{{ label }}</label>
+  <VStack class="flex flex-center justify-space-between" gap="0.5rem">
     <input
       :id="value"
       type="radio"
@@ -34,7 +35,8 @@ const attrs = useAttrs()
       v-bind="attrs"
       @change="emit('update:modelValue', value)"
     />
-  </div>
+    <label class="body-1" :for="value">{{ label }}</label>
+  </VStack>
 </template>
 
 <style scoped>
@@ -43,12 +45,9 @@ input[type='radio'] {
   place-content: center;
   width: 20px;
   height: 20px;
-  background: linear-gradient(143.36deg, #c6c6c6 -4.7%, #000 115.05%);
+  background: #161616;
   border-radius: 50%;
-  box-shadow: inset -2px -2px 4px rgb(80 80 80 / 10%),
-    inset 5px 5px 5px rgb(0 0 0 / 21%),
-    inset -10px -26px 33px -28px rgb(255 255 255 / 10%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+  box-shadow: inset 5px 5px 10px #121212;
   transform: translateX(0);
   appearance: none;
 }
@@ -57,7 +56,7 @@ input[type='radio']::before {
   width: 16px;
   height: 16px;
   content: '';
-  background: linear-gradient(220.53deg, #9bf763 0%, #26ab5b 76.95%);
+  background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
   border-radius: 50%;
   transition: 120ms transform ease-in-out;
   transform: scale(0);
@@ -65,5 +64,9 @@ input[type='radio']::before {
 
 input[type='radio']:checked::before {
   transform: scale(1);
+}
+
+label {
+  font-size: 1rem;
 }
 </style>

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import VRadio from '@/components/lib/VRadio/VRadio.vue'
 
 const props = defineProps({
   show: {
@@ -47,14 +48,15 @@ function onProceed() {
             :key="option.label"
             class="switch-chain__copy-options"
           >
-            <input
+            <VRadio
               id="switch-option"
+              :label="option.label"
+              :value="option.value"
+              :model-value="selectedMainnetCopyOption"
               type="radio"
               name="switch-option"
-              :checked="selectedMainnetCopyOption === option.value"
               @click.stop="selectedMainnetCopyOption = option.value"
             />
-            <label for="switch-option">{{ option.label }}</label>
           </div>
         </div>
         <div class="switch-chain__button-container">

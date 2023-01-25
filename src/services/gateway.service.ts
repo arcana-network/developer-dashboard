@@ -127,6 +127,21 @@ function updateApp(
   )
 }
 
+function updateAppLogos(
+  appId: AppId,
+  logos: AppConfigThemeLogo,
+  network: Network
+) {
+  const app = appsStore.app(appId)
+  const updatedAppConfig = { ...app }
+  const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
+  appConfigRequestBody.logo = logos
+  return getGatewayInstance(network).patch(
+    `${getEnvApi('v2')}/app/?id=${appId}`,
+    appConfigRequestBody
+  )
+}
+
 function deleteCred(
   appId: AppId,
   authToRemove: SocialAuthState[],
@@ -441,6 +456,7 @@ export {
   fetchMau,
   getAuthOverview,
   getGatewayInstance,
+  updateAppLogos,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

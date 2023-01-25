@@ -22,7 +22,6 @@ export function createAppConfig(
     id: app.ID,
     name: app.name as string,
     address: app.address as string,
-    totalUsers: 0,
     region: 'asia',
     network,
     logos: {
