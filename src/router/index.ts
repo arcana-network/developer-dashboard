@@ -5,10 +5,12 @@ import {
   type RouteRecordRaw,
 } from 'vue-router'
 
+import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import constants from '@/utils/constants'
 
 const authStore = useAuthStore()
+const appsStore = useAppsStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')
@@ -139,13 +141,13 @@ const router: Router = createRouter({
 router.beforeEach((to, from, next) => {
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
-    !authStore.accessToken
+    !authStore.accessToken.testnet
   ) {
     router.push({
       name: 'Login',
       params: { redirectTo: String(to.name), ...to.params },
     })
-  } else if (to.name === 'Login' && authStore.accessToken) {
+  } else if (to.name === 'Login' && authStore.accessToken.testnet) {
     router.push({ name: 'ManageApps' })
   }
   return next()

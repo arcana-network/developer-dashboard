@@ -29,7 +29,7 @@ function hasSameAppName() {
 async function handleSave() {
   try {
     loaderStore.showLoader('Saving app name...')
-    await updateApp(appId, { name: appName.value })
+    await updateApp(appId, { name: appName.value }, app.network)
     toast.success('Saved app name')
     app.name = appName.value
   } catch (e) {

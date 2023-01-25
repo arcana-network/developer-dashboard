@@ -4,17 +4,16 @@ import { useRouter } from 'vue-router'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
-import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
-import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { RegionMapping, regions, type Region, api } from '@/utils/constants'
+import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const router = useRouter()
@@ -26,10 +25,6 @@ const hasAppNameError = ref(false)
 const selectedRegion = ref(regions[0])
 const emit = defineEmits(['close'])
 
-function handleRegionChange(option: Region) {
-  selectedRegion.value = option
-}
-
 async function handleCreateApp() {
   try {
     if (!appName.value?.trim()) {
@@ -40,43 +35,17 @@ async function handleCreateApp() {
     loaderStore.showLoader('Creating App...')
     hasAppNameError.value = false
     const app = (
-      await createApp({
-        name: appName.value,
-        region: RegionMapping[selectedRegion.value.value],
-      })
+      await createApp(
+        {
+          name: appName.value,
+          region: RegionMapping[selectedRegion.value.value],
+        },
+        'testnet'
+      )
     ).data.app
 
-    appsStore.addApp(app.ID, {
-      id: app.ID,
-      name: app.name as string,
-      address: app.address as string,
-      totalUsers: 0,
-      region: selectedRegion.value.value,
-      logos: {
-        dark: {
-          horizontal: '',
-          vertical: '',
-        },
-        light: {
-          horizontal: '',
-          vertical: '',
-        },
-      },
-      access: {
-        selectedChain: 'none',
-      },
-      auth: {
-        social: [],
-        wallet: {
-          walletType: app.wallet_type,
-          walletTypeInGateway: app.wallet_type,
-          websiteDomain: app.wallet_domain,
-          selectedTheme: app.theme || 'dark',
-        },
-        redirectUri: `${api.verify}/${app.ID}/`,
-      },
-    })
-    createTransactionSigner(app.address)
+    appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
+    createTransactionSigner(app.address, 'testnet')
     loaderStore.hideLoader()
     router.push({ name: 'AppDetails', params: { appId: app.ID } })
   } catch (e) {

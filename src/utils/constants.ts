@@ -3,13 +3,10 @@ import bytes from 'bytes'
 import brandingIcon from '@/assets/iconography/branding.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import DocsIcon from '@/assets/iconography/docs.svg'
-import InvoiceIcon from '@/assets/iconography/invoices.svg'
-import passcodeLockIcon from '@/assets/iconography/passcode-lock.svg'
 import PassportIcon from '@/assets/iconography/passport.svg'
 import ScheduleIcon from '@/assets/iconography/schedule.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
-import usersGroupIcon from '@/assets/iconography/users.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
 import type { UserLimitState } from '@/stores/apps.store'
 
@@ -21,8 +18,14 @@ const sentry = {
 }
 
 const api = {
-  gateway: import.meta.env.VITE_ARCANA_GATEWAY_URL,
-  verify: import.meta.env.VITE_ARCANA_VERIFY_URL,
+  gateway: {
+    mainnet: import.meta.env.VITE_ARCANA_GATEWAY_MAINNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_GATEWAY_TESTNET_URL,
+  },
+  verify: {
+    mainnet: import.meta.env.VITE_ARCANA_VERIFY_MAINNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_VERIFY_TESTNET_URL,
+  },
 }
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
@@ -30,6 +33,8 @@ const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 const DOCS_URL: string = import.meta.env.VITE_ARCANA_DOCS_URL
 
 type Chain = 'ethereum' | 'polygon' | 'binance' | 'none'
+
+type Network = 'mainnet' | 'testnet'
 
 type ChainOption<T> = {
   label: string
@@ -296,6 +301,7 @@ export type {
   BandwidthLimitUnit,
   SocialAuthVerifier,
   SocialAuthVerifierLabel,
+  Network,
 }
 
 export default constants

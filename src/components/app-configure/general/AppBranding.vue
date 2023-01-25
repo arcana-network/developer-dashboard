@@ -11,6 +11,7 @@ import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
+import { api } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const appsStore = useAppsStore()
@@ -72,14 +73,15 @@ async function handleFileChange(
   themeLogos[mode][orientation].hasError = false
   themeLogos[mode][orientation].isLoading = true
   try {
-    await uploadThemeLogo(appId, files[0], mode, orientation)
+    const app = appsStore.app(appId)
+    await uploadThemeLogo(appId, files[0], mode, app.network, orientation)
     toast.success('Logo uploaded successfully')
-    const logoUrl = `${getEnvApi(
+    const logoUrl = `${api.gateway[app.network]}${getEnvApi(
       'v2'
     )}/app/${appId}/logo?type=${mode}&orientation=${orientation}`
     themeLogos[mode][orientation].logo = logoUrl
     currentApp.logos[mode][orientation] = logoUrl
-    appsStore.updateApp(appId, currentApp)
+    appsStore.updateApp(appId, currentApp, currentApp.network)
   } catch (e) {
     console.error(e)
     toast.error("Couldn't upload logo. Please try again or contact support")
@@ -94,7 +96,8 @@ async function handleFileRemove(
 ) {
   themeLogos[mode][orientation].isLoading = true
   try {
-    await removeThemeLogo(appId, mode, orientation)
+    const app = appsStore.app(appId)
+    await removeThemeLogo(appId, mode, app.network, orientation)
     toast.success('Logo removed successfully')
     themeLogos[mode][orientation].logo = ''
   } catch (e) {

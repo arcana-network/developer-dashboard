@@ -61,7 +61,7 @@ async function handleSave() {
     wallet.selectedTheme = selectedTheme.value.value
     auth.wallet = wallet
     loaderStore.showLoader('Saving wallet theme...')
-    await updateApp(appId, { auth })
+    await updateApp(appId, { auth }, app.network)
     toast.success('Saved wallet theme')
     app.auth.wallet = auth.wallet
   } catch (e) {

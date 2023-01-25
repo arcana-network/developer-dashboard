@@ -1,5 +1,7 @@
 import { getConfig } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
+import type { Network } from '@/utils/constants'
+import { api } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore()
@@ -30,7 +32,8 @@ let signTransaction: (
 ) => Promise<string>
 
 function getTransactionRequestProps(
-  appAddress: string
+  appAddress: string,
+  network: Network
 ): SmartContractRequestParams {
   if (!appAddress.startsWith('0x')) {
     appAddress = `0x${appAddress}`
@@ -42,13 +45,13 @@ function getTransactionRequestProps(
     appAddress,
     gateway: getEnvApi(),
     forwarderAddress: config.forwarder,
-    accessToken: authStore.accessToken,
+    accessToken: authStore.accessToken[network],
   }
 }
 
-async function createTransactionSigner(address: string) {
+async function createTransactionSigner(address: string, network: Network) {
   const { appAddress, gateway, forwarderAddress, accessToken } =
-    getTransactionRequestProps(address)
+    getTransactionRequestProps(address, network)
   const provider = window.arcana.provider
   signTransaction = window.transactionSigner.createTransactionSigner({
     appAddress,
@@ -63,9 +66,9 @@ function hashJson(data: any) {
   return window.transactionSigner.hashJson(data)
 }
 
-async function generateLoginInfo() {
+async function generateLoginInfo(network: Network) {
   const provider = window.arcana.provider
-  const gateway = getEnvApi()
+  const gateway = api.gateway[network]
   return await window.transactionSigner.generateLoginInfo({
     provider,
     gateway,

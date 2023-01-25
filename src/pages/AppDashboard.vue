@@ -118,6 +118,25 @@ onMounted(() => {
 
 watch(() => durationSelected.value, fetchActiveUsers)
 
+watch(
+  () => appId,
+  () => {
+    const app = appsStore.app(appId)
+    appAddress.value = app.address
+    fetchActiveUsers()
+  }
+)
+
+watch(
+  () => Number(route.params.appId),
+  () => {
+    const app = appsStore.app(Number(route.params.appId))
+    if (!app) return
+    appAddress.value = app.address
+    fetchActiveUsers()
+  }
+)
+
 async function copyAppAddress() {
   try {
     await copyToClipboard(appAddress.value)
@@ -133,7 +152,10 @@ async function fetchActiveUsers() {
     let activeUsers: ActiveUsersChartData[] = []
     let dataTemplate: ChartData[] = []
     if (durationSelected.value === 'day') {
-      const { data } = await fetchDau(selectedApp.value.address)
+      const { data } = await fetchDau(
+        selectedApp.value.address,
+        selectedApp.value.network
+      )
       activeUsers = data
       dataTemplate = [-6, -5, -4, -3, -2, -1, 0].reduce((a, b) => {
         a.push({
@@ -143,7 +165,10 @@ async function fetchActiveUsers() {
         return a
       }, [] as ChartData[])
     } else if (durationSelected.value === 'month') {
-      const { data } = await fetchMau(selectedApp.value.address)
+      const { data } = await fetchMau(
+        selectedApp.value.address,
+        selectedApp.value.network
+      )
       activeUsers = data
       dataTemplate = [-11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0].reduce(
         (a, b) => {
@@ -186,7 +211,11 @@ async function fetchActiveUsers() {
   <div :key="appId">
     <main style="margin-bottom: 2rem">
       <section class="flex dashboard-heading flex-wrap">
-        <VStack justify="space-between" sm-direction="column" class="flex-grow">
+        <VStack
+          justify="space-between"
+          sm-direction="column"
+          class="flex-grow flex-wrap"
+        >
           <h1 class="heading">DASHBOARD</h1>
           <VStack
             gap="1rem"
@@ -209,7 +238,7 @@ async function fetchActiveUsers() {
         </VStack>
       </section>
       <div
-        class="flex laptop-remove smart-contract-copy justify-center flex-center flex-wrap"
+        class="flex laptop-remove smart-contract-copy justify-start flex-center flex-wrap"
       >
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
           App Address:
@@ -423,11 +452,6 @@ async function fetchActiveUsers() {
 
   h4 {
     font-size: 0.85em;
-  }
-
-  .flex {
-    width: 90%;
-    margin-left: 20px;
   }
 }
 </style>

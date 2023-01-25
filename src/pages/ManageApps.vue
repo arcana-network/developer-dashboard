@@ -22,6 +22,7 @@ import {
   type AccountStatus,
 } from '@/services/gateway.service'
 import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
+import type { Network } from '@/utils/constants'
 
 const router = useRouter()
 const appsStore = useAppsStore()
@@ -43,8 +44,18 @@ const freeMausWidth = ref(100)
 const paidMausWidth = ref(0)
 const toast = useToast()
 
-function goToDashboard(appId: AppId) {
-  router.push({ name: 'AppDetails', params: { appId } })
+function goToDashboard(appId: AppId, network: Network) {
+  let paramAppId = appId
+  if (network === 'mainnet') {
+    const mainnetApp = appsStore.getMainnetApp(appId)
+    paramAppId = mainnetApp?.id
+  }
+  router.push({ name: 'AppDetails', params: { appId: paramAppId } })
+}
+
+function isMainnetAppAvailable(testnetAppId: AppId) {
+  const mainnetApp = appsStore.getMainnetApp(testnetAppId)
+  return !(mainnetApp === null)
 }
 
 function handleDelete(appId: AppId) {
@@ -66,7 +77,7 @@ function getImageUrl(appId: AppId) {
 
 onBeforeMount(async () => {
   accountStatus.value = (await getAccountStatus()).data
-  const authOverview = (await getAuthOverview()).data
+  const authOverview = (await getAuthOverview('testnet')).data
 
   const mausUsed = authOverview.mau
   estimatedCost.value = authOverview.bill
@@ -91,7 +102,7 @@ appsStore.$subscribe(() => {
 async function handleAppNameSave(app: AppData) {
   if (app.name.trim().length) {
     app.editState = false
-    await updateApp(app.id, { name: app.name })
+    await updateApp(app.id, { name: app.name }, app.network)
     toast.success('App name saved')
   } else {
     toast.error('App name is required')
@@ -192,17 +203,22 @@ async function handleAppNameSave(app: AppData) {
             :key="`app-${app.id}`"
             class="app-card"
             :class="{ 'app-card-disabled': accountStatus !== 'active' }"
-            @click.stop="
-              accountStatus === 'active' && !app.editState
-                ? goToDashboard(app.id)
-                : void 0
-            "
           >
             <VStack
               direction="column"
               align="center"
-              class="app-container justify-space-between"
+              class="app-container justify-space-between position-relative"
             >
+              <button
+                class="delete-icon-btn"
+                @click.stop="handleDelete(app.id)"
+              >
+                <img
+                  src="@/assets/iconography/delete.svg"
+                  alt="close icon"
+                  class="delete-icon-img"
+                />
+              </button>
               <img :src="getImageUrl(app.id)" class="app-logo" />
               <VStack gap="0.5rem" style="max-width: 100%">
                 <VTextField
@@ -241,15 +257,16 @@ async function handleAppNameSave(app: AppData) {
               <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
                 <VButton
                   variant="secondary"
-                  label="Delete"
+                  label="Testnet"
                   class="app-action-button delete-button"
-                  @click.stop="handleDelete(app.id)"
+                  @click.stop="() => goToDashboard(app.id, 'testnet')"
                 />
                 <VButton
-                  variant="secondary"
-                  label="Pause"
+                  variant="Primary"
+                  label="Mainnet"
                   class="app-action-button pause-button"
-                  disabled
+                  :disabled="!isMainnetAppAvailable(app.id)"
+                  @click.stop="() => goToDashboard(app.id, 'mainnet')"
                 />
               </VStack>
             </VStack>
@@ -278,10 +295,6 @@ main {
   width: auto;
   max-width: 100%;
   margin: 0 2rem;
-}
-
-.back-icon {
-  width: 2.25rem;
 }
 
 .app-card {
@@ -403,18 +416,17 @@ main {
   cursor: pointer;
 }
 
-.app-name-input {
-  width: 100%;
-  padding: 0.825rem;
-  font-size: 1rem;
-  color: var(--text-white);
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+.delete-icon-btn {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background-color: transparent;
   border: none;
-  border-radius: 10px;
   outline: none;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+}
 
-  --webkit-outline: none;
+.delete-icon-img {
+  width: 18px;
+  height: 18px;
 }
 </style>

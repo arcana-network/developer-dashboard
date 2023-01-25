@@ -42,37 +42,56 @@ async function launchLogin(type: string) {
 }
 
 async function fetchAndStoreDetails() {
-  loaderStore.showLoader('Fetching user info...')
-  await fetchAndStoreUserInfo()
-  await appsStore.fetchAndStoreAllApps()
-  if (route.params.redirectTo) {
-    router.push({
-      name: route.params.redirectTo as RouteRecordName,
-      ...route.params,
-    })
-  } else {
-    router.push({ name: 'ManageApps' })
+  try {
+    loaderStore.showLoader('Fetching user info...')
+    await fetchAndStoreUserInfo()
+    await appsStore.fetchAndStoreAllApps('testnet')
+    await appsStore.fetchAndStoreAllApps('mainnet')
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    if (route.params.redirectTo) {
+      router.push({
+        name: route.params.redirectTo as RouteRecordName,
+        ...route.params,
+      })
+    } else {
+      router.push({ name: 'ManageApps' })
+    }
+    loaderStore.hideLoader()
   }
-  loaderStore.hideLoader()
 }
 
 async function fetchAndStoreUserInfo() {
   loaderStore.showLoader('Signing In...')
   const userInfo = await arcanaAuth.fetchUserDetails()
-  const loginInfo = await generateLoginInfo()
-  const access_token = await loginUser({
-    signature: loginInfo.signature,
-    email: userInfo.id,
-    address: loginInfo.address,
-  })
-  authStore.updateAccessToken(access_token.data.token)
-  authStore.updateWalletAddress(loginInfo.address)
+  const loginInfoTestnet = await generateLoginInfo('testnet')
+  const accessTokenTestnet = await loginUser(
+    {
+      signature: loginInfoTestnet.signature,
+      email: userInfo.id,
+      address: loginInfoTestnet.address,
+    },
+    'testnet'
+  )
+  authStore.updateAccessToken(accessTokenTestnet.data.token, 'testnet')
+  authStore.updateWalletAddress(loginInfoTestnet.address)
+  const loginInfoMainnet = await generateLoginInfo('mainnet')
+  const accessTokenMainnet = await loginUser(
+    {
+      signature: loginInfoMainnet.signature,
+      email: userInfo.id,
+      address: loginInfoMainnet.address,
+    },
+    'mainnet'
+  )
+  authStore.updateAccessToken(accessTokenMainnet.data.token, 'mainnet')
   authStore.updateUserInfo(
     (userInfo.name as string) || 'User',
     userInfo.email || userInfo.id
   )
 
-  if (loginInfo.nonce === 0) {
+  if (loginInfoTestnet.nonce === 0 || loginInfoMainnet.nonce === 0) {
     addUserToMailchimp(userInfo.id)
   }
 }

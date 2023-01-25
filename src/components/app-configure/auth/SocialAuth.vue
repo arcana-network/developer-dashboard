@@ -103,8 +103,8 @@ async function handleSave() {
       return !social.find((s) => s.verifier === a.verifier)
     })
     auth.social = social
-    await updateApp(appId, { auth })
-    await deleteCred(appId, authToRemove)
+    await updateApp(appId, { auth }, app.network)
+    await deleteCred(appId, authToRemove, app.network)
     toast.success('Saved social auth credentials')
     app.auth.social = [...social]
   } catch (e) {

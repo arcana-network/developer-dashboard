@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted, watch } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import DiscordIcon from '@/assets/discord-white.svg'
@@ -25,7 +25,9 @@ const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
 const showAppsList = ref(false)
 const router = useRouter()
+const route = useRoute()
 const emit = defineEmits(['switch-tab', 'switch-app'])
+const apps = ref([])
 
 const socialLinks = [
   {
@@ -98,6 +100,31 @@ onMounted(() => {
     currentTab === 'Social Auth' ||
     currentTab === 'Arcana Wallet'
 })
+
+onMounted(() => {
+  const appId = Number(route.params.appId)
+  const app = appsStore.app(appId)
+  if (!app) return
+  const network = app?.network
+  apps.value =
+    network === 'mainnet'
+      ? Object.values(appsStore.mainnetApps)
+      : appsStore.apps
+})
+
+watch(
+  () => Number(route.params.appId),
+  () => {
+    const appId = Number(route.params.appId)
+    const app = appsStore.app(appId)
+    if (!app) return
+    const network = app?.network
+    apps.value =
+      network === 'mainnet'
+        ? Object.values(appsStore.mainnetApps)
+        : appsStore.apps
+  }
+)
 </script>
 
 <template>
@@ -130,7 +157,7 @@ onMounted(() => {
             class="apps-name__list-container position-absolute"
           >
             <VCardButton
-              v-for="app in appsStore.apps"
+              v-for="app in apps"
               :key="app.name"
               class="apps-name__list-item"
               :class="{ 'active-app': useAppId() === app.id }"
