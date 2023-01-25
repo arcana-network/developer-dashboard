@@ -152,13 +152,13 @@ const useAppsStore = defineStore('apps', {
       const configInfo = createAppConfig(app, network)
       if (network === 'mainnet') {
         this.mainnetApps[appId] = {
-          ...this.mainnetApps[appId],
           ...configInfo,
+          ...this.mainnetApps[appId],
         }
       } else {
         this.appsById[appId] = {
-          ...this.appsById[appId],
           ...configInfo,
+          ...this.appsById[appId],
         }
       }
     },
