@@ -73,7 +73,9 @@ async function handleSubmit() {
       app: props.address,
       company_name: formData.companyName,
       project_name: formData.projectName,
-      incorporation_number: formData.incorporationNumber,
+      incorporation_number: formData.incorporationNumber.trim()
+        ? Number(formData.incorporationNumber)
+        : 0,
       company_location: formData.companyLocation,
       contact_name: formData.contactName,
       contact_email: formData.contactEmail,
@@ -131,6 +133,7 @@ async function handleSubmit() {
                 label="Company Incorporation Number (Optional)"
                 no-message
                 placeholder="Ex: 1234567890"
+                type="number"
               />
               <VTextField
                 v-model="formData.companyLocation"
