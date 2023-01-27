@@ -55,7 +55,7 @@ type AppConfig = {
   wallet_domain?: string
   logo: AppConfigThemeLogo
   status: 0 | 1 | 2 | 3
-  keyspace: 'app-specific' | 'global'
+  global: boolean
 }
 
 const gatewayInstance = {
@@ -182,6 +182,8 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     theme: wallet.selectedTheme,
     wallet_domain: wallet.websiteDomain,
     wallet_type,
+    global: app.keyspace === 'global',
+    status: app.status,
   }
 }
 
@@ -434,9 +436,9 @@ function submitVerificationForm(
   appId: AppId,
   formData: any
 ): Promise<AxiosResponse<any>> {
-  return getGatewayInstance('mainnet').get(
-    `${getEnvApi()}/verify-app/?id=${appId}`
-  )
+  return getGatewayInstance('mainnet').post(`${getEnvApi()}/verify-app/`, {
+    ...formData,
+  })
 }
 
 export {

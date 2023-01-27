@@ -25,7 +25,7 @@ export function createAppConfig(
     region: 'asia',
     network,
     status: app.status || 0,
-    keyspace: app.keyspace || 'app-specific',
+    keyspace: app.global ? 'global' : 'app-specific',
     logos: {
       dark: {
         horizontal: app.logo?.dark_horizontal
