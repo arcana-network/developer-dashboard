@@ -11,6 +11,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
+import MainnetAppCreatedPopup from '@/components/MainnetAppCreatedPopup.vue'
 import SwitchToMainnetConfirmation from '@/components/SwitchToMainnetConfirmation.vue'
 import {
   createApp,
@@ -122,7 +123,7 @@ function toggleMobileMenu() {
   showMobileMenu.value = !showMobileMenu.value
 }
 
-async function createMainnetApp(app: AppConfig): Promise<AppResponse | null> {
+async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
   try {
     const mainnetApp = (
       await createApp(
@@ -217,7 +218,7 @@ function onNetworkSwitch(networkOption) {
 
 function onNetworkSwitchCancel() {
   showMainnetConfirmation.value = false
-  currentNetwork.value = NetworkOptions[1]
+  currentNetwork.value = NetworkOptions[0]
 }
 
 onMounted(() => {
@@ -247,6 +248,7 @@ watch(
     <div class="app-details__sidebar mobile-remove">
       <ConfigureSidebar
         :current-tab="currentTab"
+        :current-network="currentNetwork.value"
         @switch-tab="switchTab"
         @switch-app="switchApp"
       />
@@ -350,10 +352,11 @@ watch(
       </VStack>
     </VStack>
     <SwitchToMainnetConfirmation
-      :show="showMainnetConfirmation"
+      v-if="showMainnetConfirmation"
       @cancel="onNetworkSwitchCancel"
       @proceed="handleCreateMainnetApp"
     />
+    <MainnetAppCreatedPopup v-if="false" />
     <ConfigureMobileMenu
       ref="mobile_menu"
       :show-mobile-menu="showMobileMenu"
@@ -361,6 +364,7 @@ watch(
     >
       <ConfigureSidebar
         :current-tab="currentTab"
+        :current-network="currentNetwork.value"
         @switch-tab="switchTab"
         @switch-app="switchApp"
       />

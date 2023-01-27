@@ -209,7 +209,7 @@ input::placeholder {
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--text-grey);
+  color: #393939;
 }
 
 .form-group[data-disabled='true'],

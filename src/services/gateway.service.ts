@@ -428,6 +428,15 @@ function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
   }
 }
 
+function submitVerificationForm(
+  appId: AppId,
+  formData: any
+): Promise<AxiosResponse<any>> {
+  return getGatewayInstance('mainnet').get(
+    `${getEnvApi()}/verify-app/?id=${appId}`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -457,6 +466,7 @@ export {
   getAuthOverview,
   getGatewayInstance,
   updateAppLogos,
+  submitVerificationForm,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

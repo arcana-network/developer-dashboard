@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
@@ -7,6 +7,12 @@ import DiscordIcon from '@/assets/discord-white.svg'
 import DiscourseIcon from '@/assets/discourse-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
+import brandingIcon from '@/assets/iconography/branding.svg'
+import dashboardIcon from '@/assets/iconography/dashboard.svg'
+import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
+import settingsIcon from '@/assets/iconography/settings.svg'
+import socialMediaIcon from '@/assets/iconography/user.svg'
+import walletIcon from '@/assets/iconography/wallet.svg'
 import TelegramIcon from '@/assets/telegram-white.svg'
 import TwitterIcon from '@/assets/twitter-white.svg'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -54,10 +60,52 @@ const socialLinks = [
 
 type ConfigureProps = {
   currentTab?: ConfigureTabType
+  currentNetwork: 'testnet' | 'mainnet'
 }
 
 const props = withDefaults(defineProps<ConfigureProps>(), {
   currentTab: 'Dashboard',
+  currentNetwork: 'testnet',
+})
+
+const ConfigureTabs = computed(() => {
+  const configureTabsCopy = [
+    { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
+    {
+      type: 'configure',
+      label: 'Configure',
+      icon: settingsIcon,
+      subMenu: [
+        {
+          type: 'branding',
+          label: 'Branding',
+          icon: brandingIcon,
+        },
+        {
+          type: 'socialAuth',
+          label: 'Social Auth',
+          icon: socialMediaIcon,
+        },
+        {
+          type: 'arcanaWallet',
+          label: 'Arcana Wallet',
+          icon: walletIcon,
+        },
+      ],
+    },
+  ]
+  const configurePageIndex = configureTabsCopy.findIndex(
+    (tab) => tab.type === 'configure'
+  )
+  if (props.currentNetwork === 'mainnet') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push({
+      label: 'Keyspace',
+      type: 'keyspace',
+      icon: KeyspaceIcon,
+    })
+    return configureTabsCopy
+  }
+  return configureTabsCopy
 })
 
 function onClickOfMenu(tab: ConfigureTab) {
@@ -182,7 +230,7 @@ watch(
         </VStack>
         <VSeperator class="full-bleed" />
         <VCardButton
-          v-for="tab in CONFIGURE_TABS"
+          v-for="tab in ConfigureTabs"
           :key="`configure-sidebar-tab-${tab.type}`"
           :class="{
             'active-tab':
