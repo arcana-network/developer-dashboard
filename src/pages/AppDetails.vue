@@ -10,10 +10,13 @@ import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { useToast } from '@/components/lib/VToast'
 import SwitchToMainnetConfirmation from '@/components/SwitchToMainnetConfirmation.vue'
 import {
   createApp,
+  fetchApp,
   updateApp,
+  updateAppLogos,
   type AppConfig as AppResponse,
 } from '@/services/gateway.service'
 import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
@@ -32,12 +35,12 @@ import { createTransactionSigner } from '@/utils/signerUtils'
 
 const NetworkOptions = [
   {
-    label: 'Mainnet',
-    value: 'mainnet',
-  },
-  {
     label: 'Testnet',
     value: 'testnet',
+  },
+  {
+    label: 'Mainnet',
+    value: 'mainnet',
   },
 ]
 
@@ -56,6 +59,7 @@ const route = useRoute()
 const currentNetwork = ref(NetworkOptions[1])
 const selectedRegion = ref(regions[0])
 const showMainnetConfirmation = ref(false)
+const toast = useToast()
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -135,7 +139,11 @@ async function createMainnetApp(app: AppConfig): Promise<AppResponse | null> {
   }
 }
 
-async function handleCreateMainnetApp({ shouldCopyTestnetConfig }) {
+async function handleCreateMainnetApp({
+  shouldCopyTestnetConfig,
+}: {
+  shouldCopyTestnetConfig: boolean
+}) {
   try {
     showMainnetConfirmation.value = false
     loaderStore.showLoader('Creating app...')
@@ -148,10 +156,17 @@ async function handleCreateMainnetApp({ shouldCopyTestnetConfig }) {
     appsStore.addApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')
 
     const updatedMainnetAppConfig = shouldCopyTestnetConfig
-      ? { ...testnetApp, global_id: testnetApp.id }
+      ? {
+          ...testnetApp,
+          global_id: testnetApp.id,
+          address: mainnetAppConfig.address,
+        }
       : { global_id: testnetApp.id }
 
-    loaderStore.showLoader('Updating app...')
+    if (shouldCopyTestnetConfig) {
+      const app = (await fetchApp(testnetAppId, 'testnet')).data
+      await updateAppLogos(mainnetApp?.ID, app.logo, 'mainnet')
+    }
     const updatedMainnetApp = (
       await updateApp(mainnetApp?.ID, updatedMainnetAppConfig, 'mainnet')
     ).data.app
@@ -164,12 +179,14 @@ async function handleCreateMainnetApp({ shouldCopyTestnetConfig }) {
     testnetApp.global_id = updatedTestnetApp.global_id
     await appsStore.fetchAndStoreAppConfig(updatedTestnetApp?.ID, 'testnet')
 
+    toast.success('Mainnet app created')
     if (mainnetApp) {
       router.push({ name: 'Dashboard', params: { appId: mainnetApp?.ID } })
     }
   } catch (e) {
     console.log(e)
-    currentNetwork.value = NetworkOptions[1]
+    currentNetwork.value = NetworkOptions[0]
+    toast.error('Error occured while creating mainnet app')
   } finally {
     loaderStore.hideLoader()
   }
@@ -178,6 +195,7 @@ async function handleCreateMainnetApp({ shouldCopyTestnetConfig }) {
 function onNetworkSwitch(networkOption) {
   const appId = Number(route.params.appId)
   const network: Network = networkOption.value
+  currentTab.value = 'Dashboard'
   if (network === 'mainnet') {
     const mainnetApp = appsStore.getMainnetApp(appId)
     if (mainnetApp) {

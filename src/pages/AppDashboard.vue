@@ -182,7 +182,7 @@ async function fetchActiveUsers() {
       )
     }
     // showNoDataChart.value = !activeUsers.length
-    activeUsers.forEach((item) => {
+    activeUsers?.forEach((item) => {
       const formattedDate = item.Date.split(' ').join('-')
       const index = dataTemplate.findIndex((el) => el.label === formattedDate)
       if (index > -1) {

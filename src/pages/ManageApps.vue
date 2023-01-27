@@ -12,6 +12,7 @@ import AppStatusBanner from '@/components/AppStatusBanner.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
+import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -58,6 +59,11 @@ function isMainnetAppAvailable(testnetAppId: AppId) {
   return !(mainnetApp === null)
 }
 
+function getMainnetTotalUsers(testnetAppId: AppId) {
+  const mainnetApp = appsStore.getMainnetApp(testnetAppId)
+  return mainnetApp?.totalUsers || 0
+}
+
 function handleDelete(appId: AppId) {
   showDeletePopup.value = true
   appToDelete.value = appId
@@ -77,7 +83,7 @@ function getImageUrl(appId: AppId) {
 
 onBeforeMount(async () => {
   accountStatus.value = (await getAccountStatus()).data
-  const authOverview = (await getAuthOverview('testnet')).data
+  const authOverview = (await getAuthOverview('mainnet')).data
 
   const mausUsed = authOverview.mau
   estimatedCost.value = authOverview.bill
@@ -102,7 +108,8 @@ appsStore.$subscribe(() => {
 async function handleAppNameSave(app: AppData) {
   if (app.name.trim().length) {
     app.editState = false
-    await updateApp(app.id, { name: app.name }, app.network)
+    await updateApp(app.global_id, { name: app.name }, 'mainnet')
+    await updateApp(app.id, { name: app.name }, 'testnet')
     toast.success('App name saved')
   } else {
     toast.error('App name is required')
@@ -140,7 +147,6 @@ async function handleAppNameSave(app: AppData) {
                     sm-align="start"
                   >
                     <span class="info-detail">{{ freeMausUsed }}</span>
-                    <span class="info-detail-name">free users</span>
                   </VStack>
                   <VProgressBar
                     class="info-progress"
@@ -152,7 +158,7 @@ async function handleAppNameSave(app: AppData) {
                   v-if="paidMausUsed > 0"
                   direction="column"
                   gap="0.75rem"
-                  align="end"
+                  align="start"
                   :style="{ width: `${paidMausWidth}%`, overflow: 'visible' }"
                   class="text-ellipsis"
                 >
@@ -163,13 +169,30 @@ async function handleAppNameSave(app: AppData) {
                     sm-align="start"
                   >
                     <span class="info-detail">{{ paidMausUsed }}</span>
-                    <span class="info-detail-name">paid users</span>
                   </VStack>
                   <VProgressBar
                     class="info-progress"
                     style="min-width: 0"
                     :percentage="100"
                   />
+                </VStack>
+              </VStack>
+              <VStack class="flex-grow info-margin justify-end">
+                <VStack gap="1.25rem" sm-direction="column">
+                  <VStack gap="0.5rem" align="center">
+                    <div
+                      class="legend-dot"
+                      style="background-color: var(--color-green)"
+                    ></div>
+                    <span class="info-detail-name">Free users</span>
+                  </VStack>
+                  <VStack gap="0.5rem" align="center">
+                    <div
+                      class="legend-dot"
+                      style="background-color: var(--primary)"
+                    ></div>
+                    <span class="info-detail-name">Paid users</span>
+                  </VStack>
                 </VStack>
               </VStack>
             </VStack>
@@ -189,7 +212,7 @@ async function handleAppNameSave(app: AppData) {
         </VStack>
         <VStack gap="1.25rem" sm-justify="center" wrap>
           <VCard
-            class="app-card"
+            class="app-card cursor-pointer"
             @click.stop="canCreateApp = true"
             @cancel="canCreateApp = false"
           >
@@ -250,8 +273,24 @@ async function handleAppNameSave(app: AppData) {
               </VStack>
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center" gap="0.25rem">
-                  <span class="stats-title">Total Users</span>
+                  <span class="stats-title">Testnet Users</span>
                   <span class="stats-number">{{ app.totalUsers }}</span>
+                </VStack>
+                <VSeperator
+                  v-if="isMainnetAppAvailable(app.id)"
+                  vertical
+                  style="height: 100%; margin-inline: 1rem"
+                />
+                <VStack
+                  v-if="isMainnetAppAvailable(app.id)"
+                  direction="column"
+                  align="center"
+                  gap="0.25rem"
+                >
+                  <span class="stats-title">Mainnet Users</span>
+                  <span class="stats-number">{{
+                    getMainnetTotalUsers(app.id)
+                  }}</span>
                 </VStack>
               </VCard>
               <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
@@ -262,7 +301,7 @@ async function handleAppNameSave(app: AppData) {
                   @click.stop="() => goToDashboard(app.id, 'testnet')"
                 />
                 <VButton
-                  variant="Primary"
+                  variant="primary"
                   label="Mainnet"
                   class="app-action-button pause-button"
                   :disabled="!isMainnetAppAvailable(app.id)"
@@ -304,7 +343,6 @@ main {
   justify-content: center;
   width: 19rem;
   min-height: 350px;
-  cursor: pointer;
 }
 
 .app-card-disabled {
@@ -400,6 +438,12 @@ main {
 
 .info-margin {
   margin-inline: 2rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 .info-amount {
