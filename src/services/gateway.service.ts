@@ -54,6 +54,8 @@ type AppConfig = {
   wallet_type: WalletMode.NoUI | WalletMode.UI
   wallet_domain?: string
   logo: AppConfigThemeLogo
+  status: 0 | 1 | 2 | 3
+  keyspace: 'app-specific' | 'global'
 }
 
 const gatewayInstance = {

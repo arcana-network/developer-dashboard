@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref, watch, onMounted } from 'vue'
+import { onBeforeMount, ref, watch, onMounted, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
@@ -61,6 +61,8 @@ const currentNetwork = ref(NetworkOptions[1])
 const selectedRegion = ref(regions[0])
 const showMainnetConfirmation = ref(false)
 const toast = useToast()
+const createdMainnetAppId: Ref<AppId | null> = ref(null)
+const showMainnetSuccessPopup = ref(false)
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -182,7 +184,9 @@ async function handleCreateMainnetApp({
 
     toast.success('Mainnet app created')
     if (mainnetApp) {
-      router.push({ name: 'Dashboard', params: { appId: mainnetApp?.ID } })
+      showMainnetConfirmation.value = false
+      createdMainnetAppId.value = mainnetApp.ID
+      showMainnetSuccessPopup.value = true
     }
   } catch (e) {
     console.log(e)
@@ -356,7 +360,11 @@ watch(
       @cancel="onNetworkSwitchCancel"
       @proceed="handleCreateMainnetApp"
     />
-    <MainnetAppCreatedPopup v-if="false" />
+    <MainnetAppCreatedPopup
+      v-if="showMainnetSuccessPopup && createdMainnetAppId"
+      :app-id="createdMainnetAppId"
+      @close="showMainnetSuccessPopup = false"
+    />
     <ConfigureMobileMenu
       ref="mobile_menu"
       :show-mobile-menu="showMobileMenu"

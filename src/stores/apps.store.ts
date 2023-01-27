@@ -49,6 +49,8 @@ type App = {
     }
     redirectUri: string
   }
+  status: 0 | 1 | 2 | 3
+  keyspace: 'app-specific' | 'global'
 }
 
 type AppState = {
@@ -87,7 +89,8 @@ const useAppsStore = defineStore('apps', {
     getMainnetApp: (state) => {
       const mainnetAppsList = Object.values(state.mainnetApps)
       return (id: AppId) =>
-        mainnetAppsList.find((app) => app.global_id === id) || null
+        mainnetAppsList.find((app) => app.global_id === id || app.id === id) ||
+        null
     },
     getTestnetApp: (state) => {
       const testnetAppsList = Object.values(state.appsById)

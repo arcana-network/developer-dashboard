@@ -1,10 +1,22 @@
 <script lang="ts" setup>
+import { useRouter } from 'vue-router'
+
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import type { AppId } from '@/stores/apps.store'
+
+type Props = {
+  appId: AppId
+}
+
+const props = defineProps<Props>()
+const emit = defineEmits(['close'])
+const router = useRouter()
 
 function handleMainnetKeySpace() {
-  //
+  router.push({ name: 'Keyspace', params: { appId: props.appId } })
+  emit('close')
 }
 </script>
 

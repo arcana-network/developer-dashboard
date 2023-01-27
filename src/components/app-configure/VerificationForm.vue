@@ -103,11 +103,10 @@ async function handleSubmit() {
         />
         <VStack direction="column" align="center">
           <h3 class="verification-title">Verification Form</h3>
-          <div class="verification-description">
-            Submit your app for Verification to assign global keys to your
-            users. Currently apps are manually verified, get started by filling
-            this form. For help, reach-out at&nbsp;
-            <a href="mailto:support@arcana.network">support@arcana.network</a>
+          <div class="verification-description" style="text-align: center">
+            Fill up this verification form to register your application on
+            Mainnet and enable the Global keys feature. For assistance,&nbsp;
+            <a href="mailto:support@arcana.network">contact support</a>.
           </div>
           <form @submit.prevent="handleSubmit">
             <VStack
@@ -262,21 +261,21 @@ textarea::placeholder {
 .verification-title {
   margin-top: 2rem;
   margin-bottom: 0.5rem;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
 }
 
 .verification-description {
-  padding-inline: 3rem;
+  padding-inline: 4.25rem;
   margin-bottom: 2rem;
   font-family: var(--font-body);
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.5;
 }
 
 .verification-description a {
   font-family: var(--font-body);
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
   color: var(--primary);
