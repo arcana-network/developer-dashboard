@@ -36,6 +36,7 @@ async function handleSave() {
     preSelectedKeyspace = selectedKeyspace.value
     toast.success('Keyspace preference saved successfully')
   } catch (e) {
+    console.error(e)
     toast.error(
       'Error occurred while saving keyspace. Try again or contact support'
     )
