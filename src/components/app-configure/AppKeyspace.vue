@@ -39,6 +39,11 @@ async function handleSave() {
     loaderStore.hideLoader()
   }
 }
+
+function handleSubmitted() {
+  showVerificationForm.value = false
+  app.status = 1
+}
 </script>
 
 <template>
@@ -183,7 +188,7 @@ async function handleSave() {
       v-if="showVerificationForm"
       :app-id="appId"
       :address="app.address"
-      @submitted="void 0"
+      @submitted="handleSubmitted"
       @close="showVerificationForm = false"
     />
   </section>
