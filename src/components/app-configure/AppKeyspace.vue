@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
+import SwitchKeyspacePopup from '@/components/app-configure/SwitchKeyspacePopup.vue'
 import VerificationForm from '@/components/app-configure/VerificationForm.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -23,9 +24,11 @@ const selectedKeyspace = ref(app.keyspace)
 let preSelectedKeyspace = app.keyspace
 const loaderStore = useLoaderStore()
 const toast = useToast()
+const showWarning = ref(false)
 
 async function handleSave() {
   try {
+    showWarning.value = false
     loaderStore.showLoader('Saving keyspace preference...')
     await updateApp(app.id, { keyspace: selectedKeyspace.value }, app.network)
     await setKeyspace(app.id, app.keyspace === 'global')
@@ -44,6 +47,11 @@ async function handleSave() {
 function handleSubmitted() {
   showVerificationForm.value = false
   app.status = 1
+}
+
+function handleCancel() {
+  showWarning.value = false
+  selectedKeyspace.value = preSelectedKeyspace
 }
 </script>
 
@@ -182,7 +190,7 @@ function handleSubmitted() {
         :save-disabled="selectedKeyspace === preSelectedKeyspace"
         :cancel-disabled="selectedKeyspace === preSelectedKeyspace"
         @cancel="selectedKeyspace = preSelectedKeyspace"
-        @save="handleSave"
+        @save="showWarning = true"
       />
     </SettingCard>
     <VerificationForm
@@ -191,6 +199,11 @@ function handleSubmitted() {
       :address="app.address"
       @submitted="handleSubmitted"
       @close="showVerificationForm = false"
+    />
+    <SwitchKeyspacePopup
+      v-if="showWarning"
+      @switch="handleSave"
+      @cancel="handleCancel"
     />
   </section>
 </template>
