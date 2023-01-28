@@ -129,7 +129,7 @@ const useAppsStore = defineStore('apps', {
         const appInfo = {
           id: app.id,
           name: app.name,
-          totalUsers: app.mau,
+          totalUsers: app.mau || 0,
           createdAt: app.created_at,
           global_id: app.global_id,
         }

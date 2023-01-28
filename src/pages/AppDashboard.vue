@@ -70,9 +70,11 @@ watch(
       setTimeout(() => {
         const chartCtx = (
           document.getElementById('users-count-chart') as HTMLCanvasElement
-        ).getContext('2d')
-        chart = chartUtils.createChartView(chartCtx, chartConfig)
-        fetchActiveUsers()
+        )?.getContext('2d')
+        if (chartCtx) {
+          chart = chartUtils.createChartView(chartCtx, chartConfig)
+          fetchActiveUsers()
+        }
       }, 1)
     }
   }
@@ -111,7 +113,7 @@ const smartContractTooltip = ref('Click to copy')
 onMounted(() => {
   const chartCtx = (
     document.getElementById('users-count-chart') as HTMLCanvasElement
-  ).getContext('2d')
+  )?.getContext('2d')
   chart = chartUtils.createChartView(chartCtx, chartConfig)
   fetchActiveUsers()
 })

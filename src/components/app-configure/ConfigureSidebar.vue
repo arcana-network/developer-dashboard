@@ -131,7 +131,7 @@ function onAppClick(selectedAppId: AppId) {
 }
 
 function hasSubMenuSelected(tabLabel: string) {
-  const selectedTab = CONFIGURE_TABS.find((tab) => tab.label === tabLabel)
+  const selectedTab = ConfigureTabs.value.find((tab) => tab.label === tabLabel)
   if (selectedTab && selectedTab.subMenu) {
     const subTab = selectedTab.subMenu.find(
       (el) => el.label === props.currentTab

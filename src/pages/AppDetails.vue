@@ -187,6 +187,7 @@ async function handleCreateMainnetApp({
       showMainnetConfirmation.value = false
       createdMainnetAppId.value = mainnetApp.ID
       showMainnetSuccessPopup.value = true
+      currentTab.value = 'Keyspace'
     }
   } catch (e) {
     console.log(e)

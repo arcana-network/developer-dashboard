@@ -105,9 +105,9 @@ function generateMonthlyUsersChart() {
         lineTension: 0.2,
       },
     ]
-    var numberOfUsersCtx = document
-      .getElementById('numberOfUsersChart')
-      ?.getContext('2d')
+    var numberOfUsersCtx = (
+      document.getElementById('numberOfUsersChart') as HTMLCanvasElement
+    )?.getContext('2d')
     if (numberOfUsersCtx) {
       chartUtils.createChartView(numberOfUsersCtx, { ...config })
     }
@@ -120,7 +120,7 @@ onBeforeMount(() => {
 })
 
 function fetchUserLogsApi(address: string, index: number) {
-  fetchAllUserTransactions(appId, address).then((response) => {
+  fetchAllUserTransactions(appId, address, 'mainnet').then((response) => {
     users.value[index].email = response.data.email
     if (response.data.transaction instanceof Array) {
       userLog.value = users.value[index]
