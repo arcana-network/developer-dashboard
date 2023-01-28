@@ -62,6 +62,25 @@ async function createTransactionSigner(address: string, network: Network) {
   })
 }
 
+async function signTransactionV2(
+  address: string,
+  method: string,
+  value: boolean
+) {
+  const { appAddress, gateway, forwarderAddress, accessToken } =
+    getTransactionRequestProps(address, 'mainnet')
+  const provider = window.arcana.provider
+  return await window.transactionSigner.signTransactionV2({
+    appAddress,
+    provider,
+    forwarderAddress,
+    gateway,
+    accessToken,
+    method,
+    value: [value],
+  })
+}
+
 function hashJson(data: any) {
   return window.transactionSigner.hashJson(data)
 }
@@ -84,6 +103,7 @@ export {
   hashJson,
   generateLoginInfo,
   delegator,
+  signTransactionV2,
 }
 
 export type {

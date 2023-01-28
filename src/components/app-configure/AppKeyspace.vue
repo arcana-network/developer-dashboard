@@ -10,6 +10,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { updateApp } from '@/services/gateway.service'
+import { setKeyspace } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 
@@ -27,7 +28,7 @@ async function handleSave() {
   try {
     loaderStore.showLoader('Saving keyspace preference...')
     await updateApp(app.id, { keyspace: selectedKeyspace.value }, app.network)
-    // await smartContractCall()
+    await setKeyspace(app.id, app.keyspace === 'global')
     app.keyspace = selectedKeyspace.value
     preSelectedKeyspace = selectedKeyspace.value
     toast.success('Keyspace preference saved successfully')

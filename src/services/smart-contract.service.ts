@@ -1,12 +1,12 @@
 import type { AppConfigCred } from '@/services/gateway.service'
 import store from '@/stores'
-import type { DelegatePermission } from '@/stores/apps.store'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
 import {
   signTransaction,
   hashJson,
   delegator,
   getTransactionRequestProps,
+  signTransactionV2,
 } from '@/utils/signerUtils'
 
 const appsStore = useAppsStore(store)
@@ -28,7 +28,7 @@ async function setAppConfig(appName: string, socialAuth: AppConfigCred[]) {
 async function grantDelegate(
   appId: AppId,
   keyAddress: string,
-  permissions: DelegatePermission[]
+  permissions: any[]
 ) {
   const app = appsStore.app(appId)
   const { appAddress, gateway, forwarderAddress, accessToken } =
@@ -61,4 +61,15 @@ async function revokeDelegate(appId: AppId, keyAddress: string) {
   })
 }
 
-export { setAppConfig, setDefaultLimit, grantDelegate, revokeDelegate }
+async function setKeyspace(appId: AppId, global: boolean) {
+  const app = appsStore.app(appId)
+  await signTransactionV2(app.address, 'setUnPartition', global)
+}
+
+export {
+  setAppConfig,
+  setDefaultLimit,
+  grantDelegate,
+  revokeDelegate,
+  setKeyspace,
+}
