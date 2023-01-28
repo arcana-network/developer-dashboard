@@ -2,7 +2,6 @@ import { getConfig } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import type { Network } from '@/utils/constants'
 import { api } from '@/utils/constants'
-import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore()
 
@@ -43,7 +42,7 @@ function getTransactionRequestProps(
 
   return {
     appAddress,
-    gateway: getEnvApi(),
+    gateway: api.gateway[network],
     forwarderAddress: config.forwarder,
     accessToken: authStore.accessToken[network],
   }
