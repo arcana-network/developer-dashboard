@@ -42,7 +42,7 @@ function getTransactionRequestProps(
 
   return {
     appAddress,
-    gateway: api.gateway[network],
+    gateway: new URL('/api/v1', api.gateway[network]).toString(),
     forwarderAddress: config.forwarder,
     accessToken: authStore.accessToken[network],
   }
@@ -86,7 +86,7 @@ function hashJson(data: any) {
 
 async function generateLoginInfo(network: Network) {
   const provider = window.arcana.provider
-  const gateway = api.gateway[network]
+  const gateway = new URL('/api/v1', api.gateway[network]).toString()
   return await window.transactionSigner.generateLoginInfo({
     provider,
     gateway,
