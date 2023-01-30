@@ -89,6 +89,7 @@ type ConfigureTabType =
   | 'Social Auth'
   | 'Arcana Wallet'
   | 'Profile'
+  | 'Keyspace'
 
 type ConfigureTabSubMenu = {
   type: string

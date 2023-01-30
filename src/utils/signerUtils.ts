@@ -2,7 +2,6 @@ import { getConfig } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import type { Network } from '@/utils/constants'
 import { api } from '@/utils/constants'
-import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore()
 
@@ -43,7 +42,7 @@ function getTransactionRequestProps(
 
   return {
     appAddress,
-    gateway: getEnvApi(),
+    gateway: new URL('/api/v1', api.gateway[network]).toString(),
     forwarderAddress: config.forwarder,
     accessToken: authStore.accessToken[network],
   }
@@ -62,13 +61,32 @@ async function createTransactionSigner(address: string, network: Network) {
   })
 }
 
+async function signTransactionV2(
+  address: string,
+  method: string,
+  value: boolean
+) {
+  const { appAddress, gateway, forwarderAddress, accessToken } =
+    getTransactionRequestProps(address, 'mainnet')
+  const provider = window.arcana.provider
+  return await window.transactionSigner.signTransactionV2({
+    appAddress,
+    provider,
+    forwarderAddress,
+    gateway,
+    accessToken,
+    method,
+    value: [value],
+  })
+}
+
 function hashJson(data: any) {
   return window.transactionSigner.hashJson(data)
 }
 
 async function generateLoginInfo(network: Network) {
   const provider = window.arcana.provider
-  const gateway = api.gateway[network]
+  const gateway = new URL('/api/v1', api.gateway[network]).toString()
   return await window.transactionSigner.generateLoginInfo({
     provider,
     gateway,
@@ -84,6 +102,7 @@ export {
   hashJson,
   generateLoginInfo,
   delegator,
+  signTransactionV2,
 }
 
 export type {

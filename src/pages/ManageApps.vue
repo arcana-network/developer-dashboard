@@ -274,7 +274,7 @@ async function handleAppNameSave(app: AppData) {
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center" gap="0.25rem">
                   <span class="stats-title">Testnet Users</span>
-                  <span class="stats-number">{{ app.totalUsers }}</span>
+                  <span class="stats-number">{{ app.totalUsers || 0 }}</span>
                 </VStack>
                 <VSeperator
                   v-if="isMainnetAppAvailable(app.id)"

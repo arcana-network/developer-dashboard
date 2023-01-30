@@ -54,6 +54,8 @@ type AppConfig = {
   wallet_type: WalletMode.NoUI | WalletMode.UI
   wallet_domain?: string
   logo: AppConfigThemeLogo
+  status: 0 | 1 | 2 | 3
+  global: boolean
 }
 
 const gatewayInstance = {
@@ -180,6 +182,8 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     theme: wallet.selectedTheme,
     wallet_domain: wallet.websiteDomain,
     wallet_type,
+    global: app.keyspace === 'global',
+    status: app.status,
   }
 }
 
@@ -428,6 +432,15 @@ function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
   }
 }
 
+function submitVerificationForm(
+  appId: AppId,
+  formData: any
+): Promise<AxiosResponse<any>> {
+  return getGatewayInstance('mainnet').post(`${getEnvApi()}/verify-app/`, {
+    ...formData,
+  })
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -457,6 +470,7 @@ export {
   getAuthOverview,
   getGatewayInstance,
   updateAppLogos,
+  submitVerificationForm,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

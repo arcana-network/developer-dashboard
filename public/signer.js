@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 module.exports={
-  "abi": [
+  "abi":[
     {
       "anonymous": false,
       "inputs": [
@@ -37,6 +37,19 @@ module.exports={
       "anonymous": false,
       "inputs": [
         {
+          "indexed": false,
+          "internalType": "uint8",
+          "name": "version",
+          "type": "uint8"
+        }
+      ],
+      "name": "Initialized",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
           "indexed": true,
           "internalType": "address",
           "name": "previousOwner",
@@ -50,6 +63,19 @@ module.exports={
         }
       ],
       "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "status",
+          "type": "bool"
+        }
+      ],
+      "name": "Unpartitioned",
       "type": "event"
     },
     {
@@ -309,6 +335,19 @@ module.exports={
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "isActive",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -471,6 +510,32 @@ module.exports={
     {
       "inputs": [
         {
+          "internalType": "bool",
+          "name": "status",
+          "type": "bool"
+        }
+      ],
+      "name": "setUnPartition",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "status",
+          "type": "bool"
+        }
+      ],
+      "name": "setUnPartitioned",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
           "internalType": "address",
           "name": "user",
           "type": "address"
@@ -487,6 +552,19 @@ module.exports={
         }
       ],
       "name": "setUserLevelLimit",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bool",
+          "name": "status",
+          "type": "bool"
+        }
+      ],
+      "name": "setVerification",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
@@ -520,6 +598,19 @@ module.exports={
         }
       ],
       "name": "txCounter",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpartitioned",
       "outputs": [
         {
           "internalType": "bool",
@@ -662,10 +753,23 @@ module.exports={
     },
     {
       "inputs": [],
+      "name": "verification",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
       "name": "walletType",
       "outputs": [
         {
-          "internalType": "enum Arcana.WalletMode",
+          "internalType": "enum ArcanaV1.WalletMode",
           "name": "",
           "type": "uint8"
         }
@@ -1047,6 +1151,38 @@ function parseHex(hex) {
   return !hex.startsWith("0x") ? `0x${hex}` : hex;
 }
 
+async function signTransactionV2({
+  appAddress,
+  provider,
+  forwarderAddress,
+  gateway,
+  accessToken,
+  method,
+  value,
+}) {
+  const { ethProvider, arcanaContract, forwarderContract } = getContracts(
+    provider,
+    appAddress,
+    forwarderAddress
+  );
+
+  const req = await sign(
+    ethProvider,
+    arcanaContract,
+    forwarderContract,
+    method,
+    value
+  );
+  const res = await axios.post(gateway + "/meta-tx/", req, {
+    headers: {
+      Authorization: "Bearer " + accessToken,
+    },
+  });
+  const tx = await ethProvider.getTransaction(res.data.txHash);
+  await tx.wait();
+  return res.data;
+}
+
 function createTransactionSigner({
   appAddress,
   provider,
@@ -1194,6 +1330,7 @@ const transactionSigner = {
     revoke,
     grant,
   },
+  signTransactionV2,
 };
 
 window.transactionSigner = transactionSigner;

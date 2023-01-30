@@ -5,13 +5,6 @@ import VButton from '@/components/lib/VButton/VButton.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VRadio from '@/components/lib/VRadio/VRadio.vue'
 
-const props = defineProps({
-  show: {
-    type: Boolean,
-    default: false,
-  },
-})
-
 const emits = defineEmits(['cancel', 'proceed'])
 
 const mainnetCopyOptions = [
@@ -34,13 +27,14 @@ function onProceed() {
 </script>
 
 <template>
-  <VOverlay v-if="props.show">
+  <VOverlay>
     <div class="switch-chain__outer-container">
       <div class="switch-chain__container">
         <h3 class="switch-chain__title">Switch to Mainnet?</h3>
         <p class="switch-chain__message">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam ut
-          fermentum, bibendum lectus phasellus ligula morbi.
+          To create Mainnet configuration profile you can copy Testnet
+          application settings profile or create a fresh Mainnet configuration.
+          Each configuration profile is assigned a unique App Address.
         </p>
         <div class="flex switch-chain__copy-optionss">
           <div
@@ -97,7 +91,7 @@ function onProceed() {
   align-items: center;
   justify-content: center;
   max-width: 600px;
-  padding: 20px;
+  padding: 2rem;
   background-color: #262626;
   border-radius: 10px;
 }
@@ -118,8 +112,10 @@ function onProceed() {
   margin-top: 20px;
 }
 
-.switch-chain__button-container * + * {
-  margin-left: 15px;
+.switch-chain__button-container {
+  display: flex;
+  gap: 1rem;
+  margin-top: 64px;
 }
 
 .switch-chain__button {
@@ -127,8 +123,11 @@ function onProceed() {
 }
 
 .switch-chain__copy-optionss {
-  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  justify-content: center;
   width: 100%;
+  margin-top: 40px;
 }
 
 .switch-chain__copy-optionss > * + * {

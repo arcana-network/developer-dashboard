@@ -155,7 +155,7 @@ watch(
 }
 
 .custom-select__trigger .placeholder {
-  color: var(--text-grey);
+  color: #393939;
 }
 
 .custom-options {
