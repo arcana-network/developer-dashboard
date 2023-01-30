@@ -21,7 +21,7 @@ const appId = Number(route.params.appId)
 const appsStore = useAppsStore()
 const app = appsStore.app(appId)
 const selectedKeyspace = ref(app.keyspace)
-let preSelectedKeyspace = app.keyspace
+let preSelectedKeyspace = ref(app.keyspace)
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const showWarning = ref(false)
@@ -33,7 +33,7 @@ async function handleSave() {
     await updateApp(app.id, { keyspace: selectedKeyspace.value }, app.network)
     await setKeyspace(app.id, app.keyspace === 'global')
     app.keyspace = selectedKeyspace.value
-    preSelectedKeyspace = selectedKeyspace.value
+    preSelectedKeyspace.value = selectedKeyspace.value
     toast.success('Keyspace preference saved successfully')
   } catch (e) {
     console.error(e)
@@ -52,7 +52,7 @@ function handleSubmitted() {
 
 function handleCancel() {
   showWarning.value = false
-  selectedKeyspace.value = preSelectedKeyspace
+  selectedKeyspace.value = preSelectedKeyspace.value
 }
 </script>
 
