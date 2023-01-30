@@ -1,4 +1,4 @@
-import { AuthProvider, type NetworkConfig } from '@arcana/auth'
+import { AuthProvider, CHAIN, type NetworkConfig } from '@arcana/auth'
 
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
@@ -29,6 +29,10 @@ function useArcanaAuth() {
       authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
         network,
         debug: true,
+        chainConfig: {
+          chainId: CHAIN.POLYGON_MAINNET,
+          rpcUrl: 'https://polygon-rpc.com/',
+        },
       })
       await authInstance.init()
     }
