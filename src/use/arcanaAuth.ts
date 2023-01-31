@@ -1,7 +1,7 @@
-import { AuthProvider, CHAIN } from '@arcana/auth'
-
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
+
+const { AuthProvider, CHAIN } = window.arcana.auth
 
 const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
