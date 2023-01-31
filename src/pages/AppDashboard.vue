@@ -83,27 +83,27 @@ watch(
 const tutorials = [
   {
     id: '1',
-    title: 'How to set up social auth',
+    title: 'How to set up social auth?',
     description:
-      'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy first stack for your own ',
+      'Configure social authentication and then use plug and play or build your own UI to onboard users.',
     thumbnail_url: TutorialSocialAuth,
-    link: 'https://docs.arcana.network/howto/config_social_providers.html',
+    link: 'https://docs.beta.arcana.network/howto/config_social_providers.html',
   },
   {
     id: '2',
-    title: 'How to enable up passwordless login',
+    title: 'How to enable up passwordless login?',
     description:
-      'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy first stack for your own ',
+      'Allow users to onboard your web3 applications in a passwordless manner easily.',
     thumbnail_url: TutorialPasswordlessAuth,
-    link: 'https://docs.arcana.network/howto/onboard_users/wallet_pwdless_login.html',
+    link: 'https://docs.beta.arcana.network/howto/onboard_users/wallet_pwdless_login.html',
   },
   {
     id: '3',
-    title: 'How to enable plug & play auth',
+    title: 'How to use ‘Plug & Play Auth’ in Web3 apps?',
     description:
-      'Learn the first steps involved in building your own version of Dropbox using Arcana’s privacy...',
+      'Plug in social and passwordless user authentication in your app with built-in UI to onboard users.',
     thumbnail_url: TutorialPlugAndPlayAuth,
-    link: 'https://docs.arcana.network/howto/onboard_users/wallet_plugnplay.html',
+    link: 'https://docs.beta.arcana.network/howto/onboard_users/wallet_plugnplay.html',
   },
 ]
 
