@@ -63,6 +63,7 @@ const showMainnetConfirmation = ref(false)
 const toast = useToast()
 const createdMainnetAppId: Ref<AppId | null> = ref(null)
 const showMainnetSuccessPopup = ref(false)
+const isOnlyTestnet = import.meta.env.VITE_IS_ONLY_TESTNET === 'true'
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -349,6 +350,7 @@ watch(
           v-model="currentNetwork"
           :options="NetworkOptions"
           display-field="label"
+          :disabled="isOnlyTestnet"
           class="app-details__network-dropdown"
           @change="(_, option) => onNetworkSwitch(option)"
         />
