@@ -111,7 +111,7 @@ const tutorials = [
   //   description:
   //     'Configure wallet, onboard users and allow authenticated users to sign blockchain transactions in a zap.',
   //   thumbnail_url: '',
-  //   link: 'https://docs.beta.arcana.network/howto/arcana_wallet/',
+  //   link: 'https://docs.arcana.network/howto/arcana_wallet/',
   // },
   // {
   //   id: '5',
@@ -119,7 +119,7 @@ const tutorials = [
   //   description:
   //     'Learn about the Arcana wallet user interface and available Web3 operations',
   //   thumbnail_url: '',
-  //   link: 'https://docs.beta.arcana.network/user_guides/wallet_ui/',
+  //   link: 'https://docs.arcana.network/user_guides/wallet_ui/',
   // },
 ]
 
