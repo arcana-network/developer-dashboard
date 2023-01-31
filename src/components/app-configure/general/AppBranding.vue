@@ -155,8 +155,8 @@ async function handleFileRemove(
               <label for="light-logo">Logo Mark</label>
               <VFileUpload
                 id="light-logo"
-                placeholder="Upload .png, .svg or .gif"
-                allowed-file-type=".png,.svg,.gif"
+                placeholder="Upload .png or .svg"
+                allowed-file-type=".png,.svg"
                 :value="themeLogos.light.vertical.logo"
                 :is-loading="themeLogos.light.vertical.isLoading"
                 class="file-upload-input"
@@ -180,8 +180,8 @@ async function handleFileRemove(
                 :value="themeLogos.light.horizontal.logo"
                 :is-loading="themeLogos.light.horizontal.isLoading"
                 class="file-upload-input"
-                placeholder="Upload .png, .svg or .gif"
-                allowed-file-type=".png,.svg,.gif"
+                placeholder="Upload .png,or .svg"
+                allowed-file-type=".png,.svg"
                 @change-file="handleFileChange('light', 'horizontal', $event)"
                 @remove-file="handleFileRemove('light', 'horizontal')"
               />
@@ -206,9 +206,9 @@ async function handleFileRemove(
                 id="dark-logo"
                 :value="themeLogos.dark.vertical.logo"
                 :is-loading="themeLogos.dark.vertical.isLoading"
-                placeholder="Upload .png, .svg or .gif"
+                placeholder="Upload .png or .svg"
                 class="file-upload-input"
-                allowed-file-type=".png,.svg,.gif"
+                allowed-file-type=".png,.svg"
                 @change-file="handleFileChange('dark', 'vertical', $event)"
                 @remove-file="handleFileRemove('dark', 'vertical')"
               />
@@ -228,9 +228,9 @@ async function handleFileRemove(
                 id="dark-horizontal-log"
                 :value="themeLogos.dark.horizontal.logo"
                 :is-loading="themeLogos.dark.horizontal.isLoading"
-                placeholder="Upload .png, .svg or .gif"
+                placeholder="Upload .png or .svg"
                 class="file-upload-input"
-                allowed-file-type=".png,.svg,.gif"
+                allowed-file-type=".png,.svg"
                 @change-file="handleFileChange('dark', 'horizontal', $event)"
                 @remove-file="handleFileRemove('dark', 'horizontal')"
               />
