@@ -67,7 +67,7 @@ async function handleFileChange(
   orientation: 'vertical' | 'horizontal',
   files: File[]
 ) {
-  if (files[0].size > bytes('2 MB')) {
+  if (files[0].size > bytes('1 MB')) {
     return (themeLogos[mode][orientation].hasError = true)
   }
   themeLogos[mode][orientation].hasError = false
@@ -166,7 +166,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.light.vertical.hasError }"
-                >Image size limit 2MB</span
+                >Image size limit 1MB</span
               >
             </VStack>
             <VStack
@@ -188,7 +188,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.light.horizontal.hasError }"
-                >Image size limit 2MB</span
+                >Image size limit 1MB</span
               >
             </VStack>
           </VStack>
@@ -215,7 +215,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.dark.vertical.hasError }"
-                >Image size limit 2MB</span
+                >Image size limit 1MB</span
               >
             </VStack>
             <VStack
@@ -237,7 +237,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.dark.horizontal.hasError }"
-                >Image size limit 2MB</span
+                >Image size limit 1MB</span
               >
             </VStack>
           </VStack>
