@@ -105,6 +105,22 @@ const tutorials = [
     thumbnail_url: TutorialPlugAndPlayAuth,
     link: 'https://docs.beta.arcana.network/howto/onboard_users/wallet_plugnplay.html',
   },
+  // {
+  //   id: '4',
+  //   title: 'How to enable Arcana wallet?',
+  //   description:
+  //     'Configure wallet, onboard users and allow authenticated users to sign blockchain transactions in a zap.',
+  //   thumbnail_url: '',
+  //   link: 'https://docs.beta.arcana.network/howto/arcana_wallet/',
+  // },
+  // {
+  //   id: '5',
+  //   title: 'Wallet User Guide',
+  //   description:
+  //     'Learn about the Arcana wallet user interface and available Web3 operations',
+  //   thumbnail_url: '',
+  //   link: 'https://docs.beta.arcana.network/user_guides/wallet_ui/',
+  // },
 ]
 
 const SmartContractIcon = ref(CopyIcon)
