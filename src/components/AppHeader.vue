@@ -12,7 +12,7 @@ import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
 
 const router = useRouter()
-const canShowBanner = ref(true)
+const canShowBanner = ref(false)
 const hideHeader = ref(false)
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
@@ -47,7 +47,7 @@ useClickOutside(help_menu, () => {
 })
 
 onMounted(() => {
-  canShowBanner.value = !sessionStorage.getItem('hide-banner')
+  canShowBanner.value = false
   document.querySelector('#app')?.addEventListener('scroll', handleScroll)
 })
 
