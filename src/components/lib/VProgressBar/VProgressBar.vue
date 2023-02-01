@@ -4,7 +4,7 @@ import { computed } from 'vue'
 const props = defineProps({
   state: {
     type: String,
-    default: 'success',
+    default: '',
     validator: (value: string) =>
       ['', 'success', 'warn', 'error'].includes(value),
   },
@@ -16,7 +16,7 @@ const props = defineProps({
 })
 
 const value = computed(() => {
-  return !props.percentage || props.percentage < 2 ? 2 : props.percentage
+  return !props.percentage || props.percentage < 0 ? 0 : props.percentage
 })
 </script>
 
@@ -38,9 +38,8 @@ const value = computed(() => {
 progress,
 progress::-webkit-progress-bar,
 .progress {
-  min-width: 7.5em;
   height: 100%;
-  color: #8fff00;
+  color: var(--primary);
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   border-radius: 100px;
   box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%);
@@ -54,53 +53,53 @@ progress::-webkit-progress-bar,
 
 progress::-webkit-progress-value,
 .progress > span {
-  background: #8fff00;
+  background: var(--primary);
   border-radius: 999px;
   transition: width 0.4s;
 }
 
 progress::-moz-progress-bar {
-  background-color: #8fff00;
+  background-color: var(--primary);
   border-radius: 999px;
   transition: width 0.4s;
 }
 
 progress.success {
-  color: #8fff00;
+  color: var(--color-green);
 }
 
 progress.warn {
-  color: #ffc226;
+  color: var(--color-yellow);
 }
 
 progress.error {
-  color: #ff6826;
+  color: var(--color-orange);
 }
 
 progress.success::-webkit-progress-value,
 .progress.success > span {
-  background-color: #8fff00;
+  background-color: var(--color-green);
 }
 
 progress.warn::-webkit-progress-value,
 .progress.warn > span {
-  background-color: #ffc226;
+  background-color: var(--color-yellow);
 }
 
 progress.error::-webkit-progress-value,
 .progress.error > span {
-  background-color: #ff6826;
+  background-color: var(--color-orange);
 }
 
 progress.success::-moz-progress-bar {
-  background-color: #8fff00;
+  background-color: var(--color-green);
 }
 
 progress.warn::-moz-progress-bar {
-  background-color: #ffc226;
+  background-color: var(--color-yellow);
 }
 
 progress.error::-moz-progress-bar {
-  background-color: #ff6826;
+  background-color: var(--color-orange);
 }
 </style>

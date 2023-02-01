@@ -4,8 +4,6 @@ import { ref } from 'vue'
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
-import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -53,9 +51,6 @@ function clearWebsiteDomain() {
 
 function handleCancel() {
   walletWebsiteDomain.value = wallet.websiteDomain
-  selectedTheme.value = availableThemes.find(
-    (theme) => theme.value === wallet.selectedTheme
-  ) as ThemeData
   isEdited.value = false
 }
 
@@ -64,10 +59,7 @@ function isValidWebsiteDomain() {
 }
 
 function hasSameValuesInStore() {
-  return (
-    walletWebsiteDomain.value === wallet.websiteDomain &&
-    selectedTheme.value.value === wallet.selectedTheme
-  )
+  return walletWebsiteDomain.value === wallet.websiteDomain
 }
 
 async function handleSave() {
@@ -77,7 +69,7 @@ async function handleSave() {
     wallet.selectedTheme = selectedTheme.value.value
     auth.wallet = wallet
     loaderStore.showLoader('Saving wallet config...')
-    await updateApp(appId, { auth })
+    await updateApp(appId, { auth }, app.network)
     toast.success('Saved wallet config')
     app.auth.wallet = auth.wallet
   } catch (e) {
@@ -96,19 +88,18 @@ async function handleSave() {
       <form @submit.prevent="handleSave">
         <VStack direction="column" gap="1rem">
           <VStack direction="column" gap="1rem" class="flex-grow">
-            <h3 class="text-uppercase">Website Domain</h3>
-            <div class="body-1">
+            <h3>Website Domain</h3>
+            <div class="body-1 text-grey">
               Set your website domain here. It is used for security reasons by
               the server, to restrict Arcana wallet from loading anywhere else
               other than the domain you specify. We use frame-ancestor CSP to
               restrict domains.
-              <br />
               <a
                 href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
                 target="_blank"
                 class="learn-more"
               >
-                Learn More...
+                LEARN MORE
               </a>
             </div>
             <VTextField
@@ -122,54 +113,6 @@ async function handleSave() {
               @blur="isEdited = true"
             />
           </VStack>
-          <VStack direction="column" gap="1rem" style="margin-bottom: 1rem">
-            <h3 class="text-uppercase">Wallet Theme</h3>
-            <VStack direction="column" gap="0.75rem" align="start">
-              <h4 class="text-grey">Choose Theme</h4>
-              <VDropdown
-                v-model="selectedTheme"
-                :options="availableThemes"
-                display-field="label"
-                class="theme-dropdown"
-              />
-            </VStack>
-          </VStack>
-          <VStack direction="column" gap="1rem">
-            <h3 class="text-uppercase">Preview Interface</h3>
-            <VStack gap="2.5rem" wrap>
-              <VStack direction="column" gap="0.625rem">
-                <h4>Desktop</h4>
-                <img
-                  v-if="selectedTheme.value === 'light'"
-                  src="@/assets/web-wallet-preview-desktop-light.png"
-                  alt="Web wallet desktop preview"
-                  class="web-wallet-desktop-preview"
-                />
-                <img
-                  v-else
-                  src="@/assets/web-wallet-preview-desktop-dark.png"
-                  alt="Web wallet desktop preview"
-                  class="web-wallet-desktop-preview"
-                />
-              </VStack>
-              <VSeperator vertical />
-              <VStack direction="column" gap="0.625rem">
-                <h4>Mobile</h4>
-                <img
-                  v-if="selectedTheme.value === 'light'"
-                  src="@/assets/web-wallet-preview-mobile-light.png"
-                  alt="Web wallet mobile preview"
-                  class="web-wallet-mobile-preview"
-                />
-                <img
-                  v-else
-                  src="@/assets/web-wallet-preview-mobile-dark.png"
-                  alt="Web wallet mobile preview"
-                  class="web-wallet-mobile-preview"
-                />
-              </VStack>
-            </VStack>
-          </VStack>
           <ConfigureActionButtons
             :save-disabled="hasSameValuesInStore() || !isValidWebsiteDomain()"
             :cancel-disabled="hasSameValuesInStore()"
@@ -182,27 +125,13 @@ async function handleSave() {
 </template>
 
 <style scoped>
-.theme-dropdown {
-  min-width: 16rem;
-}
-
 .text-grey {
+  font-size: 1rem;
+  font-weight: 500;
   color: var(--text-grey);
 }
 
 .web-wallet-input {
   max-width: 24rem;
-}
-
-.ui-mode-switch {
-  margin-top: 4px;
-}
-
-.web-wallet-desktop-preview {
-  max-width: 38rem;
-}
-
-.web-wallet-mobile-preview {
-  max-width: 12rem;
 }
 </style>

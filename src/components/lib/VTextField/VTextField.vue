@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, useAttrs } from 'vue'
+import { computed, useAttrs, ref } from 'vue'
 
 import utils from '@/components/lib/utils'
 
@@ -81,6 +81,7 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'icon-clicked'])
 const attrs = useAttrs()
 let componentId = props.id?.trim()
+const isFocused = ref(false)
 
 let inputType = computed(() => {
   return props.type?.trim().toLowerCase()
@@ -107,7 +108,7 @@ function onIconClicked(ev) {
     <label v-if="label" :style="[labelStyle]" :for="componentId">
       {{ label }}
     </label>
-    <div class="text-field" :class="{ icon: !!icon }">
+    <div class="text-field" :class="{ icon: !!icon, focused: isFocused }">
       <input
         :id="componentId"
         :disabled="props.disabled"
@@ -118,6 +119,8 @@ function onIconClicked(ev) {
         :class="{ strong }"
         :style="inputStyle"
         @input="onInput"
+        @focus="isFocused = true"
+        @blur="isFocused = false"
       />
       <img
         v-if="icon"
@@ -142,10 +145,11 @@ div.form-group {
 }
 
 label {
-  margin: 10px 20px;
-  font-family: var(--font-body);
-  font-size: 1.125em;
-  font-weight: 400;
+  margin-bottom: 0.5rem;
+  margin-left: 0.25rem;
+  font-family: var(--font-title);
+  font-size: 1rem;
+  font-weight: 500;
   line-height: 1.5em;
   color: var(--text-grey);
 }
@@ -156,6 +160,10 @@ div.text-field {
   border-radius: 10px;
   box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
     inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+}
+
+.text-field.focused {
+  outline: 1px solid var(--primary);
 }
 
 .message {
@@ -184,7 +192,7 @@ div.text-field {
 input {
   width: 100%;
   padding: 0;
-  margin: 1rem 2rem;
+  margin: 0.875rem 1rem;
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
@@ -201,7 +209,7 @@ input::placeholder {
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--text-grey);
+  color: #393939;
 }
 
 .form-group[data-disabled='true'],

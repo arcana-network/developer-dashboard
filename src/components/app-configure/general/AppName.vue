@@ -6,7 +6,6 @@ import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { updateApp } from '@/services/gateway.service'
-import { setAppConfig } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
@@ -30,11 +29,8 @@ function hasSameAppName() {
 async function handleSave() {
   try {
     loaderStore.showLoader('Saving app name...')
-    await updateApp(appId, { name: appName.value })
+    await updateApp(appId, { name: appName.value }, app.network)
     toast.success('Saved app name')
-    loaderStore.showLoader('Saving app config in smart contract...')
-    await setAppConfig(app.name, app.auth.social)
-    toast.success('App config saved in blockchain')
     app.name = appName.value
   } catch (e) {
     toast.error('Error occured while saving the app name.')

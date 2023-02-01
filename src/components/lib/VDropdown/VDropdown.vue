@@ -30,6 +30,10 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  showTooltip: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])
@@ -84,7 +88,10 @@ watch(
       :class="triggerClass"
       :style="triggerStyle"
     >
-      <span v-if="value" class="custom-select-value">
+      <span
+        v-if="(!displayField && value) || value[displayField]"
+        class="custom-select-value"
+      >
         <span v-if="displayField">
           {{ value[displayField] }}
         </span>
@@ -105,10 +112,13 @@ watch(
         class="custom-option"
         @click.stop="onChange(option, $event)"
       >
-        <span v-if="displayField">
+        <span
+          v-if="displayField"
+          :title="props.showTooltip ? option[displayField] : ''"
+        >
           {{ option[displayField] }}
         </span>
-        <span v-else>
+        <span v-else :title="props.showTooltip ? option : ''">
           {{ option }}
         </span>
       </span>
@@ -145,7 +155,7 @@ watch(
 }
 
 .custom-select__trigger .placeholder {
-  color: var(--text-grey);
+  color: #393939;
 }
 
 .custom-options {
@@ -197,6 +207,7 @@ watch(
 
 .arrow {
   position: relative;
+  right: -1rem;
   width: 1rem;
   height: 1rem;
 }

@@ -14,6 +14,7 @@ import {
   fetchAllUserTransactions,
   fetchMonthlyUsers,
 } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import chartUtils from '@/utils/chart'
 
@@ -45,9 +46,11 @@ const showDetails = ref(false)
 const userLog: Ref<UserLog> = ref({})
 const userTransactions: Ref<UserTransaction[]> = ref([])
 const appId = useAppId()
+const appsStore = useAppsStore()
 
 function fetchUsers() {
-  fetchAllUsers(appId).then((response) => {
+  const totalUsers = appsStore.appOverview(appId).totalUsers
+  fetchAllUsers(appId, 0, totalUsers).then((response) => {
     if (response.data instanceof Array) {
       users.value = response.data.map((user) => {
         return {
@@ -102,9 +105,9 @@ function generateMonthlyUsersChart() {
         lineTension: 0.2,
       },
     ]
-    var numberOfUsersCtx = document
-      .getElementById('numberOfUsersChart')
-      ?.getContext('2d')
+    var numberOfUsersCtx = (
+      document.getElementById('numberOfUsersChart') as HTMLCanvasElement
+    )?.getContext('2d')
     if (numberOfUsersCtx) {
       chartUtils.createChartView(numberOfUsersCtx, { ...config })
     }
@@ -117,7 +120,7 @@ onBeforeMount(() => {
 })
 
 function fetchUserLogsApi(address: string, index: number) {
-  fetchAllUserTransactions(appId, address).then((response) => {
+  fetchAllUserTransactions(appId, address, 'mainnet').then((response) => {
     users.value[index].email = response.data.email
     if (response.data.transaction instanceof Array) {
       userLog.value = users.value[index]
@@ -176,7 +179,6 @@ function convertToBytes(value: number) {
 
 <template>
   <div>
-    <app-header />
     <main class="container" style="margin-top: 2rem">
       <h1>USERS</h1>
       <div

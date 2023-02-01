@@ -81,7 +81,6 @@ const loadingColor = computed(() => {
   </button>
   <a
     v-else
-    v-wave
     :style="[buttonStyle]"
     :class="classes"
     :disabled="disabled"
@@ -154,7 +153,6 @@ a.link {
   min-width: 0;
   padding: 0;
   color: var(--primary);
-  text-decoration: none;
 }
 
 a:not([disabled='true']):hover {

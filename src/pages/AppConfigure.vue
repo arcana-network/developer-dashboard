@@ -9,7 +9,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppId } from '@/use/getAppId'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
 
-const currentTab: Ref<ConfigureTabType> = ref('general')
+const currentTab: Ref<ConfigureTabType> = ref('Branding')
 const router = useRouter()
 const route = useRoute()
 const appId = useAppId()
@@ -29,10 +29,8 @@ function switchTab(tab: ConfigureTab) {
 
 <template>
   <VStack direction="column" gap="2rem" class="configure-container">
-    <AppHeader />
     <ConfigureHeader />
     <VStack gap="2rem" class="container app-settings-container">
-      <ConfigureSidebar :current-tab="currentTab" @switch-tab="switchTab" />
       <RouterView />
     </VStack>
   </VStack>

@@ -1,6 +1,7 @@
 import { getConfig } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
-import getEnvApi from '@/utils/get-env-api'
+import type { Network } from '@/utils/constants'
+import { api } from '@/utils/constants'
 
 const authStore = useAuthStore()
 
@@ -30,7 +31,8 @@ let signTransaction: (
 ) => Promise<string>
 
 function getTransactionRequestProps(
-  appAddress: string
+  appAddress: string,
+  network: Network
 ): SmartContractRequestParams {
   if (!appAddress.startsWith('0x')) {
     appAddress = `0x${appAddress}`
@@ -40,15 +42,15 @@ function getTransactionRequestProps(
 
   return {
     appAddress,
-    gateway: getEnvApi(),
+    gateway: new URL('/api/v1', api.gateway[network]).toString(),
     forwarderAddress: config.forwarder,
-    accessToken: authStore.accessToken,
+    accessToken: authStore.accessToken[network],
   }
 }
 
-async function createTransactionSigner(address: string) {
+async function createTransactionSigner(address: string, network: Network) {
   const { appAddress, gateway, forwarderAddress, accessToken } =
-    getTransactionRequestProps(address)
+    getTransactionRequestProps(address, network)
   const provider = window.arcana.provider
   signTransaction = window.transactionSigner.createTransactionSigner({
     appAddress,
@@ -59,20 +61,49 @@ async function createTransactionSigner(address: string) {
   })
 }
 
+async function signTransactionV2(
+  address: string,
+  method: string,
+  value: boolean
+) {
+  const { appAddress, gateway, forwarderAddress, accessToken } =
+    getTransactionRequestProps(address, 'mainnet')
+  const provider = window.arcana.provider
+  return await window.transactionSigner.signTransactionV2({
+    appAddress,
+    provider,
+    forwarderAddress,
+    gateway,
+    accessToken,
+    method,
+    value: [value],
+  })
+}
+
 function hashJson(data: any) {
   return window.transactionSigner.hashJson(data)
 }
 
-async function generateLoginInfo() {
+async function generateLoginInfo(network: Network) {
   const provider = window.arcana.provider
-  const gateway = getEnvApi()
+  const gateway = new URL('/api/v1', api.gateway[network]).toString()
   return await window.transactionSigner.generateLoginInfo({
     provider,
     gateway,
   })
 }
 
-export { createTransactionSigner, signTransaction, hashJson, generateLoginInfo }
+const delegator = window.transactionSigner.delegator
+
+export {
+  getTransactionRequestProps,
+  createTransactionSigner,
+  signTransaction,
+  hashJson,
+  generateLoginInfo,
+  delegator,
+  signTransactionV2,
+}
 
 export type {
   SmartContractRequestParams,

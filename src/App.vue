@@ -2,7 +2,6 @@
 import { onBeforeMount, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
-import AppFooter from '@/components/AppFooter.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { fetchAndStoreConfig } from '@/services/gateway.service'
@@ -40,12 +39,15 @@ onBeforeMount(async () => {
 
 <template>
   <div class="root">
-    <router-view v-if="isAuthLoaded" v-slot="{ Component }">
+    <router-view
+      v-if="isAuthLoaded"
+      v-slot="{ Component }"
+      style="min-height: 100vh"
+    >
       <transition name="fade" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
-    <AppFooter v-if="isAuthLoaded && !route.path.includes('/config/')" />
     <FullScreenLoader
       v-if="loaderStore.isLoading || !isAuthLoaded"
       :message="loaderStore.message"

@@ -10,7 +10,6 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { deleteCred, updateApp } from '@/services/gateway.service'
-import { setAppConfig } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
@@ -104,12 +103,9 @@ async function handleSave() {
       return !social.find((s) => s.verifier === a.verifier)
     })
     auth.social = social
-    await updateApp(appId, { auth })
-    await deleteCred(appId, authToRemove)
+    await updateApp(appId, { auth }, app.network)
+    await deleteCred(appId, authToRemove, app.network)
     toast.success('Saved social auth credentials')
-    loaderStore.showLoader('Saving app config in smart contract...')
-    await setAppConfig(app.name, socialAuthRef)
-    toast.success('App config saved in blockchain')
     app.auth.social = [...social]
   } catch (e) {
     toast.error('Error occured while saving the social auth.')
@@ -136,9 +132,8 @@ function handleInputDelete(
         Provide easy onboarding for dApp users with familiar social
         authentication mechanisms. Arcana securely manages public-private key
         pair for each authenticated user using distributed key generation.
-        <br />
         <a :href="`${DOCS_URL}/docs/dkg`" target="_blank" class="learn-more">
-          Learn More...
+          LEARN MORE
         </a>
       </template>
       <VStack gap="1.5rem">
@@ -228,8 +223,9 @@ function handleInputDelete(
 }
 
 .social-auth-separator {
-  height: 5rem;
+  height: 4rem;
   margin-top: -2.5rem;
+  border: 1px solid rgb(141 141 141 / 10%);
 }
 
 .social-auth-content-separator {

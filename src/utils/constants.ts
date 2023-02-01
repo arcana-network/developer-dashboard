@@ -1,6 +1,17 @@
 import bytes from 'bytes'
 
+import brandingIcon from '@/assets/iconography/branding.svg'
+import BugIcon from '@/assets/iconography/bug.png'
+import dashboardIcon from '@/assets/iconography/dashboard.svg'
+import DocsIcon from '@/assets/iconography/docs.svg'
+import PassportIcon from '@/assets/iconography/passport.svg'
+import ScheduleIcon from '@/assets/iconography/schedule.svg'
+import settingsIcon from '@/assets/iconography/settings.svg'
+import socialMediaIcon from '@/assets/iconography/user.svg'
+import walletIcon from '@/assets/iconography/wallet.svg'
 import type { UserLimitState } from '@/stores/apps.store'
+
+const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
 
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
@@ -8,8 +19,14 @@ const sentry = {
 }
 
 const api = {
-  gateway: import.meta.env.VITE_ARCANA_GATEWAY_URL,
-  verify: import.meta.env.VITE_ARCANA_VERIFY_URL,
+  gateway: {
+    mainnet: import.meta.env.VITE_ARCANA_GATEWAY_MAINNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_GATEWAY_TESTNET_URL,
+  },
+  verify: {
+    mainnet: import.meta.env.VITE_ARCANA_VERIFY_MAINNET_URL,
+    testnet: import.meta.env.VITE_ARCANA_VERIFY_TESTNET_URL,
+  },
 }
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
@@ -17,6 +34,8 @@ const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
 const DOCS_URL: string = import.meta.env.VITE_ARCANA_DOCS_URL
 
 type Chain = 'ethereum' | 'polygon' | 'binance' | 'none'
+
+type Network = 'mainnet' | 'testnet'
 
 type ChainOption<T> = {
   label: string
@@ -64,20 +83,54 @@ const regions: Region[] = [
   },
 ]
 
-type ConfigureTabType = 'general' | 'auth' | 'store' | 'access' | 'wallet'
+type ConfigureTabType =
+  | 'Dashboard'
+  | 'Configure'
+  | 'Branding'
+  | 'Social Auth'
+  | 'Arcana Wallet'
+  | 'Profile'
+  | 'Keyspace'
+
+type ConfigureTabSubMenu = {
+  type: string
+  label: ConfigureTabType
+  icon: string
+}
 
 type ConfigureTab = {
-  type: ConfigureTabType
-  label: string
+  type: string
+  label: ConfigureTabType
+  icon: string
+  subMenu?: ConfigureTabSubMenu[]
 }
 
 const userLimitOptions: string[] = ['Limited', 'Unlimited']
 
 const CONFIGURE_TABS: readonly ConfigureTab[] = [
-  { type: 'general', label: 'General' },
-  { type: 'auth', label: 'Auth' },
-  { type: 'store', label: 'Store' },
-  { type: 'access', label: 'Access' },
+  { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
+  {
+    type: 'configure',
+    label: 'Configure',
+    icon: settingsIcon,
+    subMenu: [
+      {
+        type: 'branding',
+        label: 'Branding',
+        icon: brandingIcon,
+      },
+      {
+        type: 'socialAuth',
+        label: 'Social Auth',
+        icon: socialMediaIcon,
+      },
+      {
+        type: 'arcanaWallet',
+        label: 'Arcana Wallet',
+        icon: walletIcon,
+      },
+    ],
+  },
 ]
 
 type BandwidthLimitUnit = {
@@ -184,6 +237,35 @@ enum WalletMode {
 
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
+const HelpItems = [
+  {
+    label: 'View Docs',
+    link: docs_url,
+    icon: DocsIcon,
+  },
+  {
+    label: 'Schedule a Demo',
+    link: 'https://calendly.com/arcana-network/arcana-demo-walkthrough',
+    icon: ScheduleIcon,
+  },
+  {
+    label: 'Report a Bug',
+    link: 'https://github.com/orgs/arcana-network/discussions',
+    icon: BugIcon,
+  },
+]
+
+const ProfileItems = [
+  {
+    label: 'Profile',
+    icon: PassportIcon,
+  },
+  // {
+  //   label: 'Invoices',
+  //   icon: InvoiceIcon,
+  // },
+]
+
 const constants = {
   sentry,
   api,
@@ -212,6 +294,8 @@ export {
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   DOCS_URL,
+  HelpItems,
+  ProfileItems,
 }
 
 export type {
@@ -224,6 +308,7 @@ export type {
   BandwidthLimitUnit,
   SocialAuthVerifier,
   SocialAuthVerifierLabel,
+  Network,
 }
 
 export default constants

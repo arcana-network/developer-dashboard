@@ -1,48 +1,67 @@
 <script lang="ts" setup>
-import bytes from 'bytes'
 import { onBeforeMount, ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
+import CloseIcon from '@/assets/iconography/close.svg'
 import CreateApp from '@/components/app-configure/CreateApp.vue'
 import AppDelete from '@/components/app-configure/general/AppDelete.vue'
+import AppFooter from '@/components/AppFooter.vue'
 import AppHeader from '@/components/AppHeader.vue'
+import AppStatusBanner from '@/components/AppStatusBanner.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VProgressBar from '@/components/lib/VProgressBar/VProgressBar.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppsStore, type AppOverview, type AppId } from '@/stores/apps.store'
+import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import { useToast } from '@/components/lib/VToast'
+import {
+  getAccountStatus,
+  getAuthOverview,
+  updateApp,
+  type AccountStatus,
+} from '@/services/gateway.service'
+import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
+import type { Network } from '@/utils/constants'
 
 const router = useRouter()
 const appsStore = useAppsStore()
 
-type AppData = AppOverview & {
-  storageUsedPercent?: number
-  bandwidthUsedPercent?: number
+type AppData = AppConfig & {
+  editState?: boolean
 }
 
 const apps: Ref<AppData[]> = ref(appsStore.apps)
 const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
+const accountStatus: Ref<AccountStatus> = ref('active')
 const appToDelete = ref(0)
+const estimatedCost = ref(0)
+const freeMausUsed = ref(0)
+const percentageFreeMaus = ref(0)
+const paidMausUsed = ref(0)
+const freeMausWidth = ref(100)
+const paidMausWidth = ref(0)
+const toast = useToast()
 
-function goToDashboard(appId: AppId) {
-  router.push({ name: 'AppDetails', params: { appId } })
+function goToDashboard(appId: AppId, network: Network) {
+  let paramAppId = appId
+  if (network === 'mainnet') {
+    const mainnetApp = appsStore.getMainnetApp(appId)
+    paramAppId = mainnetApp?.id
+  }
+  router.push({ name: 'AppDetails', params: { appId: paramAppId } })
 }
 
-function calculatePercentageLimitUsed(limitUsed: number, limitAllowed: number) {
-  return (limitUsed / limitAllowed) * 100
+function isMainnetAppAvailable(testnetAppId: AppId) {
+  const mainnetApp = appsStore.getMainnetApp(testnetAppId)
+  return !(mainnetApp === null)
 }
 
-function getProgressState(limitUsedPercent: number) {
-  if (limitUsedPercent <= 50) {
-    return 'success'
-  }
-  if (limitUsedPercent > 70) {
-    return 'error'
-  }
-  return 'warn'
+function getMainnetTotalUsers(testnetAppId: AppId) {
+  const mainnetApp = appsStore.getMainnetApp(testnetAppId)
+  return mainnetApp?.totalUsers || 0
 }
 
 function handleDelete(appId: AppId) {
@@ -50,49 +69,150 @@ function handleDelete(appId: AppId) {
   appToDelete.value = appId
 }
 
-function calculateAppLimits() {
-  apps.value.forEach((app) => {
-    app.storageUsedPercent = calculatePercentageLimitUsed(
-      app.storage.consumed,
-      app.storage.allowed
-    )
-    app.bandwidthUsedPercent = calculatePercentageLimitUsed(
-      app.bandwidth.consumed,
-      app.bandwidth.allowed
-    )
-  })
-}
-
 function getImageUrl(appId: AppId) {
-  const appLogos = appsStore.app(appId).logos
-  return appLogos.dark.vertical || appLogos.light.vertical || AppFallbackLogo
+  const appInfo = appsStore.app(appId)
+  if (appInfo && appInfo.logos) {
+    return (
+      appInfo.logos.dark.vertical ||
+      appInfo.logos.light.vertical ||
+      AppFallbackLogo
+    )
+  }
+  return AppFallbackLogo
 }
 
-onBeforeMount(calculateAppLimits)
+onBeforeMount(async () => {
+  accountStatus.value = (await getAccountStatus()).data
+  const authOverview = (await getAuthOverview('mainnet')).data
+
+  const mausUsed = authOverview.mau
+  estimatedCost.value = authOverview.bill
+  const allowedFreeMaus = 2000
+
+  if (mausUsed > allowedFreeMaus) {
+    freeMausUsed.value = allowedFreeMaus
+    paidMausUsed.value = mausUsed - allowedFreeMaus
+    percentageFreeMaus.value = 100
+    freeMausWidth.value = (freeMausUsed.value / mausUsed) * 100
+    paidMausWidth.value = (paidMausUsed.value / mausUsed) * 100
+  } else {
+    freeMausUsed.value = mausUsed
+    percentageFreeMaus.value = (mausUsed / allowedFreeMaus) * 100
+  }
+})
 
 appsStore.$subscribe(() => {
   apps.value = appsStore.apps
-  calculateAppLimits()
 })
+
+async function handleAppNameSave(app: AppData) {
+  if (app.name.trim().length) {
+    app.editState = false
+    await updateApp(app.global_id, { name: app.name }, 'mainnet')
+    await updateApp(app.id, { name: app.name }, 'testnet')
+    toast.success('App name saved')
+  } else {
+    toast.error('App name is required')
+  }
+}
 </script>
 
 <template>
   <div>
+    <AppStatusBanner
+      v-if="accountStatus !== 'active'"
+      :status="accountStatus"
+    />
     <AppHeader />
     <main>
       <VStack direction="column" gap="2rem" class="container">
         <VStack gap="2rem">
-          <img
-            src="@/assets/iconography/back.svg"
-            class="cursor-pointer back-icon"
-            alt="Go Back"
-            @click.stop="router.back()"
-          />
           <h1>MANAGE APPS</h1>
         </VStack>
-        <VStack gap="1.25rem" wrap>
+        <VStack gap="1.25rem" md-direction="column" sm-direction="column">
+          <VCard class="info-card">
+            <VStack direction="column" gap="1.5rem" class="flex-grow">
+              <span class="info-title">Monthly Active Users</span>
+              <VSeperator class="info-separator" />
+              <VStack gap="0.25rem" class="info-margin">
+                <VStack
+                  direction="column"
+                  gap="0.75rem"
+                  :style="{ width: `${freeMausWidth}%`, overflow: 'visible' }"
+                >
+                  <VStack
+                    gap="0.25rem"
+                    sm-direction="column"
+                    align="end"
+                    sm-align="start"
+                  >
+                    <span class="info-detail">{{ freeMausUsed }}</span>
+                  </VStack>
+                  <VProgressBar
+                    class="info-progress"
+                    :percentage="percentageFreeMaus"
+                    state="success"
+                  />
+                </VStack>
+                <VStack
+                  v-if="paidMausUsed > 0"
+                  direction="column"
+                  gap="0.75rem"
+                  align="start"
+                  :style="{ width: `${paidMausWidth}%`, overflow: 'visible' }"
+                  class="text-ellipsis"
+                >
+                  <VStack
+                    gap="0.25rem"
+                    sm-direction="column"
+                    align="end"
+                    sm-align="start"
+                  >
+                    <span class="info-detail">{{ paidMausUsed }}</span>
+                  </VStack>
+                  <VProgressBar
+                    class="info-progress"
+                    style="min-width: 0"
+                    :percentage="100"
+                  />
+                </VStack>
+              </VStack>
+              <VStack class="flex-grow info-margin justify-end">
+                <VStack gap="1.25rem" sm-direction="column">
+                  <VStack gap="0.5rem" align="center">
+                    <div
+                      class="legend-dot"
+                      style="background-color: var(--color-green)"
+                    ></div>
+                    <span class="info-detail-name">Free users</span>
+                  </VStack>
+                  <VStack gap="0.5rem" align="center">
+                    <div
+                      class="legend-dot"
+                      style="background-color: var(--primary)"
+                    ></div>
+                    <span class="info-detail-name">Paid users</span>
+                  </VStack>
+                </VStack>
+              </VStack>
+            </VStack>
+          </VCard>
+          <VCard class="info-card">
+            <VStack direction="column" gap="1.5rem" class="flex-grow">
+              <span class="info-title">Estimated Cost</span>
+              <VSeperator class="info-separator" />
+              <VStack gap="1rem" class="info-margin">
+                <span class="info-detail">Due:</span>
+                <span class="info-detail info-amount"
+                  >${{ estimatedCost }}</span
+                >
+              </VStack>
+            </VStack>
+          </VCard>
+        </VStack>
+        <VStack gap="1.25rem" sm-justify="center" wrap>
           <VCard
-            class="app-card"
+            class="app-card cursor-pointer"
             @click.stop="canCreateApp = true"
             @cancel="canCreateApp = false"
           >
@@ -105,69 +225,87 @@ appsStore.$subscribe(() => {
             v-for="app in apps"
             :key="`app-${app.id}`"
             class="app-card"
-            @click.stop="goToDashboard(app.id)"
+            :class="{ 'app-card-disabled': accountStatus !== 'active' }"
           >
-            <VStack direction="column" align="center" class="app-container">
+            <VStack
+              direction="column"
+              align="center"
+              class="app-container justify-space-between position-relative"
+            >
+              <button
+                class="delete-icon-btn"
+                @click.stop="handleDelete(app.id)"
+              >
+                <img
+                  src="@/assets/iconography/delete.svg"
+                  alt="close icon"
+                  class="delete-icon-img"
+                />
+              </button>
               <img :src="getImageUrl(app.id)" class="app-logo" />
-              <span class="sub-heading-3 app-name">{{ app.name }}</span>
+              <VStack gap="0.5rem" style="max-width: 100%">
+                <VTextField
+                  v-if="app.editState"
+                  v-model="app.name"
+                  class="text-ellipsis"
+                  type="text"
+                  no-message
+                  :icon="CloseIcon"
+                  clickable-icon
+                  @icon-clicked="app.name = ''"
+                  @keyup.enter.stop="handleAppNameSave(app)"
+                />
+                <span
+                  v-else
+                  class="sub-heading-3 app-name text-ellipsis"
+                  :title="app.name"
+                  style="max-width: calc(100% - 1rem)"
+                >
+                  {{ app.name }}
+                </span>
+                <img
+                  v-if="!app.editState"
+                  src="@/assets/iconography/pencil.svg"
+                  class="edit-icon"
+                  title="Edit app name"
+                  @click.stop="app.editState = true"
+                />
+              </VStack>
               <VCard variant="depressed" gap="6px" class="stats-card">
-                <VStack direction="column" align="center">
-                  <span class="stats-title">Total Users</span>
-                  <span class="stats-number">{{ app.totalUsers }}</span>
+                <VStack direction="column" align="center" gap="0.25rem">
+                  <span class="stats-title">Testnet Users</span>
+                  <span class="stats-number">{{ app.totalUsers || 0 }}</span>
                 </VStack>
-                <VSeperator vertical class="stats-separator" />
-                <VStack direction="column" align="center">
-                  <span class="stats-title">No of Files</span>
-                  <span class="stats-number">{{ app.noOfFiles }}</span>
-                </VStack>
-                <VSeperator vertical class="stats-separator" />
-                <VStack direction="column" align="center">
-                  <span class="stats-title">Estimated Cost</span>
-                  <span class="stats-number">${{ app.estimatedCost }}</span>
+                <VSeperator
+                  v-if="isMainnetAppAvailable(app.id)"
+                  vertical
+                  style="height: 100%; margin-inline: 1rem"
+                />
+                <VStack
+                  v-if="isMainnetAppAvailable(app.id)"
+                  direction="column"
+                  align="center"
+                  gap="0.25rem"
+                >
+                  <span class="stats-title">Mainnet Users</span>
+                  <span class="stats-number">{{
+                    getMainnetTotalUsers(app.id)
+                  }}</span>
                 </VStack>
               </VCard>
-              <VStack gap="1.25rem" class="limit-indicator-container">
-                <VStack direction="column" class="flex-grow">
-                  <span class="limit-title">Storage</span>
-                  <span class="limit-details">
-                    {{ bytes(app.storage.consumed, { decimalPlaces: 2 }) }}
-                    of
-                    {{ bytes(app.storage.allowed) }}
-                    used
-                  </span>
-                  <VProgressBar
-                    :percentage="app.storageUsedPercent"
-                    :state="getProgressState(app.storageUsedPercent as number)"
-                    class="limit-indicator"
-                  />
-                </VStack>
-                <VStack direction="column" class="flex-grow">
-                  <span class="limit-title">Bandwidth</span>
-                  <span class="limit-details">
-                    {{ bytes(app.bandwidth.consumed, { decimalPlaces: 2 }) }}
-                    of
-                    {{ bytes(app.bandwidth.allowed) }}
-                    used
-                  </span>
-                  <VProgressBar
-                    :percentage="app.bandwidthUsedPercent"
-                    :state="getProgressState(app.bandwidthUsedPercent as number)"
-                    class="limit-indicator"
-                  />
-                </VStack>
-              </VStack>
-              <VStack gap="1rem" style="width: 100%; margin-top: auto">
+              <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
                 <VButton
                   variant="secondary"
-                  label="Delete"
+                  label="Testnet"
                   class="app-action-button delete-button"
-                  @click.stop="handleDelete(app.id)"
+                  @click.stop="() => goToDashboard(app.id, 'testnet')"
                 />
                 <VButton
-                  variant="secondary"
-                  label="Pause"
+                  variant="primary"
+                  label="Mainnet"
                   class="app-action-button pause-button"
-                  disabled
+                  :disabled="!isMainnetAppAvailable(app.id)"
+                  @click.stop="() => goToDashboard(app.id, 'mainnet')"
                 />
               </VStack>
             </VStack>
@@ -180,6 +318,7 @@ appsStore.$subscribe(() => {
         />
       </VStack>
     </main>
+    <AppFooter show-social-icons />
     <Transition name="fade" mode="out-in">
       <CreateApp v-if="canCreateApp" @close="canCreateApp = false" />
     </Transition>
@@ -187,17 +326,14 @@ appsStore.$subscribe(() => {
 </template>
 
 <style scoped>
+main {
+  padding-block: 1rem 4rem;
+}
+
 .container {
-  margin-block: 2rem;
-}
-
-.back-icon {
-  width: 2.25rem;
-}
-
-.description {
-  font-size: 1.25rem;
-  color: var(--text-grey);
+  width: auto;
+  max-width: 100%;
+  margin: 0 2rem;
 }
 
 .app-card {
@@ -205,9 +341,13 @@ appsStore.$subscribe(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: clamp(20rem, 30vw, 25rem);
-  height: 31rem;
-  cursor: pointer;
+  width: 19rem;
+  min-height: 350px;
+}
+
+.app-card-disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
 }
 
 .app-container {
@@ -218,41 +358,30 @@ appsStore.$subscribe(() => {
 .app-logo {
   width: 5.5rem;
   height: 5.5rem;
-  margin-top: 0.75rem;
   background: var(--primary-dark);
   border-radius: 50%;
 }
 
 .app-name {
+  max-width: 100%;
   margin-top: 0.625rem;
   font-size: 1.5rem;
 }
 
 .app-action-button {
   width: 100%;
+  min-width: unset !important;
   text-transform: uppercase;
 }
 
-.delete-button {
-  background: transparent !important;
-  border: 2px solid #ee193f !important;
-}
-
-.delete-button:hover {
-  color: #ee193f !important;
-}
-
 .stats-card {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  justify-content: space-evenly;
+  justify-content: center;
   width: 100%;
-  height: 4.5rem;
-  margin-block: 2rem;
-}
-
-.stats-separator {
-  height: calc(100% - 1.25rem);
+  padding: 10px;
+  margin: 0;
 }
 
 .stats-title {
@@ -269,27 +398,79 @@ appsStore.$subscribe(() => {
   line-height: 1.5;
 }
 
-.limit-indicator-container {
+.info-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
   width: 100%;
+  padding-bottom: 2rem;
 }
 
-.limit-title {
+.info-title {
+  margin-inline: 2rem;
+  margin-top: 2rem;
   font-family: var(--font-title);
-  font-size: 0.875rem;
+  font-size: 1.25rem;
   font-weight: 700;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
-.limit-details {
-  margin-top: 0.625rem;
-  font-family: var(--font-title);
-  font-size: 0.75rem;
-  font-weight: 600;
+.info-separator {
+  margin: 0;
+  border-top: 1px solid rgb(141 141 141 / 20%);
+}
+
+.info-detail {
+  margin-bottom: -0.75rem;
+  font-family: var(--font-body);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.info-detail-name {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.5;
   color: var(--text-grey);
 }
 
-.limit-indicator {
+.info-margin {
+  margin-inline: 2rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.info-amount {
+  color: var(--color-orange);
+}
+
+.info-progress {
   width: 100%;
-  height: 5px;
-  margin-top: 1.25rem;
+  height: 10px;
+}
+
+.edit-icon {
+  margin-top: 0.5rem;
+  cursor: pointer;
+}
+
+.delete-icon-btn {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.delete-icon-img {
+  width: 18px;
+  height: 18px;
 }
 </style>

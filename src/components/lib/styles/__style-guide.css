@@ -7,6 +7,9 @@
   --color-green: #8fff00;
   --color-yellow: #ffc226;
   --color-orange: #ff6826;
+  --color-red: #b43030;
+  --color-white: #f7f7f7;
+  --color-black: #101010;
   --font-title: 'Montserrat', sans-serif;
   --font-body: 'Sora', sans-serif;
   --dark-theme-bg: #1e1e1e;
@@ -46,11 +49,16 @@
 }
 
 body {
+  box-sizing: border-box;
   background-color: var(--dark-theme-bg);
 }
 
 main {
   flex-grow: 1;
+}
+
+p {
+  margin: 0;
 }
 
 h1,
@@ -95,9 +103,16 @@ h5 {
 
 label {
   font-family: var(--font-title);
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
   color: var(--text-white);
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .sub-heading-1,
@@ -208,6 +223,14 @@ a {
   justify-content: center;
 }
 
+.justify-start {
+  justify-content: flex-start;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
 .flex-row,
 .row {
   flex-direction: row;
@@ -311,6 +334,10 @@ a {
   width: 100%;
 }
 
+.height-100 {
+  height: 100%;
+}
+
 .text-uppercase {
   text-transform: uppercase;
 }
@@ -351,11 +378,11 @@ a {
   }
 
   .sub-heading-1 {
-    font-size: 2.125em !important;
+    font-size: 2.125em;
   }
 
   .sub-heading-2 {
-    font-size: 1.688em !important;
+    font-size: 1.688em;
   }
 
   .sm-flex-start {
@@ -491,14 +518,6 @@ a {
   }
 }
 @media only screen and (max-width: 1023px) {
-  .tablet-hide {
-    visibility: hidden !important;
-  }
-
-  .tablet-remove {
-    display: none !important;
-  }
-
   h1 {
     font-size: 2.225em;
     letter-spacing: 2px;
@@ -517,6 +536,14 @@ a {
   }
 }
 @media only screen and (min-width: 768px) and (max-width: 1023px) {
+  .tablet-hide {
+    visibility: hidden !important;
+  }
+
+  .tablet-remove {
+    display: none !important;
+  }
+
   .md-flex-start {
     align-items: flex-start;
   }

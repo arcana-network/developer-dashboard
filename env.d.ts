@@ -7,10 +7,21 @@ declare module '*.vue' {
   export default component
 }
 declare global {
+  import type { DelegatePermission } from '@/stores/apps.store'
   import type {
     TransactionSignerParams,
     SmartContractAcceptedValue,
   } from '@/utils/signerUtils'
+
+  type DelegatorParams = {
+    appAddress: string
+    gateway: string
+    forwarderAddress: string
+    accessToken: string
+    provider: any
+    delegator: string
+    roles: DelegatePermission[]
+  }
 
   interface ImportMetaEnv {
     PROD: boolean
@@ -18,11 +29,15 @@ declare global {
     VITE_IS_APP_DOWN?: boolean
 
     VITE_ARCANA_APP_ADDRESS: string
-    VITE_ARCANA_AUTH_NETWORK: 'dev' | 'testnet'
+    VITE_ARCANA_AUTH_NETWORK: 'dev' | 'testnet' | 'mainnet'
     VITE_ARCANA_DOCS_URL: string
     VITE_ARCANA_GATEWAY_API_VERSION: string
-    VITE_ARCANA_GATEWAY_URL: string
+    VITE_ARCANA_GATEWAY_TESTNET_URL: string
+    VITE_ARCANA_GATEWAY_MAINNET_URL: string
+    VITE_ARCANA_VERIFY_TESTNET_URL: string
+    VITE_ARCANA_VERIFY_MAINNET_URL: string
     VITE_ARCANA_VERIFY_URL: string
+    VITE_IS_ONLY_TESTNET: 'true' | 'false'
 
     VITE_GOOGLE_ANALYTICS_ID?: string
 
@@ -53,6 +68,10 @@ declare global {
         address: string
       }>
       hashJson: (data: any) => string
+      delegator: {
+        grant: (data: DelegatorParams) => Promise<string>
+        revoke: (data: Omit<DelegatorParams, 'roles'>) => Promise<string>
+      }
     }
     arcana: {
       provider: any
