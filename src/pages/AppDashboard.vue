@@ -5,9 +5,11 @@ import { onMounted, ref, watch, type Ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
+import TutorialConnectWallet from '@/assets/Tutorial-connect-wallet.png'
 import TutorialPasswordlessAuth from '@/assets/Tutorial-passwordless-auth.png'
 import TutorialPlugAndPlayAuth from '@/assets/Tutorial-plug-and-play-auth.png'
 import TutorialSocialAuth from '@/assets/Tutorial-social-auth.png'
+import TutorialWalletUserGuide from '@/assets/Tutorial-wallet-user-guide.png'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
@@ -33,16 +35,6 @@ type ChartData = {
 const initialDailyData = [-6, -5, -4, -3, -2, -1, 0].reduce((a, b) => {
   a.push({
     label: moment().add(b, 'day').format('YYYY-MM-DD'),
-    data: 0,
-  })
-  return a
-}, [] as ChartData[])
-
-const initialMonthlyData = [
-  -11, -10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
-].reduce((a, b) => {
-  a.push({
-    label: moment().add(b, 'month').format('YYYY-MM'),
     data: 0,
   })
   return a
@@ -105,22 +97,22 @@ const tutorials = [
     thumbnail_url: TutorialPlugAndPlayAuth,
     link: 'https://docs.arcana.network/howto/onboard_users/wallet_plugnplay.html',
   },
-  // {
-  //   id: '4',
-  //   title: 'How to enable Arcana wallet?',
-  //   description:
-  //     'Configure wallet, onboard users and allow authenticated users to sign blockchain transactions in a zap.',
-  //   thumbnail_url: '',
-  //   link: 'https://docs.arcana.network/howto/arcana_wallet/',
-  // },
-  // {
-  //   id: '5',
-  //   title: 'Wallet User Guide',
-  //   description:
-  //     'Learn about the Arcana wallet user interface and available Web3 operations',
-  //   thumbnail_url: '',
-  //   link: 'https://docs.arcana.network/user_guides/wallet_ui/',
-  // },
+  {
+    id: '4',
+    title: 'How to enable Arcana wallet?',
+    description:
+      'Configure wallet, onboard users and allow authenticated users to sign blockchain transactions in a zap.',
+    thumbnail_url: TutorialConnectWallet,
+    link: 'https://docs.arcana.network/howto/arcana_wallet/',
+  },
+  {
+    id: '5',
+    title: 'Wallet User Guide',
+    description:
+      'Learn about the Arcana wallet user interface and available Web3 operations',
+    thumbnail_url: TutorialWalletUserGuide,
+    link: 'https://docs.arcana.network/user_guides/wallet_ui/',
+  },
 ]
 
 const SmartContractIcon = ref(CopyIcon)
