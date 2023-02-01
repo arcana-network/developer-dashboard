@@ -37,6 +37,7 @@ declare global {
     VITE_ARCANA_VERIFY_TESTNET_URL: string
     VITE_ARCANA_VERIFY_MAINNET_URL: string
     VITE_ARCANA_VERIFY_URL: string
+    VITE_IS_ONLY_TESTNET: 'true' | 'false'
 
     VITE_GOOGLE_ANALYTICS_ID?: string
 

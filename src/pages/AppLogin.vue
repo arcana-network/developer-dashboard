@@ -37,6 +37,7 @@ async function launchLogin(type: string) {
     }
     await fetchAndStoreDetails()
   } catch (e) {
+    console.error(e)
     loaderStore.hideLoader()
   }
 }
