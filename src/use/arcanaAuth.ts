@@ -7,22 +7,6 @@ const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
 let authInstance: AuthProvider
-let chainConfig: {
-  chainId: string
-  rpcUrl: string
-}
-
-if (ARCANA_AUTH_NETWORK === 'mainnet') {
-  chainConfig = {
-    chainId: CHAIN.POLYGON_MAINNET,
-    rpcUrl: 'https://polygon-rpc.com/',
-  }
-} else if (ARCANA_AUTH_NETWORK === 'testnet') {
-  chainConfig = {
-    chainId: CHAIN.POLYGON_MUMBAI_TESTNET,
-    rpcUrl: 'https://rpc-mumbai.maticvigil.com',
-  }
-}
 
 function useArcanaAuth() {
   const authStore = useAuthStore()
@@ -33,7 +17,10 @@ function useArcanaAuth() {
       authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
         network: ARCANA_AUTH_NETWORK,
         debug: true,
-        chainConfig,
+        chainConfig: {
+          chainId: CHAIN.POLYGON_MAINNET,
+          rpcUrl: 'https://polygon-rpc.com/',
+        },
       })
       await authInstance.init()
     }
