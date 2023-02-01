@@ -127,7 +127,12 @@ const routes: RouteRecordRaw[] = [
   {
     name: 'Login',
     path: '/login',
-    component: toBoolean(constants.isAppDown) ? AppDownNotification : AppLogin,
+    component: AppLogin,
+  },
+  {
+    name: 'AppDown',
+    path: '/under-maintenance',
+    component: AppDownNotification,
   },
 ]
 
@@ -140,6 +145,11 @@ const router: Router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
+  if (to.name === 'AppDown' && !toBoolean(constants.isAppDown)) {
+    router.push({
+      name: 'Login',
+    })
+  }
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
     !authStore.accessToken.testnet
