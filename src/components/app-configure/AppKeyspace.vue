@@ -31,7 +31,7 @@ async function handleSave() {
     showWarning.value = false
     loaderStore.showLoader('Saving keyspace preference...')
     await updateApp(app.id, { keyspace: selectedKeyspace.value }, app.network)
-    await setKeyspace(app.id, app.keyspace === 'global')
+    await setKeyspace(app.id, selectedKeyspace.value === 'global')
     app.keyspace = selectedKeyspace.value
     preSelectedKeyspace.value = selectedKeyspace.value
     toast.success('Keyspace preference saved successfully')
