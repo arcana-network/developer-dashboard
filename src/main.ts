@@ -27,6 +27,7 @@ if (import.meta.env.PROD) {
       }),
     ],
     tracesSampleRate: 1.0,
+    logErrors: true,
   })
 }
 
