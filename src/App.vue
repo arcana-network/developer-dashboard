@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { captureException as sentryCaptureException } from '@sentry/vue'
 import { onBeforeMount, ref } from 'vue'
 
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
@@ -12,11 +13,15 @@ const arcanaAuth = useArcanaAuth()
 const isAuthLoaded = ref(false)
 
 onBeforeMount(async () => {
-  loaderStore.showLoader('Initializing Arcana Auth SDK...')
-  await arcanaAuth.init()
-  isAuthLoaded.value = true
-  await fetchAndStoreConfig()
-  loaderStore.hideLoader()
+  try {
+    loaderStore.showLoader('Initializing Arcana Auth SDK...')
+    await arcanaAuth.init()
+    isAuthLoaded.value = true
+    await fetchAndStoreConfig()
+    loaderStore.hideLoader()
+  } catch (err) {
+    sentryCaptureException(err)
+  }
 })
 </script>
 
