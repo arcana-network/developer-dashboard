@@ -51,11 +51,6 @@ const socialLinks = [
     image: DiscordIcon,
     alt: 'Discord',
   },
-  {
-    href: 'https://forum.arcana.network/',
-    image: DiscourseIcon,
-    alt: 'Forum',
-  },
 ]
 
 type ConfigureProps = {
