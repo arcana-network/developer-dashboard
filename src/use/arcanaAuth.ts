@@ -26,7 +26,7 @@ function useArcanaAuth() {
 
   async function init() {
     if (!authInstance) {
-      authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
+      authInstance = new AuthProvider('', {
         network,
         debug: true,
         chainConfig: {
