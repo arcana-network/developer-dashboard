@@ -360,7 +360,8 @@ async function fetchActiveUsers() {
 }
 
 .tutorials__container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.25rem;
   margin-top: 10px;
 }
@@ -431,7 +432,7 @@ async function fetchActiveUsers() {
   }
 
   .tutorials__container {
-    flex-direction: column;
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -439,6 +440,10 @@ async function fetchActiveUsers() {
   .dashboard-heading h1 {
     width: auto;
     margin-bottom: 0;
+  }
+
+  .tutorials__container {
+    grid-template-columns: 1fr;
   }
 
   .smart-contract-copy {
