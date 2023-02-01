@@ -7,6 +7,17 @@ const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
 let authInstance: AuthProvider
+let network: 'testnet' | 'mainnet' | any
+
+if (ARCANA_AUTH_NETWORK === 'mainnet') {
+  network = {
+    authUrl: 'https://auth.arcana.network',
+    gatewayUrl: 'https://gateway.arcana.network',
+    walletUrl: 'https://wallet.arcana.network',
+  }
+} else {
+  network = ARCANA_AUTH_NETWORK
+}
 
 function useArcanaAuth() {
   const authStore = useAuthStore()
@@ -15,7 +26,7 @@ function useArcanaAuth() {
   async function init() {
     if (!authInstance) {
       authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
-        network: ARCANA_AUTH_NETWORK,
+        network,
         debug: true,
         chainConfig: {
           chainId: CHAIN.POLYGON_MAINNET,
