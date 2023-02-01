@@ -15,7 +15,7 @@ const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
 const sentry = {
   dsn: import.meta.env.VITE_SENTRY_DSN,
   tracingOrigins: [
-    'https://deploy-preview-182--arcana-dashboard-dev.netlify.app',
+    'https://deploy-preview-181--arcana-dashboard-dev.netlify.app',
     /^\//,
   ],
 }
