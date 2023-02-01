@@ -47,14 +47,9 @@ const socialLinks = [
     alt: 'Telegram',
   },
   {
-    href: 'https://discord.gg/w6ej4FtqYS',
+    href: 'https://discord.gg/6g7fQvEpdy',
     image: DiscordIcon,
     alt: 'Discord',
-  },
-  {
-    href: 'https://forum.arcana.network/',
-    image: DiscourseIcon,
-    alt: 'Forum',
   },
 ]
 
