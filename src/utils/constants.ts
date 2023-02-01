@@ -1,6 +1,7 @@
 import bytes from 'bytes'
 
 import brandingIcon from '@/assets/iconography/branding.svg'
+import BugIcon from '@/assets/iconography/bug.png'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import DocsIcon from '@/assets/iconography/docs.svg'
 import PassportIcon from '@/assets/iconography/passport.svg'
@@ -246,6 +247,11 @@ const HelpItems = [
     label: 'Schedule a Demo',
     link: 'https://calendly.com/arcana-network/arcana-demo-walkthrough',
     icon: ScheduleIcon,
+  },
+  {
+    label: 'Report a Bug',
+    link: 'https://github.com/orgs/arcana-network/discussions',
+    icon: BugIcon,
   },
 ]
 
