@@ -13,7 +13,10 @@ const docsLink = import.meta.env.VITE_ARCANA_DOCS_URL
     </h1>
     <p class="body-2 sub-description">
       See how to configure your app on the Arcana Dashboard.
-      <a :href="docsLink" class="text-uppercase sub-description__link"
+      <a
+        :href="docsLink"
+        target="_blank"
+        class="text-uppercase sub-description__link"
         >Learn More</a
       >
     </p>
