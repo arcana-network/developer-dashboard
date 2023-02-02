@@ -2,7 +2,7 @@
 import AppLogo from '@/assets/logo.svg'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 
-const docsLink = import.meta.env.VITE_ARCANA_DOCS_URL
+const docsLink = 'https://docs.arcana.network/howto/config_dapp.html'
 </script>
 
 <template>
