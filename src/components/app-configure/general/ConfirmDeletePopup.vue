@@ -76,7 +76,7 @@ function onProceed() {
     <VButton
       v-wave
       variant="primary"
-      label="DELETE"
+      label="PROCEED"
       :disabled="disableProceed"
       @click.stop="onProceed"
     />
