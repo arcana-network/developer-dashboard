@@ -371,6 +371,14 @@ async function fetchActiveUsers() {
   </div>
 </template>
 
+<style>
+.carousel__prev,
+.carousel__next {
+  background-color: white;
+  border-radius: 10px;
+}
+</style>
+
 <style scoped>
 .users-count-chart {
   max-height: 430px;
