@@ -18,7 +18,6 @@ const appsStore = useAppsStore()
 
 const showDeletePopup = ref(true)
 const showDeleteTimerPopup = ref(false)
-let appsToDelete = { mainnet: false, testnet: false }
 
 type DeleteProp = {
   appId?: number
@@ -27,8 +26,7 @@ type DeleteProp = {
 const emit = defineEmits(['close'])
 const props = defineProps<DeleteProp>()
 
-function handleProceedDeletion({ networks }) {
-  appsToDelete = networks
+function handleProceedDeletion() {
   showDeleteTimerPopup.value = true
   showDeletePopup.value = false
 }
@@ -38,17 +36,11 @@ async function handleAppDeletion() {
   emit('close')
   loaderStore.showLoader('Deleting App...')
   try {
-    const testnetAppId = props.appId as number
-    const app = appsStore.app(testnetAppId)
-    const mainnetAppId = app.network === 'mainnet' ? app.id : app.global_id
-    if (appsToDelete.mainnet) {
-      await deleteApp(mainnetAppId, 'mainnet')
-      appsStore.deleteApp(mainnetAppId, 'mainnet')
-    }
-    if (appsToDelete.testnet) {
-      await deleteApp(testnetAppId, 'testnet')
-      appsStore.deleteApp(testnetAppId, 'testnet')
-    }
+    const appId = props.appId as number
+    const app = appsStore.app(appId)
+    await deleteApp(app.global_id, 'mainnet')
+    await deleteApp(appId, 'testnet')
+    appsStore.deleteApp(appId, app.network)
     toast.success('App deleted successfully')
     router.push({ name: 'ManageApps' })
   } catch (e) {
@@ -93,7 +85,7 @@ function handleCancel() {
   width: 72%;
   min-width: 200px;
   max-width: 560px;
-  padding: 2em;
+  padding: 4em 2em;
   transform: translate(-50%, -50%);
 }
 </style>
