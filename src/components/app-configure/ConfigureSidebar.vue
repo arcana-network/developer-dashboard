@@ -4,10 +4,10 @@ import { useRouter, useRoute } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import DiscordIcon from '@/assets/discord-white.svg'
-import DiscourseIcon from '@/assets/discourse-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
 import brandingIcon from '@/assets/iconography/branding.svg'
+import CloseIcon from '@/assets/iconography/close.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
@@ -21,11 +21,7 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import {
-  CONFIGURE_TABS,
-  type ConfigureTab,
-  type ConfigureTabType,
-} from '@/utils/constants'
+import { type ConfigureTab, type ConfigureTabType } from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
@@ -199,6 +195,12 @@ watch(
             v-if="showAppsList"
             class="apps-name__list-container position-absolute"
           >
+            <button
+              class="apps-name__close-btn"
+              @click.stop="showAppsList = false"
+            >
+              <img :src="CloseIcon" alt="close" />
+            </button>
             <VCardButton
               v-for="app in apps"
               :key="app.name"
@@ -426,12 +428,27 @@ watch(
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
 }
 
+.apps-name__close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
+.apps-name__close-btn > img {
+  width: 10px;
+}
+
 .apps-name__list-item {
   display: flex;
   gap: 0.5rem;
   align-items: center;
   justify-content: flex-start;
   padding: 0 !important;
+  margin-top: 10px;
   background-color: transparent;
   border: none;
   outline: none;
