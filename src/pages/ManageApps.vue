@@ -298,6 +298,7 @@ async function handleAppNameSave(app: AppData) {
                   variant="secondary"
                   label="Testnet"
                   class="app-action-button delete-button"
+                  :disabled="app.network !== 'testnet'"
                   @click.stop="() => goToDashboard(app.id, 'testnet')"
                 />
                 <VButton
