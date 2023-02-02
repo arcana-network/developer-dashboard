@@ -3,7 +3,7 @@ import type { Chart } from 'chart.js'
 import moment from 'moment'
 import { onMounted, ref, watch, type Ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import { Carousel, Pagination, Slide } from 'vue3-carousel'
+import { Carousel, Navigation, Slide } from 'vue3-carousel'
 import 'vue3-carousel/dist/carousel.css'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
@@ -363,7 +363,7 @@ async function fetchActiveUsers() {
             </div>
           </Slide>
           <template #addons>
-            <Pagination style="color: white" />
+            <Navigation />
           </template>
         </Carousel>
       </v-card>
