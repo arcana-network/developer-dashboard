@@ -377,6 +377,14 @@ async function fetchActiveUsers() {
   background-color: white;
   border-radius: 10px;
 }
+
+.carousel__prev {
+  left: 10px;
+}
+
+.carousel__next {
+  right: 10px;
+}
 </style>
 
 <style scoped>
