@@ -3,6 +3,8 @@ import type { Chart } from 'chart.js'
 import moment from 'moment'
 import { onMounted, ref, watch, type Ref, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { Carousel, Navigation, Slide } from 'vue3-carousel'
+import 'vue3-carousel/dist/carousel.css'
 
 import CopyIcon from '@/assets/iconography/copy.svg'
 import TutorialConnectWallet from '@/assets/Tutorial-connect-wallet.png'
@@ -53,6 +55,29 @@ const durationSelected: Ref<Duration> = ref('day')
 const selectedApp = computed(() => appsStore.app(appId.value))
 const appAddress = computed(() => selectedApp.value.address)
 const showNoDataChart = ref(false)
+
+const carouselBreakpointSettings = {
+  500: {
+    itemsToShow: 1.5,
+    snapAlign: 'center',
+  },
+  600: {
+    itemsToShow: 2,
+    snapAlign: 'center',
+  },
+  768: {
+    itemsToShow: 1.5,
+    snapAlign: 'center',
+  },
+  840: {
+    itemsToShow: 2,
+    snapAlign: 'center',
+  },
+  1024: {
+    itemsToShow: 3,
+    snapAlign: 'start',
+  },
+}
 
 watch(
   () => route.params.appId,
@@ -318,28 +343,49 @@ async function fetchActiveUsers() {
           <!-- <VButton variant="link" label="VIEW ALL" /> -->
         </VStack>
         <VSeperator class="full-bleed-separator" />
-        <div class="tutorials__container">
-          <div
-            v-for="tutorial in tutorials"
-            :key="tutorial.id"
-            class="tutorial__card"
-          >
-            <img
-              :src="tutorial.thumbnail_url"
-              alt="thumbnail image"
-              class="tutorial__thumbnail"
-            />
-            <h3 class="tutorial__title">{{ tutorial.title }}</h3>
-            <p class="tutorial__description">{{ tutorial.description }}</p>
-            <a :href="tutorial.link" target="_blank" class="tutorial__link"
-              >Read More</a
-            >
-          </div>
-        </div>
+        <Carousel
+          class="tutorials__container"
+          :breakpoints="carouselBreakpointSettings"
+          :wrap-around="true"
+        >
+          <Slide v-for="tutorial in tutorials" :key="tutorial.id">
+            <div class="tutorial__card carousel__item">
+              <img
+                :src="tutorial.thumbnail_url"
+                alt="thumbnail image"
+                class="tutorial__thumbnail"
+              />
+              <h3 class="tutorial__title">{{ tutorial.title }}</h3>
+              <p class="tutorial__description">{{ tutorial.description }}</p>
+              <a :href="tutorial.link" target="_blank" class="tutorial__link"
+                >Read More</a
+              >
+            </div>
+          </Slide>
+          <template #addons>
+            <Navigation />
+          </template>
+        </Carousel>
       </v-card>
     </main>
   </div>
 </template>
+
+<style>
+.carousel__prev,
+.carousel__next {
+  background-color: white;
+  border-radius: 10px;
+}
+
+.carousel__prev {
+  left: 10px;
+}
+
+.carousel__next {
+  right: 10px;
+}
+</style>
 
 <style scoped>
 .users-count-chart {
@@ -360,27 +406,34 @@ async function fetchActiveUsers() {
 }
 
 .tutorials__container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
   margin-top: 10px;
 }
 
 .tutorial__card {
+  display: flex;
   flex: 1;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 350px;
   padding: 20px;
+  margin: 0 10px;
   background-color: #000;
   border-radius: 10px;
+  border-radius: 8px;
 }
 
 .tutorial__card * + * {
-  margin-top: 10px;
+  margin-top: 7px;
 }
 
 .tutorial__thumbnail {
   width: 100%;
+  height: 175px;
+  margin-bottom: 10px;
   border-radius: 10px;
+  object-fit: contain;
 }
 
 .tutorial__link {
@@ -396,7 +449,7 @@ async function fetchActiveUsers() {
 .tutorial__description {
   margin-bottom: 10px;
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 10px;
   color: #8d8d8d;
 }
 
@@ -417,6 +470,10 @@ async function fetchActiveUsers() {
 
 .strong {
   font-weight: 600;
+}
+
+ol {
+  padding: 0;
 }
 
 @media only screen and (max-width: 1080px) {
