@@ -12,7 +12,7 @@ const emit = defineEmits(['cancel', 'switch'])
     <div class="popup-container">
       <VCard class="popup-card">
         <img
-          src="@/assets/iconography/hazard-sign-icon.svg"
+          src="@/assets/iconography/hazard-sign-icon.png"
           style="width: 8rem"
         />
         <h3 class="popup-title">Warning!</h3>
