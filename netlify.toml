@@ -7,7 +7,7 @@
     Content-Security-Policy = '''
       font-src 'self' fonts.gstatic.com gstatic.com *.gstatic.com;
       img-src 'self' data:;
-      script-src 'self' 'unsafe-inline' *.google-analytics.com;
+      script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
       frame-src *.arcana.network;
       frame-ancestors 'self';
