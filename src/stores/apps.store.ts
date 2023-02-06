@@ -124,7 +124,6 @@ const useAppsStore = defineStore('apps', {
     async fetchAndStoreAllApps(network: Network) {
       if (network === 'testnet') this.appIds = []
       const apps = (await fetchAllApps(network)).data || []
-      console.log({ apps }, network)
       apps.sort(
         (app1, app2) =>
           Date.parse(app2.created_at) - Date.parse(app1.created_at)
