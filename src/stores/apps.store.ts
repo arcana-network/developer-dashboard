@@ -71,7 +71,11 @@ const useAppsStore = defineStore('apps', {
   }),
   getters: {
     apps: (state) => {
-      return state.appIds.map((id) => ({ ...state.appsById[id] }))
+      const testnetApps = state.appIds.map((id) => ({ ...state.appsById[id] }))
+      const mainnetApps = Object.values(state.mainnetApps).filter(
+        (mainnetApp) => !state.appsById[mainnetApp.global_id]
+      )
+      return [...testnetApps, ...mainnetApps]
     },
     app: (state) => {
       return (id: AppId) => {

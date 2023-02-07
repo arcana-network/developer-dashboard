@@ -1,0 +1,14 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Content-Security-Policy = '''
+      font-src 'self' fonts.gstatic.com gstatic.com *.gstatic.com;
+      img-src 'self' data: *.arcana.network;
+      script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com;
+      style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+      frame-src *.arcana.network;
+      frame-ancestors 'self';
+    '''
