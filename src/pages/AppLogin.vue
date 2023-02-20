@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed } from '@vue/runtime-core'
+import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter, type RouteRecordName } from 'vue-router'
 
 import AppFooter from '@/components/AppFooter.vue'
@@ -99,10 +99,11 @@ async function fetchAndStoreUserInfo() {
 
 onMounted(async () => {
   if (await arcanaAuth.isLoggedIn()) {
-    loaderStore.showLoader('Signing In...')
-    setTimeout(async () => {
+    loaderStore.showLoader('Connecting wallet...')
+    arcanaAuth.getProvider().on('connect', async () => {
+      loaderStore.showLoader('Signing in...')
       await fetchAndStoreDetails()
-    }, 1000)
+    })
   }
 })
 </script>
