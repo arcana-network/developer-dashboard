@@ -209,7 +209,7 @@ function deleteSecondary() {
           </form>
         </SettingCard>
       </section>
-      <!-- <section style="margin-top: 3em">
+      <section style="margin-top: 3em">
         <SettingCard>
           <template #title>INVOICING DETAILS</template>
           <form>
@@ -221,7 +221,7 @@ function deleteSecondary() {
                 <label for="light-horizontal-logo">Billing Name</label>
                 <VTextField
                   v-model.trim="invoiceDetails.name"
-                  class="app-name-input text-ellipsis"
+                  class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
                   no-message
@@ -232,7 +232,7 @@ function deleteSecondary() {
                 <label for="light-horizontal-logo">Billing Address</label>
                 <VTextField
                   v-model.trim="invoiceDetails.address"
-                  class="app-name-input text-ellipsis"
+                  class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
                   no-message
@@ -267,7 +267,7 @@ function deleteSecondary() {
                     <label for="light-horizontal-logo">Card Name</label>
                     <VTextField
                       v-model.trim="paymentDetails.primary.cardName"
-                      class="app-name-input text-ellipsis"
+                      class="app-name-input"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
@@ -292,7 +292,7 @@ function deleteSecondary() {
                     <label for="light-horizontal-logo">Card Number</label>
                     <VTextField
                       v-model.trim="paymentDetails.primary.cardNumber"
-                      class="app-name-input text-ellipsis"
+                      class="app-name-input"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
@@ -340,7 +340,7 @@ function deleteSecondary() {
                     <label for="light-horizontal-logo">Card Name</label>
                     <VTextField
                       v-model.trim="paymentDetails.secondary.cardName"
-                      class="app-name-input text-ellipsis"
+                      class="app-name-input"
                       :icon="CloseIcon"
                       clickable-icon
                       no-message
@@ -365,7 +365,8 @@ function deleteSecondary() {
                     <label for="light-horizontal-logo">Card Number</label>
                     <VTextField
                       v-model.trim="paymentDetails.secondary.cardNumber"
-                      class="app-name-input text-ellipsis"
+                      class="app-name-input"
+                      type="number"
                       no-message
                       :icon="CloseIcon"
                       clickable-icon
@@ -395,7 +396,7 @@ function deleteSecondary() {
             />
           </form>
         </SettingCard>
-      </section> -->
+      </section>
     </main>
   </div>
 </template>
