@@ -314,7 +314,7 @@ function deleteSecondary() {
                   </div>
                 </div>
               </VStack>
-              <div class="switch-icon-container">
+              <!-- <div class="switch-icon-container">
                 <img
                   src="@/assets/iconography/switch-vertical.svg"
                   class="cursor-pointer switch-icon"
@@ -387,7 +387,7 @@ function deleteSecondary() {
                     />
                   </div>
                 </div>
-              </VStack>
+              </VStack> -->
             </VStack>
             <ConfigureActionButtons
               :save-disabled="false"
