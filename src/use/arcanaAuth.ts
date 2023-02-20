@@ -6,7 +6,7 @@ const { AuthProvider, CHAIN } = window.arcana.auth
 const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
-let authInstance: AuthProvider
+let authInstance: typeof AuthProvider
 let network: 'testnet' | 'mainnet' | any
 
 if (ARCANA_AUTH_NETWORK === 'mainnet') {
@@ -26,7 +26,11 @@ function useArcanaAuth() {
   async function init() {
     if (!authInstance) {
       authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
-        network,
+        network: {
+          authUrl: 'http://localhost:8080',
+          gatewayUrl: 'https://gateway-dev.arcana.network',
+          walletUrl: 'http://localhost:3000',
+        },
         debug: true,
         chainConfig: {
           chainId: CHAIN.POLYGON_MAINNET,
@@ -67,6 +71,10 @@ function useArcanaAuth() {
     return await authInstance.getPublicKey(email)
   }
 
+  function getProvider() {
+    return authInstance.provider
+  }
+
   return {
     init,
     isLoggedIn,
@@ -75,6 +83,7 @@ function useArcanaAuth() {
     logout,
     fetchUserDetails,
     getPublicKey,
+    getProvider,
   }
 }
 
