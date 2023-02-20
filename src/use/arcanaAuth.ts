@@ -26,11 +26,7 @@ function useArcanaAuth() {
   async function init() {
     if (!authInstance) {
       authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
-        network: {
-          authUrl: 'http://localhost:8080',
-          gatewayUrl: 'https://gateway-dev.arcana.network',
-          walletUrl: 'http://localhost:3000',
-        },
+        network,
         debug: true,
         chainConfig: {
           chainId: CHAIN.POLYGON_MAINNET,
