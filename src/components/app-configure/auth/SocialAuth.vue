@@ -171,7 +171,9 @@ function handleInputDelete(
                   v-model.trim="auth.clientSecret"
                   no-message
                   class="social-auth-input"
-                  placeholder="Client Secret"
+                  :placeholder="
+                    auth.verifier === 'aws' ? 'User Pool URL' : 'Client Secret'
+                  "
                   @keyup.delete="handleInputDelete(auth, 'clientSecret')"
                 ></VTextField>
               </VStack>

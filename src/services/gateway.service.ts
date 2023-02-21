@@ -160,6 +160,13 @@ function deleteCred(
 function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
   const { social, wallet } = app.auth
   const cred: AppConfigCred[] = social.map((authType) => {
+    if (authType.verifier === 'aws') {
+      return {
+        verifier: authType.verifier,
+        domain: authType.clientSecret,
+        clientId: authType.clientId,
+      }
+    }
     return {
       verifier: authType.verifier,
       clientId: authType.clientId,
