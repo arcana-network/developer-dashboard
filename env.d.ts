@@ -76,6 +76,7 @@ declare global {
     arcana: {
       provider: any
     }
+    Stripe: (publicKey: string) => any
   }
 }
 

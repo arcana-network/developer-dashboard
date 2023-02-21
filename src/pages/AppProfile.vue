@@ -1,16 +1,20 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type Ref, reactive } from 'vue'
+import { ref, onBeforeMount, type Ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
-import VButton from '@/components/lib/VButton/VButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
-import { fetchProfile, updateOrganization } from '@/services/gateway.service'
+import {
+  fetchProfile,
+  updateOrganization,
+  addCard,
+  listCards,
+} from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 
@@ -98,6 +102,27 @@ onBeforeMount(() => {
     }
     organisationDetailsResetState = { ...organisationDetails.value }
   })
+  listCards()
+})
+
+let stripe: any, card: any
+
+onMounted(() => {
+  stripe = window.Stripe(
+    'pk_test_51MN8EKSASugCFwITiKdrNvCht6mwCQdVwLZWv05Gkr5h2ONCVKjiSSA18ig2ear2EfZ6GdSTVllmF3XmjtQIXqIr00eHrjiCpO'
+  )
+  const elements = stripe.elements()
+  const style = {
+    base: {
+      fontSize: '1rem',
+      color: '#f7f7f7',
+      backgroundColor: 'transparent',
+    },
+  }
+
+  card = elements.create('card', { style, hidePostalCode: true })
+
+  card.mount('#card-element')
 })
 
 function resetOrganisationDetails() {
@@ -122,6 +147,18 @@ function deleteSecondary() {
     cvv: '',
     expiry: '',
     cardName: '',
+  }
+}
+
+async function submitCard() {
+  loaderStore.showLoader('Adding a payment method...')
+  const { token, error } = await stripe.createToken(card)
+  if (token) {
+    console.log(token)
+    await addCard(token.id)
+    loaderStore.hideLoader()
+  } else {
+    toast.error(error.message)
   }
 }
 </script>
@@ -254,140 +291,17 @@ function deleteSecondary() {
       <section style="margin-top: 3em">
         <SettingCard>
           <template #title>PAYMENT METHODS</template>
-          <form>
+          <form @submit.prevent="submitCard">
             <VStack
-              align="center"
-              md-direction="column"
-              class="flex sm-column flex-wrap justify-space-between payment-container"
+              class="flex sm-column flex-wrap justify-space-between"
+              gap="1.25rem"
             >
-              <VStack direction="column" gap="1.25rem">
-                <span class="payment-title">Primary</span>
-                <div class="payment-input">
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Name</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.cardName"
-                      class="app-name-input"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.primary.cardName = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Expiry Date</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.expiry"
-                      class="app-name-input"
-                      :icon="CloseIcon"
-                      type="number"
-                      placeholder="mm/yyyy"
-                      clickable-icon
-                      no-message
-                      pattern="[\d]{2}\/[\d]{4}"
-                      @icon-clicked="paymentDetails.primary.expiry = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Number</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.cardNumber"
-                      class="app-name-input"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.primary.cardNumber = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">CVV</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.cvv"
-                      class="app-name-input cvv"
-                      type="number"
-                      pattern="[\d]{3}"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.primary.cvv = ''"
-                    />
-                  </div>
-                </div>
-              </VStack>
-              <!-- <div class="switch-icon-container">
-                <img
-                  src="@/assets/iconography/switch-vertical.svg"
-                  class="cursor-pointer switch-icon"
-                  :class="{ swapped: swapClicked }"
-                  @click.stop="swapCards"
-                />
+              <div class="flex column details flex-grow">
+                <label for="card-element"> Credit or debit card </label>
+                <div id="card-element"></div>
+
+                <div id="card-errors" role="alert"></div>
               </div>
-              <VStack direction="column" gap="1.25rem">
-                <VStack
-                  justify="space-between"
-                  align="center"
-                  class="flex-grow"
-                >
-                  <span class="payment-title">Secondary</span>
-                  <VButton
-                    variant="link"
-                    label="DELETE"
-                    @click.stop="deleteSecondary"
-                  />
-                </VStack>
-                <div class="payment-input">
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Name</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.secondary.cardName"
-                      class="app-name-input"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.secondary.cardName = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Expiry Date</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.secondary.expiry"
-                      class="app-name-input"
-                      type="text"
-                      placeholder="mm/yyyy"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      pattern="[\d]{2}\/[\d]{4}"
-                      @icon-clicked="paymentDetails.secondary.expiry = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Number</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.secondary.cardNumber"
-                      class="app-name-input"
-                      type="number"
-                      no-message
-                      :icon="CloseIcon"
-                      clickable-icon
-                      @icon-clicked="paymentDetails.secondary.cardNumber = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">CVV</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.secondary.cvv"
-                      class="app-name-input cvv"
-                      type="number"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      pattern="[\d]{3}"
-                      @icon-clicked="paymentDetails.secondary.cvv = ''"
-                    />
-                  </div>
-                </div>
-              </VStack> -->
             </VStack>
             <ConfigureActionButtons
               :save-disabled="false"
@@ -410,6 +324,14 @@ function deleteSecondary() {
 
 main {
   padding-bottom: 4rem;
+}
+
+#card-element {
+  padding: 1rem;
+  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  border-radius: 10px;
+  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
+    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
 }
 
 .payment-details-input {

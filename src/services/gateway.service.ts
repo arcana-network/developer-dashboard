@@ -20,6 +20,7 @@ import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(store)
 const appsStore = useAppsStore(store)
+const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
 let forwarder: string, rpcUrl: string
 
@@ -441,6 +442,18 @@ function submitVerificationForm(
   })
 }
 
+function addCard(token: string): Promise<AxiosResponse<any>> {
+  const network = ARCANA_AUTH_NETWORK === 'mainnet' ? 'mainnet' : 'testnet'
+  return getGatewayInstance(network).post(`${getEnvApi()}/add-card/`, {
+    token,
+  })
+}
+
+function listCards(): Promise<AxiosResponse<any>> {
+  const network = ARCANA_AUTH_NETWORK === 'mainnet' ? 'mainnet' : 'testnet'
+  return getGatewayInstance(network).get(`${getEnvApi()}/list-card/`)
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -471,6 +484,8 @@ export {
   getGatewayInstance,
   updateAppLogos,
   submitVerificationForm,
+  addCard,
+  listCards,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
