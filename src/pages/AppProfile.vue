@@ -43,6 +43,7 @@ const invoiceDetails = ref({
   name: '',
   address: '',
 })
+const cardName = ref('')
 
 const paymentDetails = reactive({
   primary: {
@@ -114,9 +115,14 @@ onMounted(() => {
   const elements = stripe.elements()
   const style = {
     base: {
+      fontFamily: 'Sora, sans-serif',
+      fontSmoothing: 'antialiased',
       fontSize: '1rem',
       color: '#f7f7f7',
       backgroundColor: 'transparent',
+      '::placeholder': {
+        color: '#8d8d8d',
+      },
     },
   }
 
@@ -152,7 +158,9 @@ function deleteSecondary() {
 
 async function submitCard() {
   loaderStore.showLoader('Adding a payment method...')
-  const { token, error } = await stripe.createToken(card)
+  const { token, error } = await stripe.createToken(card, {
+    name: cardName.value,
+  })
   if (token) {
     console.log(token)
     await addCard(token.id)
@@ -297,10 +305,18 @@ async function submitCard() {
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
-                <label for="card-element"> Credit or debit card </label>
-                <div id="card-element"></div>
-
-                <div id="card-errors" role="alert"></div>
+                <label for="card-element">
+                  Enter credit or debit card details
+                </label>
+                <VStack class="card-element" align="center" gap="1rem">
+                  <input
+                    v-model.trim="cardName"
+                    type="text"
+                    placeholder="Name on the card"
+                    class="card-name"
+                  />
+                  <div id="card-element" style="flex-grow: 1"></div>
+                </VStack>
               </div>
             </VStack>
             <ConfigureActionButtons
@@ -326,12 +342,29 @@ main {
   padding-bottom: 4rem;
 }
 
-#card-element {
+.card-element {
   padding: 1rem;
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   border-radius: 10px;
   box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
     inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+}
+
+.card-name {
+  width: 30%;
+  font-family: Sora, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #f7f7f7;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card-name::placeholder {
+  color: #8d8d8d;
 }
 
 .payment-details-input {
@@ -414,6 +447,10 @@ label {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.5rem;
+  }
+
+  .details {
+    width: unset;
   }
 }
 </style>
