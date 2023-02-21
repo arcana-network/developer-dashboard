@@ -29,6 +29,8 @@ import { useAppsStore } from '@/stores/apps.store'
 import chartUtils from '@/utils/chart'
 import copyToClipboard from '@/utils/copyToClipboard'
 
+const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
+
 type ChartData = {
   label: string
   data: number
@@ -53,7 +55,16 @@ const appId = ref(Number(route.params.appId))
 const toast = useToast()
 const durationSelected: Ref<Duration> = ref('day')
 const selectedApp = computed(() => appsStore.app(appId.value))
-const appAddress = computed(() => selectedApp.value.address)
+const appAddress = computed(() => {
+  let clientId = 'xar_'
+  if (selectedApp.value.network === 'mainnet') {
+    clientId += 'live_'
+  } else {
+    clientId += ARCANA_AUTH_NETWORK === 'dev' ? 'dev_' : 'test_'
+  }
+  clientId += selectedApp.value.address
+  return clientId
+})
 const showNoDataChart = ref(false)
 
 const carouselBreakpointSettings = {
@@ -257,7 +268,7 @@ async function fetchActiveUsers() {
             class="flex mobile-remove justify-content-center flex-center flex-wrap"
           >
             <span style="color: var(--text-grey)" class="body-1 mobile-remove">
-              App Address:
+              Client ID:
             </span>
             <VTextField
               v-model="appAddress"
@@ -276,7 +287,7 @@ async function fetchActiveUsers() {
         class="flex laptop-remove smart-contract-copy justify-start flex-center flex-wrap"
       >
         <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
-          App Address:
+          Client ID:
         </span>
         <v-tooltip :title="appAddress" class="">
           <div
