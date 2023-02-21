@@ -167,6 +167,7 @@ type SocialAuthVerifier =
   | 'reddit'
   | 'github'
   | 'discord'
+  | 'aws'
 
 type SocialAuthVerifierLabel =
   | 'Google'
@@ -175,6 +176,7 @@ type SocialAuthVerifierLabel =
   | 'Reddit'
   | 'GitHub'
   | 'Discord'
+  | 'AWS Cognito'
 
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
@@ -214,6 +216,12 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'twitter',
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
+  },
+  {
+    name: 'AWS Cognito',
+    verifier: 'aws',
+    hasClientSecret: true,
+    documentation: 'https://docs.aws.amazon.com/cognito/index.html',
   },
 ]
 
