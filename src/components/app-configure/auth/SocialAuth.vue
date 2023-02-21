@@ -53,7 +53,10 @@ function isAuthValid(auth: typeof socialAuth[0]) {
       return false
     }
     if (!auth.clientSecret?.length && auth.clientId?.length) {
-      auth.error = 'Client secret is required'
+      auth.error =
+        auth.verifier === 'aws'
+          ? 'User Pool URL is required'
+          : 'Client secret is required'
       return false
     }
   }
