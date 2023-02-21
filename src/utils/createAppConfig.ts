@@ -13,10 +13,7 @@ export function createAppConfig(
         return {
           verifier: authDetail.verifier,
           clientId: authDetail.clientId,
-          clientSecret:
-            authDetail.verifier === 'aws'
-              ? authDetail.domain
-              : authDetail.clientSecret,
+          clientSecret: authDetail.clientSecret,
         }
       })
     : []

@@ -53,10 +53,7 @@ function isAuthValid(auth: typeof socialAuth[0]) {
       return false
     }
     if (!auth.clientSecret?.length && auth.clientId?.length) {
-      auth.error =
-        auth.verifier === 'aws'
-          ? 'User Pool URL is required'
-          : 'Client secret is required'
+      auth.error = 'Client secret is required'
       return false
     }
   }
@@ -174,9 +171,7 @@ function handleInputDelete(
                   v-model.trim="auth.clientSecret"
                   no-message
                   class="social-auth-input"
-                  :placeholder="
-                    auth.verifier === 'aws' ? 'User Pool URL' : 'Client Secret'
-                  "
+                  placeholder="Client Secret"
                   @keyup.delete="handleInputDelete(auth, 'clientSecret')"
                 ></VTextField>
               </VStack>
