@@ -147,6 +147,9 @@ function resetOrganisationDetails() {
 }
 
 async function submitCard() {
+  if (!cardName.value) {
+    return toast.error('Your card name is incomplete.')
+  }
   loaderStore.showLoader('Adding a payment method...')
   const { token, error } = await stripe.createToken(cardNumber, {
     name: cardName.value,
