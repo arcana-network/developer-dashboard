@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import { create } from 'domain'
+
 import { ref, onBeforeMount, type Ref, reactive, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -37,28 +39,15 @@ const organisationDetails: Ref<OrganizationDetails> = ref({
   country: '',
 })
 
-const swapClicked = ref(false)
-
 const invoiceDetails = ref({
   name: '',
   address: '',
 })
 const cardName = ref('')
+const cardNumberSelected = ref(false)
+const cardExpirySelected = ref(false)
+const cardCVCSelected = ref(false)
 
-const paymentDetails = reactive({
-  primary: {
-    cardNumber: '',
-    cvv: '',
-    expiry: '',
-    cardName: '',
-  },
-  secondary: {
-    cardNumber: '',
-    cvv: '',
-    expiry: '',
-    cardName: '',
-  },
-})
 const name = ref(authStore.name)
 const email = ref(authStore.email)
 const router = useRouter()
@@ -106,7 +95,7 @@ onBeforeMount(() => {
   listCards()
 })
 
-let stripe: any, card: any
+let stripe: any, cardNumber: any
 
 onMounted(() => {
   stripe = window.Stripe(
@@ -115,20 +104,37 @@ onMounted(() => {
   const elements = stripe.elements()
   const style = {
     base: {
-      fontFamily: 'Sora, sans-serif',
+      fontFamily: '"Sora", sans-serif',
       fontSmoothing: 'antialiased',
-      fontSize: '1rem',
+      fontSize: '16px',
       color: '#f7f7f7',
       backgroundColor: 'transparent',
       '::placeholder': {
-        color: '#8d8d8d',
+        color: '#393939',
       },
     },
   }
 
-  card = elements.create('card', { style, hidePostalCode: true })
+  cardNumber = elements.create('cardNumber', {
+    style,
+  })
+  cardNumber.mount('#card-number')
+  cardNumber.on('focus', () => (cardNumberSelected.value = true))
+  cardNumber.on('blur', () => (cardNumberSelected.value = false))
 
-  card.mount('#card-element')
+  const cardExpiry = elements.create('cardExpiry', {
+    style,
+  })
+  cardExpiry.mount('#card-expiry')
+  cardExpiry.on('focus', () => (cardExpirySelected.value = true))
+  cardExpiry.on('blur', () => (cardExpirySelected.value = false))
+
+  const cardCVC = elements.create('cardCvc', {
+    style,
+  })
+  cardCVC.mount('#card-cvc')
+  cardCVC.on('focus', () => (cardCVCSelected.value = true))
+  cardCVC.on('blur', () => (cardCVCSelected.value = false))
 })
 
 function resetOrganisationDetails() {
@@ -140,34 +146,19 @@ function resetOrganisationDetails() {
   }
 }
 
-function swapCards() {
-  const temp = paymentDetails.primary
-  paymentDetails.primary = paymentDetails.secondary
-  paymentDetails.secondary = temp
-  swapClicked.value = !swapClicked.value
-}
-
-function deleteSecondary() {
-  paymentDetails.secondary = {
-    cardNumber: '',
-    cvv: '',
-    expiry: '',
-    cardName: '',
-  }
-}
-
 async function submitCard() {
   loaderStore.showLoader('Adding a payment method...')
-  const { token, error } = await stripe.createToken(card, {
+  const { token, error } = await stripe.createToken(cardNumber, {
     name: cardName.value,
   })
   if (token) {
     console.log(token)
     await addCard(token.id)
-    loaderStore.hideLoader()
+    toast.success('Card saved successfully')
   } else {
     toast.error(error.message)
   }
+  loaderStore.hideLoader()
 }
 </script>
 
@@ -188,12 +179,17 @@ async function submitCard() {
         <SettingCard>
           <template #title>PERSONAL DETAILS</template>
           <VStack
-            class="flex sm-column flex-wrap justify-space-between"
+            class="flex md-column flex-wrap justify-space-between"
             gap="1.25rem"
           >
             <div class="flex column details flex-grow">
               <label for="light-horizontal-logo">Name</label>
-              <VTextField v-model.trim="name" class="app-name-input" disabled />
+              <VTextField
+                v-model.trim="name"
+                class="app-name-input"
+                disabled
+                no-message
+              />
             </div>
             <div class="flex column details flex-grow">
               <label for="light-horizontal-logo">Public Identifier</label>
@@ -201,6 +197,7 @@ async function submitCard() {
                 v-model.trim="email"
                 class="app-name-input"
                 disabled
+                no-message
               />
             </div>
             <div
@@ -215,13 +212,21 @@ async function submitCard() {
           <template #title>ORGANISATION DETAILS</template>
           <form @submit.prevent="onUpdateOrganization">
             <VStack
-              class="flex sm-column flex-wrap justify-space-between"
+              class="flex md-column flex-wrap justify-space-between"
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
                 <label for="light-horizontal-logo">Organisation Name</label>
                 <VTextField
                   v-model.trim="organisationDetails.name"
+                  class="app-name-input"
+                  no-message
+                />
+              </div>
+              <div class="flex column details flex-grow">
+                <label for="light-horizontal-logo">Country</label>
+                <VTextField
+                  v-model.trim="organisationDetails.country"
                   class="app-name-input"
                   no-message
                 />
@@ -238,13 +243,6 @@ async function submitCard() {
                   "
                 />
               </div>
-              <div class="flex column details flex-grow">
-                <label for="light-horizontal-logo">Country</label>
-                <VTextField
-                  v-model.trim="organisationDetails.country"
-                  class="app-name-input"
-                />
-              </div>
             </VStack>
             <ConfigureActionButtons
               :save-disabled="false"
@@ -259,7 +257,7 @@ async function submitCard() {
           <template #title>INVOICING DETAILS</template>
           <form>
             <VStack
-              class="flex sm-column flex-wrap justify-space-between"
+              class="flex md-column flex-wrap justify-space-between"
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
@@ -301,23 +299,51 @@ async function submitCard() {
           <template #title>PAYMENT METHODS</template>
           <form @submit.prevent="submitCard">
             <VStack
-              class="flex sm-column flex-wrap justify-space-between"
-              gap="1.25rem"
+              class="flex sm-column flex-wrap justify-space-between payment-container"
+              gap="0.5rem"
             >
-              <div class="flex column details flex-grow">
-                <label for="card-element">
-                  Enter credit or debit card details
-                </label>
-                <VStack class="card-element" align="center" gap="1rem">
-                  <input
-                    v-model.trim="cardName"
-                    type="text"
-                    placeholder="Name on the card"
-                    class="card-name"
-                  />
-                  <div id="card-element" style="flex-grow: 1"></div>
-                </VStack>
-              </div>
+              <VStack direction="column" class="flex-grow">
+                <span class="payment-title">Card Details</span>
+                <div class="payment-input">
+                  <div class="flex column payment-details-input flex-grow">
+                    <label for="card-name">Card Name</label>
+                    <VTextField
+                      id="card-name"
+                      v-model.trim="cardName"
+                      type="text"
+                      placeholder="Name on the card"
+                      no-message
+                    />
+                  </div>
+                  <div class="flex column payment-details-input flex-grow">
+                    <label for="card-number">Card Number</label>
+                    <div
+                      class="card-element"
+                      :class="{ 'stripe-focused': cardNumberSelected }"
+                    >
+                      <div id="card-number" style="flex: 1"></div>
+                    </div>
+                  </div>
+                  <div class="flex column payment-details-input flex-grow">
+                    <label for="card-expiry">Expiry Date</label>
+                    <div
+                      class="card-element"
+                      :class="{ 'stripe-focused': cardExpirySelected }"
+                    >
+                      <div id="card-expiry" style="flex: 1"></div>
+                    </div>
+                  </div>
+                  <div class="flex column payment-details-input flex-grow">
+                    <label for="card-cvc">CVC</label>
+                    <div
+                      class="card-element"
+                      :class="{ 'stripe-focused': cardCVCSelected }"
+                    >
+                      <div id="card-cvc" style="flex: 1"></div>
+                    </div>
+                  </div>
+                </div>
+              </VStack>
             </VStack>
             <ConfigureActionButtons
               :save-disabled="false"
@@ -353,7 +379,7 @@ main {
 .card-name {
   width: 30%;
   font-family: Sora, sans-serif;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
   color: #f7f7f7;
   background: transparent;
@@ -404,8 +430,8 @@ label {
 
 .payment-input {
   display: grid;
-  grid-template-columns: 18vw 10vw;
-  gap: 1.25rem;
+  grid-template-columns: 30vw 20vw 10rem 10rem;
+  gap: 1.5rem;
 }
 
 .cvv {
@@ -414,6 +440,10 @@ label {
 
 .swapped {
   transform: rotate(-180deg);
+}
+
+.stripe-focused {
+  outline: 1px solid var(--primary);
 }
 
 @media only screen and (max-width: 1023px) {
