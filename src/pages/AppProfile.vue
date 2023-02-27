@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { create } from 'domain'
-
-import { ref, onBeforeMount, type Ref, reactive, onMounted } from 'vue'
+import { ref, onBeforeMount, type Ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
+import DeleteCardConfirmPopup from '@/components/DeleteCardConfirmPopup.vue'
+import VButton from '@/components/lib/VButton/VButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -16,6 +16,7 @@ import {
   updateOrganization,
   addCard,
   listCards,
+  deleteCard,
 } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -38,6 +39,13 @@ const organisationDetails: Ref<OrganizationDetails> = ref({
   sizeErrorMessage: '',
   country: '',
 })
+const cardDetails = ref({
+  cardName: '',
+  cardNumber: '',
+  expiry: '',
+  cardId: '',
+})
+const showDeleteCardModal = ref(false)
 
 const invoiceDetails = ref({
   name: '',
@@ -83,21 +91,50 @@ async function onUpdateOrganization() {
   }
 }
 
-onBeforeMount(() => {
-  fetchProfile().then((response) => {
-    organisationDetails.value = {
-      name: response.data.organization.name,
-      size: response.data.organization.size,
-      country: response.data.organization.country,
-    }
-    organisationDetailsResetState = { ...organisationDetails.value }
-  })
-  listCards()
+onBeforeMount(async () => {
+  await fetchProfileData()
+  await fetchCardsData()
 })
+
+async function fetchProfileData() {
+  const profileDetails = (await fetchProfile()).data
+  organisationDetails.value = {
+    name: profileDetails.organization.name,
+    size: profileDetails.organization.size,
+    country: profileDetails.organization.country,
+  }
+  organisationDetailsResetState = { ...organisationDetails.value }
+}
+
+async function fetchCardsData() {
+  const cards = (await listCards()).data
+  if (cards[0]) {
+    cardDetails.value = {
+      cardName: cards[0].name,
+      cardNumber: `XXXX ... ${cards[0].last4}`,
+      expiry: `${getMonth(cards[0].exp_month)} / ${cards[0].exp_year}`,
+      cardId: cards[0].id,
+    }
+  }
+}
+
+function getMonth(month: number) {
+  if (month < 10) {
+    return `0${month}`
+  } else {
+    return `${month}`
+  }
+}
 
 let stripe: any, cardNumber: any
 
 onMounted(() => {
+  if (!cardDetails.value.cardNumber) {
+    loadStripe()
+  }
+})
+
+function loadStripe() {
   stripe = window.Stripe(
     'pk_test_51MN8EKSASugCFwITiKdrNvCht6mwCQdVwLZWv05Gkr5h2ONCVKjiSSA18ig2ear2EfZ6GdSTVllmF3XmjtQIXqIr00eHrjiCpO'
   )
@@ -135,7 +172,7 @@ onMounted(() => {
   cardCVC.mount('#card-cvc')
   cardCVC.on('focus', () => (cardCVCSelected.value = true))
   cardCVC.on('blur', () => (cardCVCSelected.value = false))
-})
+}
 
 function resetOrganisationDetails() {
   editOrganisationDetails.value = false
@@ -150,18 +187,34 @@ async function submitCard() {
   if (!cardName.value) {
     return toast.error('Your card name is incomplete.')
   }
-  loaderStore.showLoader('Adding a payment method...')
+  loaderStore.showLoader('Adding the card...')
   const { token, error } = await stripe.createToken(cardNumber, {
     name: cardName.value,
   })
   if (token) {
-    console.log(token)
     await addCard(token.id)
+    await fetchCardsData()
     toast.success('Card saved successfully')
   } else {
     toast.error(error.message)
   }
   loaderStore.hideLoader()
+}
+
+async function handleDeleteProceed() {
+  showDeleteCardModal.value = false
+  loaderStore.showLoader('Deleting the card...')
+  await deleteCard(cardDetails.value.cardId)
+  cardDetails.value = {
+    cardName: '',
+    expiry: '',
+    cardNumber: '',
+    cardId: '',
+  }
+  setTimeout(() => {
+    loadStripe()
+    loaderStore.hideLoader()
+  })
 }
 </script>
 
@@ -255,7 +308,7 @@ async function submitCard() {
           </form>
         </SettingCard>
       </section>
-      <section style="margin-top: 3em">
+      <section v-if="false" style="margin-top: 3em">
         <SettingCard>
           <template #title>INVOICING DETAILS</template>
           <form>
@@ -306,39 +359,75 @@ async function submitCard() {
               gap="0.5rem"
             >
               <VStack direction="column" class="flex-grow">
-                <span class="payment-title">Card Details</span>
+                <VStack justify="space-between">
+                  <span class="payment-title">Card Details</span>
+                  <VButton
+                    v-if="cardDetails.cardNumber"
+                    variant="link"
+                    label="DELETE CARD"
+                    @click.stop="showDeleteCardModal = true"
+                  />
+                </VStack>
                 <div class="payment-input">
                   <div class="flex column payment-details-input flex-grow">
                     <label for="card-name">Card Name</label>
                     <VTextField
+                      v-if="!cardDetails.cardNumber"
                       id="card-name"
                       v-model.trim="cardName"
                       type="text"
                       placeholder="Name on the card"
                       no-message
                     />
+                    <VTextField
+                      v-else
+                      id="card-name"
+                      :model-value="cardDetails.cardName"
+                      type="text"
+                      disabled
+                      no-message
+                    />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="card-number">Card Number</label>
                     <div
+                      v-if="!cardDetails.cardNumber"
                       class="card-element"
                       :class="{ 'stripe-focused': cardNumberSelected }"
                     >
                       <div id="card-number" style="flex: 1"></div>
                     </div>
+                    <VTextField
+                      v-else
+                      id="card-number"
+                      :model-value="cardDetails.cardNumber"
+                      type="text"
+                      disabled
+                      no-message
+                    />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
                     <label for="card-expiry">Expiry Date</label>
                     <div
+                      v-if="!cardDetails.expiry"
                       class="card-element"
                       :class="{ 'stripe-focused': cardExpirySelected }"
                     >
                       <div id="card-expiry" style="flex: 1"></div>
                     </div>
+                    <VTextField
+                      v-else
+                      id="card-expiry"
+                      :model-value="cardDetails.expiry"
+                      type="text"
+                      disabled
+                      no-message
+                    />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
-                    <label for="card-cvc">CVC</label>
+                    <label v-if="!cardDetails.expiry" for="card-cvc">CVC</label>
                     <div
+                      v-if="!cardDetails.expiry"
                       class="card-element"
                       :class="{ 'stripe-focused': cardCVCSelected }"
                     >
@@ -349,13 +438,18 @@ async function submitCard() {
               </VStack>
             </VStack>
             <ConfigureActionButtons
-              :save-disabled="false"
-              :cancel-disabled="false"
+              :save-disabled="!!cardDetails.cardNumber"
+              hide-cancel
               style="margin-top: 3rem"
             />
           </form>
         </SettingCard>
       </section>
+      <DeleteCardConfirmPopup
+        v-if="showDeleteCardModal"
+        @cancel="showDeleteCardModal = false"
+        @proceed="handleDeleteProceed"
+      />
     </main>
   </div>
 </template>
@@ -433,7 +527,7 @@ label {
 
 .payment-input {
   display: grid;
-  grid-template-columns: 30vw 20vw 10rem 10rem;
+  grid-template-columns: 24vw 20vw 10rem 10rem;
   gap: 1.5rem;
 }
 
