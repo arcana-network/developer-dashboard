@@ -118,10 +118,6 @@ function handleInputDelete(
 function isAWSSelected() {
   return selectedCredentialInput.value === 'aws'
 }
-
-function logoSrc(verifier: SocialAuthVerifier) {
-  return `/src/assets/${verifier}-sso.svg`
-}
 </script>
 
 <template>
@@ -151,7 +147,7 @@ function logoSrc(verifier: SocialAuthVerifier) {
                 @click.prevent="() => (selectedCredentialInput = auth.verifier)"
               >
                 <img
-                  :src="logoSrc(auth.verifier)"
+                  :src="auth.icon"
                   class="logo-img"
                   :class="{
                     'logo-img--active':

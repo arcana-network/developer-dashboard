@@ -1,5 +1,9 @@
 import bytes from 'bytes'
 
+import AWSIcon from '@/assets/aws-sso.svg'
+import DiscordIcon from '@/assets/discord-sso.svg'
+import GithubIcon from '@/assets/github-sso.svg'
+import GoogleIcon from '@/assets/google-sso.svg'
 import brandingIcon from '@/assets/iconography/branding.svg'
 import BugIcon from '@/assets/iconography/bug.png'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
@@ -9,6 +13,9 @@ import ScheduleIcon from '@/assets/iconography/schedule.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
+import RedditIcon from '@/assets/reddit-sso.svg'
+import TwitchIcon from '@/assets/twitch-sso.svg'
+import TwitterIcon from '@/assets/twitter-sso.svg'
 import type { UserLimitState } from '@/stores/apps.store'
 
 const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
@@ -180,6 +187,7 @@ type SocialAuthVerifierLabel =
 
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
+  icon: string
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
   documentation: string
@@ -189,24 +197,28 @@ const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Google',
     verifier: 'google',
+    icon: GoogleIcon,
     hasClientSecret: false,
     documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
   },
   {
     name: 'Twitch',
     verifier: 'twitch',
+    icon: TwitchIcon,
     hasClientSecret: false,
     documentation: 'https://dev.twitch.tv/docs/authentication#registration',
   },
   {
     name: 'Discord',
     verifier: 'discord',
+    icon: DiscordIcon,
     hasClientSecret: true,
     documentation: 'https://discord.com/developers/applications',
   },
   {
     name: 'GitHub',
     verifier: 'github',
+    icon: GithubIcon,
     hasClientSecret: true,
     documentation:
       'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
@@ -214,12 +226,14 @@ const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Twitter',
     verifier: 'twitter',
+    icon: TwitchIcon,
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
   },
   {
     name: 'AWS',
     verifier: 'aws',
+    icon: AWSIcon,
     hasClientSecret: true,
     documentation: 'https://docs.aws.amazon.com/cognito/index.html',
   },
