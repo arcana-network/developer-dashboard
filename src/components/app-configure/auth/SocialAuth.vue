@@ -1,26 +1,25 @@
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import type { Ref } from 'vue'
 
-import CopyIcon from '@/assets/iconography/copy.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
-import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
-import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import { deleteCred, updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { socialLogins, DOCS_URL } from '@/utils/constants'
-import copyToClipboard from '@/utils/copyToClipboard'
+import type { SocialAuthVerifier } from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const app = appsStore.app(appId)
+const selectedCredentialInput: Ref<SocialAuthVerifier> = ref('google')
 
 const socialAuth = socialLogins.map((login) => {
   const auth = app.auth.social.find((el) => el.verifier === login.verifier)
@@ -35,16 +34,6 @@ const socialAuth = socialLogins.map((login) => {
 })
 
 const socialAuthRef = reactive(socialAuth)
-
-function handleClear(verifier: string) {
-  const authIndex = socialAuthRef.findIndex(
-    (auth) => auth.verifier === verifier
-  )
-  if (authIndex > -1) {
-    delete socialAuthRef[authIndex].clientId
-    delete socialAuthRef[authIndex].clientSecret
-  }
-}
 
 function isAuthValid(auth: typeof socialAuth[0]) {
   if (auth.hasClientSecret) {
@@ -125,6 +114,14 @@ function handleInputDelete(
     delete auth[key]
   }
 }
+
+function isAWSSelected() {
+  return selectedCredentialInput.value === 'aws'
+}
+
+function logoSrc(verifier: SocialAuthVerifier) {
+  return `/src/assets/${verifier}-sso.svg`
+}
 </script>
 
 <template>
@@ -139,107 +136,208 @@ function handleInputDelete(
           LEARN MORE
         </a>
       </template>
-      <VStack gap="1.5rem">
-        <h4 class="verifier-name">Social</h4>
-        <VSeperator vertical style="margin-bottom: -1rem" />
-        <h4>Keys</h4>
-      </VStack>
-      <VSeperator class="social-auth-content-separator" />
       <form @submit.prevent="handleSave">
-        <VStack direction="column" class="flex-grow">
-          <VStack
-            v-for="auth in socialAuthRef"
-            :key="`social-login-${auth.verifier}`"
-            direction="column"
-          >
-            <VStack align="center" gap="1.5rem">
-              <label :for="auth.verifier" class="sub-heading-5 verifier-name">
-                {{ auth.name }}
-              </label>
-              <VSeperator vertical class="social-auth-separator" />
-              <VStack gap="1rem" class="social-auth-input-container">
-                <VTextField
-                  :id="auth.verifier"
-                  v-model.trim="auth.clientId"
-                  no-message
-                  class="social-auth-input"
-                  placeholder="Client ID"
-                  :icon="CopyIcon"
-                  clickable-icon
-                  @icon-clicked="copyToClipboard(auth.clientId || '')"
-                  @keyup.delete="handleInputDelete(auth, 'clientId')"
-                ></VTextField>
-                <VTextField
-                  v-if="auth.hasClientSecret"
-                  v-model.trim="auth.clientSecret"
-                  no-message
-                  class="social-auth-input"
-                  :placeholder="
-                    auth.verifier === 'aws' ? 'User Pool URL' : 'Client Secret'
-                  "
-                  @keyup.delete="handleInputDelete(auth, 'clientSecret')"
-                ></VTextField>
-              </VStack>
-              <VStack gap="1rem" align="center">
-                <VTooltip title="Get Credentials">
-                  <a
-                    :href="auth.documentation"
-                    target="_blank"
-                    class="icon-link"
+        <div class="social-auth-creds__container">
+          <div>
+            <VStack
+              v-for="auth in socialAuthRef"
+              :key="`social-login-${auth.verifier}`"
+              direction="column"
+              align="start"
+            >
+              <button
+                :for="auth.verifier"
+                class="sub-heading-5 verifier-name"
+                @click.prevent="() => (selectedCredentialInput = auth.verifier)"
+              >
+                <img
+                  :src="logoSrc(auth.verifier)"
+                  class="logo-img"
+                  :class="{
+                    'logo-img--active':
+                      selectedCredentialInput === auth.verifier,
+                  }"
+                />
+                <p class="auth-label">{{ auth.name }}</p>
+              </button>
+            </VStack>
+          </div>
+          <span class="seperator"></span>
+          <div class="social-auth__input">
+            <div v-for="auth in socialAuthRef" :key="auth.verifier">
+              <div class="social-auth-input__container">
+                <VStack
+                  v-if="selectedCredentialInput === auth.verifier"
+                  gap="1rem"
+                  class="social-auth-input-field__container"
+                >
+                  <VStack class="social-auth-input__wrapper">
+                    <VStack
+                      justify="space-between"
+                      align="center"
+                      sm-direction="column"
+                      md-direction="column"
+                      sm-align="start"
+                      md-align="start"
+                    >
+                      <p class="input-label">Client ID</p>
+                      <a
+                        class="input-doc-link"
+                        :href="auth.documentation"
+                        target="_blank"
+                        >How to get your Client ID?</a
+                      >
+                    </VStack>
+                    <VTextField
+                      :id="auth?.verifier"
+                      v-model.trim="auth.clientId"
+                      no-message
+                      class="social-auth-input"
+                      placeholder="Client ID"
+                      @keyup.delete="handleInputDelete(auth, 'clientId')"
+                    ></VTextField>
+                  </VStack>
+                  <VStack
+                    v-if="auth.hasClientSecret"
+                    class="social-auth-input__wrapper"
                   >
-                    <img
-                      src="@/assets/iconography/link.svg"
-                      alt="Get Credentials"
-                    />
-                  </a>
-                </VTooltip>
-                <VTooltip title="Clear Fields">
-                  <img
-                    src="@/assets/iconography/close.svg"
-                    alt="Clear Fields"
-                    class="cursor-pointer"
-                    @click.stop="handleClear(auth.verifier)"
-                  />
-                </VTooltip>
+                    <VStack
+                      justify="space-between"
+                      align="center"
+                      sm-direction="column"
+                      md-direction="column"
+                      sm-align="start"
+                      md-align="start"
+                    >
+                      <p class="input-label">
+                        {{
+                          isAWSSelected()
+                            ? 'Cognito User Pool URL'
+                            : 'Client Secret'
+                        }}
+                      </p>
+                      <a
+                        class="input-doc-link"
+                        :href="auth.documentation"
+                        target="_blank"
+                      >
+                        How to get your
+                        {{
+                          auth.verifier === 'aws' ? 'URL?' : 'Client Secret?'
+                        }}
+                      </a>
+                    </VStack>
+                    <VTextField
+                      v-model.trim="auth.clientSecret"
+                      no-message
+                      class="social-auth-input"
+                      :placeholder="
+                        isAWSSelected()
+                          ? 'Cognito User Pool URL'
+                          : 'Client Secret'
+                      "
+                      @keyup.delete="handleInputDelete(auth, 'clientSecret')"
+                    ></VTextField>
+                  </VStack>
+                </VStack>
+              </div>
+              <VStack gap="1.5rem">
+                <span v-show="!isAuthValid(auth)" class="body-1 error-message">
+                  {{ auth.error }}
+                </span>
               </VStack>
-            </VStack>
-            <VStack gap="1.5rem">
-              <div class="verifier-name"></div>
-              <VSeperator vertical class="social-auth-separator" />
-              <span v-show="!isAuthValid(auth)" class="body-1 error-message">
-                {{ auth.error }}
-              </span>
-            </VStack>
-          </VStack>
-          <ConfigureActionButtons
-            :save-disabled="hasError() || hasSameValuesInStore()"
-            :cancel-disabled="hasSameValuesInStore()"
-            @cancel="handleCancel"
-          />
-        </VStack>
+            </div>
+            <ConfigureActionButtons
+              :save-disabled="hasError() || hasSameValuesInStore()"
+              :cancel-disabled="hasSameValuesInStore()"
+              @cancel="handleCancel"
+            />
+          </div>
+        </div>
       </form>
     </SettingCard>
   </section>
 </template>
 
 <style scoped>
+.seperator {
+  border: 1px solid #8d8d8d33;
+}
+
 .verifier-name {
-  flex: 0 0 6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+  background-color: transparent;
+  border: none;
+  outline: none;
 }
 
-.social-auth-separator {
-  height: 4rem;
-  margin-top: -2.5rem;
-  border: 1px solid rgb(141 141 141 / 10%);
+.input-label {
+  font-family: var(--font-body);
+  font-size: 12px;
 }
 
-.social-auth-content-separator {
-  width: calc(100% - 6rem) !important;
-  margin: -1rem auto 0 0;
+.input-doc-link {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: normal;
+  text-align: right;
+  text-decoration: none;
 }
 
-.social-auth-input-container {
-  width: calc(100% - 16rem);
+.logo-img {
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+  object-fit: contain;
+}
+
+.logo-img--active {
+  border: 2px solid #13a3fd;
+  border-radius: 50%;
+}
+
+.auth-label {
+  font-size: 12px;
+  color: #8d8d8dde;
+}
+
+.social-auth-creds__container {
+  display: flex;
+}
+
+.social-auth-creds__container > * + * {
+  margin-left: 30px;
+}
+
+.social-auth__input {
+  width: 100%;
+}
+
+.social-auth-input__container {
+  display: flex;
+  flex-direction: row;
+}
+
+.social-auth-input__container > * + * {
+  margin-left: 10px;
+}
+
+.social-auth-input-field__container {
+  flex: 1;
+}
+
+.social-auth-input__wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.social-auth-input__wrapper > * + * {
+  margin-top: 10px;
 }
 
 .social-auth-input {
@@ -247,11 +345,24 @@ function handleInputDelete(
 }
 
 .error-message {
-  margin: 5px 20px;
+  margin-top: 5px;
   font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5;
   color: #ee193f;
+}
+
+@media only screen and (max-width: 1023px) {
+  .input-doc-link,
+  .input-label {
+    text-align: left;
+  }
+}
+
+@media only screen and (max-width: 1080px) {
+  .social-auth-input-field__container {
+    flex-direction: column;
+  }
 }
 </style>
