@@ -252,7 +252,13 @@ function isAuthActive(verifier: SocialAuthVerifier) {
                 </VStack>
               </div>
               <VStack gap="1.5rem">
-                <span v-show="!isAuthValid(auth)" class="body-1 error-message">
+                <span
+                  v-show="
+                    !isAuthValid(auth) &&
+                    auth.verifier === selectedCredentialInput
+                  "
+                  class="body-1 error-message"
+                >
                   {{ auth.error }}
                 </span>
               </VStack>
