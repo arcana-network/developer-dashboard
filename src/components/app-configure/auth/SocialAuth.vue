@@ -118,6 +118,14 @@ function handleInputDelete(
 function isAWSSelected() {
   return selectedCredentialInput.value === 'aws'
 }
+
+function isAuthActive(verifier: SocialAuthVerifier) {
+  const auth =
+    socialAuthRef.find((auth) => auth.verifier === verifier) || socialAuthRef[0]
+  if (auth.hasClientSecret) {
+    return !auth.clientId?.length || !auth.clientSecret?.length
+  } else return !auth.clientId?.length
+}
 </script>
 
 <template>
@@ -146,14 +154,20 @@ function isAWSSelected() {
                 class="sub-heading-5 verifier-name"
                 @click.prevent="() => (selectedCredentialInput = auth.verifier)"
               >
-                <img
-                  :src="auth.icon"
-                  class="logo-img"
+                <div
+                  class="logo"
                   :class="{
-                    'logo-img--active':
-                      selectedCredentialInput === auth.verifier,
+                    'logo--active': selectedCredentialInput === auth.verifier,
                   }"
-                />
+                >
+                  <img
+                    :src="auth.icon"
+                    class="logo-img"
+                    :class="{
+                      'logo-img--inactive': isAuthActive(auth.verifier),
+                    }"
+                  />
+                </div>
                 <p class="auth-label">{{ auth.name }}</p>
               </button>
             </VStack>
@@ -290,9 +304,22 @@ function isAWSSelected() {
   padding: 5px;
 }
 
-.logo-img--active {
+.logo {
+  margin-bottom: 5px;
+}
+
+.logo--active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
   border: 2px solid #13a3fd;
   border-radius: 50%;
+}
+
+.logo-img--inactive {
+  filter: grayscale(1);
 }
 
 .auth-label {
