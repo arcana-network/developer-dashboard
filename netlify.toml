@@ -14,5 +14,5 @@
     '''
 
 [[edge_functions]]
-  path = "/hello"
+  path = "/*"
   function = "hello"
