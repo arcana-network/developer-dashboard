@@ -305,9 +305,9 @@ function isAuthActive(verifier: SocialAuthVerifier) {
 
 .logo-img {
   box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  padding: 5px;
+  width: 38px;
+  height: 38px;
+  padding: 4px;
 }
 
 .logo {
@@ -315,11 +315,13 @@ function isAuthActive(verifier: SocialAuthVerifier) {
 }
 
 .logo--active {
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px;
   height: 40px;
+  padding: 3px;
   border: 2px solid #13a3fd;
   border-radius: 50%;
 }
