@@ -4,12 +4,12 @@ import brandingIcon from '@/assets/iconography/branding.svg'
 import BugIcon from '@/assets/iconography/bug.png'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import DocsIcon from '@/assets/iconography/docs.svg'
+import InvoiceIcon from '@/assets/iconography/invoices.svg'
 import PassportIcon from '@/assets/iconography/passport.svg'
 import ScheduleIcon from '@/assets/iconography/schedule.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
-import type { UserLimitState } from '@/stores/apps.store'
 
 const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
 
@@ -140,15 +140,6 @@ type BandwidthLimitUnit = {
 
 const storageValues = ['MB', 'GB']
 
-const unlimitedUserLimit: Readonly<UserLimitState> = {
-  isUnlimited: true,
-}
-const defaultUserLimit: Readonly<UserLimitState> = {
-  isUnlimited: false,
-  value: 2,
-  unit: 'MB',
-}
-
 const bandwidthUnits: BandwidthLimitUnit[] = [
   {
     label: 'MB/mo',
@@ -268,10 +259,10 @@ const ProfileItems = [
     label: 'Profile',
     icon: PassportIcon,
   },
-  // {
-  //   label: 'Invoices',
-  //   icon: InvoiceIcon,
-  // },
+  {
+    label: 'Invoices',
+    icon: InvoiceIcon,
+  },
 ]
 
 const constants = {
@@ -293,8 +284,6 @@ export {
   userLimitOptions,
   bandwidthUnits,
   storageValues,
-  unlimitedUserLimit,
-  defaultUserLimit,
   socialLogins,
   regions,
   ChainMapping,

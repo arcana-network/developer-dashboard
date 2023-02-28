@@ -7,8 +7,8 @@
     Content-Security-Policy = '''
       font-src 'self' fonts.gstatic.com gstatic.com *.gstatic.com;
       img-src 'self' data: *.arcana.network;
-      script-src 'self' 'unsafe-inline' *.google-analytics.com *.googletagmanager.com network.us1.list-manage.com;
+      script-src 'self' 'unsafe-inline' js.stripe.com *.google-analytics.com *.googletagmanager.com network.us1.list-manage.com;
       style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
-      frame-src *.arcana.network;
+      frame-src js.stripe.com *.arcana.network;
       frame-ancestors 'self';
     '''
