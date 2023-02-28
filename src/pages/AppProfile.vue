@@ -224,7 +224,6 @@ async function handleDeleteProceed() {
     <main :class="{ container: route.name === 'AppProfile' }">
       <VStack class="heading" gap="1.5rem">
         <img
-          v-if="route.name === 'AppProfile'"
           src="@/assets/iconography/back.svg"
           class="cursor-pointer"
           @click.stop="router.back()"

@@ -1,18 +1,25 @@
 <script lang="ts" setup>
 import moment from 'moment'
 import { ref, onBeforeMount, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { listCards, listInvoices } from '@/services/gateway.service'
+import {
+  listCards,
+  listInvoices,
+  getAuthOverview,
+} from '@/services/gateway.service'
 import { useLoaderStore } from '@/stores/loader.store'
 
 const loaderStore = useLoaderStore()
 
 const expandInvoice = ref('')
+const totalBill = ref(0)
+const router = useRouter()
 
 type InvoiceData = {
   url: string
@@ -37,8 +44,16 @@ function handleExpand(invoice: InvoiceData) {
   }
 }
 
+function getDueDate() {
+  return moment().endOf('month').format('DD MMMM YYYY')
+}
+
 onBeforeMount(async () => {
   loaderStore.showLoader('Fetching invoices...')
+  const appsOverview = (await getAuthOverview('mainnet')).data
+  if (appsOverview) {
+    totalBill.value = appsOverview.bill
+  }
   const cards = (await listCards()).data
   if (cards?.length) {
     selectedCard.value = `Card Ending ${cards[0].last4}`
@@ -76,18 +91,25 @@ onBeforeMount(async () => {
   <div>
     <app-header />
     <main class="container">
-      <h1 class="heading">INVOICES</h1>
+      <VStack class="heading" gap="1.5rem">
+        <img
+          src="@/assets/iconography/back.svg"
+          class="cursor-pointer"
+          @click.stop="router.back()"
+        />
+        <h1>INVOICES</h1>
+      </VStack>
       <section class="personal-details">
         <SettingCard>
           <template #title>ESTIMATED CHARGES</template>
           <VStack direction="column" gap="1.5rem">
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Amount Due:</span>
-              <span class="charge-details amount">$200.23</span>
+              <span class="charge-details amount">${{ totalBill }}</span>
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Due Date:</span>
-              <span class="charge-details">21 MAY 2023</span>
+              <span class="charge-details">{{ getDueDate() }}</span>
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Payment Method:</span>
