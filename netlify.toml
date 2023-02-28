@@ -12,3 +12,7 @@
       frame-src js.stripe.com *.arcana.network;
       frame-ancestors 'self';
     '''
+
+[[edge_functions]]
+  path = "/hello"
+  function = "hello"
