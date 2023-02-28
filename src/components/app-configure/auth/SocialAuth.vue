@@ -288,7 +288,6 @@ function isAWSSelected() {
   width: 40px;
   height: 40px;
   padding: 5px;
-  object-fit: contain;
 }
 
 .logo-img--active {
