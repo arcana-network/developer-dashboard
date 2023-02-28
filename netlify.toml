@@ -15,4 +15,4 @@
 
 [[edge_functions]]
   path = "/*"
-  function = "hello"
+  function = "csp"
