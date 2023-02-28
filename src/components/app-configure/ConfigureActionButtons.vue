@@ -18,6 +18,10 @@ defineProps({
     type: Boolean,
     default: false,
   },
+  hideCancel: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const emit = defineEmits(['cancel', 'save'])
@@ -26,6 +30,7 @@ const emit = defineEmits(['cancel', 'save'])
 <template>
   <div class="footer flex flex-wrap flex-grow">
     <VButton
+      v-if="!hideCancel"
       v-wave
       type="button"
       :label="cancelLabel"

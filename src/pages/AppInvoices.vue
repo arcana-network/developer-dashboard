@@ -1,88 +1,42 @@
 <script lang="ts" setup>
-import { ref } from 'vue'
+import moment from 'moment'
+import { ref, onBeforeMount, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
-import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useToast } from '@/components/lib/VToast'
-import { useAuthStore } from '@/stores/auth.store'
+import {
+  listCards,
+  listInvoices,
+  getAuthOverview,
+} from '@/services/gateway.service'
 import { useLoaderStore } from '@/stores/loader.store'
 
-const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
-const toast = useToast()
 
 const expandInvoice = ref('')
-const expandCardOptions = ref(false)
+const totalBill = ref(0)
+const router = useRouter()
 
-const invoices = [
-  {
-    month: 'MAY',
-    year: 2023,
-    amount: 200,
-    breakdown: [
-      {
-        appName: 'Test app 1',
-        maus: 1000,
-      },
-      {
-        appName: 'Test app 2',
-        maus: 2000,
-      },
-      {
-        appName: 'Test app 3',
-        maus: 3000,
-      },
-    ],
-  },
-  {
-    month: 'APRIL',
-    year: 2023,
-    amount: 100,
-    breakdown: [
-      {
-        appName: 'Test app 1',
-        maus: 1000,
-      },
-      {
-        appName: 'Test app 2',
-        maus: 1000,
-      },
-      {
-        appName: 'Test app 3',
-        maus: 1000,
-      },
-    ],
-  },
-  {
-    month: 'MARCH',
-    year: 2023,
-    amount: 20,
-    breakdown: [
-      {
-        appName: 'Test app 1',
-        maus: 500,
-      },
-      {
-        appName: 'Test app 2',
-        maus: 500,
-      },
-      {
-        appName: 'Test app 3',
-        maus: 300,
-      },
-    ],
-  },
-]
+type InvoiceData = {
+  url: string
+  period: string
+  apps: {
+    appName: string
+    usage: number
+  }[]
+  bill: number
+}
 
-const cards = ['CARD ENDING 4433', 'CARD ENDING 2793']
-const selectedCard = ref(cards[0])
+const invoices: Ref<InvoiceData[]> = ref([])
 
-function handleExpand(invoice) {
-  const expandValue = `${invoice.month} ${invoice.year}`
+const selectedCard = ref('')
+
+function handleExpand(invoice: InvoiceData) {
+  const expandValue = invoice.period
   if (expandInvoice.value !== expandValue) {
     expandInvoice.value = expandValue
   } else {
@@ -90,42 +44,72 @@ function handleExpand(invoice) {
   }
 }
 
-function handleDownload(invoice) {
-  loaderStore.showLoader(
-    `Downloading the invoice for ${invoice.month} ${invoice.year}`
-  )
-  setTimeout(() => {
-    toast.success('Invoice downloaded')
-    loaderStore.hideLoader()
-  }, 2000)
+function getDueDate() {
+  return moment().endOf('month').format('DD MMMM YYYY')
 }
 
-function toggleCardOptions() {
-  expandCardOptions.value = !expandCardOptions.value
-}
-
-function handleCardChange(card) {
-  selectedCard.value = card
-  expandCardOptions.value = false
-}
+onBeforeMount(async () => {
+  loaderStore.showLoader('Fetching invoices...')
+  const appsOverview = (await getAuthOverview('mainnet')).data
+  if (appsOverview) {
+    totalBill.value = appsOverview.bill
+  }
+  const cards = (await listCards()).data
+  if (cards?.length) {
+    selectedCard.value = `Card Ending ${cards[0].last4}`
+  } else {
+    selectedCard.value = 'No card added'
+  }
+  const invoiceData = (await listInvoices()).data
+  if (invoiceData) {
+    const invoicePeriods = Object.keys(invoiceData).reverse()
+    invoicePeriods.forEach((invoicePeriod) => {
+      const invoice = {} as InvoiceData
+      invoice.apps = []
+      invoice.period = moment(invoicePeriod, 'M-YYYY').format('MMMM YYYY')
+      const invoiceDetails = Object.keys(invoiceData[invoicePeriod])
+      invoiceDetails.forEach((invoiceDetail) => {
+        if (invoiceDetail === 'bill') {
+          invoice.bill = invoiceData[invoicePeriod].bill
+        } else if (invoiceDetail === 'invoice_url') {
+          invoice.url = invoiceData[invoicePeriod].invoice_url
+        } else {
+          invoice.apps.push({
+            appName: invoiceDetail,
+            usage: invoiceData[invoicePeriod][invoiceDetail],
+          })
+        }
+      })
+      invoices.value.push(invoice)
+    })
+  }
+  loaderStore.hideLoader()
+})
 </script>
 
 <template>
   <div>
     <app-header />
     <main class="container">
-      <h1 class="heading">INVOICES</h1>
+      <VStack class="heading" gap="1.5rem">
+        <img
+          src="@/assets/iconography/back.svg"
+          class="cursor-pointer"
+          @click.stop="router.back()"
+        />
+        <h1>INVOICES</h1>
+      </VStack>
       <section class="personal-details">
         <SettingCard>
           <template #title>ESTIMATED CHARGES</template>
           <VStack direction="column" gap="1.5rem">
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Amount Due:</span>
-              <span class="charge-details amount">$200.23</span>
+              <span class="charge-details amount">${{ totalBill }}</span>
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Due Date:</span>
-              <span class="charge-details">21 MAY 2023</span>
+              <span class="charge-details">{{ getDueDate() }}</span>
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Payment Method:</span>
@@ -133,33 +117,8 @@ function handleCardChange(card) {
                 <span class="charge-details text-uppercase">{{
                   selectedCard
                 }}</span>
-                <img
-                  src="@/assets/iconography/dropdown.svg"
-                  class="cursor-pointer card-option"
-                  :class="{ 'card-option-expanded': expandCardOptions }"
-                  @click.stop="toggleCardOptions"
-                />
-                <Transition name="fade">
-                  <VStack
-                    v-if="expandCardOptions"
-                    direction="column"
-                    class="position-absolute card-option-popup"
-                  >
-                    <div
-                      v-for="card in cards"
-                      :key="card"
-                      class="text-uppercase cursor-pointer popup-item"
-                      @click.stop="handleCardChange(card)"
-                    >
-                      {{ card }}
-                    </div>
-                  </VStack>
-                </Transition>
               </VStack>
             </VStack>
-          </VStack>
-          <VStack style="justify-content: end; margin-top: 1rem">
-            <VButton label="PAY NOW" />
           </VStack>
         </SettingCard>
       </section>
@@ -167,10 +126,10 @@ function handleCardChange(card) {
         <VStack direction="column" gap="1.25rem">
           <VCard
             v-for="invoice in invoices"
-            :key="invoice.month + invoice.year"
+            :key="invoice.period"
             class="invoice-card"
             :class="{
-              expanded: expandInvoice === `${invoice.month} ${invoice.year}`,
+              expanded: expandInvoice === invoice.period,
             }"
           >
             <VStack direction="column" class="flex-grow">
@@ -180,23 +139,23 @@ function handleCardChange(card) {
                 style="padding: 2rem"
                 @click.stop="handleExpand(invoice)"
               >
-                <span class="invoice-title"
-                  >{{ invoice.month }} {{ invoice.year }}</span
-                >
-                <VStack gap="1.5rem">
+                <span class="invoice-title">{{ invoice.period }}</span>
+                <VStack gap="1.5rem" align="center">
                   <span
                     class="invoice-title"
                     :class="{
-                      amount:
-                        expandInvoice === `${invoice.month} ${invoice.year}`,
+                      amount: expandInvoice === invoice.period,
                     }"
-                    >${{ invoice.amount }}</span
+                    >${{ invoice.bill }}</span
                   >
-                  <img
-                    src="@/assets/iconography/download.svg"
-                    class="cursor-pointer"
-                    @click.stop="handleDownload(invoice)"
-                  />
+                  <a
+                    :href="invoice.url"
+                    download
+                    target="_blank"
+                    style="display: flex"
+                  >
+                    <img src="@/assets/iconography/download.svg" />
+                  </a>
                 </VStack>
               </VStack>
               <VSeperator class="separator-bleed" />
@@ -213,12 +172,12 @@ function handleCardChange(card) {
                   <VSeperator class="separator-bleed" />
                   <VStack direction="column" gap="2rem" class="flex-grow">
                     <VStack
-                      v-for="statement in invoice.breakdown"
-                      :key="statement.appName + statement.maus"
+                      v-for="app in invoice.apps"
+                      :key="app.appName + app.usage"
                       gap="2rem"
                     >
-                      <span class="invoice-value">{{ statement.appName }}</span>
-                      <span class="invoice-value">{{ statement.maus }}</span>
+                      <span class="invoice-value">{{ app.appName }}</span>
+                      <span class="invoice-value">{{ app.usage }}</span>
                     </VStack>
                   </VStack>
                 </VStack>
@@ -232,6 +191,10 @@ function handleCardChange(card) {
 </template>
 
 <style scoped>
+.container {
+  padding-bottom: 2.5rem;
+}
+
 .details {
   gap: 1em;
   width: 280px;

@@ -20,6 +20,8 @@ import getEnvApi from '@/utils/get-env-api'
 
 const authStore = useAuthStore(store)
 const appsStore = useAppsStore(store)
+const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
+const ApiNetwork = ARCANA_AUTH_NETWORK === 'mainnet' ? 'mainnet' : 'testnet'
 
 let forwarder: string, rpcUrl: string
 
@@ -160,6 +162,13 @@ function deleteCred(
 function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
   const { social, wallet } = app.auth
   const cred: AppConfigCred[] = social.map((authType) => {
+    if (authType.verifier === 'aws') {
+      return {
+        verifier: authType.verifier,
+        domain: authType.clientSecret,
+        clientId: authType.clientId,
+      }
+    }
     return {
       verifier: authType.verifier,
       clientId: authType.clientId,
@@ -441,6 +450,28 @@ function submitVerificationForm(
   })
 }
 
+function addCard(token: string): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).post(`${getEnvApi()}/card/`, {
+    token,
+  })
+}
+
+function listCards(): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/card/`)
+}
+
+function deleteCard(card_id: string): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).delete(`${getEnvApi()}/card/`, {
+    data: {
+      card_id,
+    },
+  })
+}
+
+function listInvoices(): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/invoices/`)
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -471,6 +502,10 @@ export {
   getGatewayInstance,
   updateAppLogos,
   submitVerificationForm,
+  addCard,
+  listCards,
+  deleteCard,
+  listInvoices,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

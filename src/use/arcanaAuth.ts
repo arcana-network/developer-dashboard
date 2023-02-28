@@ -6,7 +6,7 @@ const { AuthProvider, CHAIN } = window.arcana.auth
 const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 
-let authInstance: AuthProvider
+let authInstance: typeof AuthProvider
 let network: 'testnet' | 'mainnet' | any
 
 if (ARCANA_AUTH_NETWORK === 'mainnet') {
@@ -67,6 +67,10 @@ function useArcanaAuth() {
     return await authInstance.getPublicKey(email)
   }
 
+  function getProvider() {
+    return authInstance.provider
+  }
+
   return {
     init,
     isLoggedIn,
@@ -75,6 +79,7 @@ function useArcanaAuth() {
     logout,
     fetchUserDetails,
     getPublicKey,
+    getProvider,
   }
 }
 
