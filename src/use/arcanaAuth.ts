@@ -13,10 +13,14 @@ if (ARCANA_AUTH_NETWORK === 'mainnet') {
   network = {
     authUrl: 'https://auth.arcana.network',
     gatewayUrl: 'https://gateway.arcana.network',
-    walletUrl: 'https://wallet.arcana.network',
+    walletUrl: 'http://localhost:8080',
   }
 } else {
-  network = ARCANA_AUTH_NETWORK
+  network = {
+    authUrl: 'https://verify.dev.arcana.network',
+    gatewayUrl: 'https://gateway-dev.arcana.network',
+    walletUrl: 'https://deploy-preview-207--wallet-dev.netlify.app',
+  }
 }
 
 function useArcanaAuth() {
