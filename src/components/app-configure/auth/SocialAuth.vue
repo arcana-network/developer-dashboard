@@ -222,7 +222,7 @@ function isAuthActive(verifier: SocialAuthVerifier) {
                       <p class="input-label">
                         {{
                           isAWSSelected()
-                            ? 'Cognito User Pool URL'
+                            ? 'Cognito User Pool Domain'
                             : 'Client Secret'
                         }}
                       </p>
@@ -233,7 +233,7 @@ function isAuthActive(verifier: SocialAuthVerifier) {
                       >
                         How to get your
                         {{
-                          auth.verifier === 'aws' ? 'URL?' : 'Client Secret?'
+                          auth.verifier === 'aws' ? 'Domain?' : 'Client Secret?'
                         }}
                       </a>
                     </VStack>
@@ -243,7 +243,7 @@ function isAuthActive(verifier: SocialAuthVerifier) {
                       class="social-auth-input"
                       :placeholder="
                         isAWSSelected()
-                          ? 'Cognito User Pool URL'
+                          ? 'Enter the domain without https://'
                           : 'Client Secret'
                       "
                       @keyup.delete="handleInputDelete(auth, 'clientSecret')"
