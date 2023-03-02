@@ -357,7 +357,7 @@ a {
   }
 
   .container {
-    width: 94% !important;
+    padding-inline: 2%;
     margin-bottom: 4vh;
   }
 
@@ -370,7 +370,7 @@ a {
   }
 
   h1 {
-    font-size: 2.125em;
+    font-size: 1.25em;
   }
 
   h2 {
@@ -378,11 +378,11 @@ a {
   }
 
   .sub-heading-1 {
-    font-size: 2.125em;
+    font-size: 1.25em;
   }
 
   .sub-heading-2 {
-    font-size: 1.688em;
+    font-size: 0.688em;
   }
 
   .sm-flex-start {
@@ -519,20 +519,24 @@ a {
 }
 @media only screen and (max-width: 1023px) {
   h1 {
-    font-size: 2.225em;
-    letter-spacing: 2px;
+    font-size: 1.125em;
+    letter-spacing: 1.5px;
   }
 
   h2 {
-    font-size: 1.25em;
+    font-size: 0.875em;
   }
 
   .sub-heading-1 {
-    font-size: 2.225em;
+    font-size: 1.125em;
   }
 
   .sub-heading-2 {
-    font-size: 1.888em;
+    font-size: 0.888em;
+  }
+
+  .md-column {
+    flex-direction: column;
   }
 }
 @media only screen and (min-width: 768px) and (max-width: 1023px) {

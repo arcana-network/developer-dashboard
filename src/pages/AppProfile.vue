@@ -1,16 +1,23 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type Ref, reactive } from 'vue'
+import { ref, onBeforeMount, type Ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
+import DeleteCardConfirmPopup from '@/components/DeleteCardConfirmPopup.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
-import { fetchProfile, updateOrganization } from '@/services/gateway.service'
+import {
+  fetchProfile,
+  updateOrganization,
+  addCard,
+  listCards,
+  deleteCard,
+} from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 
@@ -32,28 +39,23 @@ const organisationDetails: Ref<OrganizationDetails> = ref({
   sizeErrorMessage: '',
   country: '',
 })
-
-const swapClicked = ref(false)
+const cardDetails = ref({
+  cardName: '',
+  cardNumber: '',
+  expiry: '',
+  cardId: '',
+})
+const showDeleteCardModal = ref(false)
 
 const invoiceDetails = ref({
   name: '',
   address: '',
 })
+const cardName = ref('')
+const cardNumberSelected = ref(false)
+const cardExpirySelected = ref(false)
+const cardCVCSelected = ref(false)
 
-const paymentDetails = reactive({
-  primary: {
-    cardNumber: '',
-    cvv: '',
-    expiry: '',
-    cardName: '',
-  },
-  secondary: {
-    cardNumber: '',
-    cvv: '',
-    expiry: '',
-    cardName: '',
-  },
-})
 const name = ref(authStore.name)
 const email = ref(authStore.email)
 const router = useRouter()
@@ -89,16 +91,88 @@ async function onUpdateOrganization() {
   }
 }
 
-onBeforeMount(() => {
-  fetchProfile().then((response) => {
-    organisationDetails.value = {
-      name: response.data.organization.name,
-      size: response.data.organization.size,
-      country: response.data.organization.country,
-    }
-    organisationDetailsResetState = { ...organisationDetails.value }
-  })
+onBeforeMount(async () => {
+  await fetchProfileData()
+  await fetchCardsData()
 })
+
+async function fetchProfileData() {
+  const profileDetails = (await fetchProfile()).data
+  organisationDetails.value = {
+    name: profileDetails.organization.name,
+    size: profileDetails.organization.size,
+    country: profileDetails.organization.country,
+  }
+  organisationDetailsResetState = { ...organisationDetails.value }
+}
+
+async function fetchCardsData() {
+  const cards = (await listCards()).data
+  if (cards[0]) {
+    cardDetails.value = {
+      cardName: cards[0].name,
+      cardNumber: `XXXX ... ${cards[0].last4}`,
+      expiry: `${getMonth(cards[0].exp_month)} / ${cards[0].exp_year}`,
+      cardId: cards[0].id,
+    }
+  }
+}
+
+function getMonth(month: number) {
+  if (month < 10) {
+    return `0${month}`
+  } else {
+    return `${month}`
+  }
+}
+
+let stripe: any, cardNumber: any
+
+onMounted(() => {
+  if (!cardDetails.value.cardNumber) {
+    loadStripe()
+  }
+})
+
+function loadStripe() {
+  stripe = window.Stripe(
+    'pk_test_51MN8EKSASugCFwITiKdrNvCht6mwCQdVwLZWv05Gkr5h2ONCVKjiSSA18ig2ear2EfZ6GdSTVllmF3XmjtQIXqIr00eHrjiCpO'
+  )
+  const elements = stripe.elements()
+  const style = {
+    base: {
+      fontFamily: '"Sora", sans-serif',
+      fontSmoothing: 'antialiased',
+      fontSize: '16px',
+      color: '#f7f7f7',
+      backgroundColor: 'transparent',
+      '::placeholder': {
+        color: '#393939',
+      },
+    },
+  }
+
+  cardNumber = elements.create('cardNumber', {
+    style,
+  })
+  cardNumber.mount('#card-number')
+  cardNumber.on('focus', () => (cardNumberSelected.value = true))
+  cardNumber.on('blur', () => (cardNumberSelected.value = false))
+
+  const cardExpiry = elements.create('cardExpiry', {
+    style,
+  })
+  cardExpiry.mount('#card-expiry')
+  cardExpiry.on('focus', () => (cardExpirySelected.value = true))
+  cardExpiry.on('blur', () => (cardExpirySelected.value = false))
+
+  const cardCVC = elements.create('cardCvc', {
+    style,
+  })
+  cardCVC.mount('#card-cvc')
+  cardCVC.on('focus', () => (cardCVCSelected.value = true))
+  cardCVC.on('blur', () => (cardCVCSelected.value = false))
+}
 
 function resetOrganisationDetails() {
   editOrganisationDetails.value = false
@@ -109,20 +183,38 @@ function resetOrganisationDetails() {
   }
 }
 
-function swapCards() {
-  const temp = paymentDetails.primary
-  paymentDetails.primary = paymentDetails.secondary
-  paymentDetails.secondary = temp
-  swapClicked.value = !swapClicked.value
+async function submitCard() {
+  if (!cardName.value) {
+    return toast.error('Your card name is incomplete.')
+  }
+  loaderStore.showLoader('Adding the card...')
+  const { token, error } = await stripe.createToken(cardNumber, {
+    name: cardName.value,
+  })
+  if (token) {
+    await addCard(token.id)
+    await fetchCardsData()
+    toast.success('Card saved successfully')
+  } else {
+    toast.error(error.message)
+  }
+  loaderStore.hideLoader()
 }
 
-function deleteSecondary() {
-  paymentDetails.secondary = {
-    cardNumber: '',
-    cvv: '',
-    expiry: '',
+async function handleDeleteProceed() {
+  showDeleteCardModal.value = false
+  loaderStore.showLoader('Deleting the card...')
+  await deleteCard(cardDetails.value.cardId)
+  cardDetails.value = {
     cardName: '',
+    expiry: '',
+    cardNumber: '',
+    cardId: '',
   }
+  setTimeout(() => {
+    loadStripe()
+    loaderStore.hideLoader()
+  })
 }
 </script>
 
@@ -132,7 +224,6 @@ function deleteSecondary() {
     <main :class="{ container: route.name === 'AppProfile' }">
       <VStack class="heading" gap="1.5rem">
         <img
-          v-if="route.name === 'AppProfile'"
           src="@/assets/iconography/back.svg"
           class="cursor-pointer"
           @click.stop="router.back()"
@@ -143,12 +234,17 @@ function deleteSecondary() {
         <SettingCard>
           <template #title>PERSONAL DETAILS</template>
           <VStack
-            class="flex sm-column flex-wrap justify-space-between"
+            class="flex md-column flex-wrap justify-space-between"
             gap="1.25rem"
           >
             <div class="flex column details flex-grow">
               <label for="light-horizontal-logo">Name</label>
-              <VTextField v-model.trim="name" class="app-name-input" disabled />
+              <VTextField
+                v-model.trim="name"
+                class="app-name-input"
+                disabled
+                no-message
+              />
             </div>
             <div class="flex column details flex-grow">
               <label for="light-horizontal-logo">Public Identifier</label>
@@ -156,6 +252,7 @@ function deleteSecondary() {
                 v-model.trim="email"
                 class="app-name-input"
                 disabled
+                no-message
               />
             </div>
             <div
@@ -170,13 +267,21 @@ function deleteSecondary() {
           <template #title>ORGANISATION DETAILS</template>
           <form @submit.prevent="onUpdateOrganization">
             <VStack
-              class="flex sm-column flex-wrap justify-space-between"
+              class="flex md-column flex-wrap justify-space-between"
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
                 <label for="light-horizontal-logo">Organisation Name</label>
                 <VTextField
                   v-model.trim="organisationDetails.name"
+                  class="app-name-input"
+                  no-message
+                />
+              </div>
+              <div class="flex column details flex-grow">
+                <label for="light-horizontal-logo">Country</label>
+                <VTextField
+                  v-model.trim="organisationDetails.country"
                   class="app-name-input"
                   no-message
                 />
@@ -193,13 +298,6 @@ function deleteSecondary() {
                   "
                 />
               </div>
-              <div class="flex column details flex-grow">
-                <label for="light-horizontal-logo">Country</label>
-                <VTextField
-                  v-model.trim="organisationDetails.country"
-                  class="app-name-input"
-                />
-              </div>
             </VStack>
             <ConfigureActionButtons
               :save-disabled="false"
@@ -209,19 +307,19 @@ function deleteSecondary() {
           </form>
         </SettingCard>
       </section>
-      <!-- <section style="margin-top: 3em">
+      <section v-if="false" style="margin-top: 3em">
         <SettingCard>
           <template #title>INVOICING DETAILS</template>
           <form>
             <VStack
-              class="flex sm-column flex-wrap justify-space-between"
+              class="flex md-column flex-wrap justify-space-between"
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
                 <label for="light-horizontal-logo">Billing Name</label>
                 <VTextField
                   v-model.trim="invoiceDetails.name"
-                  class="app-name-input text-ellipsis"
+                  class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
                   no-message
@@ -232,7 +330,7 @@ function deleteSecondary() {
                 <label for="light-horizontal-logo">Billing Address</label>
                 <VTextField
                   v-model.trim="invoiceDetails.address"
-                  class="app-name-input text-ellipsis"
+                  class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
                   no-message
@@ -254,148 +352,103 @@ function deleteSecondary() {
       <section style="margin-top: 3em">
         <SettingCard>
           <template #title>PAYMENT METHODS</template>
-          <form>
+          <form @submit.prevent="submitCard">
             <VStack
-              align="center"
-              md-direction="column"
               class="flex sm-column flex-wrap justify-space-between payment-container"
+              gap="0.5rem"
             >
-              <VStack direction="column" gap="1.25rem">
-                <span class="payment-title">Primary</span>
-                <div class="payment-input">
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Name</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.cardName"
-                      class="app-name-input text-ellipsis"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.primary.cardName = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Expiry Date</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.expiry"
-                      class="app-name-input"
-                      :icon="CloseIcon"
-                      type="number"
-                      placeholder="mm/yyyy"
-                      clickable-icon
-                      no-message
-                      pattern="[\d]{2}\/[\d]{4}"
-                      @icon-clicked="paymentDetails.primary.expiry = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Number</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.cardNumber"
-                      class="app-name-input text-ellipsis"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.primary.cardNumber = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">CVV</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.primary.cvv"
-                      class="app-name-input cvv"
-                      type="number"
-                      pattern="[\d]{3}"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.primary.cvv = ''"
-                    />
-                  </div>
-                </div>
-              </VStack>
-              <div class="switch-icon-container">
-                <img
-                  src="@/assets/iconography/switch-vertical.svg"
-                  class="cursor-pointer switch-icon"
-                  :class="{ swapped: swapClicked }"
-                  @click.stop="swapCards"
-                />
-              </div>
-              <VStack direction="column" gap="1.25rem">
-                <VStack
-                  justify="space-between"
-                  align="center"
-                  class="flex-grow"
-                >
-                  <span class="payment-title">Secondary</span>
+              <VStack direction="column" class="flex-grow">
+                <VStack justify="space-between">
+                  <span class="payment-title">Card Details</span>
                   <VButton
+                    v-if="cardDetails.cardNumber"
                     variant="link"
-                    label="DELETE"
-                    @click.stop="deleteSecondary"
+                    label="DELETE CARD"
+                    @click.stop="showDeleteCardModal = true"
                   />
                 </VStack>
                 <div class="payment-input">
                   <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Name</label>
+                    <label for="card-name">Card Name</label>
                     <VTextField
-                      v-model.trim="paymentDetails.secondary.cardName"
-                      class="app-name-input text-ellipsis"
-                      :icon="CloseIcon"
-                      clickable-icon
-                      no-message
-                      @icon-clicked="paymentDetails.secondary.cardName = ''"
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Expiry Date</label>
-                    <VTextField
-                      v-model.trim="paymentDetails.secondary.expiry"
-                      class="app-name-input"
+                      v-if="!cardDetails.cardNumber"
+                      id="card-name"
+                      v-model.trim="cardName"
                       type="text"
-                      placeholder="mm/yyyy"
-                      :icon="CloseIcon"
-                      clickable-icon
+                      placeholder="Name on the card"
                       no-message
-                      pattern="[\d]{2}\/[\d]{4}"
-                      @icon-clicked="paymentDetails.secondary.expiry = ''"
+                    />
+                    <VTextField
+                      v-else
+                      id="card-name"
+                      :model-value="cardDetails.cardName"
+                      type="text"
+                      disabled
+                      no-message
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">Card Number</label>
+                    <label for="card-number">Card Number</label>
+                    <div
+                      v-if="!cardDetails.cardNumber"
+                      class="card-element"
+                      :class="{ 'stripe-focused': cardNumberSelected }"
+                    >
+                      <div id="card-number" style="flex: 1"></div>
+                    </div>
                     <VTextField
-                      v-model.trim="paymentDetails.secondary.cardNumber"
-                      class="app-name-input text-ellipsis"
+                      v-else
+                      id="card-number"
+                      :model-value="cardDetails.cardNumber"
+                      type="text"
+                      disabled
                       no-message
-                      :icon="CloseIcon"
-                      clickable-icon
-                      @icon-clicked="paymentDetails.secondary.cardNumber = ''"
                     />
                   </div>
                   <div class="flex column payment-details-input flex-grow">
-                    <label for="light-horizontal-logo">CVV</label>
+                    <label for="card-expiry">Expiry Date</label>
+                    <div
+                      v-if="!cardDetails.expiry"
+                      class="card-element"
+                      :class="{ 'stripe-focused': cardExpirySelected }"
+                    >
+                      <div id="card-expiry" style="flex: 1"></div>
+                    </div>
                     <VTextField
-                      v-model.trim="paymentDetails.secondary.cvv"
-                      class="app-name-input cvv"
-                      type="number"
-                      :icon="CloseIcon"
-                      clickable-icon
+                      v-else
+                      id="card-expiry"
+                      :model-value="cardDetails.expiry"
+                      type="text"
+                      disabled
                       no-message
-                      pattern="[\d]{3}"
-                      @icon-clicked="paymentDetails.secondary.cvv = ''"
                     />
+                  </div>
+                  <div class="flex column payment-details-input flex-grow">
+                    <label v-if="!cardDetails.expiry" for="card-cvc">CVC</label>
+                    <div
+                      v-if="!cardDetails.expiry"
+                      class="card-element"
+                      :class="{ 'stripe-focused': cardCVCSelected }"
+                    >
+                      <div id="card-cvc" style="flex: 1"></div>
+                    </div>
                   </div>
                 </div>
               </VStack>
             </VStack>
             <ConfigureActionButtons
-              :save-disabled="false"
-              :cancel-disabled="false"
+              :save-disabled="!!cardDetails.cardNumber"
+              hide-cancel
               style="margin-top: 3rem"
             />
           </form>
         </SettingCard>
-      </section> -->
+      </section>
+      <DeleteCardConfirmPopup
+        v-if="showDeleteCardModal"
+        @cancel="showDeleteCardModal = false"
+        @proceed="handleDeleteProceed"
+      />
     </main>
   </div>
 </template>
@@ -409,6 +462,31 @@ function deleteSecondary() {
 
 main {
   padding-bottom: 4rem;
+}
+
+.card-element {
+  padding: 1rem;
+  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  border-radius: 10px;
+  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
+    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+}
+
+.card-name {
+  width: 30%;
+  font-family: Sora, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #f7f7f7;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card-name::placeholder {
+  color: #8d8d8d;
 }
 
 .payment-details-input {
@@ -448,8 +526,8 @@ label {
 
 .payment-input {
   display: grid;
-  grid-template-columns: 18vw 10vw;
-  gap: 1.25rem;
+  grid-template-columns: 24vw 20vw 10rem 10rem;
+  gap: 1.5rem;
 }
 
 .cvv {
@@ -458,6 +536,10 @@ label {
 
 .swapped {
   transform: rotate(-180deg);
+}
+
+.stripe-focused {
+  outline: 1px solid var(--primary);
 }
 
 @media only screen and (max-width: 1023px) {
@@ -491,6 +573,10 @@ label {
     display: grid;
     grid-template-columns: 1fr;
     gap: 0.5rem;
+  }
+
+  .details {
+    width: unset;
   }
 }
 </style>

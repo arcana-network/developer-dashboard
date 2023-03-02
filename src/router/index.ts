@@ -117,7 +117,7 @@ const routes: RouteRecordRaw[] = [
     },
   },
   {
-    name: 'Invoices',
+    name: 'AppInvoices',
     path: '/invoices',
     component: AppInvoices,
     meta: {
