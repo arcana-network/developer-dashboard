@@ -250,6 +250,7 @@ h1 {
 
 .sso {
   display: inline-block;
+  width: 30px;
   margin-left: 2rem;
   vertical-align: middle;
   cursor: pointer;

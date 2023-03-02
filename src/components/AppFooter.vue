@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router'
-
 import DiscordIcon from '@/assets/discord-white.svg'
-import DiscourseIcon from '@/assets/discourse-white.svg'
 import TelegramIcon from '@/assets/telegram-white.svg'
 import TwitterIcon from '@/assets/twitter-white.svg'
 import VStack from '@/components/lib/VStack/VStack.vue'
