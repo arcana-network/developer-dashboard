@@ -272,10 +272,10 @@ const ProfileItems = [
     label: 'Profile',
     icon: PassportIcon,
   },
-  {
-    label: 'Invoices',
-    icon: InvoiceIcon,
-  },
+  // {
+  //   label: 'Invoices',
+  //   icon: InvoiceIcon,
+  // },
 ]
 
 const constants = {

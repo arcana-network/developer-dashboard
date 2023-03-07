@@ -93,7 +93,7 @@ async function onUpdateOrganization() {
 
 onBeforeMount(async () => {
   await fetchProfileData()
-  await fetchCardsData()
+  // await fetchCardsData()
 })
 
 async function fetchProfileData() {
@@ -130,7 +130,7 @@ let stripe: any, cardNumber: any
 
 onMounted(() => {
   if (!cardDetails.value.cardNumber) {
-    loadStripe()
+    // loadStripe()
   }
 })
 
@@ -349,7 +349,7 @@ async function handleDeleteProceed() {
           </form>
         </SettingCard>
       </section>
-      <section style="margin-top: 3em">
+      <section v-if="false" style="margin-top: 3em">
         <SettingCard>
           <template #title>PAYMENT METHODS</template>
           <form @submit.prevent="submitCard">
