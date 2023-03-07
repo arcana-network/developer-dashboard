@@ -1,15 +1,21 @@
 import bytes from 'bytes'
 
+import AWSIcon from '@/assets/aws-sso.svg'
+import DiscordIcon from '@/assets/discord-sso.svg'
+import GithubIcon from '@/assets/github-sso.svg'
+import GoogleIcon from '@/assets/google-sso.svg'
 import brandingIcon from '@/assets/iconography/branding.svg'
 import BugIcon from '@/assets/iconography/bug.png'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import DocsIcon from '@/assets/iconography/docs.svg'
+import InvoiceIcon from '@/assets/iconography/invoices.svg'
 import PassportIcon from '@/assets/iconography/passport.svg'
 import ScheduleIcon from '@/assets/iconography/schedule.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
-import type { UserLimitState } from '@/stores/apps.store'
+import TwitchIcon from '@/assets/twitch-sso.svg'
+import TwitterIcon from '@/assets/twitter-sso.svg'
 
 const docs_url = import.meta.env.VITE_ARCANA_DOCS_URL
 
@@ -140,15 +146,6 @@ type BandwidthLimitUnit = {
 
 const storageValues = ['MB', 'GB']
 
-const unlimitedUserLimit: Readonly<UserLimitState> = {
-  isUnlimited: true,
-}
-const defaultUserLimit: Readonly<UserLimitState> = {
-  isUnlimited: false,
-  value: 2,
-  unit: 'MB',
-}
-
 const bandwidthUnits: BandwidthLimitUnit[] = [
   {
     label: 'MB/mo',
@@ -167,6 +164,7 @@ type SocialAuthVerifier =
   | 'reddit'
   | 'github'
   | 'discord'
+  | 'aws'
 
 type SocialAuthVerifierLabel =
   | 'Google'
@@ -175,9 +173,11 @@ type SocialAuthVerifierLabel =
   | 'Reddit'
   | 'GitHub'
   | 'Discord'
+  | 'Cognito'
 
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
+  icon: string
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
   documentation: string
@@ -187,24 +187,28 @@ const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Google',
     verifier: 'google',
+    icon: GoogleIcon,
     hasClientSecret: false,
     documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
   },
   {
     name: 'Twitch',
     verifier: 'twitch',
+    icon: TwitchIcon,
     hasClientSecret: false,
     documentation: 'https://dev.twitch.tv/docs/authentication#registration',
   },
   {
     name: 'Discord',
     verifier: 'discord',
+    icon: DiscordIcon,
     hasClientSecret: true,
     documentation: 'https://discord.com/developers/applications',
   },
   {
     name: 'GitHub',
     verifier: 'github',
+    icon: GithubIcon,
     hasClientSecret: true,
     documentation:
       'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
@@ -212,8 +216,16 @@ const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Twitter',
     verifier: 'twitter',
+    icon: TwitterIcon,
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
+  },
+  {
+    name: 'Cognito',
+    verifier: 'aws',
+    icon: AWSIcon,
+    hasClientSecret: true,
+    documentation: 'https://docs.aws.amazon.com/cognito/index.html',
   },
 ]
 
@@ -285,8 +297,6 @@ export {
   userLimitOptions,
   bandwidthUnits,
   storageValues,
-  unlimitedUserLimit,
-  defaultUserLimit,
   socialLogins,
   regions,
   ChainMapping,

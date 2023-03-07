@@ -99,6 +99,8 @@ onBeforeMount(async () => {
     freeMausUsed.value = mausUsed
     percentageFreeMaus.value = (mausUsed / allowedFreeMaus) * 100
   }
+  await appsStore.fetchAndStoreAllApps('testnet')
+  await appsStore.fetchAndStoreAllApps('mainnet')
 })
 
 appsStore.$subscribe(() => {
