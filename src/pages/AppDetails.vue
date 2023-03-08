@@ -52,6 +52,7 @@ const router = useRouter()
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
 const showMobileMenu = ref(false)
+const showNotifications = ref(false)
 const profile_menu = ref(null)
 const help_menu = ref(null)
 const mobile_menu = ref(null)
@@ -112,6 +113,10 @@ function toggleProfileMenu() {
   showProfileMenu.value = !showProfileMenu.value
   showHelpMenu.value = false
   showMobileMenu.value = false
+}
+
+function toggleNotifications() {
+  showNotifications.value = !showNotifications.value
 }
 
 function toggleHelpMenu() {
@@ -301,6 +306,65 @@ watch(
               <img src="@/assets/iconography/menu.svg" alt="menu icon" />
             </button>
           </div>
+          <div class="notification-container flex">
+            <img
+              src="@/assets/iconography/notification.svg"
+              class="cursor-pointer notification-icon"
+              @click.stop="toggleNotifications"
+            />
+            <VCard
+              v-if="showNotifications"
+              class="notification-items position-absolute mobile-hide"
+            >
+              <div
+                class="flex flex-start width-100 notification-title-container"
+              >
+                <p class="notification-title">Notifications</p>
+              </div>
+              <div>
+                <ul>
+                  <li class="cursor-pointer notification-item">
+                    <p class="notification-item__message">
+                      Your payment has been proceessed for month of January
+                    </p>
+                    <p class="notification-item__time">9:15 PM</p>
+                  </li>
+                  <li class="cursor-pointer notification-item">
+                    <p class="notification-item__message">
+                      Your payment has been proceessed for month of January
+                    </p>
+                    <p class="notification-item__time">9:15 PM</p>
+                  </li>
+                </ul>
+              </div>
+            </VCard>
+            <VCard
+              v-if="showNotifications"
+              class="notification-items__mobile position-absolute tablet-hide laptop-hide"
+            >
+              <div
+                class="flex flex-start width-100 notification-title-container"
+              >
+                <p class="notification-title">Notifications</p>
+              </div>
+              <div class="notification-item__container">
+                <ul>
+                  <li class="cursor-pointer notification-item">
+                    <p class="notification-item__message">
+                      Your payment has been proceessed for month of January
+                    </p>
+                    <p class="notification-item__time">9:15 PM</p>
+                  </li>
+                  <li class="cursor-pointer notification-item">
+                    <p class="notification-item__message">
+                      Your payment has been proceessed for month of January
+                    </p>
+                    <p class="notification-item__time">9:15 PM</p>
+                  </li>
+                </ul>
+              </div>
+            </VCard>
+          </div>
           <div
             id="profile_menu"
             ref="profile_menu"
@@ -413,7 +477,7 @@ watch(
 
 @media only screen and (max-width: 1023px) {
   .help-button__container {
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 }
 
@@ -425,6 +489,79 @@ watch(
   background: transparent;
   border: none;
   outline: none;
+}
+
+.notification-container {
+  position: relative;
+}
+
+.notification-icon {
+  width: 18px;
+}
+
+.notification-title-container {
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border-bottom: 1px solid #8d8d8d33;
+}
+
+.notification-title {
+  margin-right: 1.25rem;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.notification-items {
+  top: calc(100% + 0.75rem);
+  right: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
+}
+
+.notification-items ul {
+  padding: 0;
+}
+
+.notification-item {
+  box-sizing: border-box;
+  width: 100%;
+  padding-inline: 1.25rem;
+  padding-bottom: 12px;
+  margin-bottom: 1.25rem;
+  font-family: var(--font-body);
+  color: var(--text-white);
+  white-space: nowrap;
+  list-style: none;
+}
+
+.notification-item:not(:last-child) {
+  border-bottom: 1px solid #8d8d8d33;
+}
+
+.notification-item * + * {
+  margin-top: 10px;
+}
+
+.notification-item__message {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.notification-item__time {
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  color: #8d8d8d;
 }
 
 .help-menu-items {
@@ -466,5 +603,39 @@ watch(
 .app-details__network-dropdown {
   align-self: flex-end;
   width: 16rem;
+}
+
+@media only screen and (max-width: 767px) {
+  .notification-items__mobile {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin: 10px;
+  }
+
+  .notification-items {
+    display: none;
+  }
+
+  .notification-container {
+    position: inherit;
+  }
+
+  .notification-items__mobile .notification-item__container {
+    width: 100%;
+    border: 1px solid red;
+  }
+
+  .notification-item__container ul {
+    box-sizing: border-box;
+    padding: 0;
+  }
 }
 </style>
