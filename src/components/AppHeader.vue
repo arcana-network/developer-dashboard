@@ -7,6 +7,8 @@ import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { useLoaderStore } from '@/stores/loader.store'
+import { resetAllStores } from '@/stores/resetAllStores'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
@@ -19,6 +21,7 @@ const showProfileMenu = ref(false)
 const { logout } = useArcanaAuth()
 const profile_menu = ref(null)
 const help_menu = ref(null)
+const loader = useLoaderStore()
 
 type HeaderProps = {
   container?: boolean
@@ -71,8 +74,8 @@ function handleScroll(ev: any) {
 async function onLogout() {
   await logout()
   localStorage.clear()
+  resetAllStores()
   router.push({ name: 'Login' })
-  window.location.reload()
 }
 
 function toggleHelpMenu() {
