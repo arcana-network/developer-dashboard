@@ -185,6 +185,13 @@ type SocialAuthOption = {
 
 const socialLogins: readonly SocialAuthOption[] = [
   {
+    name: 'Cognito',
+    verifier: 'aws',
+    icon: AWSIcon,
+    hasClientSecret: true,
+    documentation: 'https://docs.aws.amazon.com/cognito/index.html',
+  },
+  {
     name: 'Google',
     verifier: 'google',
     icon: GoogleIcon,
@@ -219,13 +226,6 @@ const socialLogins: readonly SocialAuthOption[] = [
     icon: TwitterIcon,
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
-  },
-  {
-    name: 'Cognito',
-    verifier: 'aws',
-    icon: AWSIcon,
-    hasClientSecret: true,
-    documentation: 'https://docs.aws.amazon.com/cognito/index.html',
   },
 ]
 

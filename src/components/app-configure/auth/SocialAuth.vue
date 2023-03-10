@@ -19,7 +19,7 @@ const appId = useAppId()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const app = appsStore.app(appId)
-const selectedCredentialInput: Ref<SocialAuthVerifier> = ref('google')
+const selectedCredentialInput: Ref<SocialAuthVerifier> = ref('aws')
 
 const socialAuth = socialLogins.map((login) => {
   const auth = app.auth.social.find((el) => el.verifier === login.verifier)
@@ -133,12 +133,20 @@ function isAuthActive(verifier: SocialAuthVerifier) {
     <SettingCard>
       <template #title>Social Auth</template>
       <template #description>
-        Provide easy onboarding for dApp users with familiar social
-        authentication mechanisms. Arcana securely manages public-private key
-        pair for each authenticated user using distributed key generation.
+        Select the social login provider for onboarding app users by specifying
+        authentication verification details. Use the respective social
+        provider's developer console to obtain the authentication verification
+        details such as Client ID, secret, etc. Arcana uses distributed key
+        generation to assign cryptographic key pair to every authenticated user
+        in a secure and privacy-preserving manner.
         <a :href="`${DOCS_URL}/docs/dkg`" target="_blank" class="learn-more">
-          LEARN MORE
+          READ MORE
         </a>
+        <br />
+        <br />
+        <strong>Note:</strong> If you enable Cognito as one of the multiple
+        onboarding options then you can directly configure Google login through
+        Cognito itself instead of using Arcana Dashboard
       </template>
       <form @submit.prevent="handleSave">
         <div class="social-auth-creds__container">
@@ -195,7 +203,7 @@ function isAuthActive(verifier: SocialAuthVerifier) {
                         class="input-doc-link"
                         :href="auth.documentation"
                         target="_blank"
-                        >How to get your Client ID?</a
+                        >Get your Client ID</a
                       >
                     </VStack>
                     <VTextField
@@ -231,9 +239,11 @@ function isAuthActive(verifier: SocialAuthVerifier) {
                         :href="auth.documentation"
                         target="_blank"
                       >
-                        How to get your
+                        Get your
                         {{
-                          auth.verifier === 'aws' ? 'Domain?' : 'Client Secret?'
+                          auth.verifier === 'aws'
+                            ? 'User Pool Domain'
+                            : 'Client Secret'
                         }}
                       </a>
                     </VStack>
