@@ -111,15 +111,15 @@ watch(
 const tutorials = [
   {
     id: '1',
-    title: 'How to set up social auth?',
+    title: 'Set up social providers',
     description:
-      'Configure social authentication and then use plug and play or build your own UI to onboard users.',
+      'Configure social providers and onboard app users with plug-and-play or custom auth UI.',
     thumbnail_url: TutorialSocialAuth,
     link: 'https://docs.arcana.network/howto/config_social_providers.html',
   },
   {
     id: '2',
-    title: 'How to enable up passwordless login?',
+    title: 'Enable passwordless login',
     description:
       'Allow users to onboard your web3 applications in a passwordless manner easily.',
     thumbnail_url: TutorialPasswordlessAuth,
@@ -127,15 +127,15 @@ const tutorials = [
   },
   {
     id: '3',
-    title: 'How to use ‘Plug & Play Auth’ in Web3 apps?',
+    title: 'Use ‘Plug & Play Auth’ UI',
     description:
-      'Plug in social and passwordless user authentication in your app with built-in UI to onboard users.',
+      'Allow users to authenticate easily using a login link email to the specified address.',
     thumbnail_url: TutorialPlugAndPlayAuth,
     link: 'https://docs.arcana.network/howto/onboard_users/wallet_plugnplay.html',
   },
   {
     id: '4',
-    title: 'How to enable Arcana wallet?',
+    title: 'Enable Arcana wallet',
     description:
       'Configure wallet, onboard users and allow authenticated users to sign blockchain transactions in a zap.',
     thumbnail_url: TutorialConnectWallet,
