@@ -189,7 +189,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'google',
     icon: GoogleIcon,
     hasClientSecret: false,
-    documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
+    documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
   },
   {
     name: 'Twitch',
