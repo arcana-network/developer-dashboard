@@ -228,11 +228,11 @@ async function handleDeleteProceed() {
           class="cursor-pointer"
           @click.stop="router.back()"
         />
-        <h1>PROFILE DETAILS</h1>
+        <h1>PROFILE</h1>
       </VStack>
       <section class="personal-details">
         <SettingCard>
-          <template #title>PERSONAL DETAILS</template>
+          <template #title>USER ACCOUNT</template>
           <VStack
             class="flex md-column flex-wrap justify-space-between"
             gap="1.25rem"
@@ -247,7 +247,7 @@ async function handleDeleteProceed() {
               />
             </div>
             <div class="flex column details flex-grow">
-              <label for="light-horizontal-logo">Public Identifier</label>
+              <label for="light-horizontal-logo">Account Identifier</label>
               <VTextField
                 v-model.trim="email"
                 class="app-name-input"
@@ -264,14 +264,14 @@ async function handleDeleteProceed() {
       </section>
       <section style="margin-top: 3em">
         <SettingCard>
-          <template #title>ORGANISATION DETAILS</template>
+          <template #title>ORGANISATION</template>
           <form @submit.prevent="onUpdateOrganization">
             <VStack
               class="flex md-column flex-wrap justify-space-between"
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
-                <label for="light-horizontal-logo">Organisation Name</label>
+                <label for="light-horizontal-logo">Name</label>
                 <VTextField
                   v-model.trim="organisationDetails.name"
                   class="app-name-input"
