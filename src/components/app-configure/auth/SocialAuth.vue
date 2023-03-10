@@ -146,7 +146,7 @@ function isAuthActive(verifier: SocialAuthVerifier) {
         <br />
         <strong>Note:</strong> If you enable Cognito as one of the multiple
         onboarding options then you can directly configure Google login through
-        Cognito itself instead of using Arcana Dashboard
+        Cognito itself instead of using Arcana Dashboard.
       </template>
       <form @submit.prevent="handleSave">
         <div class="social-auth-creds__container">
