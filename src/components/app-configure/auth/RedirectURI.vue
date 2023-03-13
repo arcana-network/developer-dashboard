@@ -57,8 +57,7 @@ async function copyRedirectUri() {
         <p class="body-1 redirect-uri-info__description">
           Arcana automatically generates this URL for every registered app. Use
           this value to setup the callbacks in the developer console for each
-          social provider that you want to support in your app. This is required
-          to complete the authentication verification process.
+          social provider that you want to support in your app.
         </p>
       </VStack>
     </VCard>

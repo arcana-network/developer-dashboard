@@ -127,7 +127,7 @@ const tutorials = [
   },
   {
     id: '3',
-    title: 'Use ‘Plug & Play Auth’ UI',
+    title: 'Use plug-and-play auth UI',
     description:
       'Allow users to authenticate easily using a login link email to the specified address.',
     thumbnail_url: TutorialPlugAndPlayAuth,
@@ -143,9 +143,9 @@ const tutorials = [
   },
   {
     id: '5',
-    title: 'Wallet User Guide',
+    title: 'Using Arcana wallet',
     description:
-      'Learn about the Arcana wallet user interface and available Web3 operations',
+      'Learn about the Arcana wallet user interface and available Web3 operations.',
     thumbnail_url: TutorialWalletUserGuide,
     link: 'https://docs.arcana.network/user_guides/wallet_ui/',
   },

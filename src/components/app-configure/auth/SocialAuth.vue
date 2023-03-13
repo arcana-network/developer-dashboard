@@ -126,6 +126,10 @@ function isAuthActive(verifier: SocialAuthVerifier) {
     return !auth.clientId?.length || !auth.clientSecret?.length
   } else return !auth.clientId?.length
 }
+
+function showCognitoNote() {
+  return ['aws', 'google'].includes(selectedCredentialInput.value)
+}
 </script>
 
 <template>
@@ -134,19 +138,21 @@ function isAuthActive(verifier: SocialAuthVerifier) {
       <template #title>Social Auth</template>
       <template #description>
         Select the social login provider for onboarding app users by specifying
-        authentication verification details. Use the respective social
-        provider's developer console to obtain the authentication verification
-        details such as Client ID, secret, etc. Arcana uses distributed key
-        generation to assign cryptographic key pair to every authenticated user
-        in a secure and privacy-preserving manner.
-        <a :href="`${DOCS_URL}/docs/dkg`" target="_blank" class="learn-more">
+        authentication verification details.
+        <a
+          :href="`${DOCS_URL}/howto/config_social_providers.html`"
+          target="_blank"
+          class="learn-more"
+        >
           READ MORE
         </a>
-        <br />
-        <br />
-        <strong>Note:</strong> If you enable Cognito as one of the multiple
-        onboarding options then you can directly configure Google login through
-        Cognito itself instead of using Arcana Dashboard.
+        <br v-if="showCognitoNote()" />
+        <br v-if="showCognitoNote()" />
+        <span v-if="showCognitoNote()"
+          ><strong>Note:</strong> If you enable Cognito as one of the multiple
+          onboarding options then you can directly configure Google login
+          through Cognito itself instead of using Arcana Dashboard.
+        </span>
       </template>
       <form @submit.prevent="handleSave">
         <div class="social-auth-creds__container">
@@ -236,7 +242,11 @@ function isAuthActive(verifier: SocialAuthVerifier) {
                       </p>
                       <a
                         class="input-doc-link"
-                        :href="auth.documentation"
+                        :href="
+                          auth.verifier === 'aws'
+                            ? auth.userPoolDomainDoc
+                            : auth.documentation
+                        "
                         target="_blank"
                       >
                         Get your

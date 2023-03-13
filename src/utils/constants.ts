@@ -181,6 +181,7 @@ type SocialAuthOption = {
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
   documentation: string
+  userPoolDomainDoc?: string
 }
 
 const socialLogins: readonly SocialAuthOption[] = [
@@ -189,7 +190,10 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'aws',
     icon: AWSIcon,
     hasClientSecret: true,
-    documentation: 'https://docs.aws.amazon.com/cognito/index.html',
+    documentation:
+      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-idp-settings.html',
+    userPoolDomainDoc:
+      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html',
   },
   {
     name: 'Google',
