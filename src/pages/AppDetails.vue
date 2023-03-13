@@ -30,17 +30,18 @@ import {
   type Network,
   regions,
   RegionMapping,
+  NetworkName,
 } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const NetworkOptions = [
   {
-    label: 'Testnet',
+    label: NetworkName.testnet,
     value: 'testnet',
   },
   {
-    label: 'Mainnet',
+    label: NetworkName.mainnet,
     value: 'mainnet',
   },
 ]
@@ -183,7 +184,7 @@ async function handleCreateMainnetApp({
     testnetApp.global_id = updatedTestnetApp.global_id
     await appsStore.fetchAndStoreAppConfig(updatedTestnetApp?.ID, 'testnet')
 
-    toast.success('Mainnet app created')
+    toast.success(`${NetworkName.mainnet} app created`)
     if (mainnetApp) {
       showMainnetConfirmation.value = false
       createdMainnetAppId.value = mainnetApp.ID
