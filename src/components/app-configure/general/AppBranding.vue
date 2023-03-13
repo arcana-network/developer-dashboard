@@ -118,9 +118,8 @@ async function handleFileRemove(
           <h3>Wallet Logo</h3>
           <VStack direction="column" gap="0.5rem" class="body-2">
             <p class="body-2 description">
-              Use a wide rectangular live area for the best viewing results of
-              the horizontal logo on the Arcana wallet screen. The shape of the
-              logo can vary.
+              Use a wide rectangular live area to best view the horizontal logo
+              on the Arcana wallet screen. The shape of the logo can vary.
             </p>
             <VStack gap="1rem">
               <p class="flex justify-center flex-center example__logo-mark">

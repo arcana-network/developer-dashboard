@@ -62,13 +62,13 @@ function handleCancel() {
       <template #title>Keyspace Type</template>
       <template #description>
         <div>
-          Choose from app-specific (default, highly secure) or global keyspace
-          for your app. Enabling global keyspace requires an extra verification
-          step during app registration. Global keyspace provides a better user
-          experience as the app users are assigned the same keys (wallet
-          address) across all apps in the Arcana ecosystem. Changing keyspace
-          type after app deployment will affect user experience as the keys are
-          reassigned causing a change in user's wallet address.
+          Choose between app-specific (default, highly secure) or global
+          keyspace for your app. Enabling global keyspace requires an extra
+          verification step during app registration. Global keyspace provides a
+          better user experience as the app users are assigned the same keys
+          (wallet address) across all apps in the Arcana ecosystem. Changing
+          keyspace type after app deployment will affect user experience as the
+          keys are reassigned causing a change in user's wallet address.
           <a
             href="https://docs.dev.arcana.network/concepts/sharedkeys.html"
             target="_blank"
