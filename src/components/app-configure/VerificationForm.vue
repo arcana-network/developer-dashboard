@@ -10,7 +10,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { submitVerificationForm } from '@/services/gateway.service'
-import type { AppId } from '@/stores/apps.store'
+import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { NetworkName } from '@/utils/constants'
 import { isValidEmail } from '@/utils/validation'
@@ -25,6 +25,7 @@ const emit = defineEmits(['close', 'submitted'])
 const toast = useToast()
 const loaderStore = useLoaderStore()
 const error = ref('')
+const appsStore = useAppsStore()
 
 const formData = reactive({
   companyName: '',
@@ -70,7 +71,8 @@ async function handleSubmit() {
   }
   loaderStore.showLoader('Submitting the form for verification...')
   try {
-    await submitVerificationForm(props.appId, {
+    const app = appsStore.app(props.appId)
+    await submitVerificationForm(app.network, {
       app: props.address,
       company_name: formData.companyName,
       project_name: formData.projectName,

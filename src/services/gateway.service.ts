@@ -442,10 +442,10 @@ function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
 }
 
 function submitVerificationForm(
-  appId: AppId,
+  network: Network,
   formData: any
 ): Promise<AxiosResponse<any>> {
-  return getGatewayInstance('mainnet').post(`${getEnvApi()}/verify-app/`, {
+  return getGatewayInstance(network).post(`${getEnvApi()}/verify-app/`, {
     ...formData,
   })
 }
