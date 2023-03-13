@@ -184,9 +184,12 @@ async function handleSubmit() {
             <VStack
               gap="1.25rem"
               style="justify-content: center; margin-block: 2rem"
-              @click.stop="emit('close')"
             >
-              <VButton variant="secondary" label="CANCEL"></VButton>
+              <VButton
+                variant="secondary"
+                label="CANCEL"
+                @click.stop="emit('close')"
+              ></VButton>
               <VButton type="submit" label="SUBMIT"></VButton>
             </VStack>
           </form>
