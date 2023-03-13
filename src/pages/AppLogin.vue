@@ -25,6 +25,10 @@ const arcanaAuth = useArcanaAuth()
 const email = ref('')
 const hasValidEmail = computed(() => isValidEmail(email.value))
 
+function capitalize(s: string) {
+  return s[0].toUpperCase() + s.substring(1)
+}
+
 async function launchLogin(type: string) {
   try {
     if (type === 'passwordless') {
@@ -32,7 +36,7 @@ async function launchLogin(type: string) {
       loaderStore.showLoader(`Sending login link to your email`)
       await arcanaAuth.loginWithLink(email.value)
     } else {
-      loaderStore.showLoader(`Signing with ${type}`)
+      loaderStore.showLoader(`Signing with ${capitalize(type)}`)
       await arcanaAuth.loginWithSocial(type)
     }
     await fetchAndStoreDetails()
