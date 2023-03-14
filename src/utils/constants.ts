@@ -231,6 +231,13 @@ const socialLogins: readonly SocialAuthOption[] = [
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
   },
+  {
+    name: 'Cognito',
+    verifier: 'aws',
+    icon: AWSIcon,
+    hasClientSecret: true,
+    documentation: 'https://docs.aws.amazon.com/cognito/index.html',
+  },
 ]
 
 enum ChainMapping {
