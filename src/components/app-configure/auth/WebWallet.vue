@@ -90,16 +90,15 @@ async function handleSave() {
           <VStack direction="column" gap="1rem" class="flex-grow">
             <h3>Website Domain</h3>
             <div class="body-1 text-grey">
-              Set your website domain here. It is used for security reasons by
-              the server, to restrict Arcana wallet from loading anywhere else
-              other than the domain you specify. We use frame-ancestor CSP to
+              Secure Arcana wallet by restricting to load only in the context of
+              the specified app domain. Arcana uses frame-ancestors CSP to
               restrict domains.
               <a
                 href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
                 target="_blank"
                 class="learn-more"
               >
-                LEARN MORE
+                READ MORE
               </a>
             </div>
             <VTextField
