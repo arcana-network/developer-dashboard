@@ -115,16 +115,15 @@ async function handleFileRemove(
       <template #title>Branding</template>
       <VStack direction="column" gap="2rem">
         <VStack direction="column" gap="0.5rem">
-          <h3>Upload Logo</h3>
+          <h3>Wallet Logo</h3>
           <VStack direction="column" gap="0.5rem" class="body-2">
             <p class="body-2 description">
-              The actual shape of the logo does not need to be a rectangle, but
-              the live area should be like a wide rectangle to be used on your
-              website/ app etc.
+              Use a wide rectangular live area to best view the horizontal logo
+              on the Arcana wallet screen. The shape of the logo can vary.
             </p>
             <VStack gap="1rem">
               <p class="flex justify-center flex-center example__logo-mark">
-                <span class="description">Ex: Logo Mark:</span>
+                <span class="description">Logo Mark Example:</span>
                 <img
                   src="@/assets/google-logo-mark.png"
                   alt="google logo mark"
@@ -134,7 +133,7 @@ async function handleFileRemove(
               <p
                 class="flex justify-center flex-center example__logo-horizontal"
               >
-                <span class="description">Horizontal Logo:</span>
+                <span class="description">Horizontal Logo Example:</span>
                 <img
                   src="@/assets/google-horizontal-logo.png"
                   alt="google horizontal logo"
@@ -166,7 +165,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.light.vertical.hasError }"
-                >Image size limit 1MB</span
+                >Maximum image size: 1MB</span
               >
             </VStack>
             <VStack
@@ -188,7 +187,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.light.horizontal.hasError }"
-                >Image size limit 1MB</span
+                >Maximum image size: 1MB</span
               >
             </VStack>
           </VStack>
@@ -215,7 +214,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.dark.vertical.hasError }"
-                >Image size limit 1MB</span
+                >Maximum image size: 1MB</span
               >
             </VStack>
             <VStack
@@ -237,7 +236,7 @@ async function handleFileRemove(
               <span
                 class="body-3 font-300 file-upload-hint"
                 :class="{ error: themeLogos.dark.horizontal.hasError }"
-                >Image size limit 1MB</span
+                >Maximum image size: 1MB</span
               >
             </VStack>
           </VStack>

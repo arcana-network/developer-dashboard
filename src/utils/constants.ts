@@ -181,15 +181,26 @@ type SocialAuthOption = {
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
   documentation: string
+  userPoolDomainDoc?: string
 }
 
 const socialLogins: readonly SocialAuthOption[] = [
+  {
+    name: 'Cognito',
+    verifier: 'aws',
+    icon: AWSIcon,
+    hasClientSecret: true,
+    documentation:
+      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-idp-settings.html',
+    userPoolDomainDoc:
+      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html',
+  },
   {
     name: 'Google',
     verifier: 'google',
     icon: GoogleIcon,
     hasClientSecret: false,
-    documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
+    documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
   },
   {
     name: 'Twitch',

@@ -90,7 +90,7 @@ async function handleSave() {
           </VStack>
         </VStack>
         <VStack direction="column" gap="1rem">
-          <h3>Preview Interface</h3>
+          <h3>Branding Preview</h3>
           <VStack gap="2.5rem" wrap>
             <VStack direction="column" gap="0.5rem">
               <h4 class="text-grey">Desktop</h4>
