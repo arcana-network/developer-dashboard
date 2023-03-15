@@ -88,15 +88,15 @@ const ConfigureTabs = computed(() => {
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
   )
-  if (props.currentNetwork === 'mainnet') {
-    configureTabsCopy[configurePageIndex]?.subMenu?.push({
-      label: 'Keyspace',
-      type: 'keyspace',
-      icon: KeyspaceIcon,
-    })
-    return configureTabsCopy
-  }
+  // if (props.currentNetwork === 'mainnet') {
+  configureTabsCopy[configurePageIndex]?.subMenu?.push({
+    label: 'Keyspace',
+    type: 'keyspace',
+    icon: KeyspaceIcon,
+  })
   return configureTabsCopy
+  // }
+  // return configureTabsCopy
 })
 
 function onClickOfMenu(tab: ConfigureTab) {

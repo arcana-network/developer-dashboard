@@ -24,6 +24,7 @@ import {
 } from '@/services/gateway.service'
 import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
 import type { Network } from '@/utils/constants'
+import { NetworkName } from '@/utils/constants'
 
 const router = useRouter()
 const appsStore = useAppsStore()
@@ -275,7 +276,9 @@ async function handleAppNameSave(app: AppData) {
               </VStack>
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center" gap="0.25rem">
-                  <span class="stats-title">Testnet Users</span>
+                  <span class="stats-title"
+                    >{{ NetworkName.testnet }} Users</span
+                  >
                   <span class="stats-number">{{ app.totalUsers || 0 }}</span>
                 </VStack>
                 <VSeperator
@@ -289,7 +292,9 @@ async function handleAppNameSave(app: AppData) {
                   align="center"
                   gap="0.25rem"
                 >
-                  <span class="stats-title">Mainnet Users</span>
+                  <span class="stats-title"
+                    >{{ NetworkName.mainnet }} Users</span
+                  >
                   <span class="stats-number">{{
                     getMainnetTotalUsers(app.id)
                   }}</span>
@@ -298,14 +303,14 @@ async function handleAppNameSave(app: AppData) {
               <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
                 <VButton
                   variant="secondary"
-                  label="Testnet"
+                  :label="NetworkName.testnet"
                   class="app-action-button delete-button"
                   :disabled="app.network !== 'testnet'"
                   @click.stop="() => goToDashboard(app.id, 'testnet')"
                 />
                 <VButton
                   variant="primary"
-                  label="Mainnet"
+                  :label="NetworkName.mainnet"
                   class="app-action-button pause-button"
                   :disabled="!isMainnetAppAvailable(app.id)"
                   @click.stop="() => goToDashboard(app.id, 'mainnet')"

@@ -10,8 +10,9 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { submitVerificationForm } from '@/services/gateway.service'
-import type { AppId } from '@/stores/apps.store'
+import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { NetworkName } from '@/utils/constants'
 import { isValidEmail } from '@/utils/validation'
 
 type VerificationFormProps = {
@@ -24,6 +25,7 @@ const emit = defineEmits(['close', 'submitted'])
 const toast = useToast()
 const loaderStore = useLoaderStore()
 const error = ref('')
+const appsStore = useAppsStore()
 
 const formData = reactive({
   companyName: '',
@@ -69,7 +71,8 @@ async function handleSubmit() {
   }
   loaderStore.showLoader('Submitting the form for verification...')
   try {
-    await submitVerificationForm(props.appId, {
+    const app = appsStore.app(props.appId)
+    await submitVerificationForm(app.network, {
       app: props.address,
       company_name: formData.companyName,
       project_name: formData.projectName,
@@ -107,7 +110,8 @@ async function handleSubmit() {
           <h3 class="verification-title">Verification Form</h3>
           <div class="verification-description" style="text-align: center">
             Fill up this verification form to register your application on
-            Mainnet and enable the Global keys feature. For assistance,&nbsp;
+            {{ NetworkName.mainnet }} and enable the Global keys feature. For
+            assistance,&nbsp;
             <a href="mailto:support@arcana.network">contact support</a>.
           </div>
           <form @submit.prevent="handleSubmit">
@@ -180,9 +184,12 @@ async function handleSubmit() {
             <VStack
               gap="1.25rem"
               style="justify-content: center; margin-block: 2rem"
-              @click.stop="emit('close')"
             >
-              <VButton variant="secondary" label="CANCEL"></VButton>
+              <VButton
+                variant="secondary"
+                label="CANCEL"
+                @click.stop="emit('close')"
+              ></VButton>
               <VButton type="submit" label="SUBMIT"></VButton>
             </VStack>
           </form>

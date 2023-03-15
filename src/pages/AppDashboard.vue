@@ -58,7 +58,7 @@ const selectedApp = computed(() => appsStore.app(appId.value))
 const appAddress = computed(() => {
   let clientId = 'xar_'
   if (selectedApp.value.network === 'mainnet') {
-    clientId += 'live_'
+    clientId += ARCANA_AUTH_NETWORK === 'dev' ? 'test_' : 'live_'
   } else {
     clientId += ARCANA_AUTH_NETWORK === 'dev' ? 'dev_' : 'test_'
   }

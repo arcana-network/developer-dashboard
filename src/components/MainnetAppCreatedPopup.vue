@@ -5,6 +5,7 @@ import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import type { AppId } from '@/stores/apps.store'
+import { NetworkName } from '@/utils/constants'
 
 type Props = {
   appId: AppId
@@ -25,10 +26,10 @@ function handleMainnetKeySpace() {
     <div class="popup-container">
       <VCard class="popup-card">
         <img src="@/assets/success-celebrate.svg" style="width: 8rem" />
-        <h3 class="popup-title">Mainnet App Created!</h3>
+        <h3 class="popup-title">{{ NetworkName.mainnet }} App Created!</h3>
         <span class="popup-message">
-          Mainnet app has been configured. <br />Please proceed to configure
-          your app's keyspace
+          {{ NetworkName.mainnet }} app has been configured. <br />Please
+          proceed to configure your app's keyspace
         </span>
         <VButton
           label="CONFIGURE KEYSPACE"
