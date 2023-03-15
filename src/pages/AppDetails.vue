@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import moment from 'moment'
 import { onBeforeMount, ref, watch, onMounted, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
+import NotificationWithBubbleIcon from '@/assets/iconography/notification-with-bubble.svg'
+import NotificationIcon from '@/assets/iconography/notification.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
@@ -16,8 +19,10 @@ import SwitchToMainnetConfirmation from '@/components/SwitchToMainnetConfirmatio
 import {
   createApp,
   fetchApp,
+  getNotifications,
   updateApp,
   updateAppLogos,
+  updateNotificationRead,
   type AppConfig as AppResponse,
 } from '@/services/gateway.service'
 import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
@@ -65,6 +70,8 @@ const toast = useToast()
 const createdMainnetAppId: Ref<AppId | null> = ref(null)
 const showMainnetSuccessPopup = ref(false)
 const isOnlyTestnet = import.meta.env.VITE_IS_ONLY_TESTNET === 'true'
+const notifications = ref([])
+const latestNotificationId = ref(null)
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -116,7 +123,9 @@ function toggleProfileMenu() {
 }
 
 function toggleNotifications() {
-  showNotifications.value = !showNotifications.value
+  const value = !showNotifications.value
+  showNotifications.value = value
+  if (!value) markNotificationAsRead()
 }
 
 function toggleHelpMenu() {
@@ -129,6 +138,17 @@ function toggleMobileMenu() {
   showProfileMenu.value = false
   showHelpMenu.value = false
   showMobileMenu.value = !showMobileMenu.value
+}
+
+async function fetchNotifications() {
+  const { notification, latest_notification_id } = (await getNotifications())
+    .data
+  notifications.value = notification
+  latestNotificationId.value = latest_notification_id
+}
+
+async function markNotificationAsRead() {
+  await updateNotificationRead(latestNotificationId.value)
 }
 
 async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
@@ -241,6 +261,8 @@ onMounted(() => {
   )
 })
 
+onMounted(fetchNotifications)
+
 watch(
   () => Number(route.params.appId),
   () => {
@@ -308,7 +330,11 @@ watch(
           </div>
           <div class="notification-container flex">
             <img
-              src="@/assets/iconography/notification.svg"
+              :src="
+                notifications.length
+                  ? NotificationWithBubbleIcon
+                  : NotificationIcon
+              "
               class="cursor-pointer notification-icon"
               @click.stop="toggleNotifications"
             />
@@ -321,19 +347,21 @@ watch(
               >
                 <p class="notification-title">Notifications</p>
               </div>
-              <div>
+              <div class="notification-item__container">
                 <ul>
-                  <li class="cursor-pointer notification-item">
+                  <li
+                    v-for="notification in notifications"
+                    :key="notification.Data"
+                    class="cursor-pointer notification-item"
+                  >
                     <p class="notification-item__message">
-                      Your payment has been proceessed for month of January
+                      {{ notification.Data }}
                     </p>
-                    <p class="notification-item__time">9:15 PM</p>
-                  </li>
-                  <li class="cursor-pointer notification-item">
-                    <p class="notification-item__message">
-                      Your payment has been proceessed for month of January
+                    <p class="notification-item__time">
+                      {{
+                        moment(notification.Time).format('ddd-MMM, h:mm:ss a')
+                      }}
                     </p>
-                    <p class="notification-item__time">9:15 PM</p>
                   </li>
                 </ul>
               </div>
@@ -346,20 +374,25 @@ watch(
                 class="flex flex-start width-100 notification-title-container"
               >
                 <p class="notification-title">Notifications</p>
+                <button class="close-button" @click="toggleNotifications">
+                  <img src="@/assets/iconography/close.svg" alt="close" />
+                </button>
               </div>
               <div class="notification-item__container">
                 <ul>
-                  <li class="cursor-pointer notification-item">
+                  <li
+                    v-for="notification in notifications"
+                    :key="notification.Data"
+                    class="cursor-pointer notification-item"
+                  >
                     <p class="notification-item__message">
-                      Your payment has been proceessed for month of January
+                      {{ notification.Data }}
                     </p>
-                    <p class="notification-item__time">9:15 PM</p>
-                  </li>
-                  <li class="cursor-pointer notification-item">
-                    <p class="notification-item__message">
-                      Your payment has been proceessed for month of January
+                    <p class="notification-item__time">
+                      {{
+                        moment(notification.Time).format('ddd-MMM, h:mm:ss a')
+                      }}
                     </p>
-                    <p class="notification-item__time">9:15 PM</p>
                   </li>
                 </ul>
               </div>
@@ -475,6 +508,12 @@ watch(
   margin-bottom: 2rem;
 }
 
+.close-button {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+
 @media only screen and (max-width: 1023px) {
   .help-button__container {
     gap: 0.3rem;
@@ -521,7 +560,9 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: center;
+  max-height: 300px;
   padding: 0;
+  overflow: auto;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
 }
 
@@ -617,7 +658,7 @@ watch(
     align-items: center;
     width: 100%;
     height: 100%;
-    margin: 10px;
+    border-radius: 0;
   }
 
   .notification-items {
@@ -630,12 +671,17 @@ watch(
 
   .notification-items__mobile .notification-item__container {
     width: 100%;
-    border: 1px solid red;
   }
 
   .notification-item__container ul {
     box-sizing: border-box;
     padding: 0;
+  }
+
+  .notification-title-container {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
   }
 }
 </style>
