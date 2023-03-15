@@ -41,6 +41,7 @@ async function handleAppDeletion() {
     await deleteApp(app.global_id, 'mainnet')
     await deleteApp(appId, 'testnet')
     appsStore.deleteApp(appId, app.network)
+    appsStore.deleteApp(app.global_id, 'mainnet')
     toast.success('App deleted successfully')
     router.push({ name: 'ManageApps' })
   } catch (e) {

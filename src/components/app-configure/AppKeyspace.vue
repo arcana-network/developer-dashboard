@@ -59,20 +59,22 @@ function handleCancel() {
 <template>
   <section name="app-branding">
     <SettingCard class="app-branding-card">
-      <template #title>Keyspace</template>
+      <template #title>Keyspace Type</template>
       <template #description>
         <div>
-          In the Arcana ecosystem, there are two options for key security: App
-          Specific (default) and Global. The latter option requires extra
-          verification during registration but allows users to use the same keys
-          across all applications. Changing options later will affect user
-          experience as wallet address will change for the user.
+          Choose between app-specific (default, highly secure) or global
+          keyspace for your app. Enabling global keyspace requires an extra
+          verification step during app registration. Global keyspace provides a
+          better user experience as the app users are assigned the same keys
+          (wallet address) across all apps in the Arcana ecosystem. Changing
+          keyspace type after app deployment will affect user experience as the
+          keys are reassigned causing a change in user's wallet address.
           <a
             href="https://docs.dev.arcana.network/concepts/sharedkeys.html"
             target="_blank"
             class="learn-more"
           >
-            LEARN MORE
+            READ MORE
           </a>
         </div>
       </template>
@@ -101,8 +103,10 @@ function handleCancel() {
         </VCard>
         <div class="position-relative">
           <div
-            class="gradient-border-card keyspace-card"
-            :class="{ 'disabled-card': app.status !== 2 }"
+            class="keyspace-card"
+            :class="{
+              'disabled-card gradient-border-card': app.status !== 2,
+            }"
             @click.stop="
               app.status === 2 ? (selectedKeyspace = 'global') : void 0
             "

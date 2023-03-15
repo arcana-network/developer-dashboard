@@ -36,6 +36,13 @@ const api = {
 }
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
+const isProductionDashboard: boolean =
+  import.meta.env.VITE_ARCANA_AUTH_NETWORK === 'mainnet'
+
+const NetworkName = {
+  testnet: isProductionDashboard ? 'Testnet' : 'Dev',
+  mainnet: isProductionDashboard ? 'Mainnet' : 'Testnet',
+}
 
 const DOCS_URL: string = import.meta.env.VITE_ARCANA_DOCS_URL
 
@@ -181,15 +188,26 @@ type SocialAuthOption = {
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
   documentation: string
+  userPoolDomainDoc?: string
 }
 
 const socialLogins: readonly SocialAuthOption[] = [
+  {
+    name: 'Cognito',
+    verifier: 'aws',
+    icon: AWSIcon,
+    hasClientSecret: true,
+    documentation:
+      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-idp-settings.html',
+    userPoolDomainDoc:
+      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html',
+  },
   {
     name: 'Google',
     verifier: 'google',
     icon: GoogleIcon,
     hasClientSecret: false,
-    documentation: 'https://developers.google.com/identity/sign-in/web/sign-in',
+    documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
   },
   {
     name: 'Twitch',
@@ -219,13 +237,6 @@ const socialLogins: readonly SocialAuthOption[] = [
     icon: TwitterIcon,
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
-  },
-  {
-    name: 'Cognito',
-    verifier: 'aws',
-    icon: AWSIcon,
-    hasClientSecret: true,
-    documentation: 'https://docs.aws.amazon.com/cognito/index.html',
   },
 ]
 
@@ -272,10 +283,10 @@ const ProfileItems = [
     label: 'Profile',
     icon: PassportIcon,
   },
-  {
-    label: 'Invoices',
-    icon: InvoiceIcon,
-  },
+  // {
+  //   label: 'Invoices',
+  //   icon: InvoiceIcon,
+  // },
 ]
 
 const constants = {
@@ -304,6 +315,8 @@ export {
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   DOCS_URL,
+  isProductionDashboard,
+  NetworkName,
   HelpItems,
   ProfileItems,
 }
