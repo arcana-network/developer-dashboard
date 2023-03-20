@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import moment from 'moment'
 import { onBeforeMount, ref, watch, onMounted, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
@@ -9,6 +8,7 @@ import NotificationIcon from '@/assets/iconography/notification.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import AppNotifications from '@/components/AppNotifications.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
@@ -19,10 +19,8 @@ import SwitchToMainnetConfirmation from '@/components/SwitchToMainnetConfirmatio
 import {
   createApp,
   fetchApp,
-  getNotifications,
   updateApp,
   updateAppLogos,
-  updateNotificationRead,
   type AppConfig as AppResponse,
 } from '@/services/gateway.service'
 import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
@@ -71,8 +69,6 @@ const toast = useToast()
 const createdMainnetAppId: Ref<AppId | null> = ref(null)
 const showMainnetSuccessPopup = ref(false)
 const isOnlyTestnet = import.meta.env.VITE_IS_ONLY_TESTNET === 'true'
-const notifications = ref([])
-const latestNotificationId = ref(null)
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -126,7 +122,6 @@ function toggleProfileMenu() {
 function toggleNotifications() {
   const value = !showNotifications.value
   showNotifications.value = value
-  if (!value) markNotificationAsRead()
 }
 
 function toggleHelpMenu() {
@@ -139,17 +134,6 @@ function toggleMobileMenu() {
   showProfileMenu.value = false
   showHelpMenu.value = false
   showMobileMenu.value = !showMobileMenu.value
-}
-
-async function fetchNotifications() {
-  const { notification, latest_notification_id } = (await getNotifications())
-    .data
-  notifications.value = notification
-  latestNotificationId.value = latest_notification_id
-}
-
-async function markNotificationAsRead() {
-  await updateNotificationRead(latestNotificationId.value)
 }
 
 async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
@@ -262,8 +246,6 @@ onMounted(() => {
   )
 })
 
-onMounted(fetchNotifications)
-
 watch(
   () => Number(route.params.appId),
   () => {
@@ -332,72 +314,17 @@ watch(
           <div class="notification-container flex">
             <img
               :src="
-                notifications.length
+                appsStore.areNotificationAvaiable
                   ? NotificationWithBubbleIcon
                   : NotificationIcon
               "
               class="cursor-pointer notification-icon"
               @click.stop="toggleNotifications"
             />
-            <VCard
+            <AppNotifications
               v-if="showNotifications"
-              class="notification-items position-absolute mobile-hide"
-            >
-              <div
-                class="flex flex-start width-100 notification-title-container"
-              >
-                <p class="notification-title">Notifications</p>
-              </div>
-              <div class="notification-item__container">
-                <ul>
-                  <li
-                    v-for="notification in notifications"
-                    :key="notification.Data"
-                    class="cursor-pointer notification-item"
-                  >
-                    <p class="notification-item__message">
-                      {{ notification.Data }}
-                    </p>
-                    <p class="notification-item__time">
-                      {{
-                        moment(notification.Time).format('ddd-MMM, h:mm:ss a')
-                      }}
-                    </p>
-                  </li>
-                </ul>
-              </div>
-            </VCard>
-            <VCard
-              v-if="showNotifications"
-              class="notification-items__mobile position-absolute tablet-hide laptop-hide"
-            >
-              <div
-                class="flex flex-start width-100 notification-title-container"
-              >
-                <p class="notification-title">Notifications</p>
-                <button class="close-button" @click="toggleNotifications">
-                  <img src="@/assets/iconography/close.svg" alt="close" />
-                </button>
-              </div>
-              <div class="notification-item__container">
-                <ul>
-                  <li
-                    v-for="notification in notifications"
-                    :key="notification.Data"
-                    class="cursor-pointer notification-item"
-                  >
-                    <p class="notification-item__message">
-                      {{ notification.Data }}
-                    </p>
-                    <p class="notification-item__time">
-                      {{
-                        moment(notification.Time).format('ddd-MMM, h:mm:ss a')
-                      }}
-                    </p>
-                  </li>
-                </ul>
-              </div>
-            </VCard>
+              @close="toggleNotifications"
+            />
           </div>
           <div
             id="profile_menu"
@@ -509,12 +436,6 @@ watch(
   margin-bottom: 2rem;
 }
 
-.close-button {
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-}
-
 @media only screen and (max-width: 1023px) {
   .help-button__container {
     gap: 0.3rem;
@@ -537,73 +458,6 @@ watch(
 
 .notification-icon {
   width: 18px;
-}
-
-.notification-title-container {
-  box-sizing: border-box;
-  padding: 1.25rem;
-  border-bottom: 1px solid #8d8d8d33;
-}
-
-.notification-title {
-  margin-right: 1.25rem;
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.notification-items {
-  top: calc(100% + 0.75rem);
-  right: 0;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  max-height: 300px;
-  padding: 0;
-  overflow: auto;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
-}
-
-.notification-items ul {
-  padding: 0;
-}
-
-.notification-item {
-  box-sizing: border-box;
-  width: 100%;
-  padding-inline: 1.25rem;
-  padding-bottom: 12px;
-  margin-bottom: 1.25rem;
-  font-family: var(--font-body);
-  color: var(--text-white);
-  white-space: nowrap;
-  list-style: none;
-}
-
-.notification-item:not(:last-child) {
-  border-bottom: 1px solid #8d8d8d33;
-}
-
-.notification-item * + * {
-  margin-top: 10px;
-}
-
-.notification-item__message {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-}
-
-.notification-item__time {
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  color: #8d8d8d;
 }
 
 .help-menu-items {
@@ -648,41 +502,8 @@ watch(
 }
 
 @media only screen and (max-width: 767px) {
-  .notification-items__mobile {
-    position: absolute;
-    top: 0;
-    right: 0;
-    z-index: 999;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    border-radius: 0;
-  }
-
-  .notification-items {
-    display: none;
-  }
-
   .notification-container {
     position: inherit;
-  }
-
-  .notification-items__mobile .notification-item__container {
-    width: 100%;
-  }
-
-  .notification-item__container ul {
-    box-sizing: border-box;
-    padding: 0;
-  }
-
-  .notification-title-container {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
   }
 }
 </style>
