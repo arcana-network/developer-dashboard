@@ -1,12 +1,24 @@
 <script lang="ts" setup>
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
+import { useAppsStore } from '@/stores/apps.store'
 
+type DeleteProp = {
+  appId?: number
+}
+
+const props = defineProps<DeleteProp>()
 const emit = defineEmits(['cancel', 'proceed'])
+
+const appsStore = useAppsStore()
 </script>
 
 <template>
-  <header class="sub-heading-1 flex-grow">Delete app</header>
+  <header class="sub-heading-1 flex-grow">
+    <div class="text-ellipsis" style="max-width: 100%">
+      Delete app - {{ appsStore.app(props.appId as number).name }}
+    </div>
+  </header>
   <VSeperator />
   <main class="body-3">
     Deleting the app will remove all the assets that have been uploaded by your

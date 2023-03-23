@@ -3,8 +3,16 @@ import { ref, computed } from 'vue'
 import Vue3CircleProgress from 'vue3-circle-progress'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
+import { useAppsStore } from '@/stores/apps.store'
 
+type DeleteProp = {
+  appId?: number
+}
+
+const props = defineProps<DeleteProp>()
 const emit = defineEmits(['cancel', 'delete'])
+
+const appsStore = useAppsStore()
 
 const timer = ref(59)
 let timerProgress = 59000
@@ -44,7 +52,11 @@ function handleProceedDeletion() {
 </script>
 
 <template>
-  <header class="sub-heading-1 flex-grow">Deleting App...</header>
+  <header class="sub-heading-1 flex-grow">
+    <div class="text-ellipsis" style="max-width: 100%">
+      Deleting App - {{ appsStore.app(props.appId as number).name }}...
+    </div>
+  </header>
   <div class="flex outer-clock">
     <Vue3CircleProgress
       :percent="timerProgressPercentage"
