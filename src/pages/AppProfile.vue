@@ -307,7 +307,7 @@ async function handleDeleteProceed() {
           </form>
         </SettingCard>
       </section>
-      <section v-if="false" style="margin-top: 3em">
+      <section style="margin-top: 3em">
         <SettingCard>
           <template #title>INVOICING DETAILS</template>
           <form>
@@ -322,7 +322,6 @@ async function handleDeleteProceed() {
                   class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
-                  no-message
                   @icon-clicked="invoiceDetails.name = ''"
                 />
               </div>
@@ -333,7 +332,6 @@ async function handleDeleteProceed() {
                   class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
-                  no-message
                   @icon-clicked="invoiceDetails.address = ''"
                 />
               </div>
@@ -343,8 +341,8 @@ async function handleDeleteProceed() {
               ></div>
             </VStack>
             <ConfigureActionButtons
-              :save-disabled="false"
-              :cancel-disabled="false"
+              :save-disabled="true"
+              :cancel-disabled="true"
             />
           </form>
         </SettingCard>
