@@ -108,7 +108,7 @@ async function fetchProfileData() {
 
 async function fetchCardsData() {
   const cards = (await listCards()).data
-  if (cards[0]) {
+  if (cards?.[0]) {
     cardDetails.value = {
       cardName: cards[0].name,
       cardNumber: `XXXX ... ${cards[0].last4}`,
@@ -135,9 +135,7 @@ onMounted(() => {
 })
 
 function loadStripe() {
-  stripe = window.Stripe(
-    'pk_test_51MN8EKSASugCFwITiKdrNvCht6mwCQdVwLZWv05Gkr5h2ONCVKjiSSA18ig2ear2EfZ6GdSTVllmF3XmjtQIXqIr00eHrjiCpO'
-  )
+  stripe = window.Stripe(import.meta.env.VITE_ARCANA_STRIPE_API_KEY)
   const elements = stripe.elements()
   const style = {
     base: {
