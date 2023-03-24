@@ -3,10 +3,14 @@ import { onMounted, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
+import NotificationWithBubbleIcon from '@/assets/iconography/notification-with-bubble.svg'
+import NotificationIcon from '@/assets/iconography/notification.svg'
+import AppNotifications from '@/components/AppNotifications.vue'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { useAppsStore } from '@/stores/apps.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
@@ -19,6 +23,8 @@ const showProfileMenu = ref(false)
 const { logout } = useArcanaAuth()
 const profile_menu = ref(null)
 const help_menu = ref(null)
+const showNotifications = ref(false)
+const appsStore = useAppsStore()
 
 type HeaderProps = {
   container?: boolean
@@ -84,6 +90,11 @@ function toggleProfileMenu() {
   showProfileMenu.value = !showProfileMenu.value
   showHelpMenu.value = false
 }
+
+function toggleNotifications() {
+  const value = !showNotifications.value
+  showNotifications.value = value
+}
 </script>
 
 <template>
@@ -129,6 +140,21 @@ function toggleProfileMenu() {
               </li>
             </ul>
           </VCard>
+        </div>
+        <div class="notification-container flex">
+          <img
+            :src="
+              appsStore.areNotificationAvaiable
+                ? NotificationWithBubbleIcon
+                : NotificationIcon
+            "
+            class="cursor-pointer notification-icon"
+            @click.stop="toggleNotifications"
+          />
+          <AppNotifications
+            v-if="showNotifications"
+            @close="toggleNotifications"
+          />
         </div>
         <div
           id="profile_menu"
@@ -196,6 +222,10 @@ header {
   visibility: visible;
   background: #1f1f1f;
   transition: transform 0.6s;
+}
+
+.notification-container {
+  position: relative;
 }
 
 .mobile-menu-icon-button {
@@ -297,5 +327,11 @@ header {
   right: 2em;
   margin-top: 2px;
   cursor: pointer;
+}
+
+@media only screen and (max-width: 767px) {
+  .notification-container {
+    position: inherit;
+  }
 }
 </style>

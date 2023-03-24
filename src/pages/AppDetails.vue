@@ -3,9 +3,12 @@ import { onBeforeMount, ref, watch, onMounted, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
+import NotificationWithBubbleIcon from '@/assets/iconography/notification-with-bubble.svg'
+import NotificationIcon from '@/assets/iconography/notification.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import AppNotifications from '@/components/AppNotifications.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
@@ -53,6 +56,7 @@ const router = useRouter()
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
 const showMobileMenu = ref(false)
+const showNotifications = ref(false)
 const profile_menu = ref(null)
 const help_menu = ref(null)
 const mobile_menu = ref(null)
@@ -113,6 +117,11 @@ function toggleProfileMenu() {
   showProfileMenu.value = !showProfileMenu.value
   showHelpMenu.value = false
   showMobileMenu.value = false
+}
+
+function toggleNotifications() {
+  const value = !showNotifications.value
+  showNotifications.value = value
 }
 
 function toggleHelpMenu() {
@@ -302,6 +311,21 @@ watch(
               <img src="@/assets/iconography/menu.svg" alt="menu icon" />
             </button>
           </div>
+          <div class="notification-container flex">
+            <img
+              :src="
+                appsStore.areNotificationAvaiable
+                  ? NotificationWithBubbleIcon
+                  : NotificationIcon
+              "
+              class="cursor-pointer notification-icon"
+              @click.stop="toggleNotifications"
+            />
+            <AppNotifications
+              v-if="showNotifications"
+              @close="toggleNotifications"
+            />
+          </div>
           <div
             id="profile_menu"
             ref="profile_menu"
@@ -414,7 +438,7 @@ watch(
 
 @media only screen and (max-width: 1023px) {
   .help-button__container {
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 }
 
@@ -426,6 +450,14 @@ watch(
   background: transparent;
   border: none;
   outline: none;
+}
+
+.notification-container {
+  position: relative;
+}
+
+.notification-icon {
+  width: 18px;
 }
 
 .help-menu-items {
@@ -467,5 +499,11 @@ watch(
 .app-details__network-dropdown {
   align-self: flex-end;
   width: 16rem;
+}
+
+@media only screen and (max-width: 767px) {
+  .notification-container {
+    position: inherit;
+  }
 }
 </style>

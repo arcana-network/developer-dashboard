@@ -61,6 +61,7 @@ type AppState = {
   mainnetApps: {
     [key: AppId]: App
   }
+  areNotificationAvaiable: boolean
 }
 
 const useAppsStore = defineStore('apps', {
@@ -68,6 +69,7 @@ const useAppsStore = defineStore('apps', {
     appIds: [],
     appsById: {},
     mainnetApps: {},
+    areNotificationAvaiable: true,
   }),
   getters: {
     apps: (state) => {
