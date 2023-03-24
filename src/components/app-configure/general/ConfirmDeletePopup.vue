@@ -15,7 +15,11 @@ const appsStore = useAppsStore()
 
 <template>
   <header class="sub-heading-1 flex-grow">
-    <div class="text-ellipsis" style="max-width: 100%">
+    <div
+      class="text-ellipsis"
+      style="max-width: 100%"
+      :title="`Delete app - ${appsStore.app(props.appId as number).name}`"
+    >
       Delete app - {{ appsStore.app(props.appId as number).name }}
     </div>
   </header>
