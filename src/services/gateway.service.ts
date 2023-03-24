@@ -472,6 +472,18 @@ function listInvoices(): Promise<AxiosResponse<any>> {
   return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/invoices/`)
 }
 
+function getNotifications() {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/notification/`)
+}
+
+function updateNotificationRead(notificationId: number) {
+  const body = { latest_notification_id: notificationId }
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/notification/`,
+    body
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -506,6 +518,8 @@ export {
   listCards,
   deleteCard,
   listInvoices,
+  getNotifications,
+  updateNotificationRead,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
