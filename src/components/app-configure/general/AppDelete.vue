@@ -64,11 +64,13 @@ function handleCancel() {
     <VCard class="modal-card">
       <ConfirmDeletePopup
         v-if="showDeletePopup"
+        :app-id="props.appId"
         @cancel="handleCancel"
         @proceed="handleProceedDeletion"
       />
       <DeleteTimerPopup
         v-if="showDeleteTimerPopup"
+        :app-id="props.appId"
         @cancel="handleCancel"
         @delete="handleAppDeletion"
       />
