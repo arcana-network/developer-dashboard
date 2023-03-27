@@ -450,6 +450,19 @@ function submitVerificationForm(
   })
 }
 
+function updateBillingAddress(address: any): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/billing-address/`,
+    {
+      address,
+    }
+  )
+}
+
+function getBillingAddress(): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/billing-address/`)
+}
+
 function addCard(token: string): Promise<AxiosResponse<any>> {
   return getGatewayInstance(ApiNetwork).post(`${getEnvApi()}/card/`, {
     token,
@@ -520,6 +533,8 @@ export {
   listInvoices,
   getNotifications,
   updateNotificationRead,
+  updateBillingAddress,
+  getBillingAddress,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

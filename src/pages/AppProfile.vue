@@ -17,6 +17,8 @@ import {
   addCard,
   listCards,
   deleteCard,
+  updateBillingAddress,
+  getBillingAddress,
 } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -50,6 +52,14 @@ const showDeleteCardModal = ref(false)
 const invoiceDetails = ref({
   name: '',
   address: '',
+})
+const billingDetails = ref({
+  addressLine1: '',
+  addressLine2: '',
+  country: '',
+  zipCode: '',
+  state: '',
+  city: '',
 })
 const cardName = ref('')
 const cardNumberSelected = ref(false)
@@ -94,6 +104,7 @@ async function onUpdateOrganization() {
 onBeforeMount(async () => {
   await fetchProfileData()
   await fetchCardsData()
+  // await getBillingAddress()
 })
 
 async function fetchProfileData() {
@@ -181,9 +192,58 @@ function resetOrganisationDetails() {
   }
 }
 
+async function updateBillingDetails() {
+  if (!billingDetails.value.addressLine1) {
+    return toast.error('Address line 1 is required')
+  }
+  if (!billingDetails.value.city) {
+    return toast.error('City is required')
+  }
+  if (!billingDetails.value.state) {
+    return toast.error('State is required')
+  }
+  if (!billingDetails.value.zipCode) {
+    return toast.error('Zip code is required')
+  }
+  if (
+    billingDetails.value.zipCode.length < 4 ||
+    billingDetails.value.zipCode.length > 10
+  ) {
+    return toast.error('Invalid zip code')
+  }
+  if (!billingDetails.value.zipCode) {
+    return toast.error('Country is required')
+  }
+  loaderStore.showLoader('Saving the billing address...')
+  await updateBillingAddress({
+    city: billingDetails.value.city,
+    country: billingDetails.value.country,
+    line1: billingDetails.value.addressLine1,
+    line2: billingDetails.value.addressLine2,
+    postalCode: billingDetails.value.zipCode,
+    state: billingDetails.value.state,
+  })
+  loaderStore.hideLoader()
+
+  toast.success('Billing address saved')
+}
+
+function hasBillingAddress() {
+  return (
+    billingDetails.value.addressLine1 &&
+    billingDetails.value.city &&
+    billingDetails.value.country &&
+    billingDetails.value.zipCode &&
+    billingDetails.value.state
+  )
+}
+
 async function submitCard() {
   if (!cardName.value) {
     return toast.error('Your card name is incomplete.')
+  }
+  if (!hasBillingAddress()) {
+    return toast.error('Enter the billing address to continue')
   }
   loaderStore.showLoader('Adding the card...')
   const { token, error } = await stripe.createToken(cardNumber, {
@@ -307,9 +367,10 @@ async function handleDeleteProceed() {
       </section>
       <section style="margin-top: 3em">
         <SettingCard>
-          <template #title>INVOICING DETAILS</template>
-          <form>
+          <template #title>BILLING ADDRESS DETAILS</template>
+          <form @submit.prevent="updateBillingDetails">
             <VStack
+              v-if="false"
               class="flex md-column flex-wrap justify-space-between"
               gap="1.25rem"
             >
@@ -338,10 +399,76 @@ async function handleDeleteProceed() {
                 style="visibility: hidden"
               ></div>
             </VStack>
-            <ConfigureActionButtons
-              :save-disabled="true"
-              :cancel-disabled="true"
-            />
+            <div
+              v-if="!cardDetails.cardNumber"
+              class="flex column flex-grow"
+              style="gap: 1rem"
+            >
+              <VStack
+                class="flex md-column flex-wrap justify-space-between"
+                gap="1.25rem"
+              >
+                <div class="flex column details flex-grow">
+                  <label for="billing-address-line-1">Address Line 1</label>
+                  <VTextField
+                    id="billing-address-line-1"
+                    v-model.trim="billingDetails.addressLine1"
+                    class="app-name-input"
+                    no-message
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-address-line-2"
+                    >Address Line 2 (Optional)</label
+                  >
+                  <VTextField
+                    id="billing-address-line-2"
+                    v-model.trim="billingDetails.addressLine2"
+                    class="app-name-input"
+                    no-message
+                  />
+                </div>
+              </VStack>
+              <VStack
+                class="flex md-column flex-wrap justify-space-between"
+                gap="1.25rem"
+              >
+                <div class="flex column details flex-grow">
+                  <label for="billing-city">City</label>
+                  <VTextField
+                    id="billing-city"
+                    v-model.trim="billingDetails.city"
+                    class="app-name-input"
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-state">State</label>
+                  <VTextField
+                    id="billing-state"
+                    v-model.trim="billingDetails.state"
+                    class="app-name-input"
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-zipcode">Zip Code</label>
+                  <VTextField
+                    id="billing-zipcode"
+                    v-model.trim="billingDetails.zipCode"
+                    class="app-name-input"
+                    type="number"
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-country">Country</label>
+                  <VTextField
+                    id="billing-country"
+                    v-model.trim="billingDetails.country"
+                    class="app-name-input"
+                  />
+                </div>
+              </VStack>
+            </div>
+            <ConfigureActionButtons hide-cancel />
           </form>
         </SettingCard>
       </section>
@@ -536,6 +663,10 @@ label {
 
 .stripe-focused {
   outline: 1px solid var(--primary);
+}
+
+.billing-details {
+  display: flex;
 }
 
 @media only screen and (max-width: 1023px) {
