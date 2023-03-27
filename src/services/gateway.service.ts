@@ -453,9 +453,7 @@ function submitVerificationForm(
 function updateBillingAddress(address: any): Promise<AxiosResponse<any>> {
   return getGatewayInstance(ApiNetwork).post(
     `${getEnvApi()}/billing-address/`,
-    {
-      address,
-    }
+    address
   )
 }
 

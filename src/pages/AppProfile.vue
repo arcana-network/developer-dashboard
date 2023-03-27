@@ -104,8 +104,20 @@ async function onUpdateOrganization() {
 onBeforeMount(async () => {
   await fetchProfileData()
   await fetchCardsData()
-  // await getBillingAddress()
+  await getBillingDetails()
 })
+
+async function getBillingDetails() {
+  const billingAddress = (await getBillingAddress()).data
+  billingDetails.value = {
+    city: billingAddress.city,
+    country: billingAddress.country,
+    addressLine1: billingAddress.line1,
+    addressLine2: billingAddress.line2,
+    zipCode: billingAddress.postal_code,
+    state: billingAddress.state,
+  }
+}
 
 async function fetchProfileData() {
   const profileDetails = (await fetchProfile()).data
@@ -439,6 +451,7 @@ async function handleDeleteProceed() {
                     id="billing-city"
                     v-model.trim="billingDetails.city"
                     class="app-name-input"
+                    no-message
                   />
                 </div>
                 <div class="flex column details flex-grow">
@@ -447,6 +460,7 @@ async function handleDeleteProceed() {
                     id="billing-state"
                     v-model.trim="billingDetails.state"
                     class="app-name-input"
+                    no-message
                   />
                 </div>
                 <div class="flex column details flex-grow">
@@ -456,6 +470,7 @@ async function handleDeleteProceed() {
                     v-model.trim="billingDetails.zipCode"
                     class="app-name-input"
                     type="number"
+                    no-message
                   />
                 </div>
                 <div class="flex column details flex-grow">
