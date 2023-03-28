@@ -120,7 +120,6 @@ async function getBillingDetails() {
     isPresentInServer: true,
   }
   billingDetails.value.isPresentInServer = hasBillingAddress()
-  console.log(billingDetails.value)
 }
 
 async function fetchProfileData() {
@@ -256,7 +255,6 @@ function hasBillingAddress() {
 }
 
 async function submitCard() {
-  console.log(billingDetails.value)
   if (!cardName.value) {
     return toast.error('Your card name is incomplete.')
   }

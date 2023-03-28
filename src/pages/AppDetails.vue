@@ -201,7 +201,7 @@ async function handleCreateMainnetApp({
       currentTab.value = 'Keyspace'
     }
   } catch (e) {
-    console.log(e)
+    console.error(e)
     currentNetwork.value = NetworkOptions[0]
     toast.error('Error occured while creating mainnet app')
   } finally {

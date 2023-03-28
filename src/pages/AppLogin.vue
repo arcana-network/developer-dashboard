@@ -53,7 +53,7 @@ async function fetchAndStoreDetails() {
     await appsStore.fetchAndStoreAllApps('testnet')
     await appsStore.fetchAndStoreAllApps('mainnet')
   } catch (e) {
-    console.log({ e })
+    console.error({ e })
   } finally {
     if (route.params.redirectTo) {
       router.push({
