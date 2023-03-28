@@ -20,17 +20,26 @@ onMounted(fetchNotifications)
 onUnmounted(markNotificationAsRead)
 
 async function fetchNotifications() {
-  showLoader.value = true
-  const { notification, latest_notification_id } = (await getNotifications())
-    .data
-  notifications.value = notification
-  if (notification.length) appsStore.areNotificationAvaiable = true
-  latestNotificationId.value = latest_notification_id
-  showLoader.value = false
+  try {
+    showLoader.value = true
+    const { notification, latest_notification_id } = (await getNotifications())
+      .data
+    notifications.value = notification
+    if (notification.length) appsStore.areNotificationAvaiable = true
+    latestNotificationId.value = latest_notification_id
+  } catch (e) {
+    console.error(e)
+  } finally {
+    showLoader.value = false
+  }
 }
 
 async function markNotificationAsRead() {
-  await updateNotificationRead(latestNotificationId.value)
+  try {
+    await updateNotificationRead(latestNotificationId.value)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 function toggleNotifications() {
