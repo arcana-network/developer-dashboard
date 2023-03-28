@@ -25,7 +25,8 @@ async function fetchNotifications() {
     const { notification, latest_notification_id } = (await getNotifications())
       .data
     notifications.value = notification
-    if (notification.length) appsStore.areNotificationAvaiable = true
+    if (Array.isArray(notification) && notification.length)
+      appsStore.areNotificationAvaiable = true
     latestNotificationId.value = latest_notification_id
   } catch (e) {
     console.error(e)
