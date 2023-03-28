@@ -46,6 +46,13 @@ async function markNotificationAsRead() {
 function toggleNotifications() {
   emits('close')
 }
+
+function getNotificationsTime(timeStamp) {
+  const isToday = moment(timeStamp).isSame(new Date(), 'day')
+  return isToday
+    ? moment(timeStamp).format('hh:mm a')
+    : moment(timeStamp).fromNow()
+}
 </script>
 
 <template>
@@ -67,7 +74,7 @@ function toggleNotifications() {
                 {{ notification.Data }}
               </p>
               <p class="notification-item__time">
-                {{ moment(notification.Time).fromNow() }}
+                {{ getNotificationsTime(notification.Time) }}
               </p>
             </li>
           </ul>
@@ -101,7 +108,7 @@ function toggleNotifications() {
                 {{ notification.Data }}
               </p>
               <p class="notification-item__time">
-                {{ moment(notification.Time).fromNow() }}
+                {{ getNotificationsTime(notification.Time) }}
               </p>
             </li>
           </ul>
