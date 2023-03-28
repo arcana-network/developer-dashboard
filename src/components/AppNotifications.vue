@@ -20,21 +20,38 @@ onMounted(fetchNotifications)
 onUnmounted(markNotificationAsRead)
 
 async function fetchNotifications() {
-  showLoader.value = true
-  const { notification, latest_notification_id } = (await getNotifications())
-    .data
-  notifications.value = notification
-  if (notification.length) appsStore.areNotificationAvaiable = true
-  latestNotificationId.value = latest_notification_id
-  showLoader.value = false
+  try {
+    showLoader.value = true
+    const { notification, latest_notification_id } = (await getNotifications())
+      .data
+    notifications.value = notification
+    if (Array.isArray(notification) && notification.length)
+      appsStore.areNotificationAvaiable = true
+    latestNotificationId.value = latest_notification_id
+  } catch (e) {
+    console.error(e)
+  } finally {
+    showLoader.value = false
+  }
 }
 
 async function markNotificationAsRead() {
-  await updateNotificationRead(latestNotificationId.value)
+  try {
+    await updateNotificationRead(latestNotificationId.value)
+  } catch (e) {
+    console.error(e)
+  }
 }
 
 function toggleNotifications() {
   emits('close')
+}
+
+function getNotificationsTime(timeStamp) {
+  const isToday = moment(timeStamp).isSame(new Date(), 'day')
+  return isToday
+    ? moment(timeStamp).format('hh:mm a')
+    : moment(timeStamp).fromNow()
 }
 </script>
 
@@ -57,7 +74,7 @@ function toggleNotifications() {
                 {{ notification.Data }}
               </p>
               <p class="notification-item__time">
-                {{ moment(notification.Time).format('ddd-MMM, h:mm:ss a') }}
+                {{ getNotificationsTime(notification.Time) }}
               </p>
             </li>
           </ul>
@@ -91,7 +108,7 @@ function toggleNotifications() {
                 {{ notification.Data }}
               </p>
               <p class="notification-item__time">
-                {{ moment(notification.Time).format('ddd-MMM, h:mm:ss a') }}
+                {{ getNotificationsTime(notification.Time) }}
               </p>
             </li>
           </ul>
