@@ -67,7 +67,7 @@ function toggleNotifications() {
                 {{ notification.Data }}
               </p>
               <p class="notification-item__time">
-                {{ moment(notification.Time).format('ddd-MMM, h:mm:ss a') }}
+                {{ moment(notification.Time).fromNow() }}
               </p>
             </li>
           </ul>
@@ -101,7 +101,7 @@ function toggleNotifications() {
                 {{ notification.Data }}
               </p>
               <p class="notification-item__time">
-                {{ moment(notification.Time).format('ddd-MMM, h:mm:ss a') }}
+                {{ moment(notification.Time).fromNow() }}
               </p>
             </li>
           </ul>
