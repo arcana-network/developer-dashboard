@@ -60,6 +60,7 @@ const billingDetails = ref({
   zipCode: '',
   state: '',
   city: '',
+  isPresentInServer: false,
 })
 const cardName = ref('')
 const cardNumberSelected = ref(false)
@@ -116,7 +117,10 @@ async function getBillingDetails() {
     addressLine2: billingAddress.line2,
     zipCode: billingAddress.postal_code,
     state: billingAddress.state,
+    isPresentInServer: true,
   }
+  billingDetails.value.isPresentInServer = hasBillingAddress()
+  console.log(billingDetails.value)
 }
 
 async function fetchProfileData() {
@@ -235,6 +239,7 @@ async function updateBillingDetails() {
     postalCode: billingDetails.value.zipCode,
     state: billingDetails.value.state,
   })
+  billingDetails.value.isPresentInServer = true
   loaderStore.hideLoader()
 
   toast.success('Billing address saved')
@@ -242,20 +247,24 @@ async function updateBillingDetails() {
 
 function hasBillingAddress() {
   return (
-    billingDetails.value.addressLine1 &&
-    billingDetails.value.city &&
-    billingDetails.value.country &&
-    billingDetails.value.zipCode &&
-    billingDetails.value.state
+    !!billingDetails.value.addressLine1 &&
+    !!billingDetails.value.city &&
+    !!billingDetails.value.country &&
+    !!billingDetails.value.zipCode &&
+    !!billingDetails.value.state
   )
 }
 
 async function submitCard() {
+  console.log(billingDetails.value)
   if (!cardName.value) {
     return toast.error('Your card name is incomplete.')
   }
   if (!hasBillingAddress()) {
     return toast.error('Enter the billing address to continue')
+  }
+  if (!billingDetails.value.isPresentInServer) {
+    return toast.error('Save the billing address to continue')
   }
   loaderStore.showLoader('Adding the card...')
   const { token, error } = await stripe.createToken(cardNumber, {
