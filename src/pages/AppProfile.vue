@@ -34,13 +34,17 @@ type OrganizationDetails = {
   sizeErrorMessage?: string
 }
 
-const editOrganisationDetails = ref(false)
 const organisationDetails: Ref<OrganizationDetails> = ref({
   name: '',
   size: 0,
   sizeErrorMessage: '',
   country: '',
 })
+let organisationDetailsCopy = {
+  name: '',
+  size: 0,
+  country: '',
+}
 const cardDetails = ref({
   cardName: '',
   cardNumber: '',
@@ -62,6 +66,15 @@ const billingDetails = ref({
   city: '',
   isPresentInServer: false,
 })
+let billingDetailsCopy = {
+  addressLine1: '',
+  addressLine2: '',
+  country: '',
+  zipCode: '',
+  state: '',
+  city: '',
+  isPresentInServer: false,
+}
 const cardName = ref('')
 const cardNumberSelected = ref(false)
 const cardExpirySelected = ref(false)
@@ -71,8 +84,6 @@ const name = ref(authStore.name)
 const email = ref(authStore.email)
 const router = useRouter()
 const route = useRoute()
-
-let organisationDetailsResetState: OrganizationDetails
 
 async function onUpdateOrganization() {
   const size = Number(organisationDetails.value.size)
@@ -90,8 +101,12 @@ async function onUpdateOrganization() {
       country: organisationDetails.value.country,
     })
     toast.success('Profile details updated')
-    editOrganisationDetails.value = false
-    organisationDetailsResetState = { ...organisationDetails.value }
+    organisationDetailsCopy = {
+      name: organisationDetails.value.name,
+      size,
+      country: organisationDetails.value.country,
+    }
+    organisationDetails.value = { ...organisationDetailsCopy }
   } catch (e) {
     console.error(e)
     toast.error(
@@ -110,7 +125,7 @@ onBeforeMount(async () => {
 
 async function getBillingDetails() {
   const billingAddress = (await getBillingAddress()).data
-  billingDetails.value = {
+  billingDetailsCopy = {
     city: billingAddress.city,
     country: billingAddress.country,
     addressLine1: billingAddress.line1,
@@ -119,17 +134,18 @@ async function getBillingDetails() {
     state: billingAddress.state,
     isPresentInServer: true,
   }
-  billingDetails.value.isPresentInServer = hasBillingAddress()
+  billingDetailsCopy.isPresentInServer = hasBillingAddress()
+  billingDetails.value = { ...billingDetailsCopy }
 }
 
 async function fetchProfileData() {
   const profileDetails = (await fetchProfile()).data
-  organisationDetails.value = {
+  organisationDetailsCopy = {
     name: profileDetails.organization.name,
     size: profileDetails.organization.size,
     country: profileDetails.organization.country,
   }
-  organisationDetailsResetState = { ...organisationDetails.value }
+  organisationDetails.value = { ...organisationDetailsCopy }
 }
 
 async function fetchCardsData() {
@@ -199,8 +215,7 @@ function loadStripe() {
 }
 
 function resetOrganisationDetails() {
-  editOrganisationDetails.value = false
-  organisationDetails.value = { ...organisationDetailsResetState }
+  organisationDetails.value = { ...organisationDetailsCopy }
 
   if (organisationDetails.value.sizeErrorMessage) {
     organisationDetails.value.sizeErrorMessage = ''
@@ -238,19 +253,46 @@ async function updateBillingDetails() {
     postalCode: billingDetails.value.zipCode,
     state: billingDetails.value.state,
   })
-  billingDetails.value.isPresentInServer = true
+  billingDetailsCopy = {
+    city: billingDetails.value.city,
+    country: billingDetails.value.country,
+    addressLine1: billingDetails.value.addressLine1,
+    addressLine2: billingDetails.value.addressLine2,
+    zipCode: billingDetails.value.zipCode,
+    state: billingDetails.value.state,
+    isPresentInServer: true,
+  }
+  billingDetails.value = { ...billingDetailsCopy }
   loaderStore.hideLoader()
 
   toast.success('Billing address saved')
 }
 
 function hasBillingAddress() {
-  return (
+  const isNotEmpty =
     !!billingDetails.value.addressLine1 &&
     !!billingDetails.value.city &&
     !!billingDetails.value.country &&
     !!billingDetails.value.zipCode &&
     !!billingDetails.value.state
+
+  return isNotEmpty
+}
+
+function hasOrganisationDetails() {
+  const isNotEmpty =
+    !!organisationDetails.value.name &&
+    !!organisationDetails.value.country &&
+    !!organisationDetails.value.size
+
+  return isNotEmpty
+}
+
+function isOrganisationDetailsSame() {
+  return (
+    organisationDetails.value.name === organisationDetailsCopy.name &&
+    organisationDetails.value.country === organisationDetailsCopy.country &&
+    organisationDetails.value.size === organisationDetailsCopy.size
   )
 }
 
@@ -292,6 +334,26 @@ async function handleDeleteProceed() {
     loadStripe()
     loaderStore.hideLoader()
   })
+}
+
+function isBillingCopySame() {
+  const billingKeys = Object.keys(billingDetails.value)
+  const isEvery = billingKeys.every(
+    (key) => billingDetails.value[key] === billingDetailsCopy[key]
+  )
+  console.log({
+    isEvery,
+    billingDetailsCopy,
+    billingDetails: billingDetails.value,
+  })
+  return isEvery
+}
+
+function handleCancel() {
+  const billingKeys = Object.keys(billingDetails.value)
+  billingKeys.forEach(
+    (key) => (billingDetails.value[key] = billingDetailsCopy[key])
+  )
 }
 </script>
 
@@ -377,8 +439,10 @@ async function handleDeleteProceed() {
               </div>
             </VStack>
             <ConfigureActionButtons
-              :save-disabled="false"
-              :cancel-disabled="false"
+              :save-disabled="
+                isOrganisationDetailsSame() || !hasOrganisationDetails()
+              "
+              :cancel-disabled="isOrganisationDetailsSame()"
               @cancel="resetOrganisationDetails"
             />
           </form>
@@ -486,7 +550,11 @@ async function handleDeleteProceed() {
                 </div>
               </VStack>
             </div>
-            <ConfigureActionButtons hide-cancel />
+            <ConfigureActionButtons
+              :save-disabled="isBillingCopySame() || !hasBillingAddress()"
+              :cancel-disabled="isBillingCopySame()"
+              @cancel="handleCancel"
+            />
           </form>
         </SettingCard>
       </section>
