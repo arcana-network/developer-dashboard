@@ -418,11 +418,7 @@ async function handleDeleteProceed() {
                 style="visibility: hidden"
               ></div>
             </VStack>
-            <div
-              v-if="!cardDetails.cardNumber"
-              class="flex column flex-grow"
-              style="gap: 1rem"
-            >
+            <div class="flex column flex-grow" style="gap: 1rem">
               <VStack
                 class="flex md-column flex-wrap justify-space-between"
                 gap="1.25rem"
