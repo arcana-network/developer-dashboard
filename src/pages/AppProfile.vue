@@ -311,9 +311,13 @@ async function submitCard() {
     name: cardName.value,
   })
   if (token) {
-    await addCard(token.id)
-    await fetchCardsData()
-    toast.success('Card saved successfully')
+    try {
+      await addCard(token.id)
+      await fetchCardsData()
+      toast.success('Card saved successfully')
+    } catch (e) {
+      toast.error(e as string)
+    }
   } else {
     toast.error(error.message)
   }
@@ -341,11 +345,6 @@ function isBillingCopySame() {
   const isEvery = billingKeys.every(
     (key) => billingDetails.value[key] === billingDetailsCopy[key]
   )
-  console.log({
-    isEvery,
-    billingDetailsCopy,
-    billingDetails: billingDetails.value,
-  })
   return isEvery
 }
 
