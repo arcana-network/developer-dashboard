@@ -8,9 +8,7 @@ const docsLink = 'https://docs.arcana.network/howto/config_dapp.html'
 <template>
   <div class="mobile-remove tablet-remove landing-descriptor">
     <img :src="AppLogo" style="height: 72px" alt="Arcana Logo" />
-    <h1 style="margin-top: 4vh; margin-right: 4vw">
-      Make your dApps secure from the ground up!
-    </h1>
+    <h1 style="margin-top: 4vh">Make your dApps secure from the ground up!</h1>
     <p class="body-2 sub-description">
       See how to configure your app on the Arcana Dashboard.
       <a
@@ -20,7 +18,10 @@ const docsLink = 'https://docs.arcana.network/howto/config_dapp.html'
         >Learn More</a
       >
     </p>
-    <img src="@/assets/sidebar-illustration.png" style="margin: 6vh auto 0" />
+    <img
+      src="@/assets/sidebar-illustration.png"
+      style="display: block; margin: 6vh auto 0"
+    />
   </div>
   <VSeperator :vertical="true" class="mobile-remove tablet-remove separator" />
 </template>
@@ -30,8 +31,8 @@ const docsLink = 'https://docs.arcana.network/howto/config_dapp.html'
   width: 40%;
   min-width: 400px;
   max-width: 488px;
+  margin-inline: 2rem;
   margin-top: 8vh;
-  margin-left: 4vw;
 }
 
 .separator {

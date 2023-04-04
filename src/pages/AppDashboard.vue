@@ -248,7 +248,7 @@ async function fetchActiveUsers() {
     ]
     chartUtils.updateChartView(chart, labels, datasets)
   } catch (e) {
-    console.log(e)
+    console.error(e)
   }
 }
 </script>

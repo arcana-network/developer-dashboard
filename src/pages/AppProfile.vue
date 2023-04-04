@@ -17,6 +17,8 @@ import {
   addCard,
   listCards,
   deleteCard,
+  updateBillingAddress,
+  getBillingAddress,
 } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -32,13 +34,17 @@ type OrganizationDetails = {
   sizeErrorMessage?: string
 }
 
-const editOrganisationDetails = ref(false)
 const organisationDetails: Ref<OrganizationDetails> = ref({
   name: '',
   size: 0,
   sizeErrorMessage: '',
   country: '',
 })
+let organisationDetailsCopy = {
+  name: '',
+  size: 0,
+  country: '',
+}
 const cardDetails = ref({
   cardName: '',
   cardNumber: '',
@@ -51,6 +57,24 @@ const invoiceDetails = ref({
   name: '',
   address: '',
 })
+const billingDetails = ref({
+  addressLine1: '',
+  addressLine2: '',
+  country: '',
+  zipCode: '',
+  state: '',
+  city: '',
+  isPresentInServer: false,
+})
+let billingDetailsCopy = {
+  addressLine1: '',
+  addressLine2: '',
+  country: '',
+  zipCode: '',
+  state: '',
+  city: '',
+  isPresentInServer: false,
+}
 const cardName = ref('')
 const cardNumberSelected = ref(false)
 const cardExpirySelected = ref(false)
@@ -60,8 +84,6 @@ const name = ref(authStore.name)
 const email = ref(authStore.email)
 const router = useRouter()
 const route = useRoute()
-
-let organisationDetailsResetState: OrganizationDetails
 
 async function onUpdateOrganization() {
   const size = Number(organisationDetails.value.size)
@@ -79,8 +101,12 @@ async function onUpdateOrganization() {
       country: organisationDetails.value.country,
     })
     toast.success('Profile details updated')
-    editOrganisationDetails.value = false
-    organisationDetailsResetState = { ...organisationDetails.value }
+    organisationDetailsCopy = {
+      name: organisationDetails.value.name,
+      size,
+      country: organisationDetails.value.country,
+    }
+    organisationDetails.value = { ...organisationDetailsCopy }
   } catch (e) {
     console.error(e)
     toast.error(
@@ -93,22 +119,38 @@ async function onUpdateOrganization() {
 
 onBeforeMount(async () => {
   await fetchProfileData()
-  // await fetchCardsData()
+  await fetchCardsData()
+  await getBillingDetails()
 })
+
+async function getBillingDetails() {
+  const billingAddress = (await getBillingAddress()).data
+  billingDetailsCopy = {
+    city: billingAddress.city,
+    country: billingAddress.country,
+    addressLine1: billingAddress.line1,
+    addressLine2: billingAddress.line2,
+    zipCode: billingAddress.postal_code,
+    state: billingAddress.state,
+    isPresentInServer: true,
+  }
+  billingDetailsCopy.isPresentInServer = hasBillingAddress()
+  billingDetails.value = { ...billingDetailsCopy }
+}
 
 async function fetchProfileData() {
   const profileDetails = (await fetchProfile()).data
-  organisationDetails.value = {
+  organisationDetailsCopy = {
     name: profileDetails.organization.name,
     size: profileDetails.organization.size,
     country: profileDetails.organization.country,
   }
-  organisationDetailsResetState = { ...organisationDetails.value }
+  organisationDetails.value = { ...organisationDetailsCopy }
 }
 
 async function fetchCardsData() {
   const cards = (await listCards()).data
-  if (cards[0]) {
+  if (cards?.[0]) {
     cardDetails.value = {
       cardName: cards[0].name,
       cardNumber: `XXXX ... ${cards[0].last4}`,
@@ -130,14 +172,12 @@ let stripe: any, cardNumber: any
 
 onMounted(() => {
   if (!cardDetails.value.cardNumber) {
-    // loadStripe()
+    loadStripe()
   }
 })
 
 function loadStripe() {
-  stripe = window.Stripe(
-    'pk_test_51MN8EKSASugCFwITiKdrNvCht6mwCQdVwLZWv05Gkr5h2ONCVKjiSSA18ig2ear2EfZ6GdSTVllmF3XmjtQIXqIr00eHrjiCpO'
-  )
+  stripe = window.Stripe(import.meta.env.VITE_ARCANA_STRIPE_API_KEY)
   const elements = stripe.elements()
   const style = {
     base: {
@@ -175,26 +215,109 @@ function loadStripe() {
 }
 
 function resetOrganisationDetails() {
-  editOrganisationDetails.value = false
-  organisationDetails.value = { ...organisationDetailsResetState }
+  organisationDetails.value = { ...organisationDetailsCopy }
 
   if (organisationDetails.value.sizeErrorMessage) {
     organisationDetails.value.sizeErrorMessage = ''
   }
 }
 
+async function updateBillingDetails() {
+  if (!billingDetails.value.addressLine1) {
+    return toast.error('Address line 1 is required')
+  }
+  if (!billingDetails.value.city) {
+    return toast.error('City is required')
+  }
+  if (!billingDetails.value.state) {
+    return toast.error('State is required')
+  }
+  if (!billingDetails.value.zipCode) {
+    return toast.error('Zip code is required')
+  }
+  if (
+    billingDetails.value.zipCode.length < 4 ||
+    billingDetails.value.zipCode.length > 10
+  ) {
+    return toast.error('Invalid zip code')
+  }
+  if (!billingDetails.value.zipCode) {
+    return toast.error('Country is required')
+  }
+  loaderStore.showLoader('Saving the billing address...')
+  await updateBillingAddress({
+    city: billingDetails.value.city,
+    country: billingDetails.value.country,
+    line1: billingDetails.value.addressLine1,
+    line2: billingDetails.value.addressLine2,
+    postalCode: billingDetails.value.zipCode,
+    state: billingDetails.value.state,
+  })
+  billingDetailsCopy = {
+    city: billingDetails.value.city,
+    country: billingDetails.value.country,
+    addressLine1: billingDetails.value.addressLine1,
+    addressLine2: billingDetails.value.addressLine2,
+    zipCode: billingDetails.value.zipCode,
+    state: billingDetails.value.state,
+    isPresentInServer: true,
+  }
+  billingDetails.value = { ...billingDetailsCopy }
+  loaderStore.hideLoader()
+
+  toast.success('Billing address saved')
+}
+
+function hasBillingAddress() {
+  const isNotEmpty =
+    !!billingDetails.value.addressLine1 &&
+    !!billingDetails.value.city &&
+    !!billingDetails.value.country &&
+    !!billingDetails.value.zipCode &&
+    !!billingDetails.value.state
+
+  return isNotEmpty
+}
+
+function hasOrganisationDetails() {
+  const isNotEmpty =
+    !!organisationDetails.value.name &&
+    !!organisationDetails.value.country &&
+    !!organisationDetails.value.size
+
+  return isNotEmpty
+}
+
+function isOrganisationDetailsSame() {
+  return (
+    organisationDetails.value.name === organisationDetailsCopy.name &&
+    organisationDetails.value.country === organisationDetailsCopy.country &&
+    organisationDetails.value.size === organisationDetailsCopy.size
+  )
+}
+
 async function submitCard() {
   if (!cardName.value) {
     return toast.error('Your card name is incomplete.')
+  }
+  if (!hasBillingAddress()) {
+    return toast.error('Enter the billing address to continue')
+  }
+  if (!billingDetails.value.isPresentInServer) {
+    return toast.error('Save the billing address to continue')
   }
   loaderStore.showLoader('Adding the card...')
   const { token, error } = await stripe.createToken(cardNumber, {
     name: cardName.value,
   })
   if (token) {
-    await addCard(token.id)
-    await fetchCardsData()
-    toast.success('Card saved successfully')
+    try {
+      await addCard(token.id)
+      await fetchCardsData()
+      toast.success('Card saved successfully')
+    } catch (e) {
+      toast.error(e as string)
+    }
   } else {
     toast.error(error.message)
   }
@@ -216,11 +339,26 @@ async function handleDeleteProceed() {
     loaderStore.hideLoader()
   })
 }
+
+function isBillingCopySame() {
+  const billingKeys = Object.keys(billingDetails.value)
+  const isEvery = billingKeys.every(
+    (key) => billingDetails.value[key] === billingDetailsCopy[key]
+  )
+  return isEvery
+}
+
+function handleCancel() {
+  const billingKeys = Object.keys(billingDetails.value)
+  billingKeys.forEach(
+    (key) => (billingDetails.value[key] = billingDetailsCopy[key])
+  )
+}
 </script>
 
 <template>
   <div>
-    <AppHeader container />
+    <AppHeader />
     <main :class="{ container: route.name === 'AppProfile' }">
       <VStack class="heading" gap="1.5rem">
         <img
@@ -300,18 +438,21 @@ async function handleDeleteProceed() {
               </div>
             </VStack>
             <ConfigureActionButtons
-              :save-disabled="false"
-              :cancel-disabled="false"
+              :save-disabled="
+                isOrganisationDetailsSame() || !hasOrganisationDetails()
+              "
+              :cancel-disabled="isOrganisationDetailsSame()"
               @cancel="resetOrganisationDetails"
             />
           </form>
         </SettingCard>
       </section>
-      <section v-if="false" style="margin-top: 3em">
+      <section style="margin-top: 3em">
         <SettingCard>
-          <template #title>INVOICING DETAILS</template>
-          <form>
+          <template #title>BILLING ADDRESS DETAILS</template>
+          <form @submit.prevent="updateBillingDetails">
             <VStack
+              v-if="false"
               class="flex md-column flex-wrap justify-space-between"
               gap="1.25rem"
             >
@@ -322,7 +463,6 @@ async function handleDeleteProceed() {
                   class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
-                  no-message
                   @icon-clicked="invoiceDetails.name = ''"
                 />
               </div>
@@ -333,7 +473,6 @@ async function handleDeleteProceed() {
                   class="app-name-input"
                   :icon="CloseIcon"
                   clickable-icon
-                  no-message
                   @icon-clicked="invoiceDetails.address = ''"
                 />
               </div>
@@ -342,14 +481,83 @@ async function handleDeleteProceed() {
                 style="visibility: hidden"
               ></div>
             </VStack>
+            <div class="flex column flex-grow" style="gap: 1rem">
+              <VStack
+                class="flex md-column flex-wrap justify-space-between"
+                gap="1.25rem"
+              >
+                <div class="flex column details flex-grow">
+                  <label for="billing-address-line-1">Address Line 1</label>
+                  <VTextField
+                    id="billing-address-line-1"
+                    v-model.trim="billingDetails.addressLine1"
+                    class="app-name-input"
+                    no-message
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-address-line-2"
+                    >Address Line 2 (Optional)</label
+                  >
+                  <VTextField
+                    id="billing-address-line-2"
+                    v-model.trim="billingDetails.addressLine2"
+                    class="app-name-input"
+                    no-message
+                  />
+                </div>
+              </VStack>
+              <VStack
+                class="flex md-column flex-wrap justify-space-between"
+                gap="1.25rem"
+              >
+                <div class="flex column details flex-grow">
+                  <label for="billing-city">City</label>
+                  <VTextField
+                    id="billing-city"
+                    v-model.trim="billingDetails.city"
+                    class="app-name-input"
+                    no-message
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-state">State</label>
+                  <VTextField
+                    id="billing-state"
+                    v-model.trim="billingDetails.state"
+                    class="app-name-input"
+                    no-message
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-zipcode">Zip Code</label>
+                  <VTextField
+                    id="billing-zipcode"
+                    v-model.trim="billingDetails.zipCode"
+                    class="app-name-input"
+                    type="number"
+                    no-message
+                  />
+                </div>
+                <div class="flex column details flex-grow">
+                  <label for="billing-country">Country</label>
+                  <VTextField
+                    id="billing-country"
+                    v-model.trim="billingDetails.country"
+                    class="app-name-input"
+                  />
+                </div>
+              </VStack>
+            </div>
             <ConfigureActionButtons
-              :save-disabled="false"
-              :cancel-disabled="false"
+              :save-disabled="isBillingCopySame() || !hasBillingAddress()"
+              :cancel-disabled="isBillingCopySame()"
+              @cancel="handleCancel"
             />
           </form>
         </SettingCard>
       </section>
-      <section v-if="false" style="margin-top: 3em">
+      <section style="margin-top: 3em">
         <SettingCard>
           <template #title>PAYMENT METHODS</template>
           <form @submit.prevent="submitCard">
@@ -540,6 +748,10 @@ label {
 
 .stripe-focused {
   outline: 1px solid var(--primary);
+}
+
+.billing-details {
+  display: flex;
 }
 
 @media only screen and (max-width: 1023px) {

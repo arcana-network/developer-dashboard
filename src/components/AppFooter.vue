@@ -31,7 +31,7 @@ const socialLinks = [
 
 <template>
   <footer>
-    <VStack class="container" justify="space-between">
+    <VStack justify="space-between">
       <VStack
         v-if="props.showSocialIcons"
         gap="1.5rem"
@@ -68,12 +68,6 @@ const socialLinks = [
             Privacy Policy
           </a>
         </VStack>
-        <!-- <VStack gap="0.5rem" align="center">
-          <span class="body-2">Powered by</span>
-          <a href="https://arcana.network" target="_blank">
-            <img src="@/assets/arcana-logo.svg" class="arcana-logo" />
-          </a>
-        </VStack> -->
       </VStack>
     </VStack>
   </footer>
@@ -86,7 +80,7 @@ footer {
   right: 0;
   bottom: 0;
   left: 0;
-  padding: 0.75rem 0;
+  padding: 0.75rem 2rem;
   background: #1f1f1f;
   box-shadow: 0 9px 25px rgb(15 15 15 / 25%);
 }
