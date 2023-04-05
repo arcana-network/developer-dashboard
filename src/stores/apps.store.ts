@@ -113,6 +113,9 @@ const useAppsStore = defineStore('apps', {
     areNotificationAvaiable: ({ notifications }) => {
       return Array.isArray(notifications) && notifications.length
     },
+    notificationCount: ({ notifications }) => {
+      return Array.isArray(notifications) && notifications.length
+    },
   },
   actions: {
     updateApp(appId: AppId, appDetails: App, network: Network) {
