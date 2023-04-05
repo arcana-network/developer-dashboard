@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 
-import { fetchAllApps, fetchApp } from '@/services/gateway.service'
+import {
+  fetchAllApps,
+  fetchApp,
+  getNotifications,
+  updateNotificationRead,
+} from '@/services/gateway.service'
 import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
 import { WalletMode } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
@@ -61,7 +66,8 @@ type AppState = {
   mainnetApps: {
     [key: AppId]: App
   }
-  areNotificationAvaiable: boolean
+  notifications: Array<object>
+  latestNotificationId: number | null
 }
 
 const useAppsStore = defineStore('apps', {
@@ -69,7 +75,8 @@ const useAppsStore = defineStore('apps', {
     appIds: [],
     appsById: {},
     mainnetApps: {},
-    areNotificationAvaiable: true,
+    notifications: [],
+    latestNotificationId: null,
   }),
   getters: {
     apps: (state) => {
@@ -102,6 +109,9 @@ const useAppsStore = defineStore('apps', {
       const testnetAppsList = Object.values(state.appsById)
       return (id: AppId) =>
         testnetAppsList.find((app) => app.global_id === id) || null
+    },
+    areNotificationAvaiable: ({ notifications }) => {
+      return Array.isArray(notifications) && notifications.length
     },
   },
   actions: {
@@ -169,6 +179,24 @@ const useAppsStore = defineStore('apps', {
           ...this.appsById[appId],
           ...configInfo,
         }
+      }
+    },
+    async fetchNotifications() {
+      try {
+        const { notification, latest_notification_id } = (
+          await getNotifications()
+        ).data
+        this.notifications = notification
+        this.latestNotificationId = latest_notification_id
+      } catch (e) {
+        console.log({ e })
+      }
+    },
+    async updateNotificationReadStatus(): Promise<void> {
+      try {
+        await updateNotificationRead(this.latestNotificationId)
+      } catch (e) {
+        console.error(e)
       }
     },
   },
