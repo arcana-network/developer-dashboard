@@ -3,14 +3,12 @@ import { onMounted, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
-import NotificationWithBubbleIcon from '@/assets/iconography/notification-with-bubble.svg'
-import NotificationIcon from '@/assets/iconography/notification.svg'
 import AppNotifications from '@/components/AppNotifications.vue'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
+import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppsStore } from '@/stores/apps.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
@@ -24,7 +22,6 @@ const { logout } = useArcanaAuth()
 const profile_menu = ref(null)
 const help_menu = ref(null)
 const showNotifications = ref(false)
-const appsStore = useAppsStore()
 
 type HeaderProps = {
   container?: boolean
@@ -142,15 +139,7 @@ function toggleNotifications() {
           </VCard>
         </div>
         <div class="notification-container flex">
-          <img
-            :src="
-              appsStore.areNotificationAvaiable
-                ? NotificationWithBubbleIcon
-                : NotificationIcon
-            "
-            class="cursor-pointer notification-icon"
-            @click.stop="toggleNotifications"
-          />
+          <NotificationIcon @click="toggleNotifications" />
           <AppNotifications
             v-if="showNotifications"
             @close="toggleNotifications"
