@@ -15,7 +15,7 @@ const formattedNotificationCount = computed(() => {
 </script>
 
 <template>
-  <div class="position-relative">
+  <div class="position-relative cursor-pointer" @click="emits('click')">
     <div v-if="areNotificationAvaiable" class="notification-bubble">
       <span class="notification-bubble__count">{{
         formattedNotificationCount
