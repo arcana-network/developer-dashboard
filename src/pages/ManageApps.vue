@@ -16,6 +16,7 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
+import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import {
   getAccountStatus,
   getAuthOverview,
@@ -135,7 +136,17 @@ async function handleAppNameSave(app: AppData) {
         <VStack gap="1.25rem" md-direction="column" sm-direction="column">
           <VCard class="info-card">
             <VStack direction="column" gap="1.5rem" class="flex-grow">
-              <span class="info-title">Monthly Active Users</span>
+              <VStack gap="1rem" align="center">
+                <span class="info-title">Monthly Active Users</span>
+                <VTooltip
+                  title="If there is a discrepancy in aggregate billing please check billing section for further details as you may have deleted apps."
+                >
+                  <img
+                    src="@/assets/iconography/info-circle-outline.svg"
+                    style="margin-top: 2rem; cursor: pointer"
+                  />
+                </VTooltip>
+              </VStack>
               <VSeperator class="info-separator" />
               <VStack gap="0.25rem" class="info-margin">
                 <VStack
@@ -419,8 +430,8 @@ main {
 }
 
 .info-title {
-  margin-inline: 2rem;
   margin-top: 2rem;
+  margin-left: 2rem;
   font-family: var(--font-title);
   font-size: 1.25rem;
   font-weight: 700;
