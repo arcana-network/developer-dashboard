@@ -35,6 +35,7 @@ type AppData = AppConfig & {
 }
 
 const apps: Ref<AppData[]> = ref(appsStore.apps)
+const hasDeleteApps = ref(false)
 const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
 const accountStatus: Ref<AccountStatus> = ref('active')
@@ -89,6 +90,7 @@ onBeforeMount(async () => {
 
   const mausUsed = authOverview.mau
   estimatedCost.value = authOverview.bill
+  hasDeleteApps.value = authOverview.active_app_mau < authOverview.mau
   const allowedFreeMaus = 2000
 
   if (mausUsed > allowedFreeMaus) {
@@ -139,6 +141,7 @@ async function handleAppNameSave(app: AppData) {
               <VStack gap="1rem" align="center">
                 <span class="info-title">Monthly Active Users</span>
                 <VTooltip
+                  v-if="hasDeleteApps"
                   title="If there is a discrepancy in aggregate billing please check billing section for further details as you may have deleted apps."
                 >
                   <img
