@@ -95,8 +95,10 @@ function handleCancel() {
             <VStack direction="column" gap="10px">
               <span class="card-title">App Specific</span>
               <span class="card-description"
-                >App specific keys are more secure than global keys and each
-                user has unique wallet address per application.</span
+                >Users will be assigned <strong>a wallet address</strong> that
+                is unique to your app. Since the user's keys are specific to
+                your app, they are not exposed to any malicious apps or
+                transaction requests.</span
               >
             </VStack>
           </VStack>
@@ -163,9 +165,13 @@ function handleCancel() {
                     </VStack>
                   </VStack>
                   <span class="card-description"
-                    >Global keys are less secure but simplify user experience,
-                    users see the same address across different
-                    applications.</span
+                    >Users will be assigned
+                    <strong>the same wallet address</strong> across all apps
+                    with Arcana Auth. This improves user experience but users
+                    have to ensure they do not sign malicious transactions on a
+                    fraudulent app. Arcana mitigates this risk with an app
+                    review and validation process before approving the global
+                    keys feature for an app.</span
                   >
                   <VStack
                     class="justify-end"
