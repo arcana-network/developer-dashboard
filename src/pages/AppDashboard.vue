@@ -115,7 +115,7 @@ const tutorials = [
     description:
       'Configure social providers and onboard app users with plug-and-play or custom auth UI.',
     thumbnail_url: TutorialSocialAuth,
-    link: 'https://docs.arcana.network/howto/config_social_providers.html',
+    link: 'https://docs.arcana.network/howto/config_social/index.html',
   },
   {
     id: '2',
