@@ -60,7 +60,7 @@ onBeforeMount(async () => {
   } else {
     selectedCard.value = 'No card added'
   }
-  const invoiceData = (await listInvoices()).data
+  const invoiceData = (await listInvoices('mainnet')).data
   if (invoiceData) {
     const invoicePeriods = Object.keys(invoiceData).reverse()
     invoicePeriods.forEach((invoicePeriod) => {
