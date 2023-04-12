@@ -153,6 +153,7 @@ onBeforeMount(async () => {
                     download
                     target="_blank"
                     style="display: flex"
+                    @click.stop="(e) => e.preventDefault()"
                   >
                     <img src="@/assets/iconography/download.svg" />
                   </a>

@@ -5,12 +5,10 @@ import {
   type RouteRecordRaw,
 } from 'vue-router'
 
-import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import constants from '@/utils/constants'
 
 const authStore = useAuthStore()
-const appsStore = useAppsStore()
 
 const AppDashboard = () => import('@/pages/AppDashboard.vue')
 const AppProfile = () => import('@/pages/AppProfile.vue')

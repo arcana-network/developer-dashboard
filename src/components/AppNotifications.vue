@@ -1,50 +1,18 @@
 <script lang="ts" setup>
 import moment from 'moment'
-import { ref, onMounted, onUnmounted } from 'vue'
+import { toRefs } from 'vue'
 
 import VCard from '@/components/lib/VCard/VCard.vue'
-import {
-  getNotifications,
-  updateNotificationRead,
-} from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 
 const emits = defineEmits(['close'])
-const notifications = ref([])
-const latestNotificationId = ref(null)
-const showLoader = ref(false)
 const appsStore = useAppsStore()
 
-onMounted(fetchNotifications)
+const { notifications } = toRefs(appsStore)
 
-onUnmounted(markNotificationAsRead)
-
-async function fetchNotifications() {
-  try {
-    showLoader.value = true
-    const { notification, latest_notification_id } = (await getNotifications())
-      .data
-    notifications.value = notification
-    if (Array.isArray(notification) && notification.length)
-      appsStore.areNotificationAvaiable = true
-    latestNotificationId.value = latest_notification_id
-  } catch (e) {
-    console.error(e)
-  } finally {
-    showLoader.value = false
-  }
-}
-
-async function markNotificationAsRead() {
-  try {
-    await updateNotificationRead(latestNotificationId.value)
-  } catch (e) {
-    console.error(e)
-  }
-}
-
-function toggleNotifications() {
+function onCloseClick() {
   emits('close')
+  appsStore.updateNotificationReadStatus()
 }
 
 function getNotificationsTime(timeStamp) {
@@ -58,63 +26,55 @@ function getNotificationsTime(timeStamp) {
 <template>
   <div>
     <VCard class="notification-items position-absolute mobile-hide">
-      <div v-if="showLoader" class="body-1"><p>Loading...</p></div>
-      <div v-else>
-        <div class="flex flex-start width-100 notification-title-container">
-          <p class="notification-title">Notifications</p>
-        </div>
-        <div class="notification-item__container">
-          <ul v-if="notifications.length">
-            <li
-              v-for="notification in notifications"
-              :key="notification.Data"
-              class="cursor-pointer notification-item"
-            >
-              <p class="notification-item__message">
-                {{ notification.Data }}
-              </p>
-              <p class="notification-item__time">
-                {{ getNotificationsTime(notification.Time) }}
-              </p>
-            </li>
-          </ul>
-          <div v-else class="no-notifications">
-            <p>No Notifications</p>
-          </div>
+      <div class="flex flex-start width-100 notification-title-container">
+        <p class="notification-title">Notifications</p>
+      </div>
+      <div class="notification-item__container">
+        <ul v-if="notifications.length">
+          <li
+            v-for="notification in notifications"
+            :key="notification.Data"
+            class="cursor-pointer notification-item"
+          >
+            <p class="notification-item__message">
+              {{ notification.Data }}
+            </p>
+            <p class="notification-item__time">
+              {{ getNotificationsTime(notification.Time) }}
+            </p>
+          </li>
+        </ul>
+        <div v-else class="no-notifications">
+          <p>No Notifications</p>
         </div>
       </div>
     </VCard>
     <VCard
       class="notification-items__mobile position-absolute tablet-hide laptop-hide"
     >
-      <div v-if="showLoader" class="body-1 flex justify-center">
-        <p>Loading...</p>
+      <div class="flex flex-start width-100 notification-title-container">
+        <p class="notification-title">Notifications</p>
+        <button class="close-button" @click="onCloseClick">
+          <img src="@/assets/iconography/close.svg" alt="close" />
+        </button>
       </div>
-      <div v-else>
-        <div class="flex flex-start width-100 notification-title-container">
-          <p class="notification-title">Notifications</p>
-          <button class="close-button" @click="toggleNotifications">
-            <img src="@/assets/iconography/close.svg" alt="close" />
-          </button>
-        </div>
-        <div class="notification-item__container">
-          <ul v-if="notifications.length">
-            <li
-              v-for="notification in notifications"
-              :key="notification.Data"
-              class="cursor-pointer notification-item"
-            >
-              <p class="notification-item__message">
-                {{ notification.Data }}
-              </p>
-              <p class="notification-item__time">
-                {{ getNotificationsTime(notification.Time) }}
-              </p>
-            </li>
-          </ul>
-          <div v-else class="no-notifications">
-            <p>No Notifications</p>
-          </div>
+      <div class="notification-item__container flex-grow">
+        <ul v-if="notifications.length">
+          <li
+            v-for="notification in notifications"
+            :key="notification.Data"
+            class="cursor-pointer notification-item"
+          >
+            <p class="notification-item__message">
+              {{ notification.Data }}
+            </p>
+            <p class="notification-item__time">
+              {{ getNotificationsTime(notification.Time) }}
+            </p>
+          </li>
+        </ul>
+        <div v-else class="no-notifications">
+          <p>No Notifications</p>
         </div>
       </div>
     </VCard>
@@ -250,8 +210,9 @@ function getNotificationsTime(timeStamp) {
 
   .notification-title-container {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
+    height: 75px !important;
   }
 
   .no-notifications {

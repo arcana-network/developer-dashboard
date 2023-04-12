@@ -487,7 +487,7 @@ function getNotifications() {
   return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/notification/`)
 }
 
-function updateNotificationRead(notificationId: number) {
+function updateNotificationRead(notificationId: number | null) {
   const body = { latest_notification_id: notificationId }
   return getGatewayInstance(ApiNetwork).post(
     `${getEnvApi()}/notification/`,

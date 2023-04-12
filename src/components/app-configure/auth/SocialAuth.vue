@@ -140,7 +140,7 @@ function showCognitoNote() {
         Select the social login provider for onboarding app users by specifying
         authentication verification details.
         <a
-          :href="`${DOCS_URL}/howto/config_social_providers.html`"
+          :href="`${DOCS_URL}/howto/config_social/index.html`"
           target="_blank"
           class="learn-more"
         >
