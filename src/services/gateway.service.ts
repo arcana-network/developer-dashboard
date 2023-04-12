@@ -479,8 +479,8 @@ function deleteCard(card_id: string): Promise<AxiosResponse<any>> {
   })
 }
 
-function listInvoices(): Promise<AxiosResponse<any>> {
-  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/invoices/`)
+function listInvoices(network: Network): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(network).get(`${getEnvApi()}/invoices/`)
 }
 
 function getNotifications() {

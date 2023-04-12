@@ -38,10 +38,11 @@ async function handleAppDeletion() {
   try {
     const appId = props.appId as number
     const app = appsStore.app(appId)
-    await deleteApp(app.global_id, 'mainnet')
-    await deleteApp(appId, 'testnet')
+    const globalAppNetwork = app.network === 'mainnet' ? 'testnet' : 'mainnet'
+    await deleteApp(app.global_id, globalAppNetwork)
+    await deleteApp(appId, app.network)
     appsStore.deleteApp(appId, app.network)
-    appsStore.deleteApp(app.global_id, 'mainnet')
+    appsStore.deleteApp(app.global_id, globalAppNetwork)
     toast.success('App deleted successfully')
     router.push({ name: 'ManageApps' })
   } catch (e) {
