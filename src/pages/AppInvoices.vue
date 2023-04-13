@@ -60,7 +60,7 @@ onBeforeMount(async () => {
   } else {
     selectedCard.value = 'No card added'
   }
-  const invoiceData = (await listInvoices()).data
+  const invoiceData = (await listInvoices('mainnet')).data
   if (invoiceData) {
     const invoicePeriods = Object.keys(invoiceData).reverse()
     invoicePeriods.forEach((invoicePeriod) => {
@@ -153,6 +153,7 @@ onBeforeMount(async () => {
                     download
                     target="_blank"
                     style="display: flex"
+                    @click.stop="(e) => e.preventDefault()"
                   >
                     <img src="@/assets/iconography/download.svg" />
                   </a>

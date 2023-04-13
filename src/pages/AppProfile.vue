@@ -134,7 +134,7 @@ async function getBillingDetails() {
     state: billingAddress.state,
     isPresentInServer: true,
   }
-  billingDetailsCopy.isPresentInServer = hasBillingAddress()
+  billingDetailsCopy.isPresentInServer = hasBillingAddress(billingDetailsCopy)
   billingDetails.value = { ...billingDetailsCopy }
 }
 
@@ -268,13 +268,14 @@ async function updateBillingDetails() {
   toast.success('Billing address saved')
 }
 
-function hasBillingAddress() {
+function hasBillingAddress(details?: typeof billingDetailsCopy) {
+  const data = details || billingDetails.value
   const isNotEmpty =
-    !!billingDetails.value.addressLine1 &&
-    !!billingDetails.value.city &&
-    !!billingDetails.value.country &&
-    !!billingDetails.value.zipCode &&
-    !!billingDetails.value.state
+    !!data.addressLine1 &&
+    !!data.city &&
+    !!data.country &&
+    !!data.zipCode &&
+    !!data.state
 
   return isNotEmpty
 }
@@ -558,9 +559,15 @@ function handleCancel() {
         </SettingCard>
       </section>
       <section style="margin-top: 3em">
-        <SettingCard>
+        <SettingCard style="overflow: hidden">
           <template #title>PAYMENT METHODS</template>
-          <form @submit.prevent="submitCard">
+          <form
+            class="payment-form"
+            :class="{
+              'hide-payment-form': !billingDetails.isPresentInServer,
+            }"
+            @submit.prevent="submitCard"
+          >
             <VStack
               class="flex sm-column flex-wrap justify-space-between payment-container"
               gap="0.5rem"
@@ -752,6 +759,25 @@ label {
 
 .billing-details {
   display: flex;
+}
+
+.payment-form {
+  position: relative;
+}
+
+.hide-payment-form::before {
+  position: absolute;
+  inset: -2rem -1.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  font-family: var(--font-body);
+  text-align: center;
+  content: 'Enter the billing address details to access payment methods.';
+  background: rgb(10 10 10 / 70%);
+  backdrop-filter: blur(16px);
 }
 
 @media only screen and (max-width: 1023px) {

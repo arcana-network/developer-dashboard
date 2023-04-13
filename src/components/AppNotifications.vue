@@ -30,9 +30,9 @@ function getNotificationsTime(timeStamp) {
         class="flex flex-center justify-space-between width-100 notification-title-container"
       >
         <p class="notification-title">Notifications</p>
-        <button class="notification-read-btn cursor-pointer">
+        <!-- <button class="notification-read-btn cursor-pointer">
           Mark all as read
-        </button>
+        </button> -->
       </div>
       <div class="notification-item__container">
         <ul v-if="notifications.length">
@@ -59,7 +59,7 @@ function getNotificationsTime(timeStamp) {
     >
       <div class="flex flex-start width-100 notification-title-container">
         <p class="notification-title">Notifications</p>
-        <div class="flex flex-baseline">
+        <!-- <div class="flex flex-baseline">
           <button class="notification-read-btn cursor-pointer">
             Mark all as read
           </button>
@@ -70,7 +70,10 @@ function getNotificationsTime(timeStamp) {
               class="close-button__img"
             />
           </button>
-        </div>
+        </div> -->
+        <button class="close-button" @click="onCloseClick">
+          <img src="@/assets/iconography/close.svg" alt="close" />
+        </button>
       </div>
       <div class="notification-item__container flex-grow">
         <ul v-if="notifications.length">
