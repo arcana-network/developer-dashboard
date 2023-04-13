@@ -67,7 +67,6 @@ type AppState = {
     [key: AppId]: App
   }
   notifications: Array<object>
-  latestNotificationId: number | null
 }
 
 const useAppsStore = defineStore('apps', {
@@ -76,7 +75,6 @@ const useAppsStore = defineStore('apps', {
     appsById: {},
     mainnetApps: {},
     notifications: [],
-    latestNotificationId: null,
   }),
   getters: {
     apps: (state) => {
@@ -186,18 +184,15 @@ const useAppsStore = defineStore('apps', {
     },
     async fetchNotifications() {
       try {
-        const { notification, latest_notification_id } = (
-          await getNotifications()
-        ).data
-        this.notifications = notification
-        this.latestNotificationId = latest_notification_id
+        const { notifications } = (await getNotifications()).data
+        this.notifications = notifications
       } catch (e) {
         console.log({ e })
       }
     },
-    async updateNotificationReadStatus(): Promise<void> {
+    async updateNotificationReadStatus(list: number[]): Promise<void> {
       try {
-        await updateNotificationRead(this.latestNotificationId)
+        await updateNotificationRead(list)
       } catch (e) {
         console.error(e)
       }

@@ -12,7 +12,6 @@ const { notifications } = toRefs(appsStore)
 
 function onCloseClick() {
   emits('close')
-  appsStore.updateNotificationReadStatus()
 }
 
 function getNotificationsTime(timeStamp) {
@@ -20,6 +19,12 @@ function getNotificationsTime(timeStamp) {
   return isToday
     ? moment(timeStamp).format('hh:mm a')
     : moment(timeStamp).fromNow()
+}
+
+function markAllRead() {
+  appsStore.updateNotificationReadStatus(
+    notifications.value.map((item) => item.id)
+  )
 }
 </script>
 
@@ -30,22 +35,25 @@ function getNotificationsTime(timeStamp) {
         class="flex flex-center justify-space-between width-100 notification-title-container"
       >
         <p class="notification-title">Notifications</p>
-        <!-- <button class="notification-read-btn cursor-pointer">
+        <button
+          class="notification-read-btn cursor-pointer"
+          @click="markAllRead"
+        >
           Mark all as read
-        </button> -->
+        </button>
       </div>
       <div class="notification-item__container">
         <ul v-if="notifications.length">
           <li
             v-for="notification in notifications"
-            :key="notification.Data"
+            :key="notification.data"
             class="cursor-pointer notification-item"
           >
             <p class="notification-item__message">
-              {{ notification.Data }}
+              {{ notification.data }}
             </p>
             <p class="notification-item__time">
-              {{ getNotificationsTime(notification.Time) }}
+              {{ getNotificationsTime(notification.time) }}
             </p>
           </li>
         </ul>
@@ -59,8 +67,11 @@ function getNotificationsTime(timeStamp) {
     >
       <div class="flex flex-start width-100 notification-title-container">
         <p class="notification-title">Notifications</p>
-        <!-- <div class="flex flex-baseline">
-          <button class="notification-read-btn cursor-pointer">
+        <div class="flex flex-baseline">
+          <button
+            class="notification-read-btn cursor-pointer"
+            @click="markAllRead"
+          >
             Mark all as read
           </button>
           <button class="close-button" @click="onCloseClick">
@@ -70,23 +81,20 @@ function getNotificationsTime(timeStamp) {
               class="close-button__img"
             />
           </button>
-        </div> -->
-        <button class="close-button" @click="onCloseClick">
-          <img src="@/assets/iconography/close.svg" alt="close" />
-        </button>
+        </div>
       </div>
       <div class="notification-item__container flex-grow">
         <ul v-if="notifications.length">
           <li
             v-for="notification in notifications"
-            :key="notification.Data"
+            :key="notification.data"
             class="cursor-pointer notification-item"
           >
             <p class="notification-item__message">
-              {{ notification.Data }}
+              {{ notification.data }}
             </p>
             <p class="notification-item__time">
-              {{ getNotificationsTime(notification.Time) }}
+              {{ getNotificationsTime(notification.time) }}
             </p>
           </li>
         </ul>
