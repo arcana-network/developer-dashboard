@@ -490,7 +490,7 @@ function getNotifications() {
 function updateNotificationRead(list: number[]) {
   const body = { notifications: list }
   return getGatewayInstance(ApiNetwork).post(
-    `${getEnvApi()}/notification/`,
+    `${getEnvApi()}/notification/read/`,
     body
   )
 }
