@@ -12,7 +12,6 @@ const { notifications } = toRefs(appsStore)
 
 function onCloseClick() {
   emits('close')
-  appsStore.updateNotificationReadStatus()
 }
 
 function getNotificationsTime(timeStamp) {
@@ -21,26 +20,40 @@ function getNotificationsTime(timeStamp) {
     ? moment(timeStamp).format('hh:mm a')
     : moment(timeStamp).fromNow()
 }
+
+function markAllRead() {
+  appsStore.updateNotificationReadStatus(
+    notifications.value.map((item) => item.id)
+  )
+}
 </script>
 
 <template>
   <div>
     <VCard class="notification-items position-absolute mobile-hide">
-      <div class="flex flex-start width-100 notification-title-container">
+      <div
+        class="flex flex-center justify-space-between width-100 notification-title-container"
+      >
         <p class="notification-title">Notifications</p>
+        <button
+          class="notification-read-btn cursor-pointer"
+          @click="markAllRead"
+        >
+          Mark all as read
+        </button>
       </div>
       <div class="notification-item__container">
         <ul v-if="notifications.length">
           <li
             v-for="notification in notifications"
-            :key="notification.Data"
+            :key="notification.data"
             class="cursor-pointer notification-item"
           >
             <p class="notification-item__message">
-              {{ notification.Data }}
+              {{ notification.data }}
             </p>
             <p class="notification-item__time">
-              {{ getNotificationsTime(notification.Time) }}
+              {{ getNotificationsTime(notification.time) }}
             </p>
           </li>
         </ul>
@@ -54,22 +67,34 @@ function getNotificationsTime(timeStamp) {
     >
       <div class="flex flex-start width-100 notification-title-container">
         <p class="notification-title">Notifications</p>
-        <button class="close-button" @click="onCloseClick">
-          <img src="@/assets/iconography/close.svg" alt="close" />
-        </button>
+        <div class="flex flex-baseline">
+          <button
+            class="notification-read-btn cursor-pointer"
+            @click="markAllRead"
+          >
+            Mark all as read
+          </button>
+          <button class="close-button" @click="onCloseClick">
+            <img
+              src="@/assets/iconography/close.svg"
+              alt="close"
+              class="close-button__img"
+            />
+          </button>
+        </div>
       </div>
       <div class="notification-item__container flex-grow">
         <ul v-if="notifications.length">
           <li
             v-for="notification in notifications"
-            :key="notification.Data"
+            :key="notification.data"
             class="cursor-pointer notification-item"
           >
             <p class="notification-item__message">
-              {{ notification.Data }}
+              {{ notification.data }}
             </p>
             <p class="notification-item__time">
-              {{ getNotificationsTime(notification.Time) }}
+              {{ getNotificationsTime(notification.time) }}
             </p>
           </li>
         </ul>
@@ -83,15 +108,19 @@ function getNotificationsTime(timeStamp) {
 
 <style>
 .close-button {
+  height: 14px;
   cursor: pointer;
   background-color: transparent;
   border: none;
 }
 
+.close-button__img {
+  width: 100%;
+  height: 100%;
+}
+
 .notification-title-container {
   box-sizing: border-box;
-  display: flex;
-  justify-content: center;
   padding: 1.25rem;
   border-bottom: 1px solid #8d8d8d33;
 }
@@ -113,7 +142,7 @@ function getNotificationsTime(timeStamp) {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 300px;
+  min-width: 380px;
   min-height: 120px;
   max-height: 300px;
   padding: 0;
@@ -170,6 +199,14 @@ function getNotificationsTime(timeStamp) {
   width: 100%;
 }
 
+.notification-read-btn {
+  font-family: var(--font-body);
+  color: var(--primary);
+  background-color: transparent;
+  border: none;
+  outline: none;
+}
+
 @media only screen and (max-width: 767px) {
   .notification-items__mobile {
     position: absolute;
@@ -224,6 +261,10 @@ function getNotificationsTime(timeStamp) {
 
   .no-notifications > p {
     width: 100%;
+  }
+
+  .notification-read-btn {
+    margin-right: 14px;
   }
 }
 </style>

@@ -3,12 +3,11 @@ import { onBeforeMount, ref, watch, onMounted, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
-import NotificationWithBubbleIcon from '@/assets/iconography/notification-with-bubble.svg'
-import NotificationIcon from '@/assets/iconography/notification.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import AppNotifications from '@/components/AppNotifications.vue'
+import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
@@ -312,15 +311,7 @@ watch(
             </button>
           </div>
           <div class="notification-container flex">
-            <img
-              :src="
-                appsStore.areNotificationAvaiable
-                  ? NotificationWithBubbleIcon
-                  : NotificationIcon
-              "
-              class="cursor-pointer notification-icon"
-              @click.stop="toggleNotifications"
-            />
+            <NotificationIcon @click="toggleNotifications" />
             <AppNotifications
               v-if="showNotifications"
               @close="toggleNotifications"
@@ -454,10 +445,6 @@ watch(
 
 .notification-container {
   position: relative;
-}
-
-.notification-icon {
-  width: 18px;
 }
 
 .help-menu-items {
