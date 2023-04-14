@@ -1,7 +1,7 @@
 <script lang="ts" setup>
-import moment from 'moment'
 import { toRefs } from 'vue'
 
+import AppNotificationsItem from '@/components/AppNotificationsItem.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import { useAppsStore } from '@/stores/apps.store'
 
@@ -12,13 +12,6 @@ const { notifications } = toRefs(appsStore)
 
 function onCloseClick() {
   emits('close')
-}
-
-function getNotificationsTime(timeStamp) {
-  const isToday = moment(timeStamp).isSame(new Date(), 'day')
-  return isToday
-    ? moment(timeStamp).format('hh:mm a')
-    : moment(timeStamp).fromNow()
 }
 
 function markAllRead() {
@@ -42,25 +35,7 @@ function markAllRead() {
           Mark all as read
         </button>
       </div>
-      <div class="notification-item__container">
-        <ul v-if="notifications.length">
-          <li
-            v-for="notification in notifications"
-            :key="notification.data"
-            class="cursor-pointer notification-item"
-          >
-            <p class="notification-item__message">
-              {{ notification.data }}
-            </p>
-            <p class="notification-item__time">
-              {{ getNotificationsTime(notification.time) }}
-            </p>
-          </li>
-        </ul>
-        <div v-else class="no-notifications">
-          <p>No Notifications</p>
-        </div>
-      </div>
+      <AppNotificationsItem :notifications="notifications" />
     </VCard>
     <VCard
       class="notification-items__mobile position-absolute tablet-hide laptop-hide"
@@ -83,25 +58,7 @@ function markAllRead() {
           </button>
         </div>
       </div>
-      <div class="notification-item__container flex-grow">
-        <ul v-if="notifications.length">
-          <li
-            v-for="notification in notifications"
-            :key="notification.data"
-            class="cursor-pointer notification-item"
-          >
-            <p class="notification-item__message">
-              {{ notification.data }}
-            </p>
-            <p class="notification-item__time">
-              {{ getNotificationsTime(notification.time) }}
-            </p>
-          </li>
-        </ul>
-        <div v-else class="no-notifications">
-          <p>No Notifications</p>
-        </div>
-      </div>
+      <AppNotificationsItem :notifications="notifications" />
     </VCard>
   </div>
 </template>
@@ -142,7 +99,7 @@ function markAllRead() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 380px;
+  min-width: 420px;
   min-height: 120px;
   max-height: 300px;
   padding: 0;
@@ -152,47 +109,6 @@ function markAllRead() {
 
 .notification-items ul {
   padding: 0;
-}
-
-.notification-item {
-  box-sizing: border-box;
-  width: 100%;
-  padding-inline: 1.25rem;
-  padding-bottom: 12px;
-  margin-bottom: 1.25rem;
-  font-family: var(--font-body);
-  color: var(--text-white);
-  white-space: nowrap;
-  list-style: none;
-}
-
-.notification-item:not(:last-child) {
-  border-bottom: 1px solid #8d8d8d33;
-}
-
-.notification-item * + * {
-  margin-top: 10px;
-}
-
-.notification-item__message {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-}
-
-.notification-item__time {
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  color: #8d8d8d;
-}
-
-.no-notifications {
-  padding: 10px;
-  margin-top: 10px;
-  font-family: var(--font-body);
 }
 
 .no-notifications > p {
@@ -236,31 +152,11 @@ function markAllRead() {
     position: inherit;
   }
 
-  .notification-items__mobile .notification-item__container {
-    width: 100%;
-  }
-
-  .notification-item__container ul {
-    box-sizing: border-box;
-    padding: 0;
-  }
-
   .notification-title-container {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 75px !important;
-  }
-
-  .no-notifications {
-    padding: 20px;
-    margin-top: 50px;
-    font-family: var(--font-body);
-    text-align: center;
-  }
-
-  .no-notifications > p {
-    width: 100%;
   }
 
   .notification-read-btn {
