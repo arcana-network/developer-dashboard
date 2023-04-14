@@ -116,11 +116,11 @@ const useAppsStore = defineStore('apps', {
       return (id: AppId) =>
         testnetAppsList.find((app) => app.global_id === id) || null
     },
-    areNotificationAvaiable: ({ notifications }) => {
-      return Array.isArray(notifications) && notifications.length
-    },
-    notificationCount: ({ notifications }) => {
-      return Array.isArray(notifications) && notifications.length
+    unreadNotificationCount: ({ notifications }) => {
+      return (
+        Array.isArray(notifications) &&
+        notifications.filter((item) => !item.read).length
+      )
     },
   },
   actions: {
