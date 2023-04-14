@@ -201,6 +201,10 @@ const useAppsStore = defineStore('apps', {
     async updateNotificationReadStatus(list: number[]): Promise<void> {
       try {
         await updateNotificationRead(list)
+        this.notifications = this.notifications.map((notification) => {
+          notification.read = list.includes(notification.id)
+          return notification
+        })
       } catch (e) {
         console.error(e)
       }
