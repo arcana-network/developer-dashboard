@@ -10,6 +10,14 @@ import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
 import { WalletMode } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 
+type Notification = {
+  data: string
+  id: number
+  read: boolean
+  time: string
+  type: string
+}
+
 type SocialAuthState = {
   verifier: SocialAuthVerifier
   clientId?: string
@@ -66,7 +74,7 @@ type AppState = {
   mainnetApps: {
     [key: AppId]: App
   }
-  notifications: Array<object>
+  notifications: Array<Notification>
 }
 
 const useAppsStore = defineStore('apps', {
