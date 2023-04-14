@@ -10,7 +10,7 @@ const appsStore = useAppsStore()
 
 const { notifications } = toRefs(appsStore)
 
-function onCloseClick() {
+function close() {
   emits('close')
 }
 
@@ -18,6 +18,7 @@ function markAllRead() {
   appsStore.updateNotificationReadStatus(
     notifications.value.map((item) => item.id)
   )
+  close()
 }
 </script>
 
@@ -49,7 +50,7 @@ function markAllRead() {
           >
             Mark all as read
           </button>
-          <button class="close-button" @click="onCloseClick">
+          <button class="close-button" @click="close">
             <img
               src="@/assets/iconography/close.svg"
               alt="close"
