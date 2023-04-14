@@ -32,7 +32,7 @@ function getNotificationsTime(timeStamp) {
             {{ getNotificationsTime(notification.time) }}
           </p>
         </div>
-        <span class="blue-dot"></span>
+        <span v-if="!notification.read" class="blue-dot"></span>
       </li>
     </ul>
     <div v-else class="no-notifications">
