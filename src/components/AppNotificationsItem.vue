@@ -42,6 +42,11 @@ function getNotificationsTime(timeStamp) {
 </template>
 
 <style scoped>
+ul {
+  padding: 0;
+  margin: 0;
+}
+
 .blue-dot {
   width: 10px;
   height: 10px;
@@ -60,13 +65,17 @@ function getNotificationsTime(timeStamp) {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding-inline: 1.25rem;
   padding-bottom: 12px;
   margin-bottom: 1.25rem;
   font-family: var(--font-body);
   color: var(--text-white);
   white-space: nowrap;
   list-style: none;
+}
+
+.notification-item:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
 }
 
 .notification-item:not(:last-child) {
