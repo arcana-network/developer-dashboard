@@ -25,9 +25,8 @@ function markAllRead() {
 
 function onClickofItem(notification) {
   const type = notification.type
-  console.log({ type })
-  if (type === 'billing') router.push({ name: 'Branding' })
-  else if (type === 'invoice') router.push({ name: 'AppProfile' })
+  if (type === 'billing') router.push({ name: 'AppProfile' })
+  else if (type === 'invoice') router.push({ name: 'AppInvoices' })
   close()
 }
 </script>
