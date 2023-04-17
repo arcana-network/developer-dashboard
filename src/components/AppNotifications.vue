@@ -95,7 +95,7 @@ function onClickofItem(notification) {
   display: flex;
   flex-direction: column;
   width: 380px;
-  height: 380px;
+  max-height: 380px;
   padding: 16px;
   font-family: var(--font-body);
 }
