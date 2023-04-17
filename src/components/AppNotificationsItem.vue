@@ -8,6 +8,8 @@ defineProps({
   },
 })
 
+const emits = defineEmits(['onClickofItem'])
+
 function getNotificationsTime(timeStamp) {
   const isToday = moment(timeStamp).isSame(new Date(), 'day')
   return isToday
@@ -23,6 +25,7 @@ function getNotificationsTime(timeStamp) {
         v-for="notification in notifications"
         :key="notification.data"
         class="cursor-pointer notification-item position-relative"
+        @click="emits('onClickofItem', notification)"
       >
         <div>
           <p class="notification-item__message">
