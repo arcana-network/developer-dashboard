@@ -19,28 +19,28 @@ function getNotificationsTime(timeStamp) {
 </script>
 
 <template>
-  <div class="notification-item__container">
-    <ul v-if="notifications.length">
-      <li
-        v-for="notification in notifications"
-        :key="notification.data"
-        class="cursor-pointer notification-item position-relative"
-        @click="emits('onClickofItem', notification)"
-      >
-        <div>
-          <p class="notification-item__message">
-            {{ notification.data }}
-          </p>
-          <p class="notification-item__time">
-            {{ getNotificationsTime(notification.time) }}
-          </p>
-        </div>
+  <ul v-if="notifications.length" class="notification-item__container">
+    <li
+      v-for="notification in notifications"
+      :key="notification.data"
+      class="cursor-pointer notification-item position-relative"
+      @click="emits('onClickofItem', notification)"
+    >
+      <div class="notification-item__message-container">
+        <p class="notification-item__message">
+          {{ notification.data }}
+        </p>
+        <p class="notification-item__time">
+          {{ getNotificationsTime(notification.time) }}
+        </p>
+      </div>
+      <div class="notification-blue-dot | center">
         <span v-if="!notification.read" class="blue-dot"></span>
-      </li>
-    </ul>
-    <div v-else class="no-notifications">
-      <p>No Notifications</p>
-    </div>
+      </div>
+    </li>
+  </ul>
+  <div v-else class="no-notifications">
+    <p>No Notifications</p>
   </div>
 </template>
 
@@ -48,13 +48,6 @@ function getNotificationsTime(timeStamp) {
 ul {
   padding: 0;
   margin: 0;
-}
-
-.blue-dot {
-  width: 10px;
-  height: 10px;
-  background: #13a3fd;
-  border-radius: 50%;
 }
 
 .notification-item__container {
@@ -65,14 +58,12 @@ ul {
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   justify-content: space-between;
   width: 100%;
   padding-bottom: 12px;
   margin-bottom: 1.25rem;
   font-family: var(--font-body);
   color: var(--text-white);
-  white-space: nowrap;
   list-style: none;
 }
 
@@ -85,11 +76,23 @@ ul {
   border-bottom: 1px solid #8d8d8d33;
 }
 
-.notification-item * + * {
-  margin-top: 10px;
+.notification-item__message-container {
+  flex: 1;
+}
+
+.notification-blue-dot {
+  width: 10%;
+}
+
+.blue-dot {
+  width: 10px;
+  height: 10px;
+  background: #13a3fd;
+  border-radius: 50%;
 }
 
 .notification-item__message {
+  margin-bottom: 10px;
   font-family: var(--font-body);
   font-size: 14px;
   font-style: normal;

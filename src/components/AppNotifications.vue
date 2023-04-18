@@ -43,6 +43,7 @@ function onClickofItem(notification) {
       <p class="notification__title">Notifications</p>
       <div class="flex flex-center">
         <button
+          v-show="appsStore.unreadNotificationCount"
           class="btn cursor-pointer | notification__mark-read-btn"
           @click="markAllRead"
         >
