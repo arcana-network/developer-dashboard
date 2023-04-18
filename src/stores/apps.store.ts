@@ -202,7 +202,7 @@ const useAppsStore = defineStore('apps', {
       try {
         await updateNotificationRead(list)
         this.notifications = this.notifications.map((notification) => {
-          notification.read = list.includes(notification.id)
+          if (list.includes(notification.id)) notification.read = true
           return notification
         })
       } catch (e) {
