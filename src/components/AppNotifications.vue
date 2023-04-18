@@ -17,17 +17,20 @@ function close() {
 }
 
 function markAllRead() {
-  appsStore.updateNotificationReadStatus(
-    notifications.value.map((item) => item.id)
-  )
+  if (appsStore.unreadNotificationCount) {
+    appsStore.updateNotificationReadStatus(
+      notifications.value.map((item) => item.id)
+    )
+  }
   close()
 }
 
 function onClickofItem(notification) {
-  const type = notification.type
+  const { type, id, read } = notification
   if (type === 'billing')
     router.push({ name: 'AppProfile', params: { scrollTo: 'billing' } })
   else if (type === 'invoice') router.push({ name: 'AppInvoices' })
+  if (!read) appsStore.updateNotificationReadStatus([id])
   close()
 }
 </script>
