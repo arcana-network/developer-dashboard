@@ -1,270 +1,140 @@
 <script lang="ts" setup>
-import moment from 'moment'
 import { toRefs } from 'vue'
+import { useRouter } from 'vue-router'
 
+import AppNotificationsItem from '@/components/AppNotificationsItem.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import { useAppsStore } from '@/stores/apps.store'
 
 const emits = defineEmits(['close'])
 const appsStore = useAppsStore()
+const router = useRouter()
 
 const { notifications } = toRefs(appsStore)
 
-function onCloseClick() {
+function close() {
   emits('close')
 }
 
-function getNotificationsTime(timeStamp) {
-  const isToday = moment(timeStamp).isSame(new Date(), 'day')
-  return isToday
-    ? moment(timeStamp).format('hh:mm a')
-    : moment(timeStamp).fromNow()
+function markAllRead() {
+  if (appsStore.unreadNotificationCount) {
+    appsStore.updateNotificationReadStatus(
+      notifications.value.map((item) => item.id)
+    )
+  }
+  close()
 }
 
-function markAllRead() {
-  appsStore.updateNotificationReadStatus(
-    notifications.value.map((item) => item.id)
-  )
+function onClickofItem(notification) {
+  const { type, id, read } = notification
+  if (type === 'billing')
+    router.push({ name: 'AppProfile', params: { scrollTo: 'billing' } })
+  else if (type === 'invoice') router.push({ name: 'AppInvoices' })
+  if (!read) appsStore.updateNotificationReadStatus([id])
+  close()
 }
 </script>
 
 <template>
-  <div>
-    <VCard class="notification-items position-absolute mobile-hide">
-      <div
-        class="flex flex-center justify-space-between width-100 notification-title-container"
-      >
-        <p class="notification-title">Notifications</p>
+  <VCard class="position-absolute notification__container">
+    <div
+      class="flex flex-center justify-space-between width-100 | notification__header"
+    >
+      <p class="notification__title">Notifications</p>
+      <div class="flex flex-center">
         <button
-          class="notification-read-btn cursor-pointer"
+          v-show="appsStore.unreadNotificationCount"
+          class="btn cursor-pointer | notification__mark-read-btn"
           @click="markAllRead"
         >
           Mark all as read
         </button>
+        <button
+          class="btn cursor-pointer | notification__close-btn"
+          @click="close"
+        >
+          <img
+            src="@/assets/iconography/close.svg"
+            alt="close"
+            class="notification__close-btn-img"
+          />
+        </button>
       </div>
-      <div class="notification-item__container">
-        <ul v-if="notifications.length">
-          <li
-            v-for="notification in notifications"
-            :key="notification.data"
-            class="cursor-pointer notification-item"
-          >
-            <p class="notification-item__message">
-              {{ notification.data }}
-            </p>
-            <p class="notification-item__time">
-              {{ getNotificationsTime(notification.time) }}
-            </p>
-          </li>
-        </ul>
-        <div v-else class="no-notifications">
-          <p>No Notifications</p>
-        </div>
-      </div>
-    </VCard>
-    <VCard
-      class="notification-items__mobile position-absolute tablet-hide laptop-hide"
-    >
-      <div class="flex flex-start width-100 notification-title-container">
-        <p class="notification-title">Notifications</p>
-        <div class="flex flex-baseline">
-          <button
-            class="notification-read-btn cursor-pointer"
-            @click="markAllRead"
-          >
-            Mark all as read
-          </button>
-          <button class="close-button" @click="onCloseClick">
-            <img
-              src="@/assets/iconography/close.svg"
-              alt="close"
-              class="close-button__img"
-            />
-          </button>
-        </div>
-      </div>
-      <div class="notification-item__container flex-grow">
-        <ul v-if="notifications.length">
-          <li
-            v-for="notification in notifications"
-            :key="notification.data"
-            class="cursor-pointer notification-item"
-          >
-            <p class="notification-item__message">
-              {{ notification.data }}
-            </p>
-            <p class="notification-item__time">
-              {{ getNotificationsTime(notification.time) }}
-            </p>
-          </li>
-        </ul>
-        <div v-else class="no-notifications">
-          <p>No Notifications</p>
-        </div>
-      </div>
-    </VCard>
-  </div>
+    </div>
+    <div class="notification__body">
+      <AppNotificationsItem
+        :notifications="notifications"
+        @onClickofItem="onClickofItem"
+      />
+    </div>
+  </VCard>
 </template>
 
-<style>
-.close-button {
-  height: 14px;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-}
-
-.close-button__img {
-  width: 100%;
-  height: 100%;
-}
-
-.notification-title-container {
-  box-sizing: border-box;
-  padding: 1.25rem;
-  border-bottom: 1px solid #8d8d8d33;
-}
-
-.notification-title {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.notification-items {
-  top: calc(100% + 0.75rem);
-  right: 5px;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-width: 380px;
-  min-height: 120px;
-  max-height: 300px;
-  padding: 0;
-  overflow: auto;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
-}
-
-.notification-items ul {
-  padding: 0;
-}
-
-.notification-item {
-  box-sizing: border-box;
-  width: 100%;
-  padding-inline: 1.25rem;
-  padding-bottom: 12px;
-  margin-bottom: 1.25rem;
-  font-family: var(--font-body);
-  color: var(--text-white);
-  white-space: nowrap;
-  list-style: none;
-}
-
-.notification-item:not(:last-child) {
-  border-bottom: 1px solid #8d8d8d33;
-}
-
-.notification-item * + * {
-  margin-top: 10px;
-}
-
-.notification-item__message {
-  font-family: var(--font-body);
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-}
-
-.notification-item__time {
-  font-family: var(--font-body);
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  color: #8d8d8d;
-}
-
-.no-notifications {
-  padding: 10px;
-  margin-top: 10px;
-  font-family: var(--font-body);
-}
-
-.no-notifications > p {
-  width: 100%;
-}
-
-.notification-read-btn {
-  font-family: var(--font-body);
-  color: var(--primary);
-  background-color: transparent;
+<style scoped>
+.btn {
+  height: 18px;
+  background: transparent;
   border: none;
   outline: none;
 }
 
+.notification__close-btn {
+  display: none;
+  height: 12px;
+  padding: 0;
+}
+
+.notification__close-btn-img {
+  height: 12px;
+}
+
+.notification__mark-read-btn {
+  font-size: 14px;
+  color: #13a3fd;
+}
+
+.notification__container {
+  top: 25px;
+  right: -10px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  max-height: 380px;
+  padding: 16px;
+  font-family: var(--font-body);
+}
+
+.notification__title {
+  font-size: 18px;
+}
+
+.notification__header {
+  height: 50px;
+}
+
+.notification__body {
+  flex: 1;
+  padding: 20px 0;
+  overflow: auto;
+}
+
 @media only screen and (max-width: 767px) {
-  .notification-items__mobile {
-    position: absolute;
+  .notification__close-btn {
+    display: block;
+  }
+
+  .notification__container {
     top: 0;
     right: 0;
-    z-index: 999;
     box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
     height: 100vh;
     border-radius: 0;
   }
 
-  .notification-items__mobile > div {
-    width: 100%;
-    height: 100%;
-  }
-
-  .notification-items {
-    display: none !important;
-  }
-
-  .notification-container {
-    position: inherit;
-  }
-
-  .notification-items__mobile .notification-item__container {
-    width: 100%;
-  }
-
-  .notification-item__container ul {
-    box-sizing: border-box;
-    padding: 0;
-  }
-
-  .notification-title-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 75px !important;
-  }
-
-  .no-notifications {
-    padding: 20px;
-    margin-top: 50px;
-    font-family: var(--font-body);
-    text-align: center;
-  }
-
-  .no-notifications > p {
-    width: 100%;
-  }
-
-  .notification-read-btn {
-    margin-right: 14px;
+  .notification__mark-read-btn {
+    margin-right: 15px;
   }
 }
 </style>

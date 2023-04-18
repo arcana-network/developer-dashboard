@@ -105,6 +105,7 @@ onBeforeMount(async () => {
   }
   await appsStore.fetchAndStoreAllApps('testnet')
   await appsStore.fetchAndStoreAllApps('mainnet')
+  await appsStore.fetchNotifications()
 })
 
 appsStore.$subscribe(() => {
@@ -358,10 +359,6 @@ main {
   margin: 0 2rem;
 }
 
-.notification-container {
-  position: relative;
-}
-
 .app-card {
   position: relative;
   display: flex;
@@ -498,11 +495,5 @@ main {
 .delete-icon-img {
   width: 18px;
   height: 18px;
-}
-
-@media only screen and (max-width: 767px) {
-  .notification-container {
-    position: inherit;
-  }
 }
 </style>

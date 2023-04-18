@@ -59,6 +59,7 @@ const showNotifications = ref(false)
 const profile_menu = ref(null)
 const help_menu = ref(null)
 const mobile_menu = ref(null)
+const notification_menu = ref(null)
 const { logout } = useArcanaAuth()
 const route = useRoute()
 const currentNetwork = ref(NetworkOptions[1])
@@ -75,6 +76,10 @@ useClickOutside(profile_menu, () => {
 
 useClickOutside(help_menu, () => {
   showHelpMenu.value = false
+})
+
+useClickOutside(notification_menu, () => {
+  showNotifications.value = false
 })
 
 function switchApp(selectedAppId: AppId) {
@@ -310,7 +315,7 @@ watch(
               <img src="@/assets/iconography/menu.svg" alt="menu icon" />
             </button>
           </div>
-          <div class="notification-container flex">
+          <div ref="notification_menu" class="notification-container flex">
             <NotificationIcon @click="toggleNotifications" />
             <AppNotifications
               v-if="showNotifications"

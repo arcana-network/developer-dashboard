@@ -10,6 +10,14 @@ import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
 import { WalletMode } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 
+type Notification = {
+  data: string
+  id: number
+  read: boolean
+  time: string
+  type: string
+}
+
 type SocialAuthState = {
   verifier: SocialAuthVerifier
   clientId?: string
@@ -66,7 +74,7 @@ type AppState = {
   mainnetApps: {
     [key: AppId]: App
   }
-  notifications: Array<object>
+  notifications: Array<Notification>
 }
 
 const useAppsStore = defineStore('apps', {
@@ -108,11 +116,11 @@ const useAppsStore = defineStore('apps', {
       return (id: AppId) =>
         testnetAppsList.find((app) => app.global_id === id) || null
     },
-    areNotificationAvaiable: ({ notifications }) => {
-      return Array.isArray(notifications) && notifications.length
-    },
-    notificationCount: ({ notifications }) => {
-      return Array.isArray(notifications) && notifications.length
+    unreadNotificationCount: ({ notifications }) => {
+      return (
+        Array.isArray(notifications) &&
+        notifications.filter((item) => !item.read).length
+      )
     },
   },
   actions: {
@@ -193,6 +201,10 @@ const useAppsStore = defineStore('apps', {
     async updateNotificationReadStatus(list: number[]): Promise<void> {
       try {
         await updateNotificationRead(list)
+        this.notifications = this.notifications.map((notification) => {
+          if (list.includes(notification.id)) notification.read = true
+          return notification
+        })
       } catch (e) {
         console.error(e)
       }

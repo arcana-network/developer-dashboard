@@ -171,10 +171,17 @@ function getMonth(month: number) {
 let stripe: any, cardNumber: any
 
 onMounted(() => {
+  const { scrollTo } = router.currentRoute.value.params
+  if (scrollTo === 'billing') scrollToBilling()
   if (!cardDetails.value.cardNumber) {
     loadStripe()
   }
 })
+
+function scrollToBilling() {
+  const element = document.getElementById('billing-details')
+  element?.scrollIntoView()
+}
 
 function loadStripe() {
   stripe = window.Stripe(import.meta.env.VITE_ARCANA_STRIPE_API_KEY)
@@ -448,7 +455,7 @@ function handleCancel() {
           </form>
         </SettingCard>
       </section>
-      <section style="margin-top: 3em">
+      <section id="billing-details" style="margin-top: 3em">
         <SettingCard>
           <template #title>BILLING ADDRESS DETAILS</template>
           <form @submit.prevent="updateBillingDetails">

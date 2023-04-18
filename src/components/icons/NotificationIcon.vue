@@ -5,18 +5,22 @@ import NotificationIcon from '@/assets/iconography/notification.svg'
 import { useAppsStore } from '@/stores/apps.store'
 
 const appStore = useAppsStore()
-const { areNotificationAvaiable, notificationCount } = toRefs(appStore)
+const { unreadNotificationCount } = toRefs(appStore)
 const emits = defineEmits(['click'])
 
 const formattedNotificationCount = computed(() => {
-  const count = notificationCount.value || 0
-  return count > 99 ? '99+' : notificationCount
+  const count = unreadNotificationCount.value || 0
+  return count > 99 ? '99+' : unreadNotificationCount
+})
+
+const areUnreadNotificationAvaiable = computed(() => {
+  return !!unreadNotificationCount.value
 })
 </script>
 
 <template>
   <div class="position-relative cursor-pointer" @click="emits('click')">
-    <div v-if="areNotificationAvaiable" class="notification-bubble">
+    <div v-if="areUnreadNotificationAvaiable" class="notification-bubble">
       <span class="notification-bubble__count">{{
         formattedNotificationCount
       }}</span>

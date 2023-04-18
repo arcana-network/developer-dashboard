@@ -22,6 +22,7 @@ const { logout } = useArcanaAuth()
 const profile_menu = ref(null)
 const help_menu = ref(null)
 const showNotifications = ref(false)
+const notification_menu = ref(null)
 
 type HeaderProps = {
   container?: boolean
@@ -47,6 +48,10 @@ useClickOutside(profile_menu, () => {
 
 useClickOutside(help_menu, () => {
   showHelpMenu.value = false
+})
+
+useClickOutside(notification_menu, () => {
+  showNotifications.value = false
 })
 
 onMounted(() => {
@@ -138,7 +143,7 @@ function toggleNotifications() {
             </ul>
           </VCard>
         </div>
-        <div class="notification-container flex">
+        <div ref="notification_menu" class="notification-container flex">
           <NotificationIcon @click="toggleNotifications" />
           <AppNotifications
             v-if="showNotifications"
