@@ -78,6 +78,11 @@ const ConfigureTabs = computed(() => {
           icon: socialMediaIcon,
         },
         {
+          type: 'chainManagement',
+          label: 'Chain Management',
+          icon: socialMediaIcon,
+        },
+        {
           type: 'arcanaWallet',
           label: 'Arcana Wallet',
           icon: walletIcon,
