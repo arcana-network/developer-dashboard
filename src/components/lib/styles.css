@@ -1,2 +1,9 @@
+/* stylelint-disable scss/at-rule-no-unknown */
+
 /* @import "./styles/__normalize.css"; */
+
 @import './styles/__style-guide.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
