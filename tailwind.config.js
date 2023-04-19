@@ -2,7 +2,10 @@
 module.exports = {
   content: ['./src/**/*.{vue,js,ts,jsx,tsx,css}'],
   theme: {
-    extend: {},
+    fontFamily: {
+      title: ['Montserrat', 'sans-serif'],
+      body: ['Sora', 'sans-serif'],
+    },
   },
   plugins: [],
 }
