@@ -1,11 +1,38 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 import ChainIcon from '@/assets/iconography/github.svg'
 import MoreIcon from '@/assets/iconography/more.svg'
+import VSwitchVue from '@/components/lib/VSwitch/VSwitch.vue'
+import { useClickOutside } from '@/use/clickOutside'
+
+const enable = ref(false)
+const showRowOptions = ref(false)
+const showRowOptions_menu = ref(null)
+
+const rowOptions = [
+  {
+    label: 'Edit',
+    value: 0,
+  },
+  {
+    label: 'Delete',
+    value: 1,
+  },
+  {
+    label: 'Set as Default',
+    value: 2,
+  },
+]
+
+useClickOutside(showRowOptions_menu, () => {
+  showRowOptions.value = false
+})
 </script>
 
 <template>
   <div class="table-container | rounded-md">
-    <table class="table-fixed text-white">
+    <table class="table-fixed text-white overflow-x-auto">
       <thead>
         <tr>
           <th class="chain-icon"></th>
@@ -21,19 +48,43 @@ import MoreIcon from '@/assets/iconography/more.svg'
         </tr>
       </thead>
       <tbody>
-        <tr>
+        <tr class="hover:bg-[#363636]">
           <td>
             <img :src="ChainIcon" alt="chain icon" class="w-6 h-6" />
           </td>
           <td class="text-ellipsis">Polygon Mainnet</td>
           <td class="text-ellipsis">Polygon POS</td>
-          <td>137</td>
-          <td>MATIC</td>
-          <td>EVM</td>
-          <td>Mainnet</td>
+          <td class="text-ellipsis">137</td>
+          <td class="text-ellipsis">MATIC</td>
+          <td class="text-ellipsis">EVM</td>
+          <td class="text-ellipsis">Mainnet</td>
           <td class="text-ellipsis">https://polygon-rpc.com</td>
-          <td><input type="checkbox" /></td>
-          <td><img :src="MoreIcon" alt="more" /></td>
+          <td><VSwitchVue v-model:model-value="enable" /></td>
+          <td>
+            <div class="relative">
+              <button
+                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-[#262626] rounded-[5px]"
+                @click.stop="showRowOptions = !showRowOptions"
+              >
+                <img :src="MoreIcon" alt="more" />
+              </button>
+              <dialog
+                v-if="showRowOptions"
+                ref="showRowOptions_menu"
+                open
+                class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-32 left-[-100px] top-[10px]"
+              >
+                <button
+                  v-for="option in rowOptions"
+                  :key="option.value"
+                  class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
+                  @click.stop="showRowOptions = false"
+                >
+                  {{ option.label }}
+                </button>
+              </dialog>
+            </div>
+          </td>
         </tr>
       </tbody>
     </table>
@@ -72,10 +123,7 @@ td {
   font-weight: 500;
 }
 
-.chain-icon {
-  width: 5%;
-}
-
+.chain-icon,
 .chain-more {
   width: 5%;
 }
