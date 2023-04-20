@@ -24,9 +24,7 @@ import SearchBar from '@/components/SearchBar.vue'
         </button>
         <SearchBar />
       </div>
-      <div>
-        <ChainList />
-      </div>
+      <ChainList />
     </div>
   </div>
 </template>
