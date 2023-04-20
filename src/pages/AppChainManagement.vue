@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { ref } from 'vue'
+
 import PlusIcon from '@/assets/iconography/plus.svg'
+import AppChainManagementForm from '@/components/AppChainManagementForm.vue'
 import ChainList from '@/components/AppChainManagementList.vue'
 import SearchBar from '@/components/SearchBar.vue'
+
+const showForm = ref(false)
 </script>
 
 <template>
-  <div class="space-y-10">
+  <div class="space-y-10 relative">
     <div class="space-y-[15px]">
       <h1 class="font-title text-[32px] leading-[150%] font-[700]">
         Chain Management
@@ -18,7 +23,10 @@ import SearchBar from '@/components/SearchBar.vue'
     </div>
     <div class="flex flex-col space-y-5">
       <div class="flex items-baseline w-full justify-end space-x-5">
-        <button class="text-white flex items-center space-x-1.5">
+        <button
+          class="text-white flex items-center space-x-1.5"
+          @click="showForm = true"
+        >
           <img :src="PlusIcon" alt="Add Chain" class="w-3" />
           <span>Add Chain</span>
         </button>
@@ -26,5 +34,6 @@ import SearchBar from '@/components/SearchBar.vue'
       </div>
       <ChainList />
     </div>
+    <AppChainManagementForm v-if="showForm" />
   </div>
 </template>
