@@ -32,19 +32,21 @@ useClickOutside(showRowOptions_menu, () => {
 
 <template>
   <div class="table-container | rounded-md">
-    <table class="table-fixed text-white overflow-x-auto">
+    <table
+      class="table-fixed text-white overflow-x-auto border-collapse w-full"
+    >
       <thead>
         <tr>
-          <th class="chain-icon"></th>
-          <th class="chain-name">Name</th>
-          <th class="chain-data">Network</th>
-          <th class="chain-data">ID</th>
-          <th class="chain-data">Symbol</th>
-          <th class="chain-data">Compatibility</th>
-          <th class="chain-data">Type</th>
+          <th class="w-[5%]"></th>
+          <th class="w-[15%]">Name</th>
+          <th>Network</th>
+          <th>ID</th>
+          <th>Symbol</th>
+          <th>Compatibility</th>
+          <th>Type</th>
           <th>RPC URL</th>
           <th>Enabled</th>
-          <th class="chain-more"></th>
+          <th class="w-[5%]"></th>
         </tr>
       </thead>
       <tbody>
@@ -96,12 +98,6 @@ useClickOutside(showRowOptions_menu, () => {
   border: 1px solid #363636;
 }
 
-table {
-  width: 100%;
-  table-layout: fixed;
-  border-collapse: collapse;
-}
-
 th,
 td {
   padding: 15px;
@@ -121,14 +117,5 @@ th {
 td {
   font-size: 14px;
   font-weight: 500;
-}
-
-.chain-icon,
-.chain-more {
-  width: 5%;
-}
-
-.chain-name {
-  width: 15%;
 }
 </style>
