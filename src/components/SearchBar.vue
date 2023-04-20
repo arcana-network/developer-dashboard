@@ -11,7 +11,7 @@ console.log('Search bar')
     <img :src="SearchIcon" alt="search" class="h-[18px] w-[18px]" />
     <input
       type="text"
-      class="bg-transparent flex-1"
+      class="bg-transparent flex-1 w-full border-none outline-none text-[#FFFFFF]"
       placeholder="Search a Chain"
     />
   </div>
