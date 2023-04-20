@@ -123,7 +123,7 @@ function toggle() {
   left: 0;
   width: 20px;
   height: 20px;
-  background: linear-gradient(222.06deg, #999 0%, rgb(130 130 130 / 0%) 122.2%);
+  background: #8d8d8d;
   border-radius: 9999px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   transition: transform 0.4s ease, background 0.4s ease-in-out;
@@ -145,7 +145,7 @@ function toggle() {
 }
 
 .toggle-indicator.checked {
-  background: linear-gradient(220.53deg, #9bf763 0%, #26ab5b 76.95%);
+  background: #568df0;
   transform: translateX(24px) rotate(270deg);
 }
 
