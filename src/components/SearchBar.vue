@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import SearchIcon from '@/assets/iconography/search.svg'
-
-console.log('Search bar')
 </script>
 
 <template>
