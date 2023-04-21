@@ -1,12 +1,36 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref, type Ref } from 'vue'
+import { useRoute } from 'vue-router'
 
 import PlusIcon from '@/assets/iconography/plus.svg'
 import AppChainManagementForm from '@/components/AppChainManagementForm.vue'
 import ChainList from '@/components/AppChainManagementList.vue'
 import SearchBar from '@/components/SearchBar.vue'
+import { useChainManagementStore } from '@/stores/chainManagement.store'
+
+type FormAction = 'add' | 'edit'
+
+const chainManagementStore = useChainManagementStore()
+const route = useRoute()
 
 const showForm = ref(false)
+const formAction: Ref<FormAction> = ref('add')
+const editChainId = ref('')
+
+onMounted(async () => {
+  const appId = route.params.appId
+  await chainManagementStore.getAppChains(appId)
+})
+
+function openForm(formActionVal: FormAction, chainId?: string) {
+  showForm.value = true
+  formAction.value = formActionVal
+  if (chainId) editChainId.value = chainId
+}
+
+function hideForm() {
+  showForm.value = false
+}
 </script>
 
 <template>
@@ -25,15 +49,20 @@ const showForm = ref(false)
       <div class="flex items-baseline w-full justify-end space-x-5">
         <button
           class="text-white flex items-center space-x-1.5"
-          @click="showForm = true"
+          @click="openForm('add')"
         >
           <img :src="PlusIcon" alt="Add Chain" class="w-3" />
           <span>Add Chain</span>
         </button>
         <SearchBar />
       </div>
-      <ChainList />
+      <ChainList @edit="({ chainId }) => openForm('edit', chainId)" />
     </div>
-    <AppChainManagementForm v-if="showForm" />
+    <AppChainManagementForm
+      v-if="showForm"
+      :form-action="formAction"
+      :edit-chain-id="editChainId"
+      @close="hideForm"
+    />
   </div>
 </template>
