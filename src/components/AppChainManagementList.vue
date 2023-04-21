@@ -9,7 +9,7 @@ import { useClickOutside } from '@/use/clickOutside'
 const emits = defineEmits(['edit'])
 
 const chainManagementStore = useChainManagementStore()
-const { chains } = toRefs(chainManagementStore)
+const { chains, areChainsEmpty } = toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 
@@ -39,7 +39,13 @@ function onClickOfOption(option: string, chainId: string) {
 </script>
 
 <template>
-  <div class="table-container | rounded-md border-[1px] border-[#363636]">
+  <div v-if="areChainsEmpty" class="text-white">
+    <p class="text-center p-3">No Chains Available</p>
+  </div>
+  <div
+    v-else
+    class="table-container | rounded-md border-[1px] border-[#363636]"
+  >
     <table
       class="table-fixed text-white overflow-x-auto border-collapse w-full"
     >
@@ -61,12 +67,12 @@ function onClickOfOption(option: string, chainId: string) {
           :key="chain.chain_id"
           class="hover:bg-[#363636]"
         >
-          <td class="text-ellipsis">{{ chain.name }}</td>
-          <td class="text-ellipsis">{{ chain.id }}</td>
-          <td class="text-ellipsis">{{ chain.currency }}</td>
-          <td class="text-ellipsis">{{ chain.compatibility }}</td>
-          <td class="text-ellipsis">{{ chain.chain_type }}</td>
-          <td class="text-ellipsis">{{ chain.rpc_url }}</td>
+          <td>{{ chain.name }}</td>
+          <td>{{ chain.id }}</td>
+          <td>{{ chain.currency }}</td>
+          <td>{{ chain.compatibility }}</td>
+          <td>{{ chain.chain_type }}</td>
+          <td>{{ chain.rpc_url }}</td>
           <td><VSwitchVue :value="chain.status === 'true'" /></td>
           <td>
             <div class="relative">
@@ -114,5 +120,6 @@ th {
 td {
   font-size: 14px;
   font-weight: 500;
+  text-overflow: ellipsis;
 }
 </style>

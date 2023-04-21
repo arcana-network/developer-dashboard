@@ -54,7 +54,7 @@ function hideForm() {
           <img :src="PlusIcon" alt="Add Chain" class="w-3" />
           <span>Add Chain</span>
         </button>
-        <SearchBar />
+        <SearchBar v-if="!chainManagementStore.areChainsEmpty" />
       </div>
       <ChainList @edit="({ chainId }) => openForm('edit', chainId)" />
     </div>
