@@ -495,6 +495,12 @@ function updateNotificationRead(list: number[]) {
   )
 }
 
+function getChains(appId: string) {
+  return getGatewayInstance(ApiNetwork).get(
+    `${getEnvApi()}/chain/${appId}/all/`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -533,6 +539,7 @@ export {
   updateNotificationRead,
   updateBillingAddress,
   getBillingAddress,
+  getChains,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
