@@ -95,7 +95,8 @@ function handleCancel() {
             <VStack direction="column" gap="10px">
               <span class="card-title">App Specific</span>
               <span class="card-description"
-                >Users will be assigned <strong>a wallet address</strong> that
+                >Users will be assigned
+                <span style="font-weight: bolder">a wallet address</span> that
                 is unique to your app. Since the user's keys are specific to
                 your app, they are not exposed to any malicious apps or
                 transaction requests.</span
@@ -166,12 +167,14 @@ function handleCancel() {
                   </VStack>
                   <span class="card-description"
                     >Users will be assigned
-                    <strong>the same wallet address</strong> across all apps
-                    with Arcana Auth. This improves user experience but users
-                    have to ensure they do not sign malicious transactions on a
-                    fraudulent app. Arcana mitigates this risk with an app
-                    review and validation process before approving the global
-                    keys feature for an app.</span
+                    <span style="font-weight: bolder"
+                      >the same wallet address</span
+                    >
+                    across all apps with Arcana Auth. This improves user
+                    experience but users have to ensure they do not sign
+                    malicious transactions on a fraudulent app. Arcana mitigates
+                    this risk with an app review and validation process before
+                    approving the global keys feature for an app.</span
                   >
                   <VStack
                     class="justify-end"
