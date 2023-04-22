@@ -5,10 +5,14 @@ import { getChains, addChain, deleteChain } from '@/services/gateway.service'
 const useChainManagementStore = defineStore('chain-management', {
   state: () => ({
     chains: [],
+    chainSearchText: '',
   }),
   getters: {
     areChainsEmpty: ({ chains }) => {
       return chains.length === 0
+    },
+    filteredChains: ({ chains, chainSearchText }) => {
+      return chains.filter((chain) => chain.name.includes(chainSearchText))
     },
   },
   actions: {

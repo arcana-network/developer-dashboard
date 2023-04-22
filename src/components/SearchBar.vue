@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import SearchIcon from '@/assets/iconography/search.svg'
+
+const emits = defineEmits(['search'])
 </script>
 
 <template>
@@ -11,6 +13,7 @@ import SearchIcon from '@/assets/iconography/search.svg'
       type="text"
       class="bg-transparent flex-1 w-full border-none outline-none text-[#FFFFFF]"
       placeholder="Search a Chain"
+      @input="(event) => emits('search', event.target.value)"
     />
   </div>
 </template>

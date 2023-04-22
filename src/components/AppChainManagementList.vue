@@ -9,7 +9,7 @@ import { useClickOutside } from '@/use/clickOutside'
 const emits = defineEmits(['edit', 'delete'])
 
 const chainManagementStore = useChainManagementStore()
-const { chains, areChainsEmpty } = toRefs(chainManagementStore)
+const { areChainsEmpty, filteredChains } = toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 
@@ -64,7 +64,7 @@ function onClickOfOption(option: string, chainId: string) {
       </thead>
       <tbody>
         <tr
-          v-for="chain in chains"
+          v-for="chain in filteredChains"
           :key="chain.chain_id"
           class="hover:bg-[#363636]"
         >

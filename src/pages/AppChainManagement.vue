@@ -42,6 +42,10 @@ function deleteChain({ chainId }: { chainId: string }) {
   const appId = route.params.appId
   chainManagementStore.deleteAppChain(appId, chainId)
 }
+
+function onSearch(value: string) {
+  chainManagementStore.chainSearchText = value
+}
 </script>
 
 <template>
@@ -65,7 +69,10 @@ function deleteChain({ chainId }: { chainId: string }) {
           <img :src="PlusIcon" alt="Add Chain" class="w-3" />
           <span>Add Chain</span>
         </button>
-        <SearchBar v-if="!chainManagementStore.areChainsEmpty" />
+        <SearchBar
+          v-if="!chainManagementStore.areChainsEmpty"
+          @search="onSearch"
+        />
       </div>
       <ChainList
         @edit="({ chainId }) => openForm('edit', chainId)"
