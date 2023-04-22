@@ -501,6 +501,13 @@ function getChains(appId: string) {
   )
 }
 
+function addChain(appId: string, data: object) {
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/chain/${appId}/`,
+    data
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -540,6 +547,7 @@ export {
   updateBillingAddress,
   getBillingAddress,
   getChains,
+  addChain,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
