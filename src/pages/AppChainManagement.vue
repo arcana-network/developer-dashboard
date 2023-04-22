@@ -3,9 +3,9 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlusIcon from '@/assets/iconography/plus.svg'
+import AppChainManagementForm from '@/components/app-configure/chain-management/AppChainManagementForm.vue'
+import ChainList from '@/components/app-configure/chain-management/AppChainManagementList.vue'
 import DeleteChain from '@/components/app-configure/chain-management/DeleteChain.vue'
-import AppChainManagementForm from '@/components/AppChainManagementForm.vue'
-import ChainList from '@/components/AppChainManagementList.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 

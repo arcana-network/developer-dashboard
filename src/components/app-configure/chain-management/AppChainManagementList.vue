@@ -73,7 +73,7 @@ function onClickOfOption(option: string, chainId: string) {
           <td>{{ chain.currency }}</td>
           <td>{{ chain.compatibility }}</td>
           <td>{{ chain.chain_type }}</td>
-          <td>{{ chain.rpc_url }}</td>
+          <td class="text-ellipsis">{{ chain.rpc_url }}</td>
           <td><VSwitchVue :value="chain.status === 'true'" /></td>
           <td>
             <div class="relative">
