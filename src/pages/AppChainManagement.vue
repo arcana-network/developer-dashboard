@@ -3,6 +3,7 @@ import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlusIcon from '@/assets/iconography/plus.svg'
+import DeleteChain from '@/components/app-configure/chain-management/DeleteChain.vue'
 import AppChainManagementForm from '@/components/AppChainManagementForm.vue'
 import ChainList from '@/components/AppChainManagementList.vue'
 import SearchBar from '@/components/SearchBar.vue'
@@ -16,6 +17,8 @@ const route = useRoute()
 const showForm = ref(false)
 const formAction: Ref<FormAction> = ref('add')
 const editChainId = ref('')
+const showDeleteChainModal = ref(false)
+const deleteChainId = ref('')
 
 onMounted(async () => {
   const appId = route.params.appId
@@ -38,9 +41,15 @@ function onAddChainFormSubmit(formData: object) {
   showForm.value = false
 }
 
-function deleteChain({ chainId }: { chainId: string }) {
+function onDeleteChain({ chainId }: { chainId: string }) {
+  showDeleteChainModal.value = true
+  deleteChainId.value = chainId
+}
+
+function deleteChain() {
   const appId = route.params.appId
-  chainManagementStore.deleteAppChain(appId, chainId)
+  chainManagementStore.deleteAppChain(appId, deleteChainId.value)
+  showDeleteChainModal.value = false
 }
 
 function onSearch(value: string) {
@@ -76,7 +85,7 @@ function onSearch(value: string) {
       </div>
       <ChainList
         @edit="({ chainId }) => openForm('edit', chainId)"
-        @delete="deleteChain"
+        @delete="onDeleteChain"
       />
     </div>
     <AppChainManagementForm
@@ -85,6 +94,11 @@ function onSearch(value: string) {
       :edit-chain-id="editChainId"
       @close="hideForm"
       @submit="onAddChainFormSubmit"
+    />
+    <DeleteChain
+      v-if="showDeleteChainModal"
+      @cancel="showDeleteChainModal = false"
+      @delete="deleteChain"
     />
   </div>
 </template>
