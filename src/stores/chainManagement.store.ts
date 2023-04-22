@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 
-import { getChains, addChain, deleteChain } from '@/services/gateway.service'
+import {
+  getChains,
+  addChain,
+  deleteChain,
+  editChain,
+} from '@/services/gateway.service'
 
 const useChainManagementStore = defineStore('chain-management', {
   state: () => ({
@@ -37,6 +42,25 @@ const useChainManagementStore = defineStore('chain-management', {
     async deleteAppChain(appId: string, chainId: string) {
       const data = { id: chainId }
       const response = (await deleteChain(appId, data)).data
+      console.log(response)
+    },
+    async editAppChain(appId: string, chainData: object) {
+      const data = {
+        name: chainData.name,
+        chain_id: chainData.chainId,
+        chain_type: chainData.chainType,
+        compatibility: 'EVM',
+        currency: chainData.currency,
+        rpc_url: chainData.rpcURL,
+        exp_url: chainData.explorerURL,
+        status: true,
+      }
+      const response = (await editChain(appId, data)).data
+      console.log(response)
+    },
+    async toggleAppChain(appId: string, status: boolean) {
+      const data = { status }
+      const response = (await editChain(appId, data)).data
       console.log(response)
     },
   },
