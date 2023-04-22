@@ -31,6 +31,12 @@ function openForm(formActionVal: FormAction, chainId?: string) {
 function hideForm() {
   showForm.value = false
 }
+
+function onAddChainFormSubmit(formData: object) {
+  const appId = route.params.appId
+  chainManagementStore.addAppChain(appId, formData)
+  showForm.value = false
+}
 </script>
 
 <template>
@@ -63,6 +69,7 @@ function hideForm() {
       :form-action="formAction"
       :edit-chain-id="editChainId"
       @close="hideForm"
+      @submit="onAddChainFormSubmit"
     />
   </div>
 </template>

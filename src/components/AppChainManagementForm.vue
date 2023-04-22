@@ -5,7 +5,7 @@ import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { isValidUrl } from '@/utils/validation'
 
-const emits = defineEmits(['close'])
+const emits = defineEmits(['close', 'submit'])
 const TitleAction = ref('')
 const chainManagementStore = useChainManagementStore()
 
@@ -26,19 +26,19 @@ const formData = ref({
   currency: '',
   symbol: '',
   rpcURL: '',
-  explorer: '',
+  explorerURL: '',
   chainType: '',
 })
 
 const enableSave = computed(() => {
-  const { chainId, chainType, currency, explorer, name, rpcURL, symbol } =
+  const { chainId, chainType, currency, explorerURL, name, rpcURL, symbol } =
     formData.value
   return (
     chainId.length &&
     chainType.length &&
     currency.length &&
     name.length &&
-    isValidUrl(explorer) &&
+    isValidUrl(explorerURL) &&
     isValidUrl(rpcURL) &&
     symbol.length
   )
@@ -55,7 +55,7 @@ function populateFormData() {
     currency: chainData.currency,
     symbol: chainData.currency,
     rpcURL: chainData.rpc_url,
-    explorer: chainData.exp_url,
+    explorerURL: chainData.exp_url,
     chainType: chainData.chain_type,
   }
 }
@@ -142,7 +142,7 @@ onMounted(() => {
               >Explorer</label
             >
             <input
-              v-model="formData.explorer"
+              v-model="formData.explorerURL"
               type="text"
               class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
               name="explorer"
@@ -182,6 +182,7 @@ onMounted(() => {
               class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
+              @click.stop="emits('submit', formData)"
             >
               Save
             </button>
