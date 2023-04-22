@@ -37,6 +37,11 @@ function onAddChainFormSubmit(formData: object) {
   chainManagementStore.addAppChain(appId, formData)
   showForm.value = false
 }
+
+function deleteChain({ chainId }: { chainId: string }) {
+  const appId = route.params.appId
+  chainManagementStore.deleteAppChain(appId, chainId)
+}
 </script>
 
 <template>
@@ -62,7 +67,10 @@ function onAddChainFormSubmit(formData: object) {
         </button>
         <SearchBar v-if="!chainManagementStore.areChainsEmpty" />
       </div>
-      <ChainList @edit="({ chainId }) => openForm('edit', chainId)" />
+      <ChainList
+        @edit="({ chainId }) => openForm('edit', chainId)"
+        @delete="deleteChain"
+      />
     </div>
     <AppChainManagementForm
       v-if="showForm"

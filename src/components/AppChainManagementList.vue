@@ -6,7 +6,7 @@ import VSwitchVue from '@/components/lib/VSwitch/VSwitch.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
 
-const emits = defineEmits(['edit'])
+const emits = defineEmits(['edit', 'delete'])
 
 const chainManagementStore = useChainManagementStore()
 const { chains, areChainsEmpty } = toRefs(chainManagementStore)
@@ -34,6 +34,7 @@ useClickOutside(showRowOptions_menu, () => {
 
 function onClickOfOption(option: string, chainId: string) {
   if (option === 'Edit') emits('edit', { chainId })
+  if (option === 'Delete') emits('delete', { chainId })
   showRowOptionsOf.value = null
 }
 </script>

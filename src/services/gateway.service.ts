@@ -508,6 +508,13 @@ function addChain(appId: string, data: object) {
   )
 }
 
+function deleteChain(appId: string, data: object) {
+  return getGatewayInstance(ApiNetwork).delete(
+    `${getEnvApi()}/chain/${appId}/`,
+    data
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -548,6 +555,7 @@ export {
   getBillingAddress,
   getChains,
   addChain,
+  deleteChain,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-import { getChains, addChain } from '@/services/gateway.service'
+import { getChains, addChain, deleteChain } from '@/services/gateway.service'
 
 const useChainManagementStore = defineStore('chain-management', {
   state: () => ({
@@ -28,6 +28,11 @@ const useChainManagementStore = defineStore('chain-management', {
         status: true,
       }
       const response = (await addChain(appId, data)).data
+      console.log(response)
+    },
+    async deleteAppChain(appId: string, chainId: string) {
+      const data = { id: chainId }
+      const response = (await deleteChain(appId, data)).data
       console.log(response)
     },
   },
