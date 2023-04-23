@@ -8,6 +8,7 @@ import ChainList from '@/components/app-configure/chain-management/AppChainManag
 import DeleteChain from '@/components/app-configure/chain-management/DeleteChain.vue'
 import SearchBar from '@/components/SearchBar.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import { useLoaderStore } from '@/stores/loader.store'
 
 type FormAction = 'add' | 'edit'
 
@@ -19,10 +20,18 @@ const formAction: Ref<FormAction> = ref('add')
 const editChainId = ref('')
 const showDeleteChainModal = ref(false)
 const deleteChainId = ref('')
+const { showLoader, hideLoader } = useLoaderStore()
 
 onMounted(async () => {
-  const appId = route.params.appId
-  await chainManagementStore.getAppChains(appId)
+  try {
+    showLoader('Please wait')
+    const appId = route.params.appId
+    await chainManagementStore.getAppChains(appId)
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    hideLoader()
+  }
 })
 
 function openForm(formActionVal: FormAction, chainId?: string) {
