@@ -35,9 +35,12 @@ function hideForm() {
   showForm.value = false
 }
 
-function onAddChainFormSubmit(formData: object) {
+function onChainFormSubmit(formData: object) {
   const appId = route.params.appId
-  chainManagementStore.addAppChain(appId, formData)
+  if (formAction.value === 'add')
+    chainManagementStore.addAppChain(appId, formData)
+  if (formAction.value === 'edit')
+    chainManagementStore.editAppChain(appId, formData)
   showForm.value = false
 }
 
@@ -93,7 +96,7 @@ function onSearch(value: string) {
       :form-action="formAction"
       :edit-chain-id="editChainId"
       @close="hideForm"
-      @submit="onAddChainFormSubmit"
+      @submit="onChainFormSubmit"
     />
     <DeleteChain
       v-if="showDeleteChainModal"
