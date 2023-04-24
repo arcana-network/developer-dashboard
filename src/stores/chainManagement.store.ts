@@ -60,13 +60,8 @@ const useChainManagementStore = defineStore('chain-management', {
       const response = (await editChain(appId, data)).data
       console.log(response)
     },
-    async toggleAppChain(appId: string, status: boolean) {
-      const data = { status }
-      const response = (await editChain(appId, data)).data
-      console.log(response)
-    },
-    async setAppDefaultChain(appId: string, chainId: string) {
-      const data = { id: chainId }
+    async setAppDefaultChain(appId: string, id: number) {
+      const data = { id }
       const response = (await setDefaultChain(appId, data)).data
       console.log(response)
     },
