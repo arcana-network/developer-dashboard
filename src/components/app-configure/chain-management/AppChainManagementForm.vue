@@ -28,6 +28,8 @@ const formData = ref({
   rpcURL: '',
   explorerURL: '',
   chainType: '',
+  id: '',
+  built_in: false,
 })
 
 const enableSave = computed(() => {
