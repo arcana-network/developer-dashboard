@@ -68,8 +68,17 @@ function onClickOfOption(option: string, chainId: string) {
           :key="chain.chain_id"
           class="hover:bg-[#363636]"
         >
-          <td>{{ chain.name }}</td>
-          <td>{{ chain.id }}</td>
+          <td>
+            <div class="space-x-1 flex items-baseline">
+              <span>{{ chain.name }}</span>
+              <span
+                v-if="chain.default_chain === 'true'"
+                class="text-[#568DF0] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
+                >Default</span
+              >
+            </div>
+          </td>
+          <td>{{ chain.chain_id }}</td>
           <td>{{ chain.currency }}</td>
           <td>{{ chain.compatibility }}</td>
           <td>{{ chain.chain_type }}</td>
