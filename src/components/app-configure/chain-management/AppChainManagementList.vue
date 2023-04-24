@@ -54,7 +54,7 @@ function onClickOfOption(option: string, chainId: string) {
         <tr class="text-[#8d8d8d]">
           <th class="w-[15%]">Name</th>
           <th class="w-[5%]">ID</th>
-          <th class="w-[10%]">Symbol</th>
+          <th class="w-[10%]">Currency</th>
           <th class="w-[10%]">Compatibility</th>
           <th class="w-[10%]">Type</th>
           <th>RPC URL</th>
