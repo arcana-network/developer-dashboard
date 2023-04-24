@@ -518,7 +518,9 @@ function editChain(appId: string, data: object) {
 function deleteChain(appId: string, data: object) {
   return getGatewayInstance(ApiNetwork).delete(
     `${getEnvApi()}/chain/${appId}/`,
-    data
+    {
+      data,
+    }
   )
 }
 
