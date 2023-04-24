@@ -33,16 +33,16 @@ const formData = ref({
 })
 
 const enableSave = computed(() => {
-  const { chainId, chainType, currency, explorerURL, name, rpcURL, symbol } =
+  const { chainId, chainType, currency, explorerURL, name, rpcURL } =
     formData.value
   return (
-    chainId.length &&
+    chainId !== '' &&
+    Number.isInteger(Number(chainId)) &&
     chainType.length &&
     currency.length &&
     name.length &&
     isValidUrl(explorerURL) &&
-    isValidUrl(rpcURL) &&
-    symbol.length
+    isValidUrl(rpcURL)
   )
 })
 
@@ -53,11 +53,13 @@ function populateFormData() {
   )
   formData.value = {
     name: chainData.name,
-    chainId: chainData.id,
+    chainId: chainData.chain_id,
     currency: chainData.currency,
     rpcURL: chainData.rpc_url,
     explorerURL: chainData.exp_url,
     chainType: chainData.chain_type,
+    id: Number(chainData.id),
+    built_in: chainData.built_in === 'true',
   }
 }
 
