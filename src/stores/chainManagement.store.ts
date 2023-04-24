@@ -55,6 +55,7 @@ const useChainManagementStore = defineStore('chain-management', {
         rpc_url: chainData.rpcURL,
         exp_url: chainData.explorerURL,
         status: true,
+        id: chainData.id,
       }
       const response = (await editChain(appId, data)).data
       console.log(response)
