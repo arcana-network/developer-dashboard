@@ -53,7 +53,6 @@ function populateFormData() {
     name: chainData.name,
     chainId: chainData.id,
     currency: chainData.currency,
-    symbol: chainData.currency,
     rpcURL: chainData.rpc_url,
     explorerURL: chainData.exp_url,
     chainType: chainData.chain_type,
