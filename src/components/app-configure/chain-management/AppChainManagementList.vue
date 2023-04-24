@@ -50,7 +50,7 @@ function onClickOfOption(option: number, id: string) {
     class="table-container | rounded-md border-[1px] border-[#363636]"
   >
     <table
-      class="table-fixed text-white overflow-x-auto border-collapse w-full"
+      class="table-fixed text-white block overflow-x-auto border-collapse w-full"
     >
       <thead class="border-b-[1px] border-b-[#363636]">
         <tr class="text-[#8d8d8d]">
