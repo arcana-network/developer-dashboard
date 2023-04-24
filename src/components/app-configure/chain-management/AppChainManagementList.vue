@@ -104,7 +104,7 @@ function onClickOfOption(option: number, id: string) {
                   v-for="option in rowOptions"
                   :key="option.value"
                   class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
-                  @click.stop="() => onClickOfOption(option.label, chain.id)"
+                  @click.stop="() => onClickOfOption(option.value, chain.id)"
                 >
                   {{ option.label }}
                 </button>
