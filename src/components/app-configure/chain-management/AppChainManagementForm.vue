@@ -91,7 +91,9 @@ onMounted(() => {
             <label for="network-name" class="text-xs text-[#8D8D8D]"
               >Network Name</label
             >
+            <p v-if="formData.built_in" class="text-sm">{{ formData.name }}</p>
             <input
+              v-else
               v-model="formData.name"
               type="text"
               class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
@@ -99,35 +101,34 @@ onMounted(() => {
             />
           </div>
           <div class="flex space-x-2">
-            <div class="flex flex-col space-y-2 w-1/3">
+            <div class="flex flex-col space-y-2 w-1/2">
               <label for="chain-id" class="text-xs text-[#8D8D8D]"
                 >Chain ID</label
               >
+              <p v-if="formData.built_in" class="text-sm">
+                {{ formData.chainId }}
+              </p>
               <input
+                v-else
                 v-model="formData.chainId"
                 type="text"
                 class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                 name="chain-id"
               />
             </div>
-            <div class="flex flex-col space-y-2 w-1/3">
+            <div class="flex flex-col space-y-2 w-1/2">
               <label for="currency" class="text-xs text-[#8D8D8D]"
                 >Currency</label
               >
+              <p v-if="formData.built_in" class="text-sm">
+                {{ formData.currency }}
+              </p>
               <input
+                v-else
                 v-model="formData.currency"
                 type="text"
                 class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                 name="currency"
-              />
-            </div>
-            <div class="flex flex-col space-y-2 w-1/3">
-              <label for="symbol" class="text-xs text-[#8D8D8D]">Symbol</label>
-              <input
-                v-model="formData.symbol"
-                type="text"
-                class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
-                name="symbol"
               />
             </div>
           </div>
@@ -144,7 +145,11 @@ onMounted(() => {
             <label for="explorer" class="text-xs text-[#8D8D8D]"
               >Explorer</label
             >
+            <p v-if="formData.built_in" class="text-sm">
+              {{ formData.explorerURL }}
+            </p>
             <input
+              v-else
               v-model="formData.explorerURL"
               type="text"
               class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
@@ -153,7 +158,10 @@ onMounted(() => {
           </div>
           <div class="space-y-2">
             <legend class="text-xs text-[#8D8D8D]">Chain Type</legend>
-            <div class="flex flex-col space-y-1">
+            <p v-if="formData.built_in" class="text-sm">
+              {{ formData.chainType }}
+            </p>
+            <div v-else class="flex flex-col space-y-1">
               <label class="text-sm text-[#F7F7F7] flex space-x-1"
                 ><input
                   v-model="formData.chainType"
