@@ -2,7 +2,7 @@
 import { ref, toRefs } from 'vue'
 
 import MoreIcon from '@/assets/iconography/more.svg'
-import VSwitchVue from '@/components/lib/VSwitch/VSwitch.vue'
+import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
 
@@ -85,7 +85,7 @@ function onClickOfOption(option: number, id: string) {
           <td>{{ chain.compatibility }}</td>
           <td>{{ chain.chain_type }}</td>
           <td class="text-ellipsis">{{ chain.rpc_url }}</td>
-          <td><VSwitchVue :value="chain.status === 'true'" /></td>
+          <td><VSwitch :value="chain.status === 'true'" /></td>
           <td>
             <div class="relative">
               <button
