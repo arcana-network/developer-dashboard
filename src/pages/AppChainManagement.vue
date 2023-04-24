@@ -60,7 +60,7 @@ function onDeleteChain({ id }: { id: string }) {
 
 function deleteChain() {
   const appId = route.params.appId
-  chainManagementStore.deleteAppChain(appId, deleteChainId.value)
+  chainManagementStore.deleteAppChain(appId, Number(deleteChainId.value))
   showDeleteChainModal.value = false
 }
 
