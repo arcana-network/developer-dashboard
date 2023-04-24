@@ -522,6 +522,13 @@ function deleteChain(appId: string, data: object) {
   )
 }
 
+function setDefaultChain(appId: string, data: object) {
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/chain/${appId}/default/`,
+    data
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -564,6 +571,7 @@ export {
   addChain,
   deleteChain,
   editChain,
+  setDefaultChain,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

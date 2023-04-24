@@ -5,6 +5,7 @@ import {
   addChain,
   deleteChain,
   editChain,
+  setDefaultChain,
 } from '@/services/gateway.service'
 
 const useChainManagementStore = defineStore('chain-management', {
@@ -61,6 +62,11 @@ const useChainManagementStore = defineStore('chain-management', {
     async toggleAppChain(appId: string, status: boolean) {
       const data = { status }
       const response = (await editChain(appId, data)).data
+      console.log(response)
+    },
+    async setAppDefaultChain(appId: string, chainId: string) {
+      const data = { id: chainId }
+      const response = (await setDefaultChain(appId, data)).data
       console.log(response)
     },
   },
