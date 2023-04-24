@@ -40,8 +40,8 @@ const useChainManagementStore = defineStore('chain-management', {
       const response = (await addChain(appId, data)).data
       console.log(response)
     },
-    async deleteAppChain(appId: string, chainId: string) {
-      const data = { id: chainId }
+    async deleteAppChain(appId: string, id: string) {
+      const data = { id }
       const response = (await deleteChain(appId, data)).data
       console.log(response)
     },

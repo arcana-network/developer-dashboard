@@ -34,10 +34,10 @@ onMounted(async () => {
   }
 })
 
-function openForm(formActionVal: FormAction, chainId?: string) {
+function openForm(formActionVal: FormAction, id?: string) {
   showForm.value = true
   formAction.value = formActionVal
-  if (chainId) editChainId.value = chainId
+  if (id) editChainId.value = id
 }
 
 function hideForm() {
@@ -53,9 +53,9 @@ function onChainFormSubmit(formData: object) {
   showForm.value = false
 }
 
-function onDeleteChain({ chainId }: { chainId: string }) {
+function onDeleteChain({ id }: { id: string }) {
   showDeleteChainModal.value = true
-  deleteChainId.value = chainId
+  deleteChainId.value = id
 }
 
 function deleteChain() {
@@ -96,7 +96,7 @@ function onSearch(value: string) {
         />
       </div>
       <ChainList
-        @edit="({ chainId }) => openForm('edit', chainId)"
+        @edit="({ id }) => openForm('edit', id)"
         @delete="onDeleteChain"
       />
     </div>
