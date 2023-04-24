@@ -29,7 +29,7 @@ const useChainManagementStore = defineStore('chain-management', {
     async addAppChain(appId: string, chainData: object) {
       const data = {
         name: chainData.name,
-        chain_id: chainData.chainId,
+        chain_id: Number(chainData.chainId),
         chain_type: chainData.chainType,
         compatibility: 'EVM',
         currency: chainData.currency,
@@ -48,7 +48,7 @@ const useChainManagementStore = defineStore('chain-management', {
     async editAppChain(appId: string, chainData: object) {
       const data = {
         name: chainData.name,
-        chain_id: chainData.chainId,
+        chain_id: Number(chainData.chainId),
         chain_type: chainData.chainType,
         compatibility: 'EVM',
         currency: chainData.currency,
