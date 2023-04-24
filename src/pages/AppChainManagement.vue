@@ -67,6 +67,18 @@ function deleteChain() {
 function onSearch(value: string) {
   chainManagementStore.chainSearchText = value
 }
+
+function setDefaultChain({ id }: { id: string }) {
+  try {
+    showLoader('Please wait')
+    const appId = route.params.appId
+    chainManagementStore.setAppDefaultChain(appId, Number(id))
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    hideLoader()
+  }
+}
 </script>
 
 <template>
@@ -98,6 +110,7 @@ function onSearch(value: string) {
       <ChainList
         @edit="({ id }) => openForm('edit', id)"
         @delete="onDeleteChain"
+        @set-as-default="setDefaultChain"
       />
     </div>
     <AppChainManagementForm
