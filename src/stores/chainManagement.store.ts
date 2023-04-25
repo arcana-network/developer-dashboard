@@ -26,9 +26,8 @@ const useChainManagementStore = defineStore('chain-management', {
   actions: {
     async getAppChains(appId: string) {
       const { chains } = (await getChains(appId)).data
-      const defaultChainIdx = chains.findIndex(
-        (chain) => chain.default_chain === 'true'
-      )
+      let defaultChainIdx = chains.findIndex((chain) => !!chain.default_chain)
+      defaultChainIdx = defaultChainIdx >= 0 ? defaultChainIdx : 0
       const defaultChain = chains[defaultChainIdx]
       chains.splice(defaultChainIdx, 1)
       chains.unshift(defaultChain)
