@@ -395,8 +395,8 @@ watch(
 .sidebar__submenu-option-item {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
   justify-content: center;
 }
 
@@ -465,10 +465,11 @@ watch(
 .app-name,
 .submenu-tab-label {
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
   color: var(--text-white);
+  text-align: left;
 }
 
 .selected-app {
