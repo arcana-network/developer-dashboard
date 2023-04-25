@@ -7,6 +7,7 @@ import DiscordIcon from '@/assets/discord-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
 import brandingIcon from '@/assets/iconography/branding.svg'
+import ChainIcon from '@/assets/iconography/chain.svg'
 import CloseIcon from '@/assets/iconography/close.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
@@ -80,7 +81,7 @@ const ConfigureTabs = computed(() => {
         {
           type: 'chainManagement',
           label: 'Chain Management',
-          icon: socialMediaIcon,
+          icon: ChainIcon,
         },
         {
           type: 'arcanaWallet',
