@@ -6,7 +6,12 @@ import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
 
-const emits = defineEmits(['edit', 'delete', 'set-as-default'])
+const emits = defineEmits([
+  'edit',
+  'delete',
+  'set-as-default',
+  'toggle-chain-status',
+])
 
 const chainManagementStore = useChainManagementStore()
 const { areChainsEmpty, filteredChains } = toRefs(chainManagementStore)
@@ -38,6 +43,13 @@ function onClickOfOption(option: number, id: string) {
   if (option === 2) emits('set-as-default', { id })
 
   showRowOptionsOf.value = null
+}
+
+function onChainToggle(chain: object) {
+  emits('toggle-chain-status', {
+    id: chain.id,
+    status: !chain.status,
+  })
 }
 </script>
 
@@ -85,7 +97,13 @@ function onClickOfOption(option: number, id: string) {
           <td>{{ chain.compatibility }}</td>
           <td>{{ chain.chain_type }}</td>
           <td class="text-ellipsis">{{ chain.rpc_url }}</td>
-          <td><VSwitch :value="chain.status === 'true'" /></td>
+          <td>
+            <VSwitch
+              :value="chain.status"
+              :disabled="chain.built_in"
+              @update:model-value="() => onChainToggle(chain)"
+            />
+          </td>
           <td>
             <div class="relative">
               <button
