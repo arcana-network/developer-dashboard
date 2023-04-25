@@ -106,7 +106,7 @@ function onChainToggle(chain: object) {
           <td>
             <VSwitch
               :value="chain.status"
-              :disabled="chain.built_in"
+              :disabled="chain.built_in || chain.default_chain"
               @update:model-value="() => onChainToggle(chain)"
             />
           </td>
