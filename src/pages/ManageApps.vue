@@ -24,11 +24,13 @@ import {
   type AccountStatus,
 } from '@/services/gateway.service'
 import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
+import { useChainManagementStore } from '@/stores/chainManagement.store'
 import type { Network } from '@/utils/constants'
 import { NetworkName } from '@/utils/constants'
 
 const router = useRouter()
 const appsStore = useAppsStore()
+const chainManagementStore = useChainManagementStore()
 
 type AppData = AppConfig & {
   editState?: boolean
@@ -106,6 +108,7 @@ onBeforeMount(async () => {
   await appsStore.fetchAndStoreAllApps('testnet')
   await appsStore.fetchAndStoreAllApps('mainnet')
   await appsStore.fetchNotifications()
+  await chainManagementStore.getAllAppChains()
 })
 
 appsStore.$subscribe(() => {
