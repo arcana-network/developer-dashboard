@@ -48,13 +48,21 @@ function hideForm() {
   showForm.value = false
 }
 
-function onChainFormSubmit(formData: object) {
-  const appId = route.params.appId
-  if (formAction.value === 'add')
-    chainManagementStore.addAppChain(appId, formData)
-  if (formAction.value === 'edit')
-    chainManagementStore.editAppChain(appId, formData)
-  showForm.value = false
+async function onChainFormSubmit(formData: object) {
+  try {
+    showForm.value = false
+    showLoader('Please wait')
+    const appId = route.params.appId
+    if (formAction.value === 'add')
+      await chainManagementStore.addAppChain(appId, formData)
+    if (formAction.value === 'edit')
+      await chainManagementStore.editAppChain(appId, formData)
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    await fetchAppChains()
+    hideLoader()
+  }
 }
 
 function onDeleteChain({ id }: { id: string }) {
@@ -62,24 +70,49 @@ function onDeleteChain({ id }: { id: string }) {
   deleteChainId.value = id
 }
 
-function deleteChain() {
-  const appId = route.params.appId
-  chainManagementStore.deleteAppChain(appId, Number(deleteChainId.value))
-  showDeleteChainModal.value = false
+async function deleteChain() {
+  try {
+    showDeleteChainModal.value = false
+    showLoader('Please wait')
+    const appId = route.params.appId
+    await chainManagementStore.deleteAppChain(
+      appId,
+      Number(deleteChainId.value)
+    )
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    await fetchAppChains()
+    hideLoader()
+  }
 }
 
 function onSearch(value: string) {
   chainManagementStore.chainSearchText = value
 }
 
-function setDefaultChain({ id }: { id: string }) {
+async function setDefaultChain({ id }: { id: string }) {
   try {
     showLoader('Please wait')
     const appId = route.params.appId
-    chainManagementStore.setAppDefaultChain(appId, Number(id))
+    await chainManagementStore.setAppDefaultChain(appId, Number(id))
   } catch (e) {
     console.log({ e })
   } finally {
+    await fetchAppChains()
+    hideLoader()
+  }
+}
+
+async function toggleChainStatus(chainData: object) {
+  try {
+    showLoader('Please wait')
+    const appId = route.params.appId
+    await chainManagementStore.toggleAppChainStatus(appId, chainData)
+  } catch (e) {
+    console.error({ e })
+  } finally {
+    await fetchAppChains()
     hideLoader()
   }
 }
@@ -115,6 +148,7 @@ function setDefaultChain({ id }: { id: string }) {
         @edit="({ id }) => openForm('edit', id)"
         @delete="onDeleteChain"
         @set-as-default="setDefaultChain"
+        @toggle-chain-status="toggleChainStatus"
       />
     </div>
     <AppChainManagementForm
