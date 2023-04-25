@@ -18,7 +18,9 @@ const useChainManagementStore = defineStore('chain-management', {
       return chains.length === 0
     },
     filteredChains: ({ chains, chainSearchText }) => {
-      return chains.filter((chain) => chain.name.includes(chainSearchText))
+      return chains.filter((chain) =>
+        chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
+      )
     },
   },
   actions: {
