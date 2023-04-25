@@ -59,7 +59,7 @@ const useChainManagementStore = defineStore('chain-management', {
         currency: chainData.currency,
         rpc_url: chainData.rpcURL,
         exp_url: chainData.explorerURL,
-        status: true,
+        status: chainData.status,
         id: chainData.id,
       }
       await editChain(appId, payload)
