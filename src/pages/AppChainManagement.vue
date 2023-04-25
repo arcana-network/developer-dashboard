@@ -25,14 +25,18 @@ const { showLoader, hideLoader } = useLoaderStore()
 onMounted(async () => {
   try {
     showLoader('Please wait')
-    const appId = route.params.appId
-    await chainManagementStore.getAppChains(appId)
+    await fetchAppChains()
   } catch (e) {
     console.log({ e })
   } finally {
     hideLoader()
   }
 })
+
+async function fetchAppChains() {
+  const appId = route.params.appId
+  await chainManagementStore.getAppChains(appId)
+}
 
 function openForm(formActionVal: FormAction, id?: string) {
   showForm.value = true
