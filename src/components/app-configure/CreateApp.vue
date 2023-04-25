@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -11,6 +11,7 @@ import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
+import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { RegionMapping, regions } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
@@ -24,6 +25,7 @@ const appName = ref('')
 const defaultChain = ref('')
 const hasAppNameError = ref(false)
 const selectedRegion = ref(regions[0])
+const chainManagementStore = useChainManagementStore()
 
 const emit = defineEmits(['close'])
 
@@ -86,7 +88,11 @@ const enableCreate = computed(() => {
             <label class="app-name-label" for="default-chain"
               >Default Chain*</label
             >
-            <VDropdown :model-value="defaultChain" />
+            <VDropdown
+              :model-value="defaultChain"
+              :options="chainManagementStore.allChains"
+              display-field="name"
+            />
             <p class="text-[#8D8D8D]">
               *You can change the default chain later
             </p>
