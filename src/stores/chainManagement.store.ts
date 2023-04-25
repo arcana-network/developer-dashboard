@@ -6,19 +6,21 @@ import {
   deleteChain,
   editChain,
   setDefaultChain,
+  getAllChains,
 } from '@/services/gateway.service'
 
 const useChainManagementStore = defineStore('chain-management', {
   state: () => ({
-    chains: [],
+    appChains: [],
+    allChains: [],
     chainSearchText: '',
   }),
   getters: {
-    areChainsEmpty: ({ chains }) => {
-      return chains.length === 0
+    areChainsEmpty: ({ appChains }) => {
+      return appChains.length === 0
     },
-    filteredChains: ({ chains, chainSearchText }) => {
-      return chains.filter((chain) =>
+    filteredChains: ({ appChains, chainSearchText }) => {
+      return appChains.filter((chain) =>
         chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
       )
     },
@@ -31,7 +33,11 @@ const useChainManagementStore = defineStore('chain-management', {
       const defaultChain = chains[defaultChainIdx]
       chains.splice(defaultChainIdx, 1)
       chains.unshift(defaultChain)
-      this.chains = chains || []
+      this.appChains = chains || []
+    },
+    async getAllAppChains() {
+      const { chains } = (await getAllChains()).data
+      this.allChains = chains
     },
     async addAppChain(appId: string, chainData: object) {
       const payload = {

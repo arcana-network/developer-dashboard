@@ -501,6 +501,10 @@ function getChains(appId: string) {
   )
 }
 
+function getAllChains() {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/chain/0/all/`)
+}
+
 function addChain(appId: string, data: object) {
   return getGatewayInstance(ApiNetwork).post(
     `${getEnvApi()}/chain/${appId}/`,
@@ -574,6 +578,7 @@ export {
   deleteChain,
   editChain,
   setDefaultChain,
+  getAllChains,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
