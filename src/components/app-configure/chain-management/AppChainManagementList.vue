@@ -3,6 +3,7 @@ import { ref, toRefs } from 'vue'
 
 import MoreIcon from '@/assets/iconography/more.svg'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
+import { useToast } from '@/components/lib/VToast'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
 
@@ -17,6 +18,7 @@ const chainManagementStore = useChainManagementStore()
 const { areChainsEmpty, filteredChains } = toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
+const toast = useToast()
 
 const rowOptions = [
   {
@@ -37,10 +39,14 @@ useClickOutside(showRowOptions_menu, () => {
   showRowOptionsOf.value = null
 })
 
-function onClickOfOption(option: number, id: string) {
+function onClickOfOption(option: number, id: string, chain?: object) {
   if (option === 0) emits('edit', { id })
   if (option === 1) emits('delete', { id })
-  if (option === 2) emits('set-as-default', { id })
+  if (option === 2) {
+    if (!chain.status) {
+      toast.error('Please enable the chain and try again')
+    } else emits('set-as-default', { id })
+  }
 
   showRowOptionsOf.value = null
 }
@@ -122,7 +128,9 @@ function onChainToggle(chain: object) {
                   v-for="option in rowOptions"
                   :key="option.value"
                   class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
-                  @click.stop="() => onClickOfOption(option.value, chain.id)"
+                  @click.stop="
+                    () => onClickOfOption(option.value, chain.id, chain)
+                  "
                 >
                   {{ option.label }}
                 </button>
