@@ -86,7 +86,7 @@ function onChainToggle(chain: object) {
             <div class="space-x-1 flex items-baseline">
               <span>{{ chain.name }}</span>
               <span
-                v-if="chain.default_chain === 'true'"
+                v-if="chain.default_chain"
                 class="text-[#568DF0] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
                 >Default</span
               >
