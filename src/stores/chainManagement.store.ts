@@ -34,7 +34,7 @@ const useChainManagementStore = defineStore('chain-management', {
       this.chains = chains || []
     },
     async addAppChain(appId: string, chainData: object) {
-      const data = {
+      const payload = {
         name: chainData.name,
         chain_id: Number(chainData.chainId),
         chain_type: chainData.chainType,
@@ -44,16 +44,14 @@ const useChainManagementStore = defineStore('chain-management', {
         exp_url: chainData.explorerURL,
         status: true,
       }
-      const response = (await addChain(appId, data)).data
-      console.log(response)
+      await addChain(appId, payload)
     },
     async deleteAppChain(appId: string, id: string) {
-      const data = { id }
-      const response = (await deleteChain(appId, data)).data
-      console.log(response)
+      const payload = { id }
+      await deleteChain(appId, payload)
     },
     async editAppChain(appId: string, chainData: object) {
-      const data = {
+      const payload = {
         name: chainData.name,
         chain_id: Number(chainData.chainId),
         chain_type: chainData.chainType,
@@ -64,13 +62,11 @@ const useChainManagementStore = defineStore('chain-management', {
         status: true,
         id: chainData.id,
       }
-      const response = (await editChain(appId, data)).data
-      console.log(response)
+      await editChain(appId, payload)
     },
     async setAppDefaultChain(appId: string, id: number) {
-      const data = { id }
-      const response = (await setDefaultChain(appId, data)).data
-      console.log(response)
+      const payload = { id }
+      await setDefaultChain(appId, payload)
     },
   },
 })
