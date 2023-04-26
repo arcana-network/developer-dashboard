@@ -48,7 +48,7 @@ const enableSave = computed(() => {
 
 function populateFormData() {
   const { editChainId } = props
-  const chainData = chainManagementStore.chains.find(
+  const chainData = chainManagementStore.appChains.find(
     (chain) => chain.id === editChainId
   )
   formData.value = {
