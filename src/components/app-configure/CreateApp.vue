@@ -67,7 +67,7 @@ const enableCreate = computed(() => {
 })
 
 function onChainSelect(_, option) {
-  selectedChainId.value = option.id
+  selectedChainId.value = option.chain_id
 }
 </script>
 
