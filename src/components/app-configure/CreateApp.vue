@@ -1,5 +1,6 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
+import type { Ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -22,7 +23,7 @@ const loaderStore = useLoaderStore()
 const toast = useToast()
 const appsStore = useAppsStore()
 const appName = ref('')
-const defaultChain = ref('')
+const selectedChainId: Ref<number | null> = ref(null)
 const hasAppNameError = ref(false)
 const selectedRegion = ref(regions[0])
 const chainManagementStore = useChainManagementStore()
@@ -42,6 +43,8 @@ async function handleCreateApp() {
       await createApp(
         {
           name: appName.value,
+          chain: selectedChainId.value,
+          default_chain: selectedChainId.value,
           region: RegionMapping[selectedRegion.value.value],
         },
         'testnet'
@@ -60,8 +63,12 @@ async function handleCreateApp() {
 }
 
 const enableCreate = computed(() => {
-  return appName.value.trim().length > 0 && defaultChain.value.length > 0
+  return !(appName.value.trim().length > 0 && !!selectedChainId.value)
 })
+
+function onChainSelect(_, option) {
+  selectedChainId.value = option.id
+}
 </script>
 
 <template>
@@ -89,9 +96,9 @@ const enableCreate = computed(() => {
               >Default Chain*</label
             >
             <VDropdown
-              :model-value="defaultChain"
               :options="chainManagementStore.allChains"
               display-field="name"
+              @change="onChainSelect"
             />
             <p class="text-[#8D8D8D]">
               *You can change the default chain later

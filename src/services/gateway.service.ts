@@ -79,6 +79,8 @@ function getGatewayInstance(network: Network) {
 type CreateAppRequestBody = {
   name: string
   region: number
+  chain: number
+  default_chain: number
 }
 
 type CreateAppResponse = {
@@ -110,6 +112,8 @@ function createApp(
   const defaultAppConfig = {
     name: config.name,
     region: config.region,
+    chain: config.chain,
+    default_chain: config.default_chain,
   }
   return getGatewayInstance(network).post(
     `${getEnvApi('v2')}/app/`,
