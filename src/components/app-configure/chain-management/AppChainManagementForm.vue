@@ -105,7 +105,10 @@ onMounted(() => {
               <label for="chain-id" class="text-xs text-[#8D8D8D]"
                 >Chain ID</label
               >
-              <p v-if="formData.built_in" class="text-sm">
+              <p
+                v-if="formData.built_in || formAction === 'edit'"
+                class="text-sm"
+              >
                 {{ formData.chainId }}
               </p>
               <input
