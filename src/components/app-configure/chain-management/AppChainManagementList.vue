@@ -66,10 +66,7 @@ function onChainToggle(chain: object) {
   <div v-if="areChainsEmpty" class="text-white">
     <p class="text-center p-3">No Chains Available</p>
   </div>
-  <div
-    v-else
-    class="table-container | rounded-md border-[1px] border-[#363636]"
-  >
+  <div v-else class="rounded-md border-[1px] border-[#363636]">
     <table
       class="table-fixed text-white block overflow-x-auto border-collapse w-full"
     >
