@@ -41,7 +41,10 @@ useClickOutside(showRowOptions_menu, () => {
 
 function onClickOfOption(option: number, id: string, chain?: object) {
   if (option === 0) emits('edit', { id })
-  if (option === 1) emits('delete', { id })
+  if (option === 1) {
+    if (chain.default_chain) toast.error("Can't delete Default chain")
+    else emits('delete', { id })
+  }
   if (option === 2) {
     if (!chain.status) {
       toast.error('Please enable the chain and try again')
