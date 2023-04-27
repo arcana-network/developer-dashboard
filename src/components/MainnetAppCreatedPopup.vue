@@ -68,7 +68,6 @@ function handleMainnetKeySpace() {
   max-width: 500px;
   margin-top: 10px;
   margin-bottom: 64px;
-  font-family: var(--font-body);
   font-size: 20px;
   line-height: 1.5;
   color: var(--text-white);

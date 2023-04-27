@@ -102,7 +102,6 @@ function onClickofItem(notification) {
   width: 380px;
   max-height: 380px;
   padding: 16px;
-  font-family: var(--font-body);
 }
 
 .notification__title {

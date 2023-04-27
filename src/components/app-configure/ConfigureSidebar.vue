@@ -458,7 +458,6 @@ watch(
 .tab-label,
 .app-name,
 .submenu-tab-label {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;

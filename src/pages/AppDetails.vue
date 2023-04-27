@@ -440,7 +440,6 @@ watch(
 
 .help-button {
   padding: 0;
-  font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
   background: transparent;
@@ -472,7 +471,6 @@ watch(
   width: 100%;
   padding-inline: 1.25rem;
   padding-bottom: 1.25rem;
-  font-family: var(--font-body);
   color: var(--text-white);
   white-space: nowrap;
   list-style: none;

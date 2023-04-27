@@ -308,7 +308,6 @@ function isButtonDisabled() {
 .message {
   max-width: 16rem;
   margin: 5px 20px;
-  font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5;

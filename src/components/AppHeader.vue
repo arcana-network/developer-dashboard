@@ -248,7 +248,6 @@ header {
 }
 
 .help-button {
-  font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
   background: transparent;
@@ -276,7 +275,6 @@ header {
   width: 100%;
   padding-inline: 1.25rem;
   padding-bottom: 1.25rem;
-  font-family: var(--font-body);
   color: var(--text-white);
   white-space: nowrap;
   list-style: none;
@@ -290,7 +288,6 @@ header {
 .banner {
   position: relative;
   padding: 0.25em 1.5em;
-  font-family: var(--font-body);
   line-height: 1.5em;
   color: white;
   text-align: center;

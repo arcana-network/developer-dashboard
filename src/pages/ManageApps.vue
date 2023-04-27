@@ -408,14 +408,12 @@ main {
 }
 
 .stats-title {
-  font-family: var(--font-title);
   font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.5;
 }
 
 .stats-number {
-  font-family: var(--font-body);
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.5;
@@ -432,7 +430,6 @@ main {
 .info-title {
   margin-top: 2rem;
   margin-left: 2rem;
-  font-family: var(--font-title);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.5;
@@ -446,14 +443,12 @@ main {
 
 .info-detail {
   margin-bottom: -0.75rem;
-  font-family: var(--font-body);
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.5;
 }
 
 .info-detail-name {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-grey);

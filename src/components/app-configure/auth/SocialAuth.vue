@@ -311,12 +311,10 @@ function showCognitoNote() {
 }
 
 .input-label {
-  font-family: var(--font-body);
   font-size: 12px;
 }
 
 .input-doc-link {
-  font-family: var(--font-body);
   font-size: 12px;
   font-weight: normal;
   text-align: right;
@@ -396,7 +394,6 @@ function showCognitoNote() {
 
 .error-message {
   margin-top: 5px;
-  font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5;

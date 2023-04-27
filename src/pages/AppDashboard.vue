@@ -408,7 +408,6 @@ async function fetchActiveUsers() {
   align-items: center;
   justify-content: center;
   margin-block: 1rem;
-  font-family: var(--font-body);
   font-weight: 600;
 }
 
@@ -453,13 +452,11 @@ async function fetchActiveUsers() {
 }
 
 .tutorial__title {
-  font-family: var(--font-body);
   font-size: 14px;
 }
 
 .tutorial__description {
   margin-bottom: 10px;
-  font-family: var(--font-body);
   font-size: 10px;
   color: #8d8d8d;
 }

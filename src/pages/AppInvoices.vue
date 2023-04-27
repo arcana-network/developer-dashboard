@@ -246,13 +246,11 @@ label {
 }
 
 .invoice-value {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .charge-details {
-  font-family: var(--font-title);
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.5;
@@ -261,13 +259,11 @@ label {
 .popup-item {
   padding-block: 1rem;
   padding-inline: 1.5rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .invoice-title {
-  font-family: var(--font-title);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.5;

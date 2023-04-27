@@ -233,13 +233,11 @@ function handleCancel() {
 }
 
 .card-title {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 600;
 }
 
 .card-description {
-  font-family: var(--font-body);
   font-size: 0.75rem;
   line-height: 1.5;
   color: var(--text-grey);

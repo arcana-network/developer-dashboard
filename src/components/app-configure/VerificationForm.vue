@@ -225,7 +225,6 @@ div.form-group {
 label {
   margin-bottom: 0.5rem;
   margin-left: 0.25rem;
-  font-family: var(--font-title);
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5em;
@@ -248,7 +247,6 @@ textarea {
   width: 100%;
   padding: 0;
   margin: 0.875rem 1rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-white);
@@ -262,7 +260,6 @@ textarea {
 }
 
 textarea::placeholder {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: #393939;
@@ -278,13 +275,11 @@ textarea::placeholder {
 .verification-description {
   padding-inline: 4.25rem;
   margin-bottom: 2rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .verification-description a {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -293,7 +288,6 @@ textarea::placeholder {
 }
 
 .error {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--color-red);

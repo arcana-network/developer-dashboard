@@ -384,12 +384,10 @@ function convertToBytes(value: number) {
 }
 
 thead {
-  font-family: var(--font-title);
   color: var(--text-white);
 }
 
 tbody {
-  font-family: var(--font-body);
   color: var(--text-grey);
 }
 

@@ -736,7 +736,6 @@ label {
 }
 
 .payment-title {
-  font-family: var(--font-title);
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.5;
@@ -780,7 +779,6 @@ label {
   align-items: center;
   justify-content: center;
   padding: 2rem;
-  font-family: var(--font-body);
   text-align: center;
   content: 'Enter the billing address details to access payment methods.';
   background: rgb(10 10 10 / 70%);

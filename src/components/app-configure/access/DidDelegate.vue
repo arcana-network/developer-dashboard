@@ -323,14 +323,12 @@ async function copyAddress(address: string) {
 
 .table-header,
 .delegate-header {
-  font-family: var(--font-title);
   font-weight: 700;
   color: var(--text-grey);
 }
 
 .table-body {
   padding: 0.625rem 1.25rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;

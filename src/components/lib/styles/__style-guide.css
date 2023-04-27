@@ -10,8 +10,6 @@
   --color-red: #b43030;
   --color-white: #f7f7f7;
   --color-black: #101010;
-  --font-title: 'Montserrat', sans-serif;
-  --font-body: 'Sora', sans-serif;
   --dark-theme-bg: #1e1e1e;
   --breakpoint-mobile: 767px;
   --breakpoint-tablet: 1023px;
@@ -70,7 +68,6 @@ h5,
 .sub-heading-5,
 .body-2 {
   margin: 0;
-  font-family: var(--font-title);
   line-height: 1.5;
   color: var(--text-white);
 }
@@ -102,7 +99,6 @@ h5 {
 }
 
 label {
-  font-family: var(--font-title);
   font-weight: 500;
   line-height: 1.5;
   color: var(--text-white);
@@ -120,7 +116,6 @@ label {
 .sub-heading-3,
 .body-1,
 .body-3 {
-  font-family: var(--font-body);
   color: var(--text-white);
 }
 
@@ -159,7 +154,6 @@ label {
 }
 
 a {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.5;
