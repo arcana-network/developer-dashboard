@@ -6,6 +6,7 @@ import PlusIcon from '@/assets/iconography/plus.svg'
 import AppChainManagementForm from '@/components/app-configure/chain-management/AppChainManagementForm.vue'
 import ChainList from '@/components/app-configure/chain-management/AppChainManagementList.vue'
 import DeleteChain from '@/components/app-configure/chain-management/DeleteChain.vue'
+import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -21,6 +22,7 @@ const editChainId = ref('')
 const showDeleteChainModal = ref(false)
 const deleteChainId = ref('')
 const { showLoader, hideLoader } = useLoaderStore()
+const toast = useToast()
 
 onMounted(async () => {
   try {
@@ -58,7 +60,8 @@ async function onChainFormSubmit(formData: object) {
     if (formAction.value === 'edit')
       await chainManagementStore.editAppChain(appId, formData)
   } catch (e) {
-    console.log({ e })
+    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    toast.error(errorMessage)
   } finally {
     await fetchAppChains()
     hideLoader()
@@ -80,7 +83,8 @@ async function deleteChain() {
       Number(deleteChainId.value)
     )
   } catch (e) {
-    console.log({ e })
+    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    toast.error(errorMessage)
   } finally {
     await fetchAppChains()
     hideLoader()
@@ -97,7 +101,8 @@ async function setDefaultChain({ id }: { id: string }) {
     const appId = route.params.appId
     await chainManagementStore.setAppDefaultChain(appId, Number(id))
   } catch (e) {
-    console.log({ e })
+    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    toast.error(errorMessage)
   } finally {
     await fetchAppChains()
     hideLoader()
@@ -110,7 +115,8 @@ async function toggleChainStatus(chainData: object) {
     const appId = route.params.appId
     await chainManagementStore.toggleAppChainStatus(appId, chainData)
   } catch (e) {
-    console.error({ e })
+    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    toast.error(errorMessage)
   } finally {
     await fetchAppChains()
     hideLoader()
