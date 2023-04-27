@@ -59,7 +59,7 @@ function populateFormData() {
     explorerURL: chainData.exp_url,
     chainType: chainData.chain_type,
     id: Number(chainData.id),
-    built_in: chainData.built_in === 'true',
+    built_in: chainData.built_in,
   }
 }
 
@@ -105,10 +105,7 @@ onMounted(() => {
               <label for="chain-id" class="text-xs text-[#8D8D8D]"
                 >Chain ID</label
               >
-              <p
-                v-if="formData.built_in || formAction === 'edit'"
-                class="text-sm"
-              >
+              <p v-if="formData.built_in" class="text-sm">
                 {{ formData.chainId }}
               </p>
               <input
