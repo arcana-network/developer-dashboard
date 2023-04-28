@@ -29,9 +29,9 @@ onBeforeMount(async () => {
     return router.push({ name: 'AppDown' })
   }
   loaderStore.showLoader('Initializing Arcana Auth SDK...')
+  await fetchAndStoreConfig()
   await arcanaAuth.init()
   isAuthLoaded.value = true
-  await fetchAndStoreConfig()
   loaderStore.hideLoader()
 })
 </script>
