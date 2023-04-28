@@ -114,71 +114,73 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div>
-    <main class="flex">
+  <div class="flex flex-col">
+    <main class="flex divide-x-[1px] divide-[#8d8d8d33]">
       <LandingDescriptor />
-      <section class="signin-section">
-        <div class="signin-container">
+      <section class="grid place-items-center w-full">
+        <div class="max-w-[640px] space-y-9 p-2 my-[5vh] lg:my-0">
           <img
             src="@/assets/logo.svg"
             alt="Arcana Logo"
-            class="laptop-remove arcana-logo"
+            class="laptop-remove m-auto"
           />
-          <div>
-            <h1>Welcome</h1>
-            <h5 class="login-description">
+          <div class="space-y-4 text-center">
+            <h1 class="text-4xl font-bold tracking-normal">Welcome</h1>
+            <h5 class="font-light text-xl">
               We’ll email you a login link for a password-free sign in.
             </h5>
           </div>
           <form
-            class="passwordless-container flex column flex-center"
+            class="flex column flex-center space-y-1"
             @submit.prevent="launchLogin('passwordless')"
           >
             <VTextField
               v-model.trim="email"
               label="Email"
               placeholder="Enter your email"
-              class="passwordless-email"
+              class="w-full max-w-[25rem]"
             />
             <VButton
               label="SEND LINK"
-              class="passwordless-button"
+              class="w-full max-w-[18rem]"
               type="submit"
               :disabled="!hasValidEmail"
             />
           </form>
-          <section class="social-links-container">
-            <span class="body-1" style="margin-top: 4px; vertical-align: middle"
-              >Or sign in with
-            </span>
-            <VTooltip title="Sign in with Google">
-              <img
-                class="sso"
-                src="@/assets/google-sso.svg"
-                @click.stop="launchLogin('google')"
-              />
-            </VTooltip>
-            <VTooltip title="Sign in with Github">
-              <img
-                class="sso"
-                src="@/assets/github-sso.svg"
-                @click.stop="launchLogin('github')"
-              />
-            </VTooltip>
-            <VTooltip title="Sign in with Twitch">
-              <img
-                class="sso"
-                src="@/assets/twitch-sso.svg"
-                @click.stop="launchLogin('twitch')"
-              />
-            </VTooltip>
-            <VTooltip title="Sign in with Discord">
-              <img
-                class="sso"
-                src="@/assets/discord-sso.svg"
-                @click.stop="launchLogin('discord')"
-              />
-            </VTooltip>
+          <section class="flex justify-center flex-wrap space-y-1">
+            <div class="flex items-center">
+              <span class="font-light text-white">Or sign in with </span>
+            </div>
+            <div class="flex flex-wrap">
+              <VTooltip title="Sign in with Google">
+                <img
+                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  src="@/assets/google-sso.svg"
+                  @click.stop="launchLogin('google')"
+                />
+              </VTooltip>
+              <VTooltip title="Sign in with Github">
+                <img
+                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  src="@/assets/github-sso.svg"
+                  @click.stop="launchLogin('github')"
+                />
+              </VTooltip>
+              <VTooltip title="Sign in with Twitch">
+                <img
+                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  src="@/assets/twitch-sso.svg"
+                  @click.stop="launchLogin('twitch')"
+                />
+              </VTooltip>
+              <VTooltip title="Sign in with Discord">
+                <img
+                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  src="@/assets/discord-sso.svg"
+                  @click.stop="launchLogin('discord')"
+                />
+              </VTooltip>
+            </div>
           </section>
         </div>
       </section>
@@ -186,114 +188,3 @@ onMounted(async () => {
     <AppFooter show-social-icons />
   </div>
 </template>
-
-<style scoped>
-h1 {
-  font-size: 2.25rem;
-  font-weight: 700;
-  text-align: center;
-  letter-spacing: unset;
-}
-
-.login-description {
-  margin-top: 1rem;
-  font-size: 1.25rem;
-  text-align: center;
-}
-
-.sso-button {
-  width: 36vw;
-  min-width: 160px;
-  max-width: 240px;
-  background: radial-gradient(
-    134.5% 939.99% at -23.59% -12.9%,
-    #262626 0%,
-    rgb(26 26 26 / 86.3%) 31.41%,
-    rgb(32 32 32 / 49%) 100%
-  ) !important;
-  border-radius: 10px;
-  box-shadow: 4px 5px 4px rgb(0 0 0 / 25%) !important;
-}
-
-.body-3 {
-  font-size: 0.9em;
-  font-weight: 300;
-  line-height: 1.8em;
-}
-
-.signin-section {
-  display: grid;
-  place-items: center;
-  width: 100%;
-}
-
-.signin-container {
-  width: 50%;
-  max-width: 640px;
-}
-
-.passwordless-container {
-  margin-top: 1.875rem;
-}
-
-.passwordless-email {
-  width: 100%;
-  max-width: 25rem;
-}
-
-.passwordless-button {
-  width: 100%;
-  max-width: 18rem;
-  margin-top: 0.875rem;
-}
-
-.social-links-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 3.75rem;
-}
-
-.sso {
-  display: inline-block;
-  width: 30px;
-  margin-left: 2rem;
-  vertical-align: middle;
-  cursor: pointer;
-  transition: opacity 0.4s;
-}
-
-.sso + .sso {
-  margin-left: 1.25rem;
-}
-
-.sso:hover {
-  opacity: 0.8;
-}
-
-@media only screen and (max-width: 1023px) {
-  .signin-container {
-    width: 80%;
-    min-width: 340px;
-    margin: 5vh auto;
-  }
-
-  .arcana-logo {
-    display: inherit;
-    margin: auto auto 2rem;
-  }
-
-  .sso {
-    margin-left: 1.25rem;
-  }
-
-  .sso + .sso {
-    margin-left: 0.75rem;
-  }
-}
-
-@media only screen and (max-width: 399px) {
-  .signin-container {
-    width: 90%;
-  }
-}
-</style>
