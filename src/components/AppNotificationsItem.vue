@@ -23,7 +23,7 @@ function getNotificationsTime(timeStamp) {
     <li
       v-for="notification in notifications"
       :key="notification.data"
-      class="cursor-pointer notification-item position-relative"
+      class="cursor-pointer notification-item relative"
       @click="emits('onClickofItem', notification)"
     >
       <div class="notification-item__message-container">
@@ -34,7 +34,9 @@ function getNotificationsTime(timeStamp) {
           {{ getNotificationsTime(notification.time) }}
         </p>
       </div>
-      <div class="notification-blue-dot | center">
+      <div
+        class="notification-blue-dot | flex flex-col items-center justify-center"
+      >
         <span v-if="!notification.read" class="blue-dot"></span>
       </div>
     </li>

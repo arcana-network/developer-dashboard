@@ -168,7 +168,7 @@ function handleGenerateKey() {
   <div v-if="loaderStore.isLoading"></div>
   <div v-else>
     <VOverlay v-if="!showGenerateKeySuccess">
-      <div class="center height-100 width-100">
+      <div class="center h-full w-full">
         <VCard class="flex column" style="padding: 30px">
           <VStack gap="1rem" direction="column">
             <VStack justify="space-between" align="center">
@@ -185,12 +185,14 @@ function handleGenerateKey() {
             </VStack>
             <VSeperator />
             <VStack direction="column" gap="1.5rem">
-              <p class="body-1 description">
+              <p class="text-lg font-normal description">
                 Provide a name, assign a key and set permissions to your
                 delegate below
               </p>
               <VStack gap="0.5rem" direction="column">
-                <label class="body-1 label font-600">Name</label>
+                <label class="text-lg font-normal label font-semibold"
+                  >Name</label
+                >
                 <VTextField
                   v-model.trim="delegateName"
                   :no-message="true"
@@ -198,7 +200,9 @@ function handleGenerateKey() {
                 />
               </VStack>
               <VStack gap="0.5rem" direction="column">
-                <label class="body-1 label font-600">Key</label>
+                <label class="text-lg font-normal label font-semibold"
+                  >Key</label
+                >
                 <VStack gap="1rem">
                   <VDropdown
                     :disabled="props.delegateKeys.length === 0"
@@ -216,7 +220,7 @@ function handleGenerateKey() {
                     @click.stop="handleGenerateKey"
                   />
                 </VStack>
-                <p class="body-3 grey info">
+                <p class="text-[0.625rem] grey info">
                   Provide a SECP256K1 public key, choose from the list or
                   generate one
                 </p>
@@ -225,11 +229,11 @@ function handleGenerateKey() {
                 <h3>Permissions Provided to Delegate</h3>
                 <VStack gap="1rem">
                   <img src="@/assets/iconography/ok.svg" />
-                  <p class="sub-heading-4 font-500">Download</p>
+                  <p class="text-base font-medium">Download</p>
                 </VStack>
                 <VStack gap="1rem">
                   <img src="@/assets/iconography/ok.svg" />
-                  <p class="sub-heading-4 font-500">Share and Revoke</p>
+                  <p class="text-base font-medium">Share and Revoke</p>
                 </VStack>
               </VStack>
               <VStack gap="1rem" class="popup-footer">

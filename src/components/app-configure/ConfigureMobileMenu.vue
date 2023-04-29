@@ -12,7 +12,7 @@ const props = defineProps<MobileMenuProps>()
 
 <template>
   <div
-    class="position-absolute configure-mobile--container"
+    class="absolute configure-mobile--container"
     :class="{ show: props.showMobileMenu }"
   >
     <button class="configure-mobile__close-btn" @click="emit('close')">

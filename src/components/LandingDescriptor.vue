@@ -17,7 +17,7 @@ const docsLink = 'https://docs.arcana.network/howto/config_dapp.html'
       <a
         :href="docsLink"
         target="_blank"
-        class="text-uppercase no-underline text-[#13a3fd]"
+        class="uppercase no-underline text-[#13a3fd]"
         >Learn More</a
       >
     </p>

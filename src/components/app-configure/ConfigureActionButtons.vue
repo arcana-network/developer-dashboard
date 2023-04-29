@@ -28,7 +28,7 @@ const emit = defineEmits(['cancel', 'save'])
 </script>
 
 <template>
-  <div class="footer flex flex-wrap flex-grow">
+  <div class="footer flex flex-wrap flex-1">
     <VButton
       v-if="!hideCancel"
       v-wave

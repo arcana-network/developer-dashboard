@@ -32,7 +32,7 @@ async function copyAddress() {
 
 <template>
   <VOverlay>
-    <div class="center height-100 width-100">
+    <div class="center h-full w-full">
       <VCard class="flex column container">
         <img src="@/assets/success-popup-icon.png" class="popup-icon" />
         <VStack gap="1rem" direction="column">
@@ -42,16 +42,14 @@ async function copyAddress() {
             justify="space-between"
             align="center"
           >
-            <div class="sub-heading-4 title font-700">
-              Successfully Generated
-            </div>
-            <p class="body-1 font-400 description">
+            <div class="text-base title font-bold">Successfully Generated</div>
+            <p class="text-lg font-normal font-normal description">
               The public key will be applied to this delegate. The private key
               shown below must be stored safely. Note that one including Arcana
               will have access to it:
             </p>
             <VStack gap="0.5rem" direction="column" style="width: 100%">
-              <label class="font-600 grey label">Private Key</label>
+              <label class="font-semibold grey label">Private Key</label>
               <VStack
                 justify="center"
                 align="center"

@@ -1,145 +1,10 @@
 :root {
-  --primary: #13a3fd;
-  --primary-light: #fff;
-  --primary-dark: #161616;
-  --text-white: #fff;
-  --text-grey: #8d8d8d;
-  --color-green: #8fff00;
-  --color-yellow: #ffc226;
-  --color-orange: #ff6826;
-  --color-red: #b43030;
-  --color-white: #f7f7f7;
-  --color-black: #101010;
-  --dark-theme-bg: #1e1e1e;
-  --breakpoint-mobile: 767px;
-  --breakpoint-tablet: 1023px;
-  --breakpoint-laptop-and-above: 1024px;
   --max-container-width: 108em;
   --container-width: 90%;
   --flex-row-gap: 0;
   --flex-column-gap: 0;
 }
 
-*::-webkit-scrollbar {
-  width: 0.5em;
-  height: 0.5em;
-}
-
-*::-webkit-scrollbar-track {
-  background: transparent;
-  border-radius: 10px;
-}
-
-*::-webkit-scrollbar-thumb {
-  width: 0.375rem;
-  height: 0.375rem;
-  background: #fff;
-  border-radius: 10px;
-  outline: none;
-}
-
-*::-webkit-scrollbar-thumb:hover {
-  background: #8d8d8d;
-}
-
-*::-webkit-scrollbar-thumb:active {
-  background: #404040;
-}
-
-body {
-  box-sizing: border-box;
-  background-color: var(--dark-theme-bg);
-}
-
-main {
-  flex-grow: 1;
-}
-
-p {
-  margin: 0;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-.sub-heading-4,
-.sub-heading-5,
-.body-2 {
-  margin: 0;
-  line-height: 1.5;
-  color: var(--text-white);
-}
-
-h1 {
-  font-size: 2.25rem;
-  font-weight: 900;
-  letter-spacing: 3px;
-}
-
-h2 {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-
-h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-h4 {
-  font-size: 1.125rem;
-  font-weight: 600;
-}
-
-h5 {
-  font-size: 1.125rem;
-  font-weight: 400;
-}
-
-label {
-  font-weight: 500;
-  line-height: 1.5;
-  color: var(--text-white);
-}
-
-.center {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.sub-heading-1,
-.sub-heading-2,
-.sub-heading-3,
-.body-1,
-.body-3 {
-  color: var(--text-white);
-}
-
-.sub-heading-1 {
-  font-size: 2.625rem;
-  font-weight: 700;
-}
-
-.sub-heading-2 {
-  font-size: 2.188rem;
-  font-weight: 700;
-}
-
-.sub-heading-3 {
-  font-size: 1.25rem;
-  font-weight: 600;
-}
-
-.sub-heading-4 {
-  font-size: 1rem;
-  font-weight: 800;
-}
-
-.sub-heading-5,
 .body-1 {
   font-size: 1.125rem;
   font-weight: 400;
@@ -151,28 +16,6 @@ label {
 
 .body-3 {
   font-size: 0.625rem;
-}
-
-a {
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.5;
-  color: var(--primary);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  cursor: pointer;
-}
-
-.icon-link {
-  line-height: 0;
-}
-
-.mx-auto {
-  margin: 0 auto;
-}
-
-.flex {
-  display: flex;
 }
 
 .container {
@@ -250,96 +93,6 @@ a {
   margin-top: var(--flex-column-gap);
 }
 
-.overflow-x-auto {
-  overflow-x: auto;
-}
-
-.overflow-y-auto {
-  overflow-y: auto;
-}
-
-.overflow-x-hidden {
-  overflow-x: hidden;
-}
-
-.overflow-y-hidden {
-  overflow-y: hidden;
-}
-
-.overflow-hidden {
-  overflow: hidden;
-}
-
-.text-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.flex-grow {
-  flex-grow: 1;
-}
-
-.cursor-pointer {
-  cursor: pointer;
-}
-
-.cursor-not-allowed {
-  cursor: not-allowed;
-}
-
-.font-300 {
-  font-weight: 300;
-}
-
-.font-400 {
-  font-weight: 400;
-}
-
-.font-500 {
-  font-weight: 500;
-}
-
-.font-600 {
-  font-weight: 600;
-}
-
-.font-700 {
-  font-weight: 700;
-}
-
-.font-800 {
-  font-weight: 800;
-}
-
-.font-900 {
-  font-weight: 900;
-}
-
-.position-relative {
-  position: relative;
-}
-
-.position-absolute {
-  position: absolute;
-}
-
-.width-100 {
-  width: 100%;
-}
-
-.height-100 {
-  height: 100%;
-}
-
-.text-uppercase {
-  text-transform: uppercase;
-}
-
-.learn-more {
-  display: inline-block;
-}
-
 @media only screen and (max-width: 767px) {
   .mobile-hide {
     visibility: hidden !important;
@@ -368,14 +121,6 @@ a {
 
   h2 {
     font-size: 1.125em;
-  }
-
-  .sub-heading-1 {
-    font-size: 1.25em;
-  }
-
-  .sub-heading-2 {
-    font-size: 0.688em;
   }
 
   .sm-flex-start {
@@ -435,81 +180,8 @@ a {
   .sm-column-gap > * + * {
     margin-top: var(--flex-column-gap);
   }
-
-  .sm-overflow-x-auto {
-    overflow-x: auto;
-  }
-
-  .sm-overflow-y-auto {
-    overflow-y: auto;
-  }
-
-  .sm-overflow-x-hidden {
-    overflow-x: hidden;
-  }
-
-  .sm-overflow-y-hidden {
-    overflow-y: hidden;
-  }
-
-  .sm-overflow-hidden {
-    overflow: hidden;
-  }
-
-  .sm-text-ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .sm-flex-grow {
-    flex-grow: 1;
-  }
-
-  .sm-cursor-pointer {
-    cursor: pointer;
-  }
-
-  .sm-cursor-not-allowed {
-    cursor: not-allowed;
-  }
-
-  .sm-font-300 {
-    font-weight: 300;
-  }
-
-  .sm-font-400 {
-    font-weight: 400;
-  }
-
-  .sm-font-500 {
-    font-weight: 500;
-  }
-
-  .sm-font-600 {
-    font-weight: 600;
-  }
-
-  .sm-font-700 {
-    font-weight: 700;
-  }
-
-  .sm-font-800 {
-    font-weight: 800;
-  }
-
-  .sm-font-900 {
-    font-weight: 900;
-  }
-
-  .sm-position-relative {
-    position: relative;
-  }
-
-  .sm-position-absolute {
-    position: absolute;
-  }
 }
+
 @media only screen and (max-width: 1023px) {
   h1 {
     font-size: 1.125em;
@@ -519,19 +191,8 @@ a {
   h2 {
     font-size: 0.875em;
   }
-
-  .sub-heading-1 {
-    font-size: 1.125em;
-  }
-
-  .sub-heading-2 {
-    font-size: 0.888em;
-  }
-
-  .md-column {
-    flex-direction: column;
-  }
 }
+
 @media only screen and (min-width: 768px) and (max-width: 1023px) {
   .tablet-hide {
     visibility: hidden !important;
@@ -598,81 +259,8 @@ a {
   .md-column-gap > * + * {
     margin-top: var(--flex-column-gap);
   }
-
-  .md-overflow-x-auto {
-    overflow-x: auto;
-  }
-
-  .md-overflow-y-auto {
-    overflow-y: auto;
-  }
-
-  .md-overflow-x-hidden {
-    overflow-x: hidden;
-  }
-
-  .md-overflow-y-hidden {
-    overflow-y: hidden;
-  }
-
-  .md-overflow-hidden {
-    overflow: hidden;
-  }
-
-  .md-text-ellipsis {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  .md-flex-grow {
-    flex-grow: 1;
-  }
-
-  .md-cursor-pointer {
-    cursor: pointer;
-  }
-
-  .md-cursor-not-allowed {
-    cursor: not-allowed;
-  }
-
-  .md-font-300 {
-    font-weight: 300;
-  }
-
-  .md-font-400 {
-    font-weight: 400;
-  }
-
-  .md-font-500 {
-    font-weight: 500;
-  }
-
-  .md-font-600 {
-    font-weight: 600;
-  }
-
-  .md-font-700 {
-    font-weight: 700;
-  }
-
-  .md-font-800 {
-    font-weight: 800;
-  }
-
-  .md-font-900 {
-    font-weight: 900;
-  }
-
-  .md-position-relative {
-    position: relative;
-  }
-
-  .md-position-absolute {
-    position: absolute;
-  }
 }
+
 @media only screen and (min-width: 1024px) {
   .laptop-hide {
     visibility: hidden;

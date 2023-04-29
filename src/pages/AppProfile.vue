@@ -379,10 +379,7 @@ function handleCancel() {
       <section class="personal-details">
         <SettingCard>
           <template #title>USER ACCOUNT</template>
-          <VStack
-            class="flex md-column flex-wrap justify-space-between"
-            gap="1.25rem"
-          >
+          <VStack class="flex flex-col flex-wrap justify-between" gap="1.25rem">
             <div class="flex column details flex-grow">
               <label for="light-horizontal-logo">Name</label>
               <VTextField
@@ -413,7 +410,7 @@ function handleCancel() {
           <template #title>ORGANISATION</template>
           <form @submit.prevent="onUpdateOrganization">
             <VStack
-              class="flex md-column flex-wrap justify-space-between"
+              class="flex flex-col flex-wrap justify-between"
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
@@ -461,7 +458,7 @@ function handleCancel() {
           <form @submit.prevent="updateBillingDetails">
             <VStack
               v-if="false"
-              class="flex md-column flex-wrap justify-space-between"
+              class="flex flex-col flex-wrap justify-between"
               gap="1.25rem"
             >
               <div class="flex column details flex-grow">
@@ -491,7 +488,7 @@ function handleCancel() {
             </VStack>
             <div class="flex column flex-grow" style="gap: 1rem">
               <VStack
-                class="flex md-column flex-wrap justify-space-between"
+                class="flex flex-col flex-wrap justify-between"
                 gap="1.25rem"
               >
                 <div class="flex column details flex-grow">
@@ -516,7 +513,7 @@ function handleCancel() {
                 </div>
               </VStack>
               <VStack
-                class="flex md-column flex-wrap justify-space-between"
+                class="flex flex-col flex-wrap justify-between"
                 gap="1.25rem"
               >
                 <div class="flex column details flex-grow">
@@ -576,7 +573,7 @@ function handleCancel() {
             @submit.prevent="submitCard"
           >
             <VStack
-              class="flex sm-column flex-wrap justify-space-between payment-container"
+              class="flex sm-column flex-wrap justify-between payment-container"
               gap="0.5rem"
             >
               <VStack direction="column" class="flex-grow">

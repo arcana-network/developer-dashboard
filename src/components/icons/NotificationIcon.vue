@@ -19,7 +19,7 @@ const areUnreadNotificationAvaiable = computed(() => {
 </script>
 
 <template>
-  <div class="position-relative cursor-pointer" @click="emits('click')">
+  <div class="relative cursor-pointer" @click="emits('click')">
     <div v-if="areUnreadNotificationAvaiable" class="notification-bubble">
       <span class="notification-bubble__count">{{
         formattedNotificationCount

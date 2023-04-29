@@ -113,10 +113,8 @@ onBeforeMount(async () => {
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Payment Method:</span>
-              <VStack gap="0.625rem" class="position-relative">
-                <span class="charge-details text-uppercase">{{
-                  selectedCard
-                }}</span>
+              <VStack gap="0.625rem" class="relative">
+                <span class="charge-details uppercase">{{ selectedCard }}</span>
               </VStack>
             </VStack>
           </VStack>

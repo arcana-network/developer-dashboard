@@ -282,14 +282,11 @@ watch(
           <img :src="ArcanaLogo" alt="Arcana Logo" />
         </div>
         <VStack class="justify-end help-button__container flex-grow">
-          <div id="help_menu" ref="help_menu" class="position-relative flex">
+          <div id="help_menu" ref="help_menu" class="relative flex">
             <button class="help-button" @click.stop="toggleHelpMenu">
               Help
             </button>
-            <VCard
-              v-if="showHelpMenu"
-              class="help-menu-items position-absolute"
-            >
+            <VCard v-if="showHelpMenu" class="help-menu-items absolute">
               <ul style="margin: 0">
                 <li
                   v-for="helpItem in HelpItems"
@@ -322,20 +319,13 @@ watch(
               @close="toggleNotifications"
             />
           </div>
-          <div
-            id="profile_menu"
-            ref="profile_menu"
-            class="position-relative flex"
-          >
+          <div id="profile_menu" ref="profile_menu" class="relative flex">
             <img
               src="@/assets/iconography/profile.svg"
               class="cursor-pointer"
               @click.stop="toggleProfileMenu"
             />
-            <VCard
-              v-if="showProfileMenu"
-              class="help-menu-items position-absolute"
-            >
+            <VCard v-if="showProfileMenu" class="help-menu-items absolute">
               <ul style="margin: 0">
                 <li
                   v-for="profileItem in ProfileItems"

@@ -19,7 +19,7 @@ const props = defineProps<DeleteDelegateProps>()
 <template>
   <VOverlay>
     <VCard class="modal-card">
-      <header class="flex flex-grow justify-space-between">
+      <header class="flex flex-grow justify-between">
         <div class="sub-heading-1 title">Delete a delegation</div>
         <img
           src="@/assets/iconography/close.svg"
@@ -29,18 +29,20 @@ const props = defineProps<DeleteDelegateProps>()
       </header>
       <VSeperator class="separator" />
       <main>
-        <div class="body-1 description">
+        <div class="text-lg font-normal description">
           Please note deleting the delegates will also delete any unused keys as
           well. Please review the following before proceeding:
         </div>
         <VStack direction="column" gap="1.25rem">
           <VStack direction="column" gap="0.625rem" align="center">
-            <div class="body-1 key">Name</div>
-            <div class="body-1 value">{{ props.delegate.name }}</div>
+            <div class="text-lg font-normal key">Name</div>
+            <div class="text-lg font-normal value">
+              {{ props.delegate.name }}
+            </div>
           </VStack>
           <VStack direction="column" gap="0.625rem" align="center">
-            <div class="body-1 key">Address</div>
-            <div class="body-1 value">
+            <div class="text-lg font-normal key">Address</div>
+            <div class="text-lg font-normal value">
               {{ truncate(props.delegate.address, 6) }}
             </div>
           </VStack>

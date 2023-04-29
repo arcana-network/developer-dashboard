@@ -99,10 +99,10 @@ async function handleSubmit() {
 <template>
   <VOverlay>
     <div class="overlay-content">
-      <VCard class="verification-form-card position-relative">
+      <VCard class="verification-form-card relative">
         <img
           src="@/assets/iconography/close.svg"
-          class="position-absolute cursor-pointer"
+          class="absolute cursor-pointer"
           style="top: 1.25rem; right: 1.25rem; width: 1.25rem"
           @click.stop="emit('close')"
         />

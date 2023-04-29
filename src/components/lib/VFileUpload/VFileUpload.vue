@@ -53,8 +53,8 @@ onBeforeUnmount(() => {
 
 <template>
   <VCard v-if="props.value" variant="depressed" class="file-upload-card">
-    <VStack gap="2rem" justify="space-between" align="center" class="flex-grow">
-      <span class="body-1 text-ellipsis" :title="props.value">{{
+    <VStack gap="2rem" justify="space-between" align="center" class="flex-1">
+      <span class="text-lg font-normal text-ellipsis" :title="props.value">{{
         props.value
       }}</span>
       <img
@@ -70,8 +70,8 @@ onBeforeUnmount(() => {
     class="file-upload-card cursor-pointer"
     @click.stop="handleUploadClick"
   >
-    <VStack gap="2rem" justify="space-between" align="center" class="flex-grow">
-      <span class="body-1 text-ellipsis">
+    <VStack gap="2rem" justify="space-between" align="center" class="flex-1">
+      <span class="text-lg font-normal text-ellipsis">
         {{ props.placeholder }}
       </span>
       <img v-if="!props.isLoading" src="@/assets/iconography/upload.svg" />

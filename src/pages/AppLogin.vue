@@ -131,7 +131,7 @@ onMounted(async () => {
             </h5>
           </div>
           <form
-            class="flex column flex-center space-y-1"
+            class="flex column items-center space-y-1"
             @submit.prevent="launchLogin('passwordless')"
           >
             <VTextField

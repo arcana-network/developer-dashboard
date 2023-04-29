@@ -36,12 +36,12 @@ function onClickofItem(notification) {
 </script>
 
 <template>
-  <VCard class="position-absolute notification__container">
+  <VCard class="absolute notification__container">
     <div
-      class="flex flex-center justify-space-between width-100 | notification__header"
+      class="flex items-center justify-between w-full | notification__header"
     >
       <p class="notification__title">Notifications</p>
-      <div class="flex flex-center">
+      <div class="flex items-center">
         <button
           v-show="appsStore.unreadNotificationCount"
           class="btn cursor-pointer | notification__mark-read-btn"

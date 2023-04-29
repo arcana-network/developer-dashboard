@@ -122,7 +122,7 @@ async function handleFileRemove(
               on the Arcana wallet screen. The shape of the logo can vary.
             </p>
             <VStack gap="1rem">
-              <p class="flex justify-center flex-center example__logo-mark">
+              <p class="flex justify-center items-center example__logo-mark">
                 <span class="description">Logo Mark Example:</span>
                 <img
                   src="@/assets/google-logo-mark.png"
@@ -131,7 +131,7 @@ async function handleFileRemove(
                 />
               </p>
               <p
-                class="flex justify-center flex-center example__logo-horizontal"
+                class="flex justify-center items-center example__logo-horizontal"
               >
                 <span class="description">Horizontal Logo Example:</span>
                 <img
@@ -144,7 +144,7 @@ async function handleFileRemove(
           </VStack>
         </VStack>
         <VStack direction="column" gap="0.5rem">
-          <h4 class="font-700">Light Mode</h4>
+          <h4 class="font-bold">Light Mode</h4>
           <VStack gap="4rem" md-gap="2rem" wrap>
             <VStack
               direction="column"
@@ -163,7 +163,7 @@ async function handleFileRemove(
                 @remove-file="handleFileRemove('light', 'vertical')"
               />
               <span
-                class="body-3 font-300 file-upload-hint"
+                class="body-3 font-light file-upload-hint"
                 :class="{ error: themeLogos.light.vertical.hasError }"
                 >Maximum image size: 1MB</span
               >
@@ -185,7 +185,7 @@ async function handleFileRemove(
                 @remove-file="handleFileRemove('light', 'horizontal')"
               />
               <span
-                class="body-3 font-300 file-upload-hint"
+                class="body-3 font-light file-upload-hint"
                 :class="{ error: themeLogos.light.horizontal.hasError }"
                 >Maximum image size: 1MB</span
               >
@@ -193,7 +193,7 @@ async function handleFileRemove(
           </VStack>
         </VStack>
         <VStack direction="column" gap="0.5rem">
-          <h4 class="text-uppercase font-700">Dark Mode</h4>
+          <h4 class="uppercase font-bold">Dark Mode</h4>
           <VStack gap="4rem" md-gap="2rem" wrap>
             <VStack
               direction="column"
@@ -212,7 +212,7 @@ async function handleFileRemove(
                 @remove-file="handleFileRemove('dark', 'vertical')"
               />
               <span
-                class="body-3 font-300 file-upload-hint"
+                class="body-3 font-light file-upload-hint"
                 :class="{ error: themeLogos.dark.vertical.hasError }"
                 >Maximum image size: 1MB</span
               >
@@ -234,7 +234,7 @@ async function handleFileRemove(
                 @remove-file="handleFileRemove('dark', 'horizontal')"
               />
               <span
-                class="body-3 font-300 file-upload-hint"
+                class="body-3 font-light file-upload-hint"
                 :class="{ error: themeLogos.dark.horizontal.hasError }"
                 >Maximum image size: 1MB</span
               >

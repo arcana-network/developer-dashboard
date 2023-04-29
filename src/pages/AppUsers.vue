@@ -279,7 +279,7 @@ function convertToBytes(value: number) {
             Wallet Address
           </span>
           <span
-            class="sub-heading-3"
+            class="text-xl font-semibold"
             style="color: var(--text-white); word-wrap: break-word"
           >
             {{ userLog.walletAddress }}
@@ -298,7 +298,10 @@ function convertToBytes(value: number) {
             <span class="body-1" style="color: var(--text-grey)">
               Public Identifier
             </span>
-            <span class="sub-heading-3" style="color: var(--text-white)">
+            <span
+              class="text-xl font-semibold"
+              style="color: var(--text-white)"
+            >
               {{ userLog.email }}
             </span>
           </div>
@@ -306,7 +309,10 @@ function convertToBytes(value: number) {
             <span class="body-1" style="color: var(--text-grey)">
               Storage
             </span>
-            <span class="sub-heading-3" style="color: var(--text-white)">
+            <span
+              class="text-xl font-semibold"
+              style="color: var(--text-white)"
+            >
               {{ convertToBytes(userLog.storage as number) }}
             </span>
           </div>
@@ -314,7 +320,10 @@ function convertToBytes(value: number) {
             <span class="body-1" style="color: var(--text-grey)">
               Bandwidth
             </span>
-            <span class="sub-heading-3" style="color: var(--text-white)">
+            <span
+              class="text-xl font-semibold"
+              style="color: var(--text-white)"
+            >
               {{ convertToBytes(userLog.bandwidth as number) }}
             </span>
           </div>
@@ -322,7 +331,10 @@ function convertToBytes(value: number) {
             <span class="body-1" style="color: var(--text-grey)">
               Action Count
             </span>
-            <span class="sub-heading-3" style="color: var(--text-white)">
+            <span
+              class="text-xl font-semibold"
+              style="color: var(--text-white)"
+            >
               {{ userLog.actionCount }}
             </span>
           </div>
@@ -378,7 +390,7 @@ function convertToBytes(value: number) {
   font-size: 0.9em;
 }
 
-.sub-heading-3 {
+.text-xl font-semibold {
   margin: 2px;
   font-size: 1.2em;
 }
@@ -444,7 +456,7 @@ tbody tr:active {
     margin: 0.5em 0 1em;
   }
 
-  .sub-heading-3 {
+  .text-xl font-semibold {
     margin: 2px;
     font-size: 0.9em;
   }
