@@ -132,7 +132,7 @@ function toggleNotifications() {
               >
                 <a
                   :href="helpItem.link"
-                  class="flex"
+                  class="flex text-white no-underline"
                   style="gap: 0.75rem"
                   target="_blank"
                 >
@@ -168,7 +168,7 @@ function toggleNotifications() {
                   :to="{
                     name: `App${profileItem.label}`,
                   }"
-                  class="flex"
+                  class="flex text-white no-underline"
                   style="gap: 0.75rem"
                   ><img :src="profileItem.icon" />
                   <span>{{ profileItem.label }} </span></RouterLink
@@ -255,6 +255,7 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 200px;
   padding: 0;
   padding-top: 1.25rem;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
@@ -271,11 +272,6 @@ header {
   color: var(--text-white);
   white-space: nowrap;
   list-style: none;
-}
-
-.help-menu-items a {
-  color: white;
-  text-decoration: none;
 }
 
 .banner {

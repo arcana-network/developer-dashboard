@@ -448,6 +448,7 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 200px;
   padding: 0;
   padding-top: 1.25rem;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
