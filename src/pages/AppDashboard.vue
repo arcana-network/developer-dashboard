@@ -260,14 +260,14 @@ async function fetchActiveUsers() {
         <VStack
           justify="space-between"
           sm-direction="column"
-          class="flex-grow flex-wrap"
+          class="flex-grow flex-wrap justify-between"
         >
           <h1 class="heading">DASHBOARD</h1>
           <VStack
             gap="1rem"
-            class="flex mobile-remove justify-content-center flex-center flex-wrap"
+            class="flex justify-content-center items-center flex-wrap"
           >
-            <span style="color: var(--text-grey)" class="body-1 mobile-remove">
+            <span style="color: var(--text-grey)" class="text-lg font-normal">
               Client ID:
             </span>
             <VTextField
@@ -283,39 +283,12 @@ async function fetchActiveUsers() {
           </VStack>
         </VStack>
       </section>
-      <div
-        class="flex laptop-remove smart-contract-copy justify-start flex-center flex-wrap"
-      >
-        <span style="margin-right: 5px; color: var(--text-grey)" class="body-1">
-          Client ID:
-        </span>
-        <v-tooltip :title="appAddress" class="">
-          <div
-            style="width: 6em; font-weight: 500; color: var(--text-white)"
-            class="body-1 text-ellipsis cursor-pointer"
-          >
-            {{ appAddress }}
-          </div>
-        </v-tooltip>
-        <v-tooltip
-          :title="smartContractTooltip"
-          class=""
-          @click.stop="copyAppAddress"
-        >
-          <img
-            :src="SmartContractIcon"
-            alt="Click to copy smart contract address"
-            style="margin-top: 4px"
-            class="cursor-pointer"
-          />
-        </v-tooltip>
-      </div>
       <v-card
         class="column usage-container"
         variant="elevated"
         style="align-items: stretch"
       >
-        <div class="flex justify-space-between flex-center">
+        <div class="flex justify-between items-center">
           <h2>USERS</h2>
           <div class="flex flex-wrap duration">
             <v-card-button
@@ -351,7 +324,6 @@ async function fetchActiveUsers() {
       >
         <VStack justify="space-between" align="center" class="flex-grow">
           <h2>TUTORIALS</h2>
-          <!-- <VButton variant="link" label="VIEW ALL" /> -->
         </VStack>
         <VSeperator class="full-bleed-separator" />
         <Carousel
@@ -408,7 +380,6 @@ async function fetchActiveUsers() {
   align-items: center;
   justify-content: center;
   margin-block: 1rem;
-  font-family: var(--font-body);
   font-weight: 600;
 }
 
@@ -453,13 +424,11 @@ async function fetchActiveUsers() {
 }
 
 .tutorial__title {
-  font-family: var(--font-body);
   font-size: 14px;
 }
 
 .tutorial__description {
   margin-bottom: 10px;
-  font-family: var(--font-body);
   font-size: 10px;
   color: #8d8d8d;
 }

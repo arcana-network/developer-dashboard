@@ -12,7 +12,7 @@ const selectedNetwork = ref('Testnet')
 
 <template>
   <VStack direction="column" gap="2rem" class="container">
-    <VStack justify="space-between" class="flex-grow">
+    <VStack justify="space-between" class="flex-1">
       <VStack gap="2rem">
         <img
           src="@/assets/iconography/back.svg"

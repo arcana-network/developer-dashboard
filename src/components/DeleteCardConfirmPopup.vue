@@ -61,7 +61,6 @@ const emit = defineEmits(['cancel', 'proceed'])
   max-width: 500px;
   margin-top: 10px;
   margin-bottom: 40px;
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-white);

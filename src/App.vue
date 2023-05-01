@@ -29,9 +29,9 @@ onBeforeMount(async () => {
     return router.push({ name: 'AppDown' })
   }
   loaderStore.showLoader('Initializing Arcana Auth SDK...')
+  await fetchAndStoreConfig()
   await arcanaAuth.init()
   isAuthLoaded.value = true
-  await fetchAndStoreConfig()
   loaderStore.hideLoader()
 })
 </script>
@@ -63,15 +63,5 @@ onBeforeMount(async () => {
 
 .root {
   height: 100vh;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

@@ -44,7 +44,6 @@
   min-width: 320px;
   max-width: 720px;
   margin-top: 1.1em;
-  font-family: var(--font-body);
   font-weight: 400;
   line-height: 1.5em;
   text-align: center;

@@ -19,7 +19,7 @@ const areUnreadNotificationAvaiable = computed(() => {
 </script>
 
 <template>
-  <div class="position-relative cursor-pointer" @click="emits('click')">
+  <div class="relative cursor-pointer" @click="emits('click')">
     <div v-if="areUnreadNotificationAvaiable" class="notification-bubble">
       <span class="notification-bubble__count">{{
         formattedNotificationCount
@@ -45,7 +45,6 @@ const areUnreadNotificationAvaiable = computed(() => {
   min-width: 18px;
   min-height: 18px;
   padding: 1px;
-  font-family: var(--font-body);
   font-size: 10px;
   color: #fff;
   background: var(--primary);

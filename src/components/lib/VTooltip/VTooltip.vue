@@ -28,7 +28,7 @@ const positionClass = {
   <div v-if="title" class="tooltip-wrapper" v-bind="attrs">
     <slot></slot>
     <div
-      class="tooltip body-3"
+      class="tooltip text-[0.84em] leading-[1.6em]"
       :class="positionClass"
       role="tooltip"
       aria-hidden="true"
@@ -68,10 +68,5 @@ div.tooltip-wrapper {
 .tooltip-wrapper:hover > .tooltip {
   visibility: visible;
   opacity: 1;
-}
-
-.body-3 {
-  font-size: 0.84em;
-  line-height: 1.68em;
 }
 </style>

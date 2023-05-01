@@ -72,7 +72,6 @@ function handleCancel() {
           <a
             href="https://docs.dev.arcana.network/concepts/sharedkeys.html"
             target="_blank"
-            class="learn-more"
           >
             READ MORE
           </a>
@@ -95,13 +94,16 @@ function handleCancel() {
             <VStack direction="column" gap="10px">
               <span class="card-title">App Specific</span>
               <span class="card-description"
-                >App specific keys are more secure than global keys and each
-                user has unique wallet address per application.</span
+                >Users will be assigned
+                <span class="bolder">a wallet address</span> that is unique to
+                your app. Since the user's keys are specific to your app, they
+                are not exposed to any malicious apps or transaction
+                requests.</span
               >
             </VStack>
           </VStack>
         </VCard>
-        <div class="position-relative">
+        <div class="relative">
           <div
             class="keyspace-card"
             :class="{
@@ -163,9 +165,13 @@ function handleCancel() {
                     </VStack>
                   </VStack>
                   <span class="card-description"
-                    >Global keys are less secure but simplify user experience,
-                    users see the same address across different
-                    applications.</span
+                    >Users will be assigned
+                    <span class="bolder">the same wallet address</span>
+                    across all apps with Arcana Auth. This improves user
+                    experience but users have to ensure they do not sign
+                    malicious transactions on a fraudulent app. Arcana mitigates
+                    this risk with an app review and validation process before
+                    approving the global keys feature for an app.</span
                   >
                   <VStack
                     class="justify-end"
@@ -179,7 +185,7 @@ function handleCancel() {
           </div>
           <div
             v-if="app.status === 0"
-            class="position-absolute"
+            class="absolute"
             style="right: 2rem; bottom: 2rem"
           >
             <VStack class="justify-end" style="margin-top: 2rem">
@@ -227,19 +233,16 @@ function handleCancel() {
 }
 
 .keyspace-container {
-  width: calc(100% - 2rem);
   max-width: 296px;
   padding: 2rem;
 }
 
 .card-title {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 600;
 }
 
 .card-description {
-  font-family: var(--font-body);
   font-size: 0.75rem;
   line-height: 1.5;
   color: var(--text-grey);
@@ -279,5 +282,9 @@ input[type='radio']::before {
 
 input[type='radio']:checked::before {
   transform: scale(1);
+}
+
+.bolder {
+  font-weight: bolder;
 }
 </style>

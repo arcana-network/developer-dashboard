@@ -142,7 +142,6 @@ watch(
   align-items: center;
   justify-content: space-between;
   padding: 1rem 2rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -187,7 +186,6 @@ watch(
   position: relative;
   display: block;
   padding: 0.875rem 2rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;

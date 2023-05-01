@@ -139,11 +139,7 @@ function showCognitoNote() {
       <template #description>
         Select the social login provider for onboarding app users by specifying
         authentication verification details.
-        <a
-          :href="`${DOCS_URL}/howto/config_social/index.html`"
-          target="_blank"
-          class="learn-more"
-        >
+        <a :href="`${DOCS_URL}/howto/config_social/index.html`" target="_blank">
           READ MORE
         </a>
         <br v-if="showCognitoNote()" />
@@ -165,7 +161,7 @@ function showCognitoNote() {
             >
               <button
                 :for="auth.verifier"
-                class="sub-heading-5 verifier-name"
+                class="text-lg font-normal verifier-name"
                 @click.prevent="() => (selectedCredentialInput = auth.verifier)"
               >
                 <div
@@ -196,14 +192,7 @@ function showCognitoNote() {
                   class="social-auth-input-field__container"
                 >
                   <VStack class="social-auth-input__wrapper">
-                    <VStack
-                      justify="space-between"
-                      align="center"
-                      sm-direction="column"
-                      md-direction="column"
-                      sm-align="start"
-                      md-align="start"
-                    >
+                    <div class="flex justify-between space-x-2">
                       <p class="input-label">Client ID</p>
                       <a
                         class="input-doc-link"
@@ -211,7 +200,7 @@ function showCognitoNote() {
                         target="_blank"
                         >Get your Client ID</a
                       >
-                    </VStack>
+                    </div>
                     <VTextField
                       :id="auth?.verifier"
                       v-model.trim="auth.clientId"
@@ -225,14 +214,7 @@ function showCognitoNote() {
                     v-if="auth.hasClientSecret"
                     class="social-auth-input__wrapper"
                   >
-                    <VStack
-                      justify="space-between"
-                      align="center"
-                      sm-direction="column"
-                      md-direction="column"
-                      sm-align="start"
-                      md-align="start"
-                    >
+                    <div class="flex justify-between space-x-2">
                       <p class="input-label">
                         {{
                           isAWSSelected()
@@ -256,7 +238,7 @@ function showCognitoNote() {
                             : 'Client Secret'
                         }}
                       </a>
-                    </VStack>
+                    </div>
                     <VTextField
                       v-model.trim="auth.clientSecret"
                       no-message
@@ -277,7 +259,7 @@ function showCognitoNote() {
                     !isAuthValid(auth) &&
                     auth.verifier === selectedCredentialInput
                   "
-                  class="body-1 error-message"
+                  class="text-lg font-normal error-message"
                 >
                   {{ auth.error }}
                 </span>
@@ -311,12 +293,10 @@ function showCognitoNote() {
 }
 
 .input-label {
-  font-family: var(--font-body);
   font-size: 12px;
 }
 
 .input-doc-link {
-  font-family: var(--font-body);
   font-size: 12px;
   font-weight: normal;
   text-align: right;
@@ -391,12 +371,11 @@ function showCognitoNote() {
 }
 
 .social-auth-input {
-  flex-grow: 1;
+  flex: 1;
 }
 
 .error-message {
   margin-top: 5px;
-  font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5;

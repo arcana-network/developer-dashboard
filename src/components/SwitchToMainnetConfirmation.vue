@@ -106,7 +106,6 @@ function onProceed() {
 }
 
 .switch-chain__message {
-  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-white);
   text-align: center;

@@ -233,25 +233,29 @@ async function handleAppNameSave(app: AppData) {
         </VStack>
         <VStack gap="1.25rem" sm-justify="center" wrap>
           <VCard
-            class="app-card cursor-pointer"
+            class="w-[19rem] min-h-[350px] relative flex items-center justify-center cursor-pointer"
             @click.stop="canCreateApp = true"
             @cancel="canCreateApp = false"
           >
             <VStack direction="column" gap="1.25rem" align="center">
               <img src="@/assets/iconography/plus-circle-outline.svg" />
-              <span class="body-1 font-500">Create New App</span>
+              <span class="text-lg font-normal font-medium"
+                >Create New App</span
+              >
             </VStack>
           </VCard>
           <VCard
             v-for="app in apps"
             :key="`app-${app.id}`"
-            class="app-card"
-            :class="{ 'app-card-disabled': accountStatus !== 'active' }"
+            class="w-[19rem] min-h-[350px] relative flex items-center justify-center cursor-pointer"
+            :class="{
+              'cursor-not-allowed opacity-30': accountStatus !== 'active',
+            }"
           >
             <VStack
               direction="column"
               align="center"
-              class="app-container justify-space-between position-relative"
+              class="app-container justify-between relative"
             >
               <button
                 class="delete-icon-btn"
@@ -278,7 +282,7 @@ async function handleAppNameSave(app: AppData) {
                 />
                 <span
                   v-else
-                  class="sub-heading-3 app-name text-ellipsis"
+                  class="text-xl font-semibold app-name text-ellipsis overflow-hidden"
                   :title="app.name"
                   style="max-width: calc(100% - 1rem)"
                 >
@@ -362,20 +366,6 @@ main {
   margin: 0 2rem;
 }
 
-.app-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 19rem;
-  min-height: 350px;
-}
-
-.app-card-disabled {
-  cursor: not-allowed;
-  opacity: 0.3;
-}
-
 .app-container {
   position: absolute;
   inset: 2rem 1.25rem;
@@ -411,14 +401,12 @@ main {
 }
 
 .stats-title {
-  font-family: var(--font-title);
   font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.5;
 }
 
 .stats-number {
-  font-family: var(--font-body);
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.5;
@@ -435,7 +423,6 @@ main {
 .info-title {
   margin-top: 2rem;
   margin-left: 2rem;
-  font-family: var(--font-title);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.5;
@@ -449,14 +436,12 @@ main {
 
 .info-detail {
   margin-bottom: -0.75rem;
-  font-family: var(--font-body);
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.5;
 }
 
 .info-detail-name {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-grey);
