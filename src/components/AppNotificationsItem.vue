@@ -19,116 +19,33 @@ function getNotificationsTime(timeStamp) {
 </script>
 
 <template>
-  <ul v-if="notifications.length" class="notification-item__container">
+  <ul v-if="notifications.length" class="w-full p-0 m-0">
     <li
       v-for="notification in notifications"
       :key="notification.data"
-      class="cursor-pointer notification-item relative"
+      class="cursor-pointer flex flex-wrap justify-between w-full pb-3 mb-5 list-none relative last:pb-0 last:mb-0 last:border-none border-b-[#8d8d8d33] border-b-[1px]"
       @click="emits('onClickofItem', notification)"
     >
-      <div class="notification-item__message-container">
-        <p class="notification-item__message">
+      <div class="flex-1">
+        <p
+          class="mb-2.5 text-sm"
+          :class="[notification.read ? 'font-normal' : 'font-bold']"
+        >
           {{ notification.data }}
         </p>
-        <p class="notification-item__time">
+        <p class="text-xs font-normal text-[#8d8d8d]">
           {{ getNotificationsTime(notification.time) }}
         </p>
       </div>
-      <div
-        class="notification-blue-dot | flex flex-col items-center justify-center"
-      >
-        <span v-if="!notification.read" class="blue-dot"></span>
+      <div class="w-[10%] flex flex-col items-center justify-center">
+        <span
+          v-if="!notification.read"
+          class="w-2.5 h-2.5 bg-[#13a3fd] rounded-full"
+        ></span>
       </div>
     </li>
   </ul>
-  <div v-else class="no-notifications">
-    <p>No Notifications</p>
+  <div v-else class="p-2.5">
+    <p class="w-full text-center">No Notifications</p>
   </div>
 </template>
-
-<style scoped>
-ul {
-  padding: 0;
-  margin: 0;
-}
-
-.notification-item__container {
-  width: 100%;
-}
-
-.notification-item {
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  width: 100%;
-  padding-bottom: 12px;
-  margin-bottom: 1.25rem;
-  color: var(--text-white);
-  list-style: none;
-}
-
-.notification-item:last-child {
-  padding-bottom: 0;
-  margin-bottom: 0;
-}
-
-.notification-item:not(:last-child) {
-  border-bottom: 1px solid #8d8d8d33;
-}
-
-.notification-item__message-container {
-  flex: 1;
-}
-
-.notification-blue-dot {
-  width: 10%;
-}
-
-.blue-dot {
-  width: 10px;
-  height: 10px;
-  background: #13a3fd;
-  border-radius: 50%;
-}
-
-.notification-item__message {
-  margin-bottom: 10px;
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 700;
-}
-
-.notification-item__time {
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 400;
-  color: #8d8d8d;
-}
-
-.no-notifications {
-  padding: 10px;
-  margin-top: 10px;
-}
-
-.no-notifications > p {
-  width: 100%;
-}
-
-@media only screen and (max-width: 767px) {
-  .notification-item__container ul {
-    box-sizing: border-box;
-    padding: 0;
-  }
-
-  .no-notifications {
-    padding: 20px;
-    margin-top: 50px;
-    text-align: center;
-  }
-
-  .no-notifications > p {
-    width: 100%;
-  }
-}
-</style>
