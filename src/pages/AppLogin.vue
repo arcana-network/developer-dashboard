@@ -56,6 +56,7 @@ async function fetchAndStoreDetails() {
     console.error({ e })
   } finally {
     if (route.params.redirectTo) {
+      await appsStore.fetchNotifications()
       router.push({
         name: route.params.redirectTo as RouteRecordName,
         ...route.params,
