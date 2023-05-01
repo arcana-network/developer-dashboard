@@ -36,32 +36,28 @@ function onClickofItem(notification) {
 </script>
 
 <template>
-  <VCard class="absolute notification__container">
+  <VCard class="absolute z-[999] flex flex-col p-4 | notification__container">
     <div
-      class="flex items-center justify-between w-full | notification__header"
+      class="flex items-center justify-between w-full h-[50px] border-b-[1px] border-b-[#8d8d8d33]"
     >
-      <p class="notification__title">Notifications</p>
+      <p class="text-lg">Notifications</p>
       <div class="flex items-center">
         <button
           v-show="appsStore.unreadNotificationCount"
-          class="btn cursor-pointer | notification__mark-read-btn"
+          class="bg-transparent border-none outline-none cursor-pointer text-sm text-[#13a3fd] | notification__mark-read-btn"
           @click="markAllRead"
         >
           Mark all as read
         </button>
         <button
-          class="btn cursor-pointer | notification__close-btn"
+          class="bg-transparent border-none outline-none cursor-pointer h-3 p-0 | notification__close-btn"
           @click="close"
         >
-          <img
-            src="@/assets/iconography/close.svg"
-            alt="close"
-            class="notification__close-btn-img"
-          />
+          <img src="@/assets/iconography/close.svg" alt="close" class="h-3" />
         </button>
       </div>
     </div>
-    <div class="notification__body">
+    <div class="flex-1 py-5 px-0 overflow-auto">
       <AppNotificationsItem
         :notifications="notifications"
         @onClickofItem="onClickofItem"
@@ -71,51 +67,15 @@ function onClickofItem(notification) {
 </template>
 
 <style scoped>
-.btn {
-  height: 18px;
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
 .notification__close-btn {
   display: none;
-  height: 12px;
-  padding: 0;
-}
-
-.notification__close-btn-img {
-  height: 12px;
-}
-
-.notification__mark-read-btn {
-  font-size: 14px;
-  color: #13a3fd;
 }
 
 .notification__container {
   top: 25px;
   right: -10px;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
   width: 380px;
   max-height: 380px;
-  padding: 16px;
-}
-
-.notification__title {
-  font-size: 18px;
-}
-
-.notification__header {
-  height: 50px;
-}
-
-.notification__body {
-  flex: 1;
-  padding: 20px 0;
-  overflow: auto;
 }
 
 @media only screen and (max-width: 767px) {
@@ -126,7 +86,6 @@ function onClickofItem(notification) {
   .notification__container {
     top: 0;
     right: 0;
-    box-sizing: border-box;
     width: 100vw;
     height: 100vh;
     border-radius: 0;
