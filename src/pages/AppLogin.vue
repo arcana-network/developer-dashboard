@@ -107,7 +107,6 @@ onMounted(async () => {
     arcanaAuth.getProvider().on('connect', async () => {
       loaderStore.showLoader('Signing in...')
       await fetchAndStoreDetails()
-      await appsStore.fetchNotifications()
     })
   }
 })

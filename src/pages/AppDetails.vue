@@ -107,6 +107,7 @@ onBeforeMount(async () => {
   await appsStore.fetchAndStoreAppConfig(appId, app.network)
   const address = appsStore.app(appId).address
   createTransactionSigner(address, app.network)
+  await appsStore.fetchNotifications()
   loaderStore.hideLoader()
 })
 
