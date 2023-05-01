@@ -23,7 +23,7 @@ function getNotificationsTime(timeStamp) {
     <li
       v-for="notification in notifications"
       :key="notification.data"
-      class="cursor-pointer notification-item position-relative"
+      class="cursor-pointer notification-item relative"
       @click="emits('onClickofItem', notification)"
     >
       <div class="notification-item__message-container">
@@ -34,7 +34,9 @@ function getNotificationsTime(timeStamp) {
           {{ getNotificationsTime(notification.time) }}
         </p>
       </div>
-      <div class="notification-blue-dot | center">
+      <div
+        class="notification-blue-dot | flex flex-col items-center justify-center"
+      >
         <span v-if="!notification.read" class="blue-dot"></span>
       </div>
     </li>
@@ -62,7 +64,6 @@ ul {
   width: 100%;
   padding-bottom: 12px;
   margin-bottom: 1.25rem;
-  font-family: var(--font-body);
   color: var(--text-white);
   list-style: none;
 }
@@ -93,14 +94,12 @@ ul {
 
 .notification-item__message {
   margin-bottom: 10px;
-  font-family: var(--font-body);
   font-size: 14px;
   font-style: normal;
   font-weight: 700;
 }
 
 .notification-item__time {
-  font-family: var(--font-body);
   font-size: 10px;
   font-style: normal;
   font-weight: 400;
@@ -110,7 +109,6 @@ ul {
 .no-notifications {
   padding: 10px;
   margin-top: 10px;
-  font-family: var(--font-body);
 }
 
 .no-notifications > p {
@@ -126,7 +124,6 @@ ul {
   .no-notifications {
     padding: 20px;
     margin-top: 50px;
-    font-family: var(--font-body);
     text-align: center;
   }
 

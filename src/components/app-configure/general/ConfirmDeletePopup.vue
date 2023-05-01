@@ -14,9 +14,11 @@ const appsStore = useAppsStore()
 </script>
 
 <template>
-  <header class="sub-heading-1 flex-grow">
+  <header
+    class="lg:text-[2rem] md:text-[1.25rem] max-[768px]:text-[1.125rem] font-bold flex-1 flex justify-center"
+  >
     <div
-      class="text-ellipsis"
+      class="text-ellipsis overflow-hidden"
       style="max-width: 100%"
       :title="`Delete app - ${appsStore.app(props.appId as number).name}`"
     >
@@ -31,7 +33,7 @@ const appsStore = useAppsStore()
     <br /><br />
     Please press 'Delete' to confirm this action.
   </main>
-  <footer class="flex sm-column flex-grow">
+  <footer class="flex sm-column flex-1">
     <VButton
       v-wave
       variant="secondary"
@@ -48,11 +50,6 @@ const appsStore = useAppsStore()
 </template>
 
 <style scoped>
-header {
-  display: flex;
-  justify-content: center;
-}
-
 main {
   padding: 2vw;
   font-size: 0.9rem;

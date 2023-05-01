@@ -89,7 +89,7 @@ function handleCancel() {
   width: 72%;
   min-width: 200px;
   max-width: 560px;
-  padding: 4em 2em;
+  padding: 2em;
   transform: translate(-50%, -50%);
 }
 </style>

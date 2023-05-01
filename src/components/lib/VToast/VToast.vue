@@ -29,7 +29,7 @@ function handleCloseToast(toastMessage: ToastMessage) {
         :class="toastMessage.type"
       >
         <VStack justify="space-between" align="start" gap="0.5rem">
-          <span class="body-2 font-500 v-toast-message">
+          <span class="body-2 font-medium v-toast-message">
             {{ toastMessage.message }}
           </span>
           <span

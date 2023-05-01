@@ -41,7 +41,6 @@ function handleCta() {
   justify-content: center;
   width: 100%;
   height: 2.5rem;
-  font-family: var(--font-title);
   background-color: var(--color-red);
 }
 

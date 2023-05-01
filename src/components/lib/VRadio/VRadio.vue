@@ -27,7 +27,7 @@ const attrs = useAttrs()
 </script>
 
 <template>
-  <VStack class="flex flex-center justify-space-between" gap="0.5rem">
+  <VStack class="flex items-center justify-between" gap="0.5rem">
     <input
       :id="value"
       type="radio"
@@ -35,7 +35,7 @@ const attrs = useAttrs()
       v-bind="attrs"
       @change="emit('update:modelValue', value)"
     />
-    <label class="body-1" :for="value">{{ label }}</label>
+    <label class="text-lg font-normal" :for="value">{{ label }}</label>
   </VStack>
 </template>
 

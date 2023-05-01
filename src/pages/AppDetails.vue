@@ -282,14 +282,11 @@ watch(
           <img :src="ArcanaLogo" alt="Arcana Logo" />
         </div>
         <VStack class="justify-end help-button__container flex-grow">
-          <div id="help_menu" ref="help_menu" class="position-relative flex">
+          <div id="help_menu" ref="help_menu" class="relative flex">
             <button class="help-button" @click.stop="toggleHelpMenu">
               Help
             </button>
-            <VCard
-              v-if="showHelpMenu"
-              class="help-menu-items position-absolute"
-            >
+            <VCard v-if="showHelpMenu" class="help-menu-items absolute">
               <ul style="margin: 0">
                 <li
                   v-for="helpItem in HelpItems"
@@ -322,20 +319,13 @@ watch(
               @close="toggleNotifications"
             />
           </div>
-          <div
-            id="profile_menu"
-            ref="profile_menu"
-            class="position-relative flex"
-          >
+          <div id="profile_menu" ref="profile_menu" class="relative flex">
             <img
               src="@/assets/iconography/profile.svg"
               class="cursor-pointer"
               @click.stop="toggleProfileMenu"
             />
-            <VCard
-              v-if="showProfileMenu"
-              class="help-menu-items position-absolute"
-            >
+            <VCard v-if="showProfileMenu" class="help-menu-items absolute">
               <ul style="margin: 0">
                 <li
                   v-for="profileItem in ProfileItems"
@@ -440,7 +430,6 @@ watch(
 
 .help-button {
   padding: 0;
-  font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
   background: transparent;
@@ -459,6 +448,7 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 200px;
   padding: 0;
   padding-top: 1.25rem;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
@@ -472,7 +462,6 @@ watch(
   width: 100%;
   padding-inline: 1.25rem;
   padding-bottom: 1.25rem;
-  font-family: var(--font-body);
   color: var(--text-white);
   white-space: nowrap;
   list-style: none;

@@ -23,10 +23,7 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
         dApp's data assets reside, for compliance and regulatory purpose.
         <strong>Once a region has been selected it cannot be altered.</strong>
         <br />
-        <a
-          :href="`${DOCS_URL}/docs/storage_nodes`"
-          target="_blank"
-          class="learn-more"
+        <a :href="`${DOCS_URL}/docs/storage_nodes`" target="_blank"
           >Learn More...</a
         ></template
       >

@@ -177,7 +177,7 @@ function isButtonDisabled() {
         per user. Or you can use the "Unlimited" default.</template
       >
       <form @submit.prevent="handleSave">
-        <VStack direction="column" gap="2rem" class="flex-grow">
+        <VStack direction="column" gap="2rem" class="flex-1">
           <VStack
             class="limits-input-container"
             md-direction="column"
@@ -186,7 +186,7 @@ function isButtonDisabled() {
           >
             <VStack direction="column" gap="0.75rem" align="start">
               <h4>Storage</h4>
-              <VStack gap="1.25rem" wrap class="width-100">
+              <VStack gap="1.25rem" wrap class="w-full">
                 <VDropdown
                   v-model="storageLimitKind"
                   :options="userLimitOptions"
@@ -196,7 +196,7 @@ function isButtonDisabled() {
                     handleIsUnlimitedChange('storage', $event)
                   "
                 />
-                <VStack direction="column" class="flex-grow">
+                <VStack direction="column" class="flex-1">
                   <div class="input-group">
                     <VTextField
                       id="storage-user-limit"
@@ -230,7 +230,7 @@ function isButtonDisabled() {
             </VStack>
             <VStack direction="column" gap="0.75rem" align="start">
               <h4>Bandwidth</h4>
-              <VStack gap="1.25rem" wrap class="width-100">
+              <VStack gap="1.25rem" wrap class="w-full">
                 <VDropdown
                   v-model="bandwidthLimitKind"
                   :options="userLimitOptions"
@@ -240,7 +240,7 @@ function isButtonDisabled() {
                     handleIsUnlimitedChange('bandwidth', $event)
                   "
                 />
-                <VStack direction="column" class="flex-grow">
+                <VStack direction="column" class="flex-1">
                   <div class="input-group">
                     <VTextField
                       id="bandwidth-user-limit"
@@ -308,7 +308,6 @@ function isButtonDisabled() {
 .message {
   max-width: 16rem;
   margin: 5px 20px;
-  font-family: var(--font-body);
   font-size: 0.9rem;
   font-weight: 400;
   line-height: 1.5;

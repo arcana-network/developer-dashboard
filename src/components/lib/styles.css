@@ -1,2 +1,103 @@
-/* @import "./styles/__normalize.css"; */
+/* stylelint-disable scss/at-rule-no-unknown */
+
 @import './styles/__style-guide.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #13a3fd;
+  --primary-light: #fff;
+  --primary-dark: #161616;
+  --text-white: #fff;
+  --text-grey: #8d8d8d;
+  --color-green: #8fff00;
+  --color-yellow: #ffc226;
+  --color-orange: #ff6826;
+  --color-red: #b43030;
+  --color-white: #f7f7f7;
+  --color-black: #101010;
+  --dark-theme-bg: #1e1e1e;
+  --breakpoint-mobile: 767px;
+  --breakpoint-tablet: 1023px;
+  --breakpoint-laptop-and-above: 1024px;
+  --max-container-width: 108em;
+  --container-width: 90%;
+  --flex-row-gap: 0;
+  --flex-column-gap: 0;
+}
+
+*::-webkit-scrollbar {
+  width: 0.5em;
+  height: 0.5em;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+  border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+  width: 0.375rem;
+  height: 0.375rem;
+  background: #fff;
+  border-radius: 10px;
+  outline: none;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #8d8d8d;
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: #404040;
+}
+
+body {
+  line-height: 1.5;
+  color: var(--text-white);
+  background-color: var(--dark-theme-bg);
+}
+
+h1 {
+  font-size: 2.25rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 1.125rem;
+  font-weight: 400;
+}
+
+label {
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-white);
+}
+
+a {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
