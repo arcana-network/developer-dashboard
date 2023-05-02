@@ -95,7 +95,7 @@ onBeforeMount(async () => {
 <template>
   <div>
     <app-header />
-    <main class="container">
+    <main class="pb-10">
       <VStack class="heading" gap="1.5rem">
         <img
           src="@/assets/iconography/back.svg"
@@ -138,8 +138,8 @@ onBeforeMount(async () => {
             <VStack direction="column" class="flex-grow">
               <VStack
                 justify="space-between"
-                class="cursor-pointer"
-                style="padding: 2rem"
+                class="cursor-pointer transition-all px-6"
+                :class="[expandInvoice ? 'py-8' : 'py-4']"
                 @click.stop="handleExpand(invoice)"
               >
                 <span class="invoice-title">{{ invoice.period }}</span>
@@ -162,7 +162,7 @@ onBeforeMount(async () => {
                   </a>
                 </VStack>
               </VStack>
-              <VSeperator class="separator-bleed" />
+              <VSeperator v-if="expandInvoice" class="separator-bleed" />
               <VCard variant="depressed" class="invoice-statement-card">
                 <VStack direction="column" gap="1.5rem" class="flex-grow">
                   <VStack gap="2rem">
