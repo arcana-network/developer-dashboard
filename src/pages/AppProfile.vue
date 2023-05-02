@@ -379,8 +379,10 @@ function handleCancel() {
       <section class="personal-details">
         <SettingCard>
           <template #title>USER ACCOUNT</template>
-          <VStack class="flex flex-col flex-wrap justify-between" gap="1.25rem">
-            <div class="flex column details flex-grow">
+          <div
+            class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
+          >
+            <div class="flex flex-col flex-1 space-y-2">
               <label for="light-horizontal-logo">Name</label>
               <VTextField
                 v-model.trim="name"
@@ -389,7 +391,7 @@ function handleCancel() {
                 no-message
               />
             </div>
-            <div class="flex column details flex-grow">
+            <div class="flex flex-col flex-1 space-y-2">
               <label for="light-horizontal-logo">Account Identifier</label>
               <VTextField
                 v-model.trim="email"
@@ -398,22 +400,17 @@ function handleCancel() {
                 no-message
               />
             </div>
-            <div
-              class="flex column details flex-grow"
-              style="visibility: hidden"
-            ></div>
-          </VStack>
+          </div>
         </SettingCard>
       </section>
       <section style="margin-top: 3em">
         <SettingCard>
           <template #title>ORGANISATION</template>
           <form @submit.prevent="onUpdateOrganization">
-            <VStack
-              class="flex flex-col flex-wrap justify-between"
-              gap="1.25rem"
+            <div
+              class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
             >
-              <div class="flex column details flex-grow">
+              <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Name</label>
                 <VTextField
                   v-model.trim="organisationDetails.name"
@@ -421,7 +418,7 @@ function handleCancel() {
                   no-message
                 />
               </div>
-              <div class="flex column details flex-grow">
+              <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Country</label>
                 <VTextField
                   v-model.trim="organisationDetails.country"
@@ -429,7 +426,7 @@ function handleCancel() {
                   no-message
                 />
               </div>
-              <div class="flex column details flex-grow">
+              <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Organization Size</label>
                 <VTextField
                   v-model.trim="organisationDetails.size"
@@ -441,7 +438,7 @@ function handleCancel() {
                   "
                 />
               </div>
-            </VStack>
+            </div>
             <ConfigureActionButtons
               :save-disabled="
                 isOrganisationDetailsSame() || !hasOrganisationDetails()
@@ -461,7 +458,7 @@ function handleCancel() {
               class="flex flex-col flex-wrap justify-between"
               gap="1.25rem"
             >
-              <div class="flex column details flex-grow">
+              <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Billing Name</label>
                 <VTextField
                   v-model.trim="invoiceDetails.name"
@@ -471,7 +468,7 @@ function handleCancel() {
                   @icon-clicked="invoiceDetails.name = ''"
                 />
               </div>
-              <div class="flex column details flex-grow">
+              <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Billing Address</label>
                 <VTextField
                   v-model.trim="invoiceDetails.address"
@@ -481,17 +478,13 @@ function handleCancel() {
                   @icon-clicked="invoiceDetails.address = ''"
                 />
               </div>
-              <div
-                class="flex column details flex-grow"
-                style="visibility: hidden"
-              ></div>
+              <div class="flex column flex-1" style="visibility: hidden"></div>
             </VStack>
-            <div class="flex column flex-grow" style="gap: 1rem">
-              <VStack
-                class="flex flex-col flex-wrap justify-between"
-                gap="1.25rem"
+            <div class="flex column flex-1 space-y-4">
+              <div
+                class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
               >
-                <div class="flex column details flex-grow">
+                <div class="flex flex-col flex-1 space-y-2">
                   <label for="billing-address-line-1">Address Line 1</label>
                   <VTextField
                     id="billing-address-line-1"
@@ -500,7 +493,7 @@ function handleCancel() {
                     no-message
                   />
                 </div>
-                <div class="flex column details flex-grow">
+                <div class="flex flex-col flex-1 space-y-2">
                   <label for="billing-address-line-2"
                     >Address Line 2 (Optional)</label
                   >
@@ -511,48 +504,43 @@ function handleCancel() {
                     no-message
                   />
                 </div>
-              </VStack>
-              <VStack
-                class="flex flex-col flex-wrap justify-between"
-                gap="1.25rem"
+              </div>
+              <div
+                class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
               >
-                <div class="flex column details flex-grow">
+                <div class="flex column flex-1 space-y-2">
                   <label for="billing-city">City</label>
                   <VTextField
                     id="billing-city"
                     v-model.trim="billingDetails.city"
-                    class="app-name-input"
                     no-message
                   />
                 </div>
-                <div class="flex column details flex-grow">
+                <div class="flex column flex-1 space-y-2">
                   <label for="billing-state">State</label>
                   <VTextField
                     id="billing-state"
                     v-model.trim="billingDetails.state"
-                    class="app-name-input"
                     no-message
                   />
                 </div>
-                <div class="flex column details flex-grow">
+                <div class="flex column flex-1 space-y-2">
                   <label for="billing-zipcode">Zip Code</label>
                   <VTextField
                     id="billing-zipcode"
                     v-model.trim="billingDetails.zipCode"
-                    class="app-name-input"
                     type="number"
                     no-message
                   />
                 </div>
-                <div class="flex column details flex-grow">
+                <div class="flex column flex-1 space-y-2">
                   <label for="billing-country">Country</label>
                   <VTextField
                     id="billing-country"
                     v-model.trim="billingDetails.country"
-                    class="app-name-input"
                   />
                 </div>
-              </VStack>
+              </div>
             </div>
             <ConfigureActionButtons
               :save-disabled="isBillingCopySame() || !hasBillingAddress()"
@@ -576,7 +564,7 @@ function handleCancel() {
               class="flex sm-column flex-wrap justify-between payment-container"
               gap="0.5rem"
             >
-              <VStack direction="column" class="flex-grow">
+              <VStack direction="column" class="flex-1">
                 <VStack justify="space-between">
                   <span class="payment-title">Card Details</span>
                   <VButton
@@ -587,7 +575,7 @@ function handleCancel() {
                   />
                 </VStack>
                 <div class="payment-input">
-                  <div class="flex column payment-details-input flex-grow">
+                  <div class="flex column payment-details-input flex-1">
                     <label for="card-name">Card Name</label>
                     <VTextField
                       v-if="!cardDetails.cardNumber"
@@ -606,7 +594,7 @@ function handleCancel() {
                       no-message
                     />
                   </div>
-                  <div class="flex column payment-details-input flex-grow">
+                  <div class="flex column payment-details-input flex-1">
                     <label for="card-number">Card Number</label>
                     <div
                       v-if="!cardDetails.cardNumber"
@@ -624,7 +612,7 @@ function handleCancel() {
                       no-message
                     />
                   </div>
-                  <div class="flex column payment-details-input flex-grow">
+                  <div class="flex column payment-details-input flex-1">
                     <label for="card-expiry">Expiry Date</label>
                     <div
                       v-if="!cardDetails.expiry"
@@ -642,7 +630,7 @@ function handleCancel() {
                       no-message
                     />
                   </div>
-                  <div class="flex column payment-details-input flex-grow">
+                  <div class="flex column payment-details-input flex-1">
                     <label v-if="!cardDetails.expiry" for="card-cvc">CVC</label>
                     <div
                       v-if="!cardDetails.expiry"
@@ -673,12 +661,6 @@ function handleCancel() {
 </template>
 
 <style scoped>
-.details {
-  gap: 0.5rem;
-  width: 280px;
-  margin-top: 1em;
-}
-
 main {
   padding-bottom: 4rem;
 }
@@ -720,12 +702,6 @@ main {
 
 .personal-details {
   margin-top: 3rem;
-}
-
-.overflow-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 label {
