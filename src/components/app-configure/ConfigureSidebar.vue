@@ -21,7 +21,7 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import { type ConfigureTab, type ConfigureTabType } from '@/utils/constants'
+import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
@@ -88,15 +88,14 @@ const ConfigureTabs = computed(() => {
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
   )
-  // if (props.currentNetwork === 'mainnet') {
-  configureTabsCopy[configurePageIndex]?.subMenu?.push({
-    label: 'Keyspace',
-    type: 'keyspace',
-    icon: KeyspaceIcon,
-  })
+  if (props.currentNetwork === 'mainnet') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push({
+      label: 'Keyspace',
+      type: 'keyspace',
+      icon: KeyspaceIcon,
+    })
+  }
   return configureTabsCopy
-  // }
-  // return configureTabsCopy
 })
 
 function onClickOfMenu(tab: ConfigureTab) {
@@ -137,7 +136,8 @@ onMounted(() => {
   showConfigureSubmenu.value =
     currentTab === 'Branding' ||
     currentTab === 'Social Auth' ||
-    currentTab === 'Arcana Wallet'
+    currentTab === 'Arcana Wallet' ||
+    currentTab === 'Keyspace'
 })
 
 onMounted(() => {
