@@ -704,12 +704,6 @@ main {
   margin-top: 3rem;
 }
 
-.overflow-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 label {
   color: var(--text-grey);
 }

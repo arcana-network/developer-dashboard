@@ -195,28 +195,12 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
-.container {
-  padding-bottom: 2.5rem;
-}
-
-.details {
-  gap: 1em;
-  width: 280px;
-  margin-top: 1em;
-}
-
 .heading {
   margin-top: 2rem;
 }
 
 .personal-details {
   margin-top: 3rem;
-}
-
-.overflow-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .invoice-card {
@@ -259,13 +243,6 @@ label {
   line-height: 1.5;
 }
 
-.popup-item {
-  padding-block: 1rem;
-  padding-inline: 1.5rem;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
 .invoice-title {
   font-size: 1.25rem;
   font-weight: 700;
@@ -274,23 +251,6 @@ label {
 
 .amount {
   color: var(--color-orange);
-}
-
-.card-option {
-  transition: transform 0.3s;
-}
-
-.card-option-expanded {
-  transform: rotate(-180deg);
-}
-
-.card-option-popup {
-  top: calc(100% + 0.5rem);
-  right: 0;
-  z-index: 100;
-  background: #161616;
-  border-radius: 10px;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%);
 }
 
 @media only screen and (max-width: 1023px) {
