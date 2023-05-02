@@ -69,36 +69,40 @@ async function fetchAndStoreDetails() {
 }
 
 async function fetchAndStoreUserInfo() {
-  loaderStore.showLoader('Signing In...')
-  const userInfo = await arcanaAuth.fetchUserDetails()
-  const loginInfoTestnet = await generateLoginInfo('testnet')
-  const accessTokenTestnet = await loginUser(
-    {
-      signature: loginInfoTestnet.signature,
-      email: userInfo.id,
-      address: loginInfoTestnet.address,
-    },
-    'testnet'
-  )
-  authStore.updateAccessToken(accessTokenTestnet.data.token, 'testnet')
-  authStore.updateWalletAddress(loginInfoTestnet.address)
-  const loginInfoMainnet = await generateLoginInfo('mainnet')
-  const accessTokenMainnet = await loginUser(
-    {
-      signature: loginInfoMainnet.signature,
-      email: userInfo.id,
-      address: loginInfoMainnet.address,
-    },
-    'mainnet'
-  )
-  authStore.updateAccessToken(accessTokenMainnet.data.token, 'mainnet')
-  authStore.updateUserInfo(
-    (userInfo.name as string) || 'User',
-    userInfo.email || userInfo.id
-  )
+  try {
+    loaderStore.showLoader('Signing In...')
+    const userInfo = await arcanaAuth.fetchUserDetails()
+    const loginInfoTestnet = await generateLoginInfo('testnet')
+    const accessTokenTestnet = await loginUser(
+      {
+        signature: loginInfoTestnet.signature,
+        email: userInfo.id,
+        address: loginInfoTestnet.address,
+      },
+      'testnet'
+    )
+    authStore.updateAccessToken(accessTokenTestnet.data.token, 'testnet')
+    authStore.updateWalletAddress(loginInfoTestnet.address)
+    const loginInfoMainnet = await generateLoginInfo('mainnet')
+    const accessTokenMainnet = await loginUser(
+      {
+        signature: loginInfoMainnet.signature,
+        email: userInfo.id,
+        address: loginInfoMainnet.address,
+      },
+      'mainnet'
+    )
+    authStore.updateAccessToken(accessTokenMainnet.data.token, 'mainnet')
+    authStore.updateUserInfo(
+      (userInfo.name as string) || 'User',
+      userInfo.email || userInfo.id
+    )
 
-  if (loginInfoTestnet.nonce === 0 || loginInfoMainnet.nonce === 0) {
-    addUserToMailchimp(userInfo.id)
+    if (loginInfoTestnet.nonce === 0 || loginInfoMainnet.nonce === 0) {
+      addUserToMailchimp(userInfo.id)
+    }
+  } catch (e) {
+    console.log({ e })
   }
 }
 
