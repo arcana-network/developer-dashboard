@@ -56,6 +56,7 @@ async function fetchAndStoreDetails() {
     console.error({ e })
   } finally {
     if (route.params.redirectTo) {
+      await appsStore.fetchNotifications()
       router.push({
         name: route.params.redirectTo as RouteRecordName,
         ...route.params,
@@ -107,7 +108,6 @@ onMounted(async () => {
     arcanaAuth.getProvider().on('connect', async () => {
       loaderStore.showLoader('Signing in...')
       await fetchAndStoreDetails()
-      await appsStore.fetchNotifications()
     })
   }
 })

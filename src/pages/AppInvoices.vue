@@ -49,41 +49,46 @@ function getDueDate() {
 }
 
 onBeforeMount(async () => {
-  loaderStore.showLoader('Fetching invoices...')
-  const appsOverview = (await getAuthOverview('mainnet')).data
-  if (appsOverview) {
-    totalBill.value = appsOverview.bill
-  }
-  const cards = (await listCards()).data
-  if (cards?.length) {
-    selectedCard.value = `Card Ending ${cards[0].last4}`
-  } else {
-    selectedCard.value = 'No card added'
-  }
-  const invoiceData = (await listInvoices('mainnet')).data
-  if (invoiceData) {
-    const invoicePeriods = Object.keys(invoiceData).reverse()
-    invoicePeriods.forEach((invoicePeriod) => {
-      const invoice = {} as InvoiceData
-      invoice.apps = []
-      invoice.period = moment(invoicePeriod, 'M-YYYY').format('MMMM YYYY')
-      const invoiceDetails = Object.keys(invoiceData[invoicePeriod])
-      invoiceDetails.forEach((invoiceDetail) => {
-        if (invoiceDetail === 'bill') {
-          invoice.bill = invoiceData[invoicePeriod].bill
-        } else if (invoiceDetail === 'invoice_url') {
-          invoice.url = invoiceData[invoicePeriod].invoice_url
-        } else {
-          invoice.apps.push({
-            appName: invoiceDetail,
-            usage: invoiceData[invoicePeriod][invoiceDetail],
-          })
-        }
+  try {
+    loaderStore.showLoader('Fetching invoices...')
+    const appsOverview = (await getAuthOverview('mainnet')).data
+    if (appsOverview) {
+      totalBill.value = appsOverview.bill
+    }
+    const cards = (await listCards()).data
+    if (cards?.length) {
+      selectedCard.value = `Card Ending ${cards[0].last4}`
+    } else {
+      selectedCard.value = 'No card added'
+    }
+    const invoiceData = (await listInvoices('mainnet')).data
+    if (invoiceData) {
+      const invoicePeriods = Object.keys(invoiceData).reverse()
+      invoicePeriods.forEach((invoicePeriod) => {
+        const invoice = {} as InvoiceData
+        invoice.apps = []
+        invoice.period = moment(invoicePeriod, 'M-YYYY').format('MMMM YYYY')
+        const invoiceDetails = Object.keys(invoiceData[invoicePeriod])
+        invoiceDetails.forEach((invoiceDetail) => {
+          if (invoiceDetail === 'bill') {
+            invoice.bill = invoiceData[invoicePeriod].bill
+          } else if (invoiceDetail === 'invoice_url') {
+            invoice.url = invoiceData[invoicePeriod].invoice_url
+          } else {
+            invoice.apps.push({
+              appName: invoiceDetail,
+              usage: invoiceData[invoicePeriod][invoiceDetail],
+            })
+          }
+        })
+        invoices.value.push(invoice)
       })
-      invoices.value.push(invoice)
-    })
+    }
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    loaderStore.hideLoader()
   }
-  loaderStore.hideLoader()
 })
 </script>
 
