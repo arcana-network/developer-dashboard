@@ -1,3 +1,4 @@
+import { getConfig } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 
@@ -29,8 +30,11 @@ function useArcanaAuth() {
         network,
         debug: true,
         chainConfig: {
-          chainId: CHAIN.POLYGON_MAINNET,
-          rpcUrl: 'https://polygon-rpc.com/',
+          chainId:
+            ARCANA_AUTH_NETWORK === 'mainnet'
+              ? CHAIN.POLYGON_MAINNET
+              : CHAIN.POLYGON_MUMBAI_TESTNET,
+          rpcUrl: getConfig().rpcUrl,
         },
       })
       await authInstance.init()

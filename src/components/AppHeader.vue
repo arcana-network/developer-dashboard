@@ -3,7 +3,9 @@ import { onMounted, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
+import AppNotifications from '@/components/AppNotifications.vue'
 import CloseIcon from '@/components/icons/CloseIcon.vue'
+import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
@@ -19,6 +21,8 @@ const showProfileMenu = ref(false)
 const { logout } = useArcanaAuth()
 const profile_menu = ref(null)
 const help_menu = ref(null)
+const showNotifications = ref(false)
+const notification_menu = ref(null)
 
 type HeaderProps = {
   container?: boolean
@@ -44,6 +48,10 @@ useClickOutside(profile_menu, () => {
 
 useClickOutside(help_menu, () => {
   showHelpMenu.value = false
+})
+
+useClickOutside(notification_menu, () => {
+  showNotifications.value = false
 })
 
 onMounted(() => {
@@ -84,6 +92,11 @@ function toggleProfileMenu() {
   showProfileMenu.value = !showProfileMenu.value
   showHelpMenu.value = false
 }
+
+function toggleNotifications() {
+  const value = !showNotifications.value
+  showNotifications.value = value
+}
 </script>
 
 <template>
@@ -107,9 +120,9 @@ function toggleProfileMenu() {
         align="center"
         gap="1rem"
       >
-        <div id="help_menu" ref="help_menu" class="position-relative flex">
+        <div id="help_menu" ref="help_menu" class="relative flex">
           <button class="help-button" @click.stop="toggleHelpMenu">Help</button>
-          <VCard v-if="showHelpMenu" class="help-menu-items position-absolute">
+          <VCard v-if="showHelpMenu" class="help-menu-items absolute">
             <ul style="margin: 0">
               <li
                 v-for="helpItem in HelpItems"
@@ -119,7 +132,7 @@ function toggleProfileMenu() {
               >
                 <a
                   :href="helpItem.link"
-                  class="flex"
+                  class="flex text-white no-underline"
                   style="gap: 0.75rem"
                   target="_blank"
                 >
@@ -130,20 +143,20 @@ function toggleProfileMenu() {
             </ul>
           </VCard>
         </div>
-        <div
-          id="profile_menu"
-          ref="profile_menu"
-          class="position-relative flex"
-        >
+        <div ref="notification_menu" class="notification-container flex">
+          <NotificationIcon @click="toggleNotifications" />
+          <AppNotifications
+            v-if="showNotifications"
+            @close="toggleNotifications"
+          />
+        </div>
+        <div id="profile_menu" ref="profile_menu" class="relative flex">
           <img
             src="@/assets/iconography/profile.svg"
             class="cursor-pointer"
             @click.stop="toggleProfileMenu"
           />
-          <VCard
-            v-if="showProfileMenu"
-            class="help-menu-items position-absolute"
-          >
+          <VCard v-if="showProfileMenu" class="help-menu-items absolute">
             <ul style="margin: 0">
               <li
                 v-for="profileItem in ProfileItems"
@@ -155,7 +168,7 @@ function toggleProfileMenu() {
                   :to="{
                     name: `App${profileItem.label}`,
                   }"
-                  class="flex"
+                  class="flex text-white no-underline"
                   style="gap: 0.75rem"
                   ><img :src="profileItem.icon" />
                   <span>{{ profileItem.label }} </span></RouterLink
@@ -198,6 +211,10 @@ header {
   transition: transform 0.6s;
 }
 
+.notification-container {
+  position: relative;
+}
+
 .mobile-menu-icon-button {
   display: flex;
   align-items: center;
@@ -224,7 +241,6 @@ header {
 }
 
 .help-button {
-  font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
   background: transparent;
@@ -239,6 +255,7 @@ header {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 200px;
   padding: 0;
   padding-top: 1.25rem;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
@@ -252,21 +269,14 @@ header {
   width: 100%;
   padding-inline: 1.25rem;
   padding-bottom: 1.25rem;
-  font-family: var(--font-body);
   color: var(--text-white);
   white-space: nowrap;
   list-style: none;
 }
 
-.help-menu-items a {
-  color: white;
-  text-decoration: none;
-}
-
 .banner {
   position: relative;
   padding: 0.25em 1.5em;
-  font-family: var(--font-body);
   line-height: 1.5em;
   color: white;
   text-align: center;
@@ -297,5 +307,11 @@ header {
   right: 2em;
   margin-top: 2px;
   cursor: pointer;
+}
+
+@media only screen and (max-width: 767px) {
+  .notification-container {
+    position: inherit;
+  }
 }
 </style>

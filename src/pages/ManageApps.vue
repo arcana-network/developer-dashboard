@@ -16,6 +16,7 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
+import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import {
   getAccountStatus,
   getAuthOverview,
@@ -24,6 +25,7 @@ import {
 } from '@/services/gateway.service'
 import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
 import type { Network } from '@/utils/constants'
+import { NetworkName } from '@/utils/constants'
 
 const router = useRouter()
 const appsStore = useAppsStore()
@@ -33,6 +35,7 @@ type AppData = AppConfig & {
 }
 
 const apps: Ref<AppData[]> = ref(appsStore.apps)
+const hasDeleteApps = ref(false)
 const canCreateApp = ref(false)
 const showDeletePopup = ref(false)
 const accountStatus: Ref<AccountStatus> = ref('active')
@@ -87,6 +90,7 @@ onBeforeMount(async () => {
 
   const mausUsed = authOverview.mau
   estimatedCost.value = authOverview.bill
+  hasDeleteApps.value = authOverview.active_app_mau < authOverview.mau
   const allowedFreeMaus = 2000
 
   if (mausUsed > allowedFreeMaus) {
@@ -101,6 +105,7 @@ onBeforeMount(async () => {
   }
   await appsStore.fetchAndStoreAllApps('testnet')
   await appsStore.fetchAndStoreAllApps('mainnet')
+  await appsStore.fetchNotifications()
 })
 
 appsStore.$subscribe(() => {
@@ -134,7 +139,18 @@ async function handleAppNameSave(app: AppData) {
         <VStack gap="1.25rem" md-direction="column" sm-direction="column">
           <VCard class="info-card">
             <VStack direction="column" gap="1.5rem" class="flex-grow">
-              <span class="info-title">Monthly Active Users</span>
+              <VStack gap="1rem" align="center">
+                <span class="info-title">Monthly Active Users</span>
+                <VTooltip
+                  v-if="hasDeleteApps"
+                  title="If there is a discrepancy in aggregate billing please check billing section for further details as you may have deleted apps."
+                >
+                  <img
+                    src="@/assets/iconography/info-circle-outline.svg"
+                    style="margin-top: 2rem; cursor: pointer"
+                  />
+                </VTooltip>
+              </VStack>
               <VSeperator class="info-separator" />
               <VStack gap="0.25rem" class="info-margin">
                 <VStack
@@ -214,25 +230,29 @@ async function handleAppNameSave(app: AppData) {
         </VStack>
         <VStack gap="1.25rem" sm-justify="center" wrap>
           <VCard
-            class="app-card cursor-pointer"
+            class="w-[19rem] min-h-[350px] relative flex items-center justify-center cursor-pointer"
             @click.stop="canCreateApp = true"
             @cancel="canCreateApp = false"
           >
             <VStack direction="column" gap="1.25rem" align="center">
               <img src="@/assets/iconography/plus-circle-outline.svg" />
-              <span class="body-1 font-500">Create New App</span>
+              <span class="text-lg font-normal font-medium"
+                >Create New App</span
+              >
             </VStack>
           </VCard>
           <VCard
             v-for="app in apps"
             :key="`app-${app.id}`"
-            class="app-card"
-            :class="{ 'app-card-disabled': accountStatus !== 'active' }"
+            class="w-[19rem] min-h-[350px] relative flex items-center justify-center cursor-pointer"
+            :class="{
+              'cursor-not-allowed opacity-30': accountStatus !== 'active',
+            }"
           >
             <VStack
               direction="column"
               align="center"
-              class="app-container justify-space-between position-relative"
+              class="app-container justify-between relative"
             >
               <button
                 class="delete-icon-btn"
@@ -259,7 +279,7 @@ async function handleAppNameSave(app: AppData) {
                 />
                 <span
                   v-else
-                  class="sub-heading-3 app-name text-ellipsis"
+                  class="text-xl font-semibold app-name text-ellipsis overflow-hidden"
                   :title="app.name"
                   style="max-width: calc(100% - 1rem)"
                 >
@@ -275,7 +295,9 @@ async function handleAppNameSave(app: AppData) {
               </VStack>
               <VCard variant="depressed" gap="6px" class="stats-card">
                 <VStack direction="column" align="center" gap="0.25rem">
-                  <span class="stats-title">Testnet Users</span>
+                  <span class="stats-title"
+                    >{{ NetworkName.testnet }} Users</span
+                  >
                   <span class="stats-number">{{ app.totalUsers || 0 }}</span>
                 </VStack>
                 <VSeperator
@@ -289,7 +311,9 @@ async function handleAppNameSave(app: AppData) {
                   align="center"
                   gap="0.25rem"
                 >
-                  <span class="stats-title">Mainnet Users</span>
+                  <span class="stats-title"
+                    >{{ NetworkName.mainnet }} Users</span
+                  >
                   <span class="stats-number">{{
                     getMainnetTotalUsers(app.id)
                   }}</span>
@@ -298,14 +322,14 @@ async function handleAppNameSave(app: AppData) {
               <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
                 <VButton
                   variant="secondary"
-                  label="Testnet"
+                  :label="NetworkName.testnet"
                   class="app-action-button delete-button"
                   :disabled="app.network !== 'testnet'"
                   @click.stop="() => goToDashboard(app.id, 'testnet')"
                 />
                 <VButton
                   variant="primary"
-                  label="Mainnet"
+                  :label="NetworkName.mainnet"
                   class="app-action-button pause-button"
                   :disabled="!isMainnetAppAvailable(app.id)"
                   @click.stop="() => goToDashboard(app.id, 'mainnet')"
@@ -337,20 +361,6 @@ main {
   width: auto;
   max-width: 100%;
   margin: 0 2rem;
-}
-
-.app-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 19rem;
-  min-height: 350px;
-}
-
-.app-card-disabled {
-  cursor: not-allowed;
-  opacity: 0.3;
 }
 
 .app-container {
@@ -388,14 +398,12 @@ main {
 }
 
 .stats-title {
-  font-family: var(--font-title);
   font-size: 0.75rem;
   font-weight: 400;
   line-height: 1.5;
 }
 
 .stats-number {
-  font-family: var(--font-body);
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.5;
@@ -410,9 +418,8 @@ main {
 }
 
 .info-title {
-  margin-inline: 2rem;
   margin-top: 2rem;
-  font-family: var(--font-title);
+  margin-left: 2rem;
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.5;
@@ -426,14 +433,12 @@ main {
 
 .info-detail {
   margin-bottom: -0.75rem;
-  font-family: var(--font-body);
   font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.5;
 }
 
 .info-detail-name {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-grey);

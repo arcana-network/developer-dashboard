@@ -72,7 +72,6 @@ function handleCancel() {
           <a
             href="https://docs.dev.arcana.network/concepts/sharedkeys.html"
             target="_blank"
-            class="learn-more"
           >
             READ MORE
           </a>
@@ -104,7 +103,7 @@ function handleCancel() {
             </VStack>
           </VStack>
         </VCard>
-        <div class="position-relative">
+        <div class="relative">
           <div
             class="keyspace-card"
             :class="{
@@ -186,7 +185,7 @@ function handleCancel() {
           </div>
           <div
             v-if="app.status === 0"
-            class="position-absolute"
+            class="absolute"
             style="right: 2rem; bottom: 2rem"
           >
             <VStack class="justify-end" style="margin-top: 2rem">
@@ -234,19 +233,16 @@ function handleCancel() {
 }
 
 .keyspace-container {
-  width: calc(100% - 2rem);
   max-width: 296px;
   padding: 2rem;
 }
 
 .card-title {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 600;
 }
 
 .card-description {
-  font-family: var(--font-body);
   font-size: 0.75rem;
   line-height: 1.5;
   color: var(--text-grey);

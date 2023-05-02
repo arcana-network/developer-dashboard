@@ -4,16 +4,17 @@ import { ref } from 'vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VRadio from '@/components/lib/VRadio/VRadio.vue'
+import { NetworkName } from '@/utils/constants'
 
 const emits = defineEmits(['cancel', 'proceed'])
 
 const mainnetCopyOptions = [
   {
-    label: 'Copy Existing Testnet Config',
+    label: `Copy Existing ${NetworkName.testnet} Config`,
     value: 0,
   },
   {
-    label: 'New Mainnet Config',
+    label: `New ${NetworkName.mainnet} Config`,
     value: 1,
   },
 ]
@@ -30,11 +31,14 @@ function onProceed() {
   <VOverlay>
     <div class="switch-chain__outer-container">
       <div class="switch-chain__container">
-        <h3 class="switch-chain__title">Switch to Mainnet?</h3>
+        <h3 class="switch-chain__title">
+          Switch to {{ NetworkName.mainnet }}?
+        </h3>
         <p class="switch-chain__message">
-          To create Mainnet configuration profile you can copy Testnet
-          application settings profile or create a fresh Mainnet configuration.
-          Each configuration profile is assigned a unique App Address.
+          To create {{ NetworkName.mainnet }} configuration profile you can copy
+          {{ NetworkName.testnet }} application settings profile or create a
+          fresh {{ NetworkName.mainnet }} configuration. Each configuration
+          profile is assigned a unique App Address.
         </p>
         <div class="flex switch-chain__copy-optionss">
           <div
@@ -102,7 +106,6 @@ function onProceed() {
 }
 
 .switch-chain__message {
-  font-family: var(--font-body);
   font-size: 15px;
   color: var(--text-white);
   text-align: center;

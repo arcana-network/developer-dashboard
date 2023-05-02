@@ -10,15 +10,18 @@ const slot = useSlots()
 
 <template>
   <VCard variant="elevated" class="settings-card">
-    <VStack direction="column" gap="2rem" class="flex-grow">
+    <VStack direction="column" gap="2rem" class="flex-1">
       <VStack align="center" justify="space-between">
-        <h3 class="text-uppercase">
+        <h3 class="uppercase">
           <slot name="title" />
         </h3>
         <slot name="controls" />
       </VStack>
       <VSeperator class="settings-card-separator" />
-      <div v-if="slot.description" class="body-1 settings-card-description">
+      <div
+        v-if="slot.description"
+        class="text-lg font-normal settings-card-description"
+      >
         <slot name="description" />
       </div>
       <slot />

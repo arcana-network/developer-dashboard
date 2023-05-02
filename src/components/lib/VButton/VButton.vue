@@ -98,7 +98,6 @@ a {
   position: relative;
   min-width: 9em;
   padding: 0.625rem;
-  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 600;
   line-height: 1.5;

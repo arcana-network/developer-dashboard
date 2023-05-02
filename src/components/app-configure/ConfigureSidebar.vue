@@ -88,15 +88,15 @@ const ConfigureTabs = computed(() => {
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
   )
-  if (props.currentNetwork === 'mainnet') {
-    configureTabsCopy[configurePageIndex]?.subMenu?.push({
-      label: 'Keyspace',
-      type: 'keyspace',
-      icon: KeyspaceIcon,
-    })
-    return configureTabsCopy
-  }
+  // if (props.currentNetwork === 'mainnet') {
+  configureTabsCopy[configurePageIndex]?.subMenu?.push({
+    label: 'Keyspace',
+    type: 'keyspace',
+    icon: KeyspaceIcon,
+  })
   return configureTabsCopy
+  // }
+  // return configureTabsCopy
 })
 
 function onClickOfMenu(tab: ConfigureTab) {
@@ -172,14 +172,14 @@ watch(
       <button class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </button>
-      <VStack direction="column" gap="1rem" class="configure-tabs flex-grow">
-        <VStack class="apps-name__container position-relative">
+      <VStack direction="column" gap="1rem" class="configure-tabs flex-1">
+        <VStack class="apps-name__container relative">
           <button
-            class="flex app-name__container cursor-pointer"
+            class="flex space-x-2 justify-between app-name__container cursor-pointer"
             @click="showAppsList = !showAppsList"
           >
             <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
-            <label class="selected-app text-ellipsis">{{
+            <label class="text-ellipsis font-bold text-2xl overflow-hidden">{{
               appsStore.app(useAppId()).name
             }}</label>
             <img
@@ -191,10 +191,7 @@ watch(
               }"
             />
           </button>
-          <VCard
-            v-if="showAppsList"
-            class="apps-name__list-container position-absolute"
-          >
+          <VCard v-if="showAppsList" class="apps-name__list-container absolute">
             <button
               class="apps-name__close-btn"
               @click.stop="showAppsList = false"
@@ -209,7 +206,9 @@ watch(
               @click="onAppClick(app.id)"
             >
               <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
-              <span class="app-name text-ellipsis">{{ app.name }}</span>
+              <span class="app-name text-ellipsis overflow-hidden">{{
+                app.name
+              }}</span>
             </VCardButton>
             <VSeperator class="app-full-bleed" />
             <VCardButton
@@ -333,8 +332,8 @@ watch(
 .configure-sidebar-card {
   box-sizing: border-box;
   display: flex;
+  flex: 1;
   flex-direction: column;
-  flex-grow: 1;
   height: 100%;
   padding: 2rem;
   padding-bottom: 0.75rem;
@@ -458,16 +457,10 @@ watch(
 .tab-label,
 .app-name,
 .submenu-tab-label {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
   color: var(--text-white);
-}
-
-.selected-app {
-  font-size: 1.5rem;
-  font-weight: 500;
 }
 
 .active-app .app-name {
@@ -486,10 +479,6 @@ watch(
   background: transparent;
   border: none;
   outline: none;
-}
-
-.app-name__container * + * {
-  margin-left: 5px;
 }
 
 .apps-name__list-item * + * {

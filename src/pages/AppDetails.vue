@@ -6,6 +6,8 @@ import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import AppNotifications from '@/components/AppNotifications.vue'
+import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
@@ -30,17 +32,18 @@ import {
   type Network,
   regions,
   RegionMapping,
+  NetworkName,
 } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
 const NetworkOptions = [
   {
-    label: 'Testnet',
+    label: NetworkName.testnet,
     value: 'testnet',
   },
   {
-    label: 'Mainnet',
+    label: NetworkName.mainnet,
     value: 'mainnet',
   },
 ]
@@ -52,9 +55,11 @@ const router = useRouter()
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
 const showMobileMenu = ref(false)
+const showNotifications = ref(false)
 const profile_menu = ref(null)
 const help_menu = ref(null)
 const mobile_menu = ref(null)
+const notification_menu = ref(null)
 const { logout } = useArcanaAuth()
 const route = useRoute()
 const currentNetwork = ref(NetworkOptions[1])
@@ -71,6 +76,10 @@ useClickOutside(profile_menu, () => {
 
 useClickOutside(help_menu, () => {
   showHelpMenu.value = false
+})
+
+useClickOutside(notification_menu, () => {
+  showNotifications.value = false
 })
 
 function switchApp(selectedAppId: AppId) {
@@ -98,6 +107,7 @@ onBeforeMount(async () => {
   await appsStore.fetchAndStoreAppConfig(appId, app.network)
   const address = appsStore.app(appId).address
   createTransactionSigner(address, app.network)
+  await appsStore.fetchNotifications()
   loaderStore.hideLoader()
 })
 
@@ -112,6 +122,11 @@ function toggleProfileMenu() {
   showProfileMenu.value = !showProfileMenu.value
   showHelpMenu.value = false
   showMobileMenu.value = false
+}
+
+function toggleNotifications() {
+  const value = !showNotifications.value
+  showNotifications.value = value
 }
 
 function toggleHelpMenu() {
@@ -183,7 +198,7 @@ async function handleCreateMainnetApp({
     testnetApp.global_id = updatedTestnetApp.global_id
     await appsStore.fetchAndStoreAppConfig(updatedTestnetApp?.ID, 'testnet')
 
-    toast.success('Mainnet app created')
+    toast.success(`${NetworkName.mainnet} app created`)
     if (mainnetApp) {
       showMainnetConfirmation.value = false
       createdMainnetAppId.value = mainnetApp.ID
@@ -191,7 +206,7 @@ async function handleCreateMainnetApp({
       currentTab.value = 'Keyspace'
     }
   } catch (e) {
-    console.log(e)
+    console.error(e)
     currentNetwork.value = NetworkOptions[0]
     toast.error('Error occured while creating mainnet app')
   } finally {
@@ -268,14 +283,11 @@ watch(
           <img :src="ArcanaLogo" alt="Arcana Logo" />
         </div>
         <VStack class="justify-end help-button__container flex-grow">
-          <div id="help_menu" ref="help_menu" class="position-relative flex">
+          <div id="help_menu" ref="help_menu" class="relative flex">
             <button class="help-button" @click.stop="toggleHelpMenu">
               Help
             </button>
-            <VCard
-              v-if="showHelpMenu"
-              class="help-menu-items position-absolute"
-            >
+            <VCard v-if="showHelpMenu" class="help-menu-items absolute">
               <ul style="margin: 0">
                 <li
                   v-for="helpItem in HelpItems"
@@ -301,20 +313,20 @@ watch(
               <img src="@/assets/iconography/menu.svg" alt="menu icon" />
             </button>
           </div>
-          <div
-            id="profile_menu"
-            ref="profile_menu"
-            class="position-relative flex"
-          >
+          <div ref="notification_menu" class="notification-container flex">
+            <NotificationIcon @click="toggleNotifications" />
+            <AppNotifications
+              v-if="showNotifications"
+              @close="toggleNotifications"
+            />
+          </div>
+          <div id="profile_menu" ref="profile_menu" class="relative flex">
             <img
               src="@/assets/iconography/profile.svg"
               class="cursor-pointer"
               @click.stop="toggleProfileMenu"
             />
-            <VCard
-              v-if="showProfileMenu"
-              class="help-menu-items position-absolute"
-            >
+            <VCard v-if="showProfileMenu" class="help-menu-items absolute">
               <ul style="margin: 0">
                 <li
                   v-for="profileItem in ProfileItems"
@@ -413,18 +425,21 @@ watch(
 
 @media only screen and (max-width: 1023px) {
   .help-button__container {
-    gap: 0.5rem;
+    gap: 0.3rem;
   }
 }
 
 .help-button {
   padding: 0;
-  font-family: var(--font-body);
   color: var(--primary);
   cursor: pointer;
   background: transparent;
   border: none;
   outline: none;
+}
+
+.notification-container {
+  position: relative;
 }
 
 .help-menu-items {
@@ -434,6 +449,7 @@ watch(
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 200px;
   padding: 0;
   padding-top: 1.25rem;
   box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
@@ -447,7 +463,6 @@ watch(
   width: 100%;
   padding-inline: 1.25rem;
   padding-bottom: 1.25rem;
-  font-family: var(--font-body);
   color: var(--text-white);
   white-space: nowrap;
   list-style: none;
@@ -466,5 +481,11 @@ watch(
 .app-details__network-dropdown {
   align-self: flex-end;
   width: 16rem;
+}
+
+@media only screen and (max-width: 767px) {
+  .notification-container {
+    position: inherit;
+  }
 }
 </style>

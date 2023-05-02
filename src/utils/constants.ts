@@ -36,6 +36,13 @@ const api = {
 }
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
+const isProductionDashboard: boolean =
+  import.meta.env.VITE_ARCANA_AUTH_NETWORK === 'mainnet'
+
+const NetworkName = {
+  testnet: isProductionDashboard ? 'Testnet' : 'Dev',
+  mainnet: isProductionDashboard ? 'Mainnet' : 'Testnet',
+}
 
 const DOCS_URL: string = import.meta.env.VITE_ARCANA_DOCS_URL
 
@@ -276,10 +283,10 @@ const ProfileItems = [
     label: 'Profile',
     icon: PassportIcon,
   },
-  // {
-  //   label: 'Invoices',
-  //   icon: InvoiceIcon,
-  // },
+  {
+    label: 'Invoices',
+    icon: InvoiceIcon,
+  },
 ]
 
 const constants = {
@@ -308,6 +315,8 @@ export {
   WalletMode,
   MAX_DATA_TRANSFER_BYTES,
   DOCS_URL,
+  isProductionDashboard,
+  NetworkName,
   HelpItems,
   ProfileItems,
 }

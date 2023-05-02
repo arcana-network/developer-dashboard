@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
@@ -10,7 +10,6 @@ import useArcanaAuth from '@/use/arcanaAuth'
 import constants from '@/utils/constants'
 
 const loaderStore = useLoaderStore()
-const route = useRoute()
 const router = useRouter()
 const arcanaAuth = useArcanaAuth()
 const isAuthLoaded = ref(false)
@@ -30,9 +29,9 @@ onBeforeMount(async () => {
     return router.push({ name: 'AppDown' })
   }
   loaderStore.showLoader('Initializing Arcana Auth SDK...')
+  await fetchAndStoreConfig()
   await arcanaAuth.init()
   isAuthLoaded.value = true
-  await fetchAndStoreConfig()
   loaderStore.hideLoader()
 })
 </script>
@@ -64,15 +63,5 @@ onBeforeMount(async () => {
 
 .root {
   height: 100vh;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

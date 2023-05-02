@@ -10,8 +10,9 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import { submitVerificationForm } from '@/services/gateway.service'
-import type { AppId } from '@/stores/apps.store'
+import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { NetworkName } from '@/utils/constants'
 import { isValidEmail } from '@/utils/validation'
 
 type VerificationFormProps = {
@@ -24,6 +25,7 @@ const emit = defineEmits(['close', 'submitted'])
 const toast = useToast()
 const loaderStore = useLoaderStore()
 const error = ref('')
+const appsStore = useAppsStore()
 
 const formData = reactive({
   companyName: '',
@@ -69,7 +71,8 @@ async function handleSubmit() {
   }
   loaderStore.showLoader('Submitting the form for verification...')
   try {
-    await submitVerificationForm(props.appId, {
+    const app = appsStore.app(props.appId)
+    await submitVerificationForm(app.network, {
       app: props.address,
       company_name: formData.companyName,
       project_name: formData.projectName,
@@ -96,10 +99,10 @@ async function handleSubmit() {
 <template>
   <VOverlay>
     <div class="overlay-content">
-      <VCard class="verification-form-card position-relative">
+      <VCard class="verification-form-card relative">
         <img
           src="@/assets/iconography/close.svg"
-          class="position-absolute cursor-pointer"
+          class="absolute cursor-pointer"
           style="top: 1.25rem; right: 1.25rem; width: 1.25rem"
           @click.stop="emit('close')"
         />
@@ -107,7 +110,8 @@ async function handleSubmit() {
           <h3 class="verification-title">Verification Form</h3>
           <div class="verification-description" style="text-align: center">
             Fill up this verification form to register your application on
-            Mainnet and enable the Global keys feature. For assistance,&nbsp;
+            {{ NetworkName.mainnet }} and enable the Global keys feature. For
+            assistance,&nbsp;
             <a href="mailto:support@arcana.network">contact support</a>.
           </div>
           <form @submit.prevent="handleSubmit">
@@ -180,9 +184,12 @@ async function handleSubmit() {
             <VStack
               gap="1.25rem"
               style="justify-content: center; margin-block: 2rem"
-              @click.stop="emit('close')"
             >
-              <VButton variant="secondary" label="CANCEL"></VButton>
+              <VButton
+                variant="secondary"
+                label="CANCEL"
+                @click.stop="emit('close')"
+              ></VButton>
               <VButton type="submit" label="SUBMIT"></VButton>
             </VStack>
           </form>
@@ -218,7 +225,6 @@ div.form-group {
 label {
   margin-bottom: 0.5rem;
   margin-left: 0.25rem;
-  font-family: var(--font-title);
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5em;
@@ -241,7 +247,6 @@ textarea {
   width: 100%;
   padding: 0;
   margin: 0.875rem 1rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--text-white);
@@ -255,7 +260,6 @@ textarea {
 }
 
 textarea::placeholder {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: #393939;
@@ -271,13 +275,11 @@ textarea::placeholder {
 .verification-description {
   padding-inline: 4.25rem;
   margin-bottom: 2rem;
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .verification-description a {
-  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -286,7 +288,6 @@ textarea::placeholder {
 }
 
 .error {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
   color: var(--color-red);

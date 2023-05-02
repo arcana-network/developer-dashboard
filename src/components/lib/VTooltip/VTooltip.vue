@@ -28,7 +28,7 @@ const positionClass = {
   <div v-if="title" class="tooltip-wrapper" v-bind="attrs">
     <slot></slot>
     <div
-      class="tooltip body-3"
+      class="tooltip text-[0.84em] leading-[1.6em]"
       :class="positionClass"
       role="tooltip"
       aria-hidden="true"
@@ -58,11 +58,7 @@ div.tooltip-wrapper {
   padding: 1em;
   text-align: center;
   visibility: hidden;
-  background: radial-gradient(
-    252.43% 1769.19% at -86.03% 38.38%,
-    #1e1e1e 0%,
-    #353535 100%
-  );
+  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   border-radius: 10px;
   box-shadow: 5px 5px 5px rgb(0 0 0 / 60%);
   opacity: 0;
@@ -72,10 +68,5 @@ div.tooltip-wrapper {
 .tooltip-wrapper:hover > .tooltip {
   visibility: visible;
   opacity: 1;
-}
-
-.body-3 {
-  font-size: 0.84em;
-  line-height: 1.68em;
 }
 </style>

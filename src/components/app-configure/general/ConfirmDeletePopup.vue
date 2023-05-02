@@ -1,12 +1,30 @@
 <script lang="ts" setup>
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
+import { useAppsStore } from '@/stores/apps.store'
 
+type DeleteProp = {
+  appId?: number
+}
+
+const props = defineProps<DeleteProp>()
 const emit = defineEmits(['cancel', 'proceed'])
+
+const appsStore = useAppsStore()
 </script>
 
 <template>
-  <header class="sub-heading-1 flex-grow">Delete app</header>
+  <header
+    class="lg:text-[2rem] md:text-[1.25rem] max-[768px]:text-[1.125rem] font-bold flex-1 flex justify-center"
+  >
+    <div
+      class="text-ellipsis overflow-hidden"
+      style="max-width: 100%"
+      :title="`Delete app - ${appsStore.app(props.appId as number).name}`"
+    >
+      Delete app - {{ appsStore.app(props.appId as number).name }}
+    </div>
+  </header>
   <VSeperator />
   <main class="body-3">
     Deleting the app will remove all the assets that have been uploaded by your
@@ -15,7 +33,7 @@ const emit = defineEmits(['cancel', 'proceed'])
     <br /><br />
     Please press 'Delete' to confirm this action.
   </main>
-  <footer class="flex sm-column flex-grow">
+  <footer class="flex sm-column flex-1">
     <VButton
       v-wave
       variant="secondary"
@@ -32,11 +50,6 @@ const emit = defineEmits(['cancel', 'proceed'])
 </template>
 
 <style scoped>
-header {
-  display: flex;
-  justify-content: center;
-}
-
 main {
   padding: 2vw;
   font-size: 0.9rem;

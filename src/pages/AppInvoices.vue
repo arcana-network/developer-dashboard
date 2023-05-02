@@ -49,48 +49,53 @@ function getDueDate() {
 }
 
 onBeforeMount(async () => {
-  loaderStore.showLoader('Fetching invoices...')
-  const appsOverview = (await getAuthOverview('mainnet')).data
-  if (appsOverview) {
-    totalBill.value = appsOverview.bill
-  }
-  const cards = (await listCards()).data
-  if (cards?.length) {
-    selectedCard.value = `Card Ending ${cards[0].last4}`
-  } else {
-    selectedCard.value = 'No card added'
-  }
-  const invoiceData = (await listInvoices()).data
-  if (invoiceData) {
-    const invoicePeriods = Object.keys(invoiceData).reverse()
-    invoicePeriods.forEach((invoicePeriod) => {
-      const invoice = {} as InvoiceData
-      invoice.apps = []
-      invoice.period = moment(invoicePeriod, 'M-YYYY').format('MMMM YYYY')
-      const invoiceDetails = Object.keys(invoiceData[invoicePeriod])
-      invoiceDetails.forEach((invoiceDetail) => {
-        if (invoiceDetail === 'bill') {
-          invoice.bill = invoiceData[invoicePeriod].bill
-        } else if (invoiceDetail === 'invoice_url') {
-          invoice.url = invoiceData[invoicePeriod].invoice_url
-        } else {
-          invoice.apps.push({
-            appName: invoiceDetail,
-            usage: invoiceData[invoicePeriod][invoiceDetail],
-          })
-        }
+  try {
+    loaderStore.showLoader('Fetching invoices...')
+    const appsOverview = (await getAuthOverview('mainnet')).data
+    if (appsOverview) {
+      totalBill.value = appsOverview.bill
+    }
+    const cards = (await listCards()).data
+    if (cards?.length) {
+      selectedCard.value = `Card Ending ${cards[0].last4}`
+    } else {
+      selectedCard.value = 'No card added'
+    }
+    const invoiceData = (await listInvoices('mainnet')).data
+    if (invoiceData) {
+      const invoicePeriods = Object.keys(invoiceData).reverse()
+      invoicePeriods.forEach((invoicePeriod) => {
+        const invoice = {} as InvoiceData
+        invoice.apps = []
+        invoice.period = moment(invoicePeriod, 'M-YYYY').format('MMMM YYYY')
+        const invoiceDetails = Object.keys(invoiceData[invoicePeriod])
+        invoiceDetails.forEach((invoiceDetail) => {
+          if (invoiceDetail === 'bill') {
+            invoice.bill = invoiceData[invoicePeriod].bill
+          } else if (invoiceDetail === 'invoice_url') {
+            invoice.url = invoiceData[invoicePeriod].invoice_url
+          } else {
+            invoice.apps.push({
+              appName: invoiceDetail,
+              usage: invoiceData[invoicePeriod][invoiceDetail],
+            })
+          }
+        })
+        invoices.value.push(invoice)
       })
-      invoices.value.push(invoice)
-    })
+    }
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    loaderStore.hideLoader()
   }
-  loaderStore.hideLoader()
 })
 </script>
 
 <template>
   <div>
     <app-header />
-    <main class="container">
+    <main class="pb-10">
       <VStack class="heading" gap="1.5rem">
         <img
           src="@/assets/iconography/back.svg"
@@ -113,10 +118,8 @@ onBeforeMount(async () => {
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Payment Method:</span>
-              <VStack gap="0.625rem" class="position-relative">
-                <span class="charge-details text-uppercase">{{
-                  selectedCard
-                }}</span>
+              <VStack gap="0.625rem" class="relative">
+                <span class="charge-details uppercase">{{ selectedCard }}</span>
               </VStack>
             </VStack>
           </VStack>
@@ -135,8 +138,8 @@ onBeforeMount(async () => {
             <VStack direction="column" class="flex-grow">
               <VStack
                 justify="space-between"
-                class="cursor-pointer"
-                style="padding: 2rem"
+                class="cursor-pointer transition-all px-6"
+                :class="[expandInvoice ? 'py-8' : 'py-4']"
                 @click.stop="handleExpand(invoice)"
               >
                 <span class="invoice-title">{{ invoice.period }}</span>
@@ -153,12 +156,13 @@ onBeforeMount(async () => {
                     download
                     target="_blank"
                     style="display: flex"
+                    @click.stop="(e) => e.preventDefault()"
                   >
                     <img src="@/assets/iconography/download.svg" />
                   </a>
                 </VStack>
               </VStack>
-              <VSeperator class="separator-bleed" />
+              <VSeperator v-if="expandInvoice" class="separator-bleed" />
               <VCard variant="depressed" class="invoice-statement-card">
                 <VStack direction="column" gap="1.5rem" class="flex-grow">
                   <VStack gap="2rem">
@@ -191,28 +195,12 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
-.container {
-  padding-bottom: 2.5rem;
-}
-
-.details {
-  gap: 1em;
-  width: 280px;
-  margin-top: 1em;
-}
-
 .heading {
   margin-top: 2rem;
 }
 
 .personal-details {
   margin-top: 3rem;
-}
-
-.overflow-ellipsis {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .invoice-card {
@@ -245,28 +233,17 @@ label {
 }
 
 .invoice-value {
-  font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.5;
 }
 
 .charge-details {
-  font-family: var(--font-title);
   font-size: 1.125rem;
   font-weight: 700;
   line-height: 1.5;
 }
 
-.popup-item {
-  padding-block: 1rem;
-  padding-inline: 1.5rem;
-  font-family: var(--font-body);
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
 .invoice-title {
-  font-family: var(--font-title);
   font-size: 1.25rem;
   font-weight: 700;
   line-height: 1.5;
@@ -274,23 +251,6 @@ label {
 
 .amount {
   color: var(--color-orange);
-}
-
-.card-option {
-  transition: transform 0.3s;
-}
-
-.card-option-expanded {
-  transform: rotate(-180deg);
-}
-
-.card-option-popup {
-  top: calc(100% + 0.5rem);
-  right: 0;
-  z-index: 100;
-  background: #161616;
-  border-radius: 10px;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%);
 }
 
 @media only screen and (max-width: 1023px) {

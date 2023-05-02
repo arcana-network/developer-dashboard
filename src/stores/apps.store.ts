@@ -1,9 +1,22 @@
 import { defineStore } from 'pinia'
 
-import { fetchAllApps, fetchApp } from '@/services/gateway.service'
+import {
+  fetchAllApps,
+  fetchApp,
+  getNotifications,
+  updateNotificationRead,
+} from '@/services/gateway.service'
 import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
 import { WalletMode } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
+
+type Notification = {
+  data: string
+  id: number
+  read: boolean
+  time: string
+  type: string
+}
 
 type SocialAuthState = {
   verifier: SocialAuthVerifier
@@ -61,6 +74,7 @@ type AppState = {
   mainnetApps: {
     [key: AppId]: App
   }
+  notifications: Array<Notification>
 }
 
 const useAppsStore = defineStore('apps', {
@@ -68,6 +82,7 @@ const useAppsStore = defineStore('apps', {
     appIds: [],
     appsById: {},
     mainnetApps: {},
+    notifications: [],
   }),
   getters: {
     apps: (state) => {
@@ -100,6 +115,12 @@ const useAppsStore = defineStore('apps', {
       const testnetAppsList = Object.values(state.appsById)
       return (id: AppId) =>
         testnetAppsList.find((app) => app.global_id === id) || null
+    },
+    unreadNotificationCount: ({ notifications }) => {
+      return (
+        Array.isArray(notifications) &&
+        notifications.filter((item) => !item.read).length
+      )
     },
   },
   actions: {
@@ -167,6 +188,25 @@ const useAppsStore = defineStore('apps', {
           ...this.appsById[appId],
           ...configInfo,
         }
+      }
+    },
+    async fetchNotifications() {
+      try {
+        const { notifications } = (await getNotifications()).data
+        this.notifications = notifications
+      } catch (e) {
+        console.log({ e })
+      }
+    },
+    async updateNotificationReadStatus(list: number[]): Promise<void> {
+      try {
+        await updateNotificationRead(list)
+        this.notifications = this.notifications.map((notification) => {
+          if (list.includes(notification.id)) notification.read = true
+          return notification
+        })
+      } catch (e) {
+        console.error(e)
       }
     },
   },

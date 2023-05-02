@@ -442,12 +442,23 @@ function getAccountStatus(): Promise<AxiosResponse<AccountStatus>> {
 }
 
 function submitVerificationForm(
-  appId: AppId,
+  network: Network,
   formData: any
 ): Promise<AxiosResponse<any>> {
-  return getGatewayInstance('mainnet').post(`${getEnvApi()}/verify-app/`, {
+  return getGatewayInstance(network).post(`${getEnvApi()}/verify-app/`, {
     ...formData,
   })
+}
+
+function updateBillingAddress(address: any): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/billing-address/`,
+    address
+  )
+}
+
+function getBillingAddress(): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/billing-address/`)
 }
 
 function addCard(token: string): Promise<AxiosResponse<any>> {
@@ -468,8 +479,20 @@ function deleteCard(card_id: string): Promise<AxiosResponse<any>> {
   })
 }
 
-function listInvoices(): Promise<AxiosResponse<any>> {
-  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/invoices/`)
+function listInvoices(network: Network): Promise<AxiosResponse<any>> {
+  return getGatewayInstance(network).get(`${getEnvApi()}/invoices/`)
+}
+
+function getNotifications() {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/notification/`)
+}
+
+function updateNotificationRead(list: number[]) {
+  const body = { notifications: list }
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/notification/read/`,
+    body
+  )
 }
 
 export {
@@ -506,6 +529,10 @@ export {
   listCards,
   deleteCard,
   listInvoices,
+  getNotifications,
+  updateNotificationRead,
+  updateBillingAddress,
+  getBillingAddress,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

@@ -38,9 +38,11 @@ async function handleAppDeletion() {
   try {
     const appId = props.appId as number
     const app = appsStore.app(appId)
-    await deleteApp(app.global_id, 'mainnet')
-    await deleteApp(appId, 'testnet')
+    const globalAppNetwork = app.network === 'mainnet' ? 'testnet' : 'mainnet'
+    await deleteApp(app.global_id, globalAppNetwork)
+    await deleteApp(appId, app.network)
     appsStore.deleteApp(appId, app.network)
+    appsStore.deleteApp(app.global_id, globalAppNetwork)
     toast.success('App deleted successfully')
     router.push({ name: 'ManageApps' })
   } catch (e) {
@@ -63,11 +65,13 @@ function handleCancel() {
     <VCard class="modal-card">
       <ConfirmDeletePopup
         v-if="showDeletePopup"
+        :app-id="props.appId"
         @cancel="handleCancel"
         @proceed="handleProceedDeletion"
       />
       <DeleteTimerPopup
         v-if="showDeleteTimerPopup"
+        :app-id="props.appId"
         @cancel="handleCancel"
         @delete="handleAppDeletion"
       />
@@ -85,7 +89,7 @@ function handleCancel() {
   width: 72%;
   min-width: 200px;
   max-width: 560px;
-  padding: 4em 2em;
+  padding: 2em;
   transform: translate(-50%, -50%);
 }
 </style>

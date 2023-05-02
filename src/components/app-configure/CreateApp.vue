@@ -110,14 +110,12 @@ async function handleCreateApp() {
 }
 
 .create-app-title {
-  font-family: var(--font-body);
   font-size: 2rem;
   font-weight: 700;
   text-align: center;
 }
 
 .app-name-label {
-  font-family: var(--font-body);
   font-size: 1.125rem;
   font-weight: 400;
   color: var(--text-grey);
