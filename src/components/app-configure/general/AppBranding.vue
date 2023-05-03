@@ -111,9 +111,9 @@ async function handleFileRemove(
 
 <template>
   <section name="app-branding">
-    <SettingCard class="app-branding-card">
+    <SettingCard class="app-branding-card w-full">
       <template #title>Branding</template>
-      <VStack direction="column" gap="2rem">
+      <VStack direction="column" gap="2rem" class="w-full">
         <VStack direction="column" gap="0.5rem">
           <h3>Wallet Logo</h3>
           <VStack direction="column" gap="0.5rem" class="body-2">
@@ -145,12 +145,10 @@ async function handleFileRemove(
         </VStack>
         <VStack direction="column" gap="0.5rem">
           <h4 class="font-bold">Light Mode</h4>
-          <VStack gap="4rem" md-gap="2rem" wrap>
-            <VStack
-              direction="column"
-              gap="0.375rem"
-              class="file-upload-container"
-            >
+          <div
+            class="flex space-x-4 max-[1200px]:flex-col max-[1200px]:space-x-0 max-[1200px]:space-y-4 w-full"
+          >
+            <VStack direction="column" gap="0.375rem" class="flex-1">
               <label for="light-logo">Logo Mark</label>
               <VFileUpload
                 id="light-logo"
@@ -158,7 +156,6 @@ async function handleFileRemove(
                 allowed-file-type=".png,.svg"
                 :value="themeLogos.light.vertical.logo"
                 :is-loading="themeLogos.light.vertical.isLoading"
-                class="file-upload-input"
                 @change-file="handleFileChange('light', 'vertical', $event)"
                 @remove-file="handleFileRemove('light', 'vertical')"
               />
@@ -168,17 +165,12 @@ async function handleFileRemove(
                 >Maximum image size: 1MB</span
               >
             </VStack>
-            <VStack
-              direction="column"
-              gap="0.375rem"
-              class="file-upload-container"
-            >
+            <VStack direction="column" gap="0.375rem" class="flex-1">
               <label for="light-horizontal-logo">Horizontal Logo</label>
               <VFileUpload
                 id="light-horizontal-logo"
                 :value="themeLogos.light.horizontal.logo"
                 :is-loading="themeLogos.light.horizontal.isLoading"
-                class="file-upload-input"
                 placeholder="Upload .png,or .svg"
                 allowed-file-type=".png,.svg"
                 @change-file="handleFileChange('light', 'horizontal', $event)"
@@ -190,23 +182,20 @@ async function handleFileRemove(
                 >Maximum image size: 1MB</span
               >
             </VStack>
-          </VStack>
+          </div>
         </VStack>
-        <VStack direction="column" gap="0.5rem">
+        <VStack direction="column" gap="0.5rem" class="w-full">
           <h4 class="uppercase font-bold">Dark Mode</h4>
-          <VStack gap="4rem" md-gap="2rem" wrap>
-            <VStack
-              direction="column"
-              gap="0.375rem"
-              class="file-upload-container"
-            >
+          <div
+            class="flex space-x-4 max-[1200px]:flex-col max-[1200px]:space-x-0 max-[1200px]:space-y-4 w-full"
+          >
+            <VStack direction="column" gap="0.375rem" class="flex-1 w-full">
               <label for="dark-logo">Logo Mark</label>
               <VFileUpload
                 id="dark-logo"
                 :value="themeLogos.dark.vertical.logo"
                 :is-loading="themeLogos.dark.vertical.isLoading"
                 placeholder="Upload .png or .svg"
-                class="file-upload-input"
                 allowed-file-type=".png,.svg"
                 @change-file="handleFileChange('dark', 'vertical', $event)"
                 @remove-file="handleFileRemove('dark', 'vertical')"
@@ -217,18 +206,13 @@ async function handleFileRemove(
                 >Maximum image size: 1MB</span
               >
             </VStack>
-            <VStack
-              direction="column"
-              gap="0.375rem"
-              class="file-upload-container"
-            >
+            <VStack direction="column" gap="0.375rem" class="flex-1">
               <label for="dark-horizontal-logo">Horizontal Logo</label>
               <VFileUpload
                 id="dark-horizontal-log"
                 :value="themeLogos.dark.horizontal.logo"
                 :is-loading="themeLogos.dark.horizontal.isLoading"
                 placeholder="Upload .png or .svg"
-                class="file-upload-input"
                 allowed-file-type=".png,.svg"
                 @change-file="handleFileChange('dark', 'horizontal', $event)"
                 @remove-file="handleFileRemove('dark', 'horizontal')"
@@ -239,7 +223,7 @@ async function handleFileRemove(
                 >Maximum image size: 1MB</span
               >
             </VStack>
-          </VStack>
+          </div>
         </VStack>
       </VStack>
       <VSeperator />
@@ -271,10 +255,6 @@ h3 {
   margin-left: 5px;
 }
 
-.file-upload-container {
-  flex: 0 0 24rem;
-}
-
 .file-upload-hint {
   font-size: 0.75rem;
   color: var(--text-grey);
@@ -282,9 +262,5 @@ h3 {
 
 .file-upload-hint.error {
   color: #ee193f;
-}
-
-.file-upload-input {
-  max-width: 20rem;
 }
 </style>
