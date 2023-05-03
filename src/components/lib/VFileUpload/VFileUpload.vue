@@ -3,7 +3,6 @@ import { onBeforeUnmount, onMounted } from 'vue'
 
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCircularProgress from '@/components/lib/VCircularProgress/VCircularProgress.vue'
-import VStack from '@/components/lib/VStack/VStack.vue'
 
 type FileUploadProps = {
   placeholder?: string
@@ -52,41 +51,33 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <VCard v-if="props.value" variant="depressed" class="file-upload-card">
-    <VStack gap="2rem" justify="space-between" align="center" class="flex-1">
-      <span class="text-lg font-normal text-ellipsis" :title="props.value">{{
-        props.value
-      }}</span>
-      <img
-        src="@/assets/iconography/close.svg"
-        class="cursor-pointer"
-        @click.stop="handleRemoveFile"
-      />
-    </VStack>
+  <VCard
+    v-if="props.value"
+    variant="depressed"
+    class="rounded-[10px] p-4 space-x-1"
+  >
+    <p
+      class="text-lg font-normal text-ellipsis overflow-hidden h-auto flex-1"
+      :title="props.value"
+    >
+      {{ props.value }}
+    </p>
+    <img
+      src="@/assets/iconography/close.svg"
+      class="cursor-pointer"
+      @click.stop="handleRemoveFile"
+    />
   </VCard>
   <VCard
     v-else
     variant="depressed"
-    class="file-upload-card cursor-pointer"
+    class="w-full cursor-pointer p-4 justify-between"
     @click.stop="handleUploadClick"
   >
-    <VStack gap="2rem" justify="space-between" align="center" class="flex-1">
-      <span class="text-lg font-normal text-ellipsis">
-        {{ props.placeholder }}
-      </span>
-      <img v-if="!props.isLoading" src="@/assets/iconography/upload.svg" />
-      <VCircularProgress v-else size="1.5rem" stroke="0.5rem" />
-    </VStack>
+    <span class="text-lg font-normal text-ellipsis h-7">
+      {{ props.placeholder }}
+    </span>
+    <img v-if="!props.isLoading" src="@/assets/iconography/upload.svg" />
+    <VCircularProgress v-else size="1.5rem" stroke="0.5rem" />
   </VCard>
 </template>
-
-<style scoped>
-.file-upload-card {
-  padding: 0.875rem 1rem 0.875rem 2rem;
-  border-radius: 10px;
-}
-
-.file-upload-card > * {
-  width: 100%;
-}
-</style>

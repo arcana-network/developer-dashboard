@@ -122,23 +122,28 @@ function toggleProfileMenu() {
   showProfileMenu.value = !showProfileMenu.value
   showHelpMenu.value = false
   showMobileMenu.value = false
+  showNotifications.value = false
 }
 
 function toggleNotifications() {
-  const value = !showNotifications.value
-  showNotifications.value = value
-}
-
-function toggleHelpMenu() {
+  showNotifications.value = !showNotifications.value
+  showHelpMenu.value = false
   showProfileMenu.value = false
-  showHelpMenu.value = !showHelpMenu.value
   showMobileMenu.value = false
 }
 
+function toggleHelpMenu() {
+  showHelpMenu.value = !showHelpMenu.value
+  showProfileMenu.value = false
+  showMobileMenu.value = false
+  showNotifications.value = false
+}
+
 function toggleMobileMenu() {
+  showMobileMenu.value = !showMobileMenu.value
   showProfileMenu.value = false
   showHelpMenu.value = false
-  showMobileMenu.value = !showMobileMenu.value
+  showNotifications.value = false
 }
 
 async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
