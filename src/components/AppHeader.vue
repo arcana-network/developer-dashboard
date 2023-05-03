@@ -86,16 +86,19 @@ async function onLogout() {
 function toggleHelpMenu() {
   showHelpMenu.value = !showHelpMenu.value
   showProfileMenu.value = false
+  showNotifications.value = false
 }
 
 function toggleProfileMenu() {
   showProfileMenu.value = !showProfileMenu.value
   showHelpMenu.value = false
+  showNotifications.value = false
 }
 
 function toggleNotifications() {
-  const value = !showNotifications.value
-  showNotifications.value = value
+  showNotifications.value = !showNotifications.value
+  showHelpMenu.value = false
+  showProfileMenu.value = false
 }
 </script>
 
