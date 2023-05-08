@@ -79,6 +79,8 @@ function getGatewayInstance(network: Network) {
 type CreateAppRequestBody = {
   name: string
   region: number
+  chain: number
+  default_chain: number
 }
 
 type CreateAppResponse = {
@@ -110,6 +112,8 @@ function createApp(
   const defaultAppConfig = {
     name: config.name,
     region: config.region,
+    chain: config.chain,
+    default_chain: config.default_chain,
   }
   return getGatewayInstance(network).post(
     `${getEnvApi('v2')}/app/`,
@@ -495,6 +499,46 @@ function updateNotificationRead(list: number[]) {
   )
 }
 
+function getChains(appId: string) {
+  return getGatewayInstance(ApiNetwork).get(
+    `${getEnvApi()}/chain/${appId}/all/`
+  )
+}
+
+function getAllChains() {
+  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/chain/0/all/`)
+}
+
+function addChain(appId: string, data: object) {
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/chain/${appId}/`,
+    data
+  )
+}
+
+function editChain(appId: string, data: object) {
+  return getGatewayInstance(ApiNetwork).patch(
+    `${getEnvApi()}/chain/${appId}/`,
+    data
+  )
+}
+
+function deleteChain(appId: string, data: object) {
+  return getGatewayInstance(ApiNetwork).delete(
+    `${getEnvApi()}/chain/${appId}/`,
+    {
+      data,
+    }
+  )
+}
+
+function setDefaultChain(appId: string, data: object) {
+  return getGatewayInstance(ApiNetwork).post(
+    `${getEnvApi()}/chain/${appId}/default/`,
+    data
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -533,6 +577,12 @@ export {
   updateNotificationRead,
   updateBillingAddress,
   getBillingAddress,
+  getChains,
+  addChain,
+  deleteChain,
+  editChain,
+  setDefaultChain,
+  getAllChains,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

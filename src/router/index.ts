@@ -24,6 +24,7 @@ const WebWallet = () => import('@/components/app-configure/auth/WebWallet.vue')
 const AppBranding = () =>
   import('@/components/app-configure/general/AppBranding.vue')
 const AppKeyspace = () => import('@/components/app-configure/AppKeyspace.vue')
+const AppChainManagement = () => import('@/pages/AppChainManagement.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -100,6 +101,14 @@ const routes: RouteRecordRaw[] = [
         name: 'Keyspace',
         path: 'configure/keyspace',
         component: AppKeyspace,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Chain Management',
+        path: 'configure/chain-management',
+        component: AppChainManagement,
         meta: {
           requiresAuth: true,
         },
