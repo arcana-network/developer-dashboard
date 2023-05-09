@@ -28,12 +28,15 @@ const useChainManagementStore = defineStore('chain-management', {
   actions: {
     async getAppChains(appId: string) {
       const { chains } = (await getChains(appId)).data
-      let defaultChainIdx = chains.findIndex((chain) => !!chain.default_chain)
-      defaultChainIdx = defaultChainIdx >= 0 ? defaultChainIdx : 0
-      const defaultChain = chains[defaultChainIdx]
-      chains.splice(defaultChainIdx, 1)
-      chains.unshift(defaultChain)
-      this.appChains = chains || []
+      if (!chains) this.appChains = []
+      else {
+        let defaultChainIdx = chains.findIndex((chain) => !!chain.default_chain)
+        defaultChainIdx = defaultChainIdx >= 0 ? defaultChainIdx : 0
+        const defaultChain = chains[defaultChainIdx]
+        chains.splice(defaultChainIdx, 1)
+        chains.unshift(defaultChain)
+        this.appChains = chains
+      }
     },
     async getAllAppChains() {
       const { chains } = (await getAllChains()).data
