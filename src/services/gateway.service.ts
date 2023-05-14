@@ -539,6 +539,11 @@ function setDefaultChain(appId: string, data: object) {
   )
 }
 
+async function getChainIDUsingRPCUrl(rpcURL: string) {
+  const payload = { jsonrpc: '2.0', method: 'eth_chainId', params: [] }
+  return axios.post(rpcURL, payload)
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -583,6 +588,7 @@ export {
   editChain,
   setDefaultChain,
   getAllChains,
+  getChainIDUsingRPCUrl,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
