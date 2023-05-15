@@ -13,13 +13,12 @@ import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
-import { useLoaderStore } from '@/stores/loader.store'
 import { RegionMapping, regions } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
+import validateRPCandChainId from '@/utils/validateRPCandChainId'
 
 const router = useRouter()
-const loaderStore = useLoaderStore()
 const toast = useToast()
 const appsStore = useAppsStore()
 const appName = ref('')
@@ -27,38 +26,49 @@ const selectedChainId: Ref<number | null> = ref(null)
 const hasAppNameError = ref(false)
 const selectedRegion = ref(regions[0])
 const chainManagementStore = useChainManagementStore()
+const showLoader = ref(false)
 
 const emit = defineEmits(['close'])
 
+function getPayloadForCreateApp() {
+  return {
+    name: appName.value,
+    chain: selectedChainId.value,
+    default_chain: selectedChainId.value,
+    region: RegionMapping[selectedRegion.value.value],
+  }
+}
+
+function getChain(chainId: number) {
+  return chainManagementStore.allChains.find(
+    (item) => item.chain_id === chainId
+  )
+}
+
 async function handleCreateApp() {
   try {
-    if (!appName.value?.trim()) {
-      hasAppNameError.value = true
-      return
-    }
-    emit('close')
-    loaderStore.showLoader('Creating App...')
+    showLoader.value = true
     hasAppNameError.value = false
-    const app = (
-      await createApp(
-        {
-          name: appName.value,
-          chain: selectedChainId.value,
-          default_chain: selectedChainId.value,
-          region: RegionMapping[selectedRegion.value.value],
-        },
-        'testnet'
-      )
-    ).data.app
-
-    appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
-    createTransactionSigner(app.address, 'testnet')
-    loaderStore.hideLoader()
-    router.push({ name: 'AppDetails', params: { appId: app.ID } })
+    const selectedChain = getChain(selectedChainId.value)
+    const isChainValid = await validateRPCandChainId(
+      selectedChain.rpc_url,
+      selectedChain.chain_id
+    )
+    if (isChainValid) {
+      const {
+        data: { app },
+      } = await createApp(getPayloadForCreateApp(), 'testnet')
+      appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
+      createTransactionSigner(app.address, 'testnet')
+      router.push({ name: 'AppDetails', params: { appId: app.ID } })
+    } else {
+      toast.error('Chain is not valid, please change it to another one')
+    }
   } catch (e) {
-    loaderStore.hideLoader()
     console.error(e)
     toast.error('Error occurred while creating app')
+  } finally {
+    showLoader.value = false
   }
 }
 
