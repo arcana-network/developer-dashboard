@@ -153,6 +153,12 @@ async function onSave(formData: object) {
                 <p v-if="formData.built_in" class="text-sm">
                   {{ formData.chainId }}
                 </p>
+                <p
+                  v-if="!formData.rpcURL.length"
+                  class="h-full text-sm m-auto w-full text-[#8D8D8D] bg-[#313131] p-2"
+                >
+                  Enter RPC URL
+                </p>
                 <input
                   v-else
                   v-model="formData.chainId"
