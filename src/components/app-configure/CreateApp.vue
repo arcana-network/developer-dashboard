@@ -61,6 +61,7 @@ async function handleCreateApp() {
       appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
       createTransactionSigner(app.address, 'testnet')
       router.push({ name: 'AppDetails', params: { appId: app.ID } })
+      emit('close')
     } else {
       toast.error('Chain is not valid, please change it to another one')
     }
