@@ -3,8 +3,8 @@ import { computed, onMounted, ref } from 'vue'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { useToast } from '@/components/lib/VToast'
-import { getChainIDUsingRPCUrl } from '@/services/gateway.service'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import validateRPCandChainId from '@/utils/validateRPCandChainId'
 import { isValidUrl } from '@/utils/validation'
 
 const emits = defineEmits(['close', 'submit'])
@@ -77,23 +77,16 @@ onMounted(() => {
   }
 })
 
-async function validateRPCandChainID(rpcURL: string, chainId: string) {
-  const {
-    data: { result },
-  } = await getChainIDUsingRPCUrl(rpcURL)
-  const networkChainId = parseInt(result, 16)
-  return Number(chainId) === networkChainId
-}
-
 async function onSave(formData: object) {
   try {
     showLoader.value = true
-    const isValid = await validateRPCandChainID(
+    const isValid = await validateRPCandChainId(
       formData.rpcURL,
       formData.chainId
     )
     if (isValid) emits('submit', formData)
     else toast.error("Provided Chain ID doesn't match with provided network")
+    showRpcError.value = false
   } catch (e) {
     showRpcError.value = true
   } finally {
