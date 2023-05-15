@@ -13,7 +13,6 @@ import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
-import { RegionMapping, regions } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 import validateRPCandChainId from '@/utils/validateRPCandChainId'
@@ -24,7 +23,6 @@ const appsStore = useAppsStore()
 const appName = ref('')
 const selectedChainId: Ref<number | null> = ref(null)
 const hasAppNameError = ref(false)
-const selectedRegion = ref(regions[0])
 const chainManagementStore = useChainManagementStore()
 const showLoader = ref(false)
 
@@ -35,7 +33,6 @@ function getPayloadForCreateApp() {
     name: appName.value,
     chain: selectedChainId.value,
     default_chain: selectedChainId.value,
-    region: RegionMapping[selectedRegion.value.value],
   }
 }
 
