@@ -540,7 +540,7 @@ function setDefaultChain(appId: string, data: object) {
 }
 
 async function getChainIDUsingRPCUrl(rpcURL: string) {
-  const payload = { jsonrpc: '2.0', method: 'eth_chainId', params: [] }
+  const payload = { jsonrpc: '2.0', method: 'eth_chainId', params: [], id: 1 } // id - dummy value
   return axios.post(rpcURL, payload)
 }
 
