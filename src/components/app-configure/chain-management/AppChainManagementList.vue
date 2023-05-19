@@ -60,6 +60,10 @@ function onChainToggle(chain: object) {
     status: !chain.status,
   })
 }
+
+function getRowOptions(isDefault: boolean, options: Array<object>) {
+  return isDefault ? [options[0], options[1]] : options
+}
 </script>
 
 <template>
@@ -125,7 +129,10 @@ function onChainToggle(chain: object) {
                 class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-32 left-[-100px] top-[10px] z-[999]"
               >
                 <button
-                  v-for="option in rowOptions"
+                  v-for="option in getRowOptions(
+                    chain.default_chain,
+                    rowOptions
+                  )"
                   :key="option.value"
                   class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
                   @click.stop="
