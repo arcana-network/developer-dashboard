@@ -99,7 +99,7 @@ async function onSave(formData: object) {
   <VOverlay>
     <div class="h-full flex">
       <div
-        class="border-[1px] border-[#363636] rounded-lg h-[590px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[590px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
       >
         <div
           v-if="showLoader"
