@@ -153,20 +153,22 @@ async function onSave(formData: object) {
                 <p v-if="formData.built_in" class="text-sm">
                   {{ formData.chainId }}
                 </p>
-                <p
-                  v-if="!formData.rpcURL.length"
-                  class="h-full text-sm m-auto w-full text-[#8D8D8D] bg-[#313131] p-2"
-                >
-                  Enter RPC URL
-                </p>
-                <input
-                  v-else
-                  v-model="formData.chainId"
-                  type="text"
-                  class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
-                  name="chain-id"
-                  :disabled="!formData.rpcURL.length"
-                />
+                <div v-else>
+                  <p
+                    v-if="!formData.rpcURL.length"
+                    class="h-full text-sm m-auto w-full text-[#8D8D8D] bg-[#313131] p-2"
+                  >
+                    Enter RPC URL
+                  </p>
+                  <input
+                    v-else
+                    v-model="formData.chainId"
+                    type="text"
+                    class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
+                    name="chain-id"
+                    :disabled="!formData.rpcURL.length"
+                  />
+                </div>
               </div>
               <div class="flex flex-col space-y-2 w-1/2">
                 <label for="currency" class="text-xs text-[#8D8D8D]"
