@@ -24,6 +24,9 @@ import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import { type ConfigureTab, type ConfigureTabType } from '@/utils/constants'
 
+const isProductionDashboard: boolean =
+  import.meta.env.VITE_ARCANA_AUTH_NETWORK === 'mainnet'
+
 const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
 const showAppsList = ref(false)
@@ -96,7 +99,7 @@ const ConfigureTabs = computed(() => {
     icon: KeyspaceIcon,
   })
 
-  if (props.currentNetwork !== 'mainnet') {
+  if (!isProductionDashboard) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       type: 'chainManagement',
       label: 'Chain Management',
