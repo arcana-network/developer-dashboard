@@ -90,7 +90,6 @@ const ConfigureTabs = computed(() => {
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
   )
-
   if (props.currentNetwork !== 'mainnet') {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       type: 'chainManagement',
@@ -106,6 +105,7 @@ const ConfigureTabs = computed(() => {
       icon: KeyspaceIcon,
     })
   }
+
   return configureTabsCopy
 })
 
