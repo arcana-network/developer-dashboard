@@ -503,39 +503,36 @@ function getChains(appId: string, network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/chain/${appId}/all/`)
 }
 
-function getAllChains() {
-  return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/chain/0/all/`)
+function getAllChains(network: Network) {
+  return getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`)
 }
 
 function getChainLogo(chainId: string) {
   return `${api.gateway[ApiNetwork]}${getEnvApi()}/chain/logo/${chainId}/`
 }
 
-function addChain(appId: string, data: object) {
-  return getGatewayInstance(ApiNetwork).post(
+function addChain(appId: string, data: object, network: Network) {
+  return getGatewayInstance(network).post(
     `${getEnvApi()}/chain/${appId}/`,
     data
   )
 }
 
-function editChain(appId: string, data: object) {
-  return getGatewayInstance(ApiNetwork).patch(
+function editChain(appId: string, data: object, network: Network) {
+  return getGatewayInstance(network).patch(
     `${getEnvApi()}/chain/${appId}/`,
     data
   )
 }
 
-function deleteChain(appId: string, data: object) {
-  return getGatewayInstance(ApiNetwork).delete(
-    `${getEnvApi()}/chain/${appId}/`,
-    {
-      data,
-    }
-  )
+function deleteChain(appId: string, data: object, network: Network) {
+  return getGatewayInstance(network).delete(`${getEnvApi()}/chain/${appId}/`, {
+    data,
+  })
 }
 
-function setDefaultChain(appId: string, data: object) {
-  return getGatewayInstance(ApiNetwork).post(
+function setDefaultChain(appId: string, data: object, network: Network) {
+  return getGatewayInstance(network).post(
     `${getEnvApi()}/chain/${appId}/default/`,
     data
   )
