@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, toRefs } from 'vue'
 
+import ChainFallbackLogo from '@/assets/chain-fallback-logo.png'
 import MoreIcon from '@/assets/iconography/more.svg'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { useToast } from '@/components/lib/VToast'
+import { getChainLogo } from '@/services/gateway.service'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
 
@@ -64,6 +66,10 @@ function onChainToggle(chain: object) {
 function getRowOptions(isDefault: boolean, options: Array<object>) {
   return isDefault ? [options[0], options[1]] : options
 }
+
+function onChainLogoError(e) {
+  e.target.src = ChainFallbackLogo
+}
 </script>
 
 <template>
@@ -76,6 +82,7 @@ function getRowOptions(isDefault: boolean, options: Array<object>) {
     >
       <thead class="border-b-[1px] border-b-[#363636]">
         <tr class="text-[#8d8d8d]">
+          <th class="w-[10%]"></th>
           <th class="w-[15%]">Name</th>
           <th class="w-[10%]">Chain ID</th>
           <th class="w-[10%]">Currency</th>
@@ -92,6 +99,14 @@ function getRowOptions(isDefault: boolean, options: Array<object>) {
           :key="chain.chain_id"
           class="hover:bg-[#363636]"
         >
+          <td>
+            <img
+              :src="getChainLogo(chain.chain_id)"
+              alt="chain logo"
+              class="w-8"
+              @error="onChainLogoError"
+            />
+          </td>
           <td>
             <div class="space-x-1 flex items-baseline">
               <span>{{ chain.name }}</span>
