@@ -25,6 +25,11 @@ const useChainManagementStore = defineStore('chain-management', {
         chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
       )
     },
+    defaultChainId: ({ appChains }) => {
+      const defaultChain =
+        appChains.find((chain) => chain.default_chain) || appChains[0]
+      if (defaultChain) return defaultChain.chain_id
+    },
   },
   actions: {
     async getAppChains(appId: string, network: Network) {
