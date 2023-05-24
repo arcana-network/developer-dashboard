@@ -509,8 +509,8 @@ function getAllChains(network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`)
 }
 
-function getChainLogo(chainId: string) {
-  return `${api.gateway[ApiNetwork]}${getEnvApi()}/chain/logo/${chainId}/`
+function getChainLogo(chainId: string, network: Network) {
+  return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
 }
 
 function addChain(appId: string, data: object, network: Network) {
