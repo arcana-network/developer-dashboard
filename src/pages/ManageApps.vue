@@ -108,7 +108,7 @@ onBeforeMount(async () => {
   await appsStore.fetchAndStoreAllApps('testnet')
   await appsStore.fetchAndStoreAllApps('mainnet')
   await appsStore.fetchNotifications()
-  await chainManagementStore.getAllAppChains()
+  await chainManagementStore.getAllAppChains('testnet')
 })
 
 appsStore.$subscribe(() => {

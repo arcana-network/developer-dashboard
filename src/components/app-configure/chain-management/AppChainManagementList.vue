@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref, toRefs } from 'vue'
+import { useRoute } from 'vue-router'
 
 import ChainFallbackLogo from '@/assets/chain-fallback-logo.png'
 import MoreIcon from '@/assets/iconography/more.svg'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { useToast } from '@/components/lib/VToast'
 import { getChainLogo } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
 
@@ -21,6 +23,10 @@ const { areChainsEmpty, filteredChains } = toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const toast = useToast()
+const route = useRoute()
+const appStore = useAppsStore()
+const appId = route.params.appId
+const app = appStore.app(appId)
 
 const rowOptions = [
   {
@@ -101,7 +107,7 @@ function onChainLogoError(e) {
         >
           <td>
             <img
-              :src="getChainLogo(chain.chain_id)"
+              :src="getChainLogo(chain.chain_id, app.network)"
               alt="chain logo"
               class="w-8"
               @error="onChainLogoError"

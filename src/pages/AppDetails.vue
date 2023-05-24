@@ -156,6 +156,7 @@ async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
           name: app.name,
           region: RegionMapping[selectedRegion.value.value],
           default_chain: chainManagementStore.defaultChainId,
+          chains: chainManagementStore.appChains,
         },
         'mainnet'
       )
