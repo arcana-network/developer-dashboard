@@ -499,14 +499,16 @@ function updateNotificationRead(list: number[]) {
   )
 }
 
-function getChains(appId: string) {
-  return getGatewayInstance(ApiNetwork).get(
-    `${getEnvApi()}/chain/${appId}/all/`
-  )
+function getChains(appId: string, network: Network) {
+  return getGatewayInstance(network).get(`${getEnvApi()}/chain/${appId}/all/`)
 }
 
 function getAllChains() {
   return getGatewayInstance(ApiNetwork).get(`${getEnvApi()}/chain/0/all/`)
+}
+
+function getChainLogo(chainId: string) {
+  return `${api.gateway[ApiNetwork]}${getEnvApi()}/chain/logo/${chainId}/`
 }
 
 function addChain(appId: string, data: object) {
@@ -589,6 +591,7 @@ export {
   setDefaultChain,
   getAllChains,
   getChainIDUsingRPCUrl,
+  getChainLogo,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

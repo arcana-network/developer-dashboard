@@ -78,11 +78,7 @@ const ConfigureTabs = computed(() => {
           label: 'Social Auth',
           icon: socialMediaIcon,
         },
-        {
-          type: 'chainManagement',
-          label: 'Chain Management',
-          icon: ChainIcon,
-        },
+
         {
           type: 'arcanaWallet',
           label: 'Arcana Wallet',
@@ -94,15 +90,20 @@ const ConfigureTabs = computed(() => {
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
   )
-  // if (props.currentNetwork === 'mainnet') {
   configureTabsCopy[configurePageIndex]?.subMenu?.push({
     label: 'Keyspace',
     type: 'keyspace',
     icon: KeyspaceIcon,
   })
+
+  if (props.currentNetwork !== 'mainnet') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push({
+      type: 'chainManagement',
+      label: 'Chain Management',
+      icon: ChainIcon,
+    })
+  }
   return configureTabsCopy
-  // }
-  // return configureTabsCopy
 })
 
 function onClickOfMenu(tab: ConfigureTab) {

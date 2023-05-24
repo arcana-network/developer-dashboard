@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, toRefs } from 'vue'
 
+import ChainFallbackLogo from '@/assets/chain-fallback-logo.png'
 import MoreIcon from '@/assets/iconography/more.svg'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { useToast } from '@/components/lib/VToast'
+import { getChainLogo } from '@/services/gateway.service'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
 
@@ -60,6 +62,14 @@ function onChainToggle(chain: object) {
     status: !chain.status,
   })
 }
+
+function getRowOptions(isDefault: boolean, options: Array<object>) {
+  return isDefault ? [options[0], options[1]] : options
+}
+
+function onChainLogoError(e) {
+  e.target.src = ChainFallbackLogo
+}
 </script>
 
 <template>
@@ -72,6 +82,7 @@ function onChainToggle(chain: object) {
     >
       <thead class="border-b-[1px] border-b-[#363636]">
         <tr class="text-[#8d8d8d]">
+          <th class="w-[10%]"></th>
           <th class="w-[15%]">Name</th>
           <th class="w-[10%]">Chain ID</th>
           <th class="w-[10%]">Currency</th>
@@ -88,6 +99,14 @@ function onChainToggle(chain: object) {
           :key="chain.chain_id"
           class="hover:bg-[#363636]"
         >
+          <td>
+            <img
+              :src="getChainLogo(chain.chain_id)"
+              alt="chain logo"
+              class="w-8"
+              @error="onChainLogoError"
+            />
+          </td>
           <td>
             <div class="space-x-1 flex items-baseline">
               <span>{{ chain.name }}</span>
@@ -125,7 +144,10 @@ function onChainToggle(chain: object) {
                 class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-32 left-[-100px] top-[10px] z-[999]"
               >
                 <button
-                  v-for="option in rowOptions"
+                  v-for="option in getRowOptions(
+                    chain.default_chain,
+                    rowOptions
+                  )"
                   :key="option.value"
                   class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
                   @click.stop="

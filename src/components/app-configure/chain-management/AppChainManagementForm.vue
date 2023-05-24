@@ -2,7 +2,6 @@
 import { computed, onMounted, ref } from 'vue'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
-import { useToast } from '@/components/lib/VToast'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import validateRPCandChainId from '@/utils/validateRPCandChainId'
 import { isValidUrl } from '@/utils/validation'
@@ -11,8 +10,8 @@ const emits = defineEmits(['close', 'submit'])
 const TitleAction = ref('')
 const chainManagementStore = useChainManagementStore()
 const showRpcError = ref(false)
+const showChainIdMismatchError = ref(false)
 const showLoader = ref(false)
-const toast = useToast()
 
 const props = defineProps({
   formAction: {
@@ -85,9 +84,10 @@ async function onSave(formData: object) {
       formData.chainId
     )
     if (isValid) emits('submit', formData)
-    else toast.error("Provided Chain ID doesn't match with provided network")
+    else showChainIdMismatchError.value = true
     showRpcError.value = false
   } catch (e) {
+    showChainIdMismatchError.value = false
     showRpcError.value = true
   } finally {
     showLoader.value = false
@@ -99,11 +99,11 @@ async function onSave(formData: object) {
   <VOverlay>
     <div class="h-full flex">
       <div
-        class="border-[1px] border-[#363636] rounded-lg max-h-[590px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
       >
         <div
           v-if="showLoader"
-          class="m-auto h-full flex justify-center items-center"
+          class="m-auto h-[600px] flex justify-center items-center"
         >
           <p>Please Wait ...</p>
         </div>
@@ -169,6 +169,9 @@ async function onSave(formData: object) {
                     :disabled="!formData.rpcURL.length"
                   />
                 </div>
+                <p v-if="showChainIdMismatchError" class="text-xs text-red-700">
+                  Chain ID doesn't match with network
+                </p>
               </div>
               <div class="flex flex-col space-y-2 w-1/2">
                 <label for="currency" class="text-xs text-[#8D8D8D]"
