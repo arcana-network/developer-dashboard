@@ -78,10 +78,7 @@ function handleProceedDeletion() {
       <div
         class="inner-clock | flex absolute z-[1] items-center justify-center w-[94%] h-[94%] rounded-full"
       >
-        <span
-          class="lg:text-[2.188rem] md:text-[0.688rem] max-[768px]:text-[0.888rem]"
-          >{{ timerDisplay }}</span
-        >
+        <span class="lg:text-2xl max-[768px]:text-xl">{{ timerDisplay }}</span>
       </div>
     </div>
     <footer class="flex flex-row items-center justify-center gap-[2vh] flex-1">

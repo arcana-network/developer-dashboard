@@ -95,7 +95,7 @@ onBeforeMount(async () => {
 <template>
   <div>
     <app-header />
-    <main class="pb-10">
+    <main class="pb-10 container">
       <VStack class="heading" gap="1.5rem">
         <img
           src="@/assets/iconography/back.svg"

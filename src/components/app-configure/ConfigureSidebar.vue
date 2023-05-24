@@ -7,6 +7,7 @@ import DiscordIcon from '@/assets/discord-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.png'
 import brandingIcon from '@/assets/iconography/branding.svg'
+import ChainIcon from '@/assets/iconography/chain.svg'
 import CloseIcon from '@/assets/iconography/close.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
@@ -77,6 +78,7 @@ const ConfigureTabs = computed(() => {
           label: 'Social Auth',
           icon: socialMediaIcon,
         },
+
         {
           type: 'arcanaWallet',
           label: 'Arcana Wallet',
@@ -88,6 +90,15 @@ const ConfigureTabs = computed(() => {
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
   )
+  
+  if (props.currentNetwork !== 'mainnet') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push({
+      type: 'chainManagement',
+      label: 'Chain Management',
+      icon: ChainIcon,
+    })
+  }
+
   if (props.currentNetwork === 'mainnet') {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       label: 'Keyspace',
@@ -95,6 +106,7 @@ const ConfigureTabs = computed(() => {
       icon: KeyspaceIcon,
     })
   }
+  
   return configureTabsCopy
 })
 
@@ -388,8 +400,8 @@ watch(
 .sidebar__submenu-option-item {
   display: flex;
   flex-direction: row;
-  gap: 1rem;
-  align-items: flex-start;
+  gap: 12px;
+  align-items: center;
   justify-content: center;
 }
 
@@ -461,6 +473,7 @@ watch(
   font-weight: 400;
   line-height: 1.5;
   color: var(--text-white);
+  text-align: left;
 }
 
 .active-app .app-name {

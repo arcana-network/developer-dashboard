@@ -23,6 +23,7 @@ import {
   type AppConfig as AppResponse,
 } from '@/services/gateway.service'
 import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
+import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { useClickOutside } from '@/use/clickOutside'
@@ -50,6 +51,7 @@ const NetworkOptions = [
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
+const chainManagementStore = useChainManagementStore()
 const currentTab = ref('Dashboard')
 const router = useRouter()
 const showHelpMenu = ref(false)
@@ -153,6 +155,7 @@ async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
         {
           name: app.name,
           region: RegionMapping[selectedRegion.value.value],
+          default_chain: chainManagementStore.defaultChainId,
         },
         'mainnet'
       )
