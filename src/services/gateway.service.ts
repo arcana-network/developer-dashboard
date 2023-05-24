@@ -81,6 +81,7 @@ type CreateAppRequestBody = {
   region: number
   chain: number
   default_chain: number
+  chains?: []
 }
 
 type CreateAppResponse = {
@@ -114,6 +115,7 @@ function createApp(
     region: config.region,
     chain: config.chain,
     default_chain: config.default_chain,
+    chains: config.chains,
   }
   return getGatewayInstance(network).post(
     `${getEnvApi('v2')}/app/`,
