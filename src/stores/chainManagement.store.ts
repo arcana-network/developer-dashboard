@@ -44,11 +44,11 @@ const useChainManagementStore = defineStore('chain-management', {
         this.appChains = chains
       }
     },
-    async getAllAppChains() {
-      const { chains } = (await getAllChains()).data
+    async getAllAppChains(network: Network) {
+      const { chains } = (await getAllChains(network)).data
       this.allChains = chains
     },
-    async addAppChain(appId: string, chainData: object) {
+    async addAppChain(appId: string, chainData: object, network: Network) {
       const payload = {
         name: chainData.name,
         chain_id: Number(chainData.chainId),
@@ -59,13 +59,13 @@ const useChainManagementStore = defineStore('chain-management', {
         exp_url: chainData.explorerURL,
         status: true,
       }
-      await addChain(appId, payload)
+      await addChain(appId, payload, network)
     },
-    async deleteAppChain(appId: string, id: string) {
+    async deleteAppChain(appId: string, id: string, network: Network) {
       const payload = { id }
-      await deleteChain(appId, payload)
+      await deleteChain(appId, payload, network)
     },
-    async editAppChain(appId: string, chainData: object) {
+    async editAppChain(appId: string, chainData: object, network: Network) {
       const payload = {
         name: chainData.name,
         chain_id: Number(chainData.chainId),
@@ -77,15 +77,15 @@ const useChainManagementStore = defineStore('chain-management', {
         status: chainData.status,
         id: chainData.id,
       }
-      await editChain(appId, payload)
+      await editChain(appId, payload, network)
     },
-    async setAppDefaultChain(appId: string, id: number) {
+    async setAppDefaultChain(appId: string, id: number, network: Network) {
       const payload = { id }
-      await setDefaultChain(appId, payload)
+      await setDefaultChain(appId, payload, network)
     },
-    async toggleAppChainStatus(appId: string, data: number) {
+    async toggleAppChainStatus(appId: string, data: number, network: Network) {
       const payload = { id: data.id, status: data.status }
-      await editChain(appId, payload)
+      await editChain(appId, payload, network)
     },
   },
 })
