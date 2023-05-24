@@ -8,6 +8,7 @@ import ChainList from '@/components/app-configure/chain-management/AppChainManag
 import DeleteChain from '@/components/app-configure/chain-management/DeleteChain.vue'
 import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
+import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useLoaderStore } from '@/stores/loader.store'
 
@@ -15,6 +16,7 @@ type FormAction = 'add' | 'edit'
 
 const chainManagementStore = useChainManagementStore()
 const route = useRoute()
+const appStore = useAppsStore()
 
 const showForm = ref(false)
 const formAction: Ref<FormAction> = ref('add')
@@ -37,7 +39,8 @@ onMounted(async () => {
 
 async function fetchAppChains() {
   const appId = route.params.appId
-  await chainManagementStore.getAppChains(appId)
+  const app = appStore.app(appId)
+  await chainManagementStore.getAppChains(appId, app.network)
 }
 
 function openForm(formActionVal: FormAction, id?: string) {

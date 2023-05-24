@@ -499,10 +499,8 @@ function updateNotificationRead(list: number[]) {
   )
 }
 
-function getChains(appId: string) {
-  return getGatewayInstance(ApiNetwork).get(
-    `${getEnvApi()}/chain/${appId}/all/`
-  )
+function getChains(appId: string, network: Network) {
+  return getGatewayInstance(network).get(`${getEnvApi()}/chain/${appId}/all/`)
 }
 
 function getAllChains() {

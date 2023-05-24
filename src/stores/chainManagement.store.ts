@@ -8,6 +8,7 @@ import {
   setDefaultChain,
   getAllChains,
 } from '@/services/gateway.service'
+import type { Network } from '@/utils/constants'
 
 const useChainManagementStore = defineStore('chain-management', {
   state: () => ({
@@ -26,8 +27,8 @@ const useChainManagementStore = defineStore('chain-management', {
     },
   },
   actions: {
-    async getAppChains(appId: string) {
-      const { chains } = (await getChains(appId)).data
+    async getAppChains(appId: string, network: Network) {
+      const { chains } = (await getChains(appId, network)).data
       if (!chains) this.appChains = []
       else {
         let defaultChainIdx = chains.findIndex((chain) => !!chain.default_chain)
