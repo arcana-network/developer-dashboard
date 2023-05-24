@@ -58,10 +58,11 @@ async function onChainFormSubmit(formData: object) {
     showForm.value = false
     showLoader('Please wait')
     const appId = route.params.appId
+    const app = appStore.app(appId)
     if (formAction.value === 'add')
-      await chainManagementStore.addAppChain(appId, formData)
+      await chainManagementStore.addAppChain(appId, formData, app.network)
     if (formAction.value === 'edit')
-      await chainManagementStore.editAppChain(appId, formData)
+      await chainManagementStore.editAppChain(appId, formData, app.network)
   } catch (e) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
     toast.error(errorMessage)
@@ -77,13 +78,16 @@ function onDeleteChain({ id }: { id: string }) {
 }
 
 async function deleteChain() {
+  const appId = route.params.appId
+  const app = appStore.app(appId)
   try {
     showDeleteChainModal.value = false
     showLoader('Please wait')
     const appId = route.params.appId
     await chainManagementStore.deleteAppChain(
       appId,
-      Number(deleteChainId.value)
+      Number(deleteChainId.value),
+      app.network
     )
   } catch (e) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
@@ -99,10 +103,16 @@ function onSearch(value: string) {
 }
 
 async function setDefaultChain({ id }: { id: string }) {
+  const appId = route.params.appId
+  const app = appStore.app(appId)
   try {
     showLoader('Please wait')
     const appId = route.params.appId
-    await chainManagementStore.setAppDefaultChain(appId, Number(id))
+    await chainManagementStore.setAppDefaultChain(
+      appId,
+      Number(id),
+      app.network
+    )
   } catch (e) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
     toast.error(errorMessage)
@@ -113,10 +123,16 @@ async function setDefaultChain({ id }: { id: string }) {
 }
 
 async function toggleChainStatus(chainData: object) {
+  const appId = route.params.appId
+  const app = appStore.app(appId)
   try {
     showLoader('Please wait')
     const appId = route.params.appId
-    await chainManagementStore.toggleAppChainStatus(appId, chainData)
+    await chainManagementStore.toggleAppChainStatus(
+      appId,
+      chainData,
+      app.network
+    )
   } catch (e) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
     toast.error(errorMessage)
