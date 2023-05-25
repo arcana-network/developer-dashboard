@@ -36,7 +36,7 @@ const socialAuth = socialLogins.map((login) => {
 const socialAuthRef = reactive(socialAuth)
 
 function isAuthValid(auth: typeof socialAuth[0]) {
-  if (auth.hasClientSecret) {
+  if (auth.hasClientSecret && auth.verifier !== 'steam') {
     if (!auth.clientId?.length && auth.clientSecret?.length) {
       auth.error = 'Client Id is required'
       return false
@@ -87,6 +87,7 @@ async function handleSave() {
     const { auth } = app
     const social = socialAuthRef
       .map((authRef) => {
+        if (authRef.verifier === 'steam') authRef.clientId = app.address
         const { verifier, clientId, clientSecret } = authRef
         return { verifier, clientId, clientSecret }
       })
@@ -191,7 +192,10 @@ function showCognitoNote() {
                   gap="1rem"
                   class="social-auth-input-field__container"
                 >
-                  <VStack class="social-auth-input__wrapper">
+                  <VStack
+                    v-if="auth.verifier !== 'steam'"
+                    class="social-auth-input__wrapper"
+                  >
                     <div class="flex justify-between space-x-2">
                       <p class="input-label">Client ID</p>
                       <a
@@ -306,7 +310,6 @@ function showCognitoNote() {
 .logo-img {
   box-sizing: border-box;
   width: 38px;
-  height: 38px;
   padding: 4px;
 }
 
