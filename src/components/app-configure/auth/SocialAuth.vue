@@ -131,6 +131,10 @@ function isAuthActive(verifier: SocialAuthVerifier) {
 function showCognitoNote() {
   return ['aws', 'google'].includes(selectedCredentialInput.value)
 }
+
+function showSteamNote() {
+  return ['steam'].includes(selectedCredentialInput.value)
+}
 </script>
 
 <template>
@@ -143,13 +147,16 @@ function showCognitoNote() {
         <a :href="`${DOCS_URL}/howto/config_social/index.html`" target="_blank">
           READ MORE
         </a>
-        <br v-if="showCognitoNote()" />
-        <br v-if="showCognitoNote()" />
-        <span v-if="showCognitoNote()"
-          ><strong>Note:</strong> If you enable Cognito as one of the multiple
+        <p v-if="showCognitoNote()" class="mt-3">
+          <strong>Note:</strong> If you enable Cognito as one of the multiple
           onboarding options then you can directly configure Google login
           through Cognito itself instead of using Arcana Dashboard.
-        </span>
+        </p>
+        <p v-if="showSteamNote()" class="mt-3">
+          <strong>Note:</strong> When you are a Steam member, and have already
+          spent more than 5.00 USD in the store you should be able to request
+          your Steam API Key.
+        </p>
       </template>
       <form @submit.prevent="handleSave">
         <div class="social-auth-creds__container">

@@ -246,7 +246,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'steam',
     icon: SteamIcon,
     hasClientSecret: true,
-    documentation: 'https://partner.steamgames.com/doc/webapi_overview/oauth',
+    documentation: 'https://steamcommunity.com/dev/apikey',
   },
 ]
 
