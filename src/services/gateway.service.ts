@@ -81,6 +81,7 @@ type CreateAppRequestBody = {
   region: number
   chain: number
   default_chain: number
+  chains?: []
 }
 
 type CreateAppResponse = {
@@ -114,6 +115,7 @@ function createApp(
     region: config.region,
     chain: config.chain,
     default_chain: config.default_chain,
+    chains: config.chains,
   }
   return getGatewayInstance(network).post(
     `${getEnvApi('v2')}/app/`,
@@ -507,8 +509,8 @@ function getAllChains(network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`)
 }
 
-function getChainLogo(chainId: string) {
-  return `${api.gateway[ApiNetwork]}${getEnvApi()}/chain/logo/${chainId}/`
+function getChainLogo(chainId: string, network: Network) {
+  return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
 }
 
 function addChain(appId: string, data: object, network: Network) {

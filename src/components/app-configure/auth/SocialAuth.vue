@@ -36,7 +36,7 @@ const socialAuth = socialLogins.map((login) => {
 const socialAuthRef = reactive(socialAuth)
 
 function isAuthValid(auth: typeof socialAuth[0]) {
-  if (auth.hasClientSecret) {
+  if (auth.hasClientSecret && auth.verifier !== 'steam') {
     if (!auth.clientId?.length && auth.clientSecret?.length) {
       auth.error = 'Client Id is required'
       return false
@@ -87,6 +87,11 @@ async function handleSave() {
     const { auth } = app
     const social = socialAuthRef
       .map((authRef) => {
+        if (
+          authRef.verifier === 'steam' &&
+          selectedCredentialInput.value === 'steam'
+        )
+          authRef.clientId = app.address
         const { verifier, clientId, clientSecret } = authRef
         return { verifier, clientId, clientSecret }
       })
@@ -130,6 +135,10 @@ function isAuthActive(verifier: SocialAuthVerifier) {
 function showCognitoNote() {
   return ['aws', 'google'].includes(selectedCredentialInput.value)
 }
+
+function showSteamNote() {
+  return ['steam'].includes(selectedCredentialInput.value)
+}
 </script>
 
 <template>
@@ -142,13 +151,16 @@ function showCognitoNote() {
         <a :href="`${DOCS_URL}/howto/config_social/index.html`" target="_blank">
           READ MORE
         </a>
-        <br v-if="showCognitoNote()" />
-        <br v-if="showCognitoNote()" />
-        <span v-if="showCognitoNote()"
-          ><strong>Note:</strong> If you enable Cognito as one of the multiple
+        <p v-if="showCognitoNote()" class="mt-3">
+          <strong>Note:</strong> If you enable Cognito as one of the multiple
           onboarding options then you can directly configure Google login
           through Cognito itself instead of using Arcana Dashboard.
-        </span>
+        </p>
+        <p v-if="showSteamNote()" class="mt-3">
+          <strong>Note:</strong> When you are a Steam member, and have already
+          spent more than 5.00 USD in the store you should be able to request
+          your Steam API Key.
+        </p>
       </template>
       <form @submit.prevent="handleSave">
         <div class="social-auth-creds__container">
@@ -191,7 +203,10 @@ function showCognitoNote() {
                   gap="1rem"
                   class="social-auth-input-field__container"
                 >
-                  <VStack class="social-auth-input__wrapper">
+                  <VStack
+                    v-if="auth.verifier !== 'steam'"
+                    class="social-auth-input__wrapper"
+                  >
                     <div class="flex justify-between space-x-2">
                       <p class="input-label">Client ID</p>
                       <a
@@ -215,13 +230,16 @@ function showCognitoNote() {
                     class="social-auth-input__wrapper"
                   >
                     <div class="flex justify-between space-x-2">
-                      <p class="input-label">
-                        {{
-                          isAWSSelected()
-                            ? 'Cognito User Pool Domain'
-                            : 'Client Secret'
-                        }}
+                      <p v-if="isAWSSelected()" class="input-label">
+                        Cognito User Pool Domain
                       </p>
+                      <p
+                        v-else-if="auth.verifier === 'steam'"
+                        class="input-label"
+                      >
+                        Steam API Key
+                      </p>
+                      <p v-else class="input-label">Client Secret</p>
                       <a
                         class="input-doc-link"
                         :href="
@@ -231,12 +249,13 @@ function showCognitoNote() {
                         "
                         target="_blank"
                       >
-                        Get your
-                        {{
-                          auth.verifier === 'aws'
-                            ? 'User Pool Domain'
-                            : 'Client Secret'
-                        }}
+                        <span v-if="isAWSSelected()"
+                          >Get your User Pool Domain</span
+                        >
+                        <span v-else-if="auth.verifier === 'steam'"
+                          >Get your Steam API key</span
+                        >
+                        <span v-else>Get your Client Secret</span>
                       </a>
                     </div>
                     <VTextField
@@ -246,6 +265,8 @@ function showCognitoNote() {
                       :placeholder="
                         isAWSSelected()
                           ? 'Enter the domain without https://'
+                          : auth.verifier === 'steam'
+                          ? 'Steam API Key'
                           : 'Client Secret'
                       "
                       @keyup.delete="handleInputDelete(auth, 'clientSecret')"
@@ -306,7 +327,6 @@ function showCognitoNote() {
 .logo-img {
   box-sizing: border-box;
   width: 38px;
-  height: 38px;
   padding: 4px;
 }
 

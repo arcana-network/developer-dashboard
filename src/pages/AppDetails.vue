@@ -148,7 +148,10 @@ function toggleMobileMenu() {
   showNotifications.value = false
 }
 
-async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
+async function createMainnetApp(
+  app: AppConfig,
+  shouldCopyTestnetConfig: boolean
+): Promise<AppResponse> {
   try {
     const mainnetApp = (
       await createApp(
@@ -156,6 +159,7 @@ async function createMainnetApp(app: AppConfig): Promise<AppResponse> {
           name: app.name,
           region: RegionMapping[selectedRegion.value.value],
           default_chain: chainManagementStore.defaultChainId,
+          chains: shouldCopyTestnetConfig ? chainManagementStore.appChains : [],
         },
         'mainnet'
       )
@@ -177,7 +181,10 @@ async function handleCreateMainnetApp({
     const testnetAppId = Number(route.params.appId)
     const testnetApp = appsStore.app(testnetAppId)
 
-    const mainnetApp = await createMainnetApp(testnetApp)
+    const mainnetApp = await createMainnetApp(
+      testnetApp,
+      shouldCopyTestnetConfig
+    )
     const mainnetAppConfig = createAppConfig(mainnetApp, 'mainnet')
 
     appsStore.addApp(mainnetApp?.ID, mainnetAppConfig, 'mainnet')

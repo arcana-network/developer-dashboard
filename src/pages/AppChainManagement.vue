@@ -127,7 +127,6 @@ async function toggleChainStatus(chainData: object) {
   const app = appStore.app(appId)
   try {
     showLoader('Please wait')
-    const appId = route.params.appId
     await chainManagementStore.toggleAppChainStatus(
       appId,
       chainData,

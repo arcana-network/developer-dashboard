@@ -12,6 +12,7 @@ import InvoiceIcon from '@/assets/iconography/invoices.svg'
 import PassportIcon from '@/assets/iconography/passport.svg'
 import ScheduleIcon from '@/assets/iconography/schedule.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
+import SteamIcon from '@/assets/iconography/steam-sso.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
 import TwitchIcon from '@/assets/twitch-sso.svg'
@@ -172,6 +173,7 @@ type SocialAuthVerifier =
   | 'github'
   | 'discord'
   | 'aws'
+  | 'steam'
 
 type SocialAuthVerifierLabel =
   | 'Google'
@@ -181,6 +183,7 @@ type SocialAuthVerifierLabel =
   | 'GitHub'
   | 'Discord'
   | 'Cognito'
+  | 'Steam'
 
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
@@ -238,6 +241,13 @@ const socialLogins: readonly SocialAuthOption[] = [
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
   },
+  // {
+  //   name: 'Steam',
+  //   verifier: 'steam',
+  //   icon: SteamIcon,
+  //   hasClientSecret: true,
+  //   documentation: 'https://steamcommunity.com/dev/apikey',
+  // },
 ]
 
 enum ChainMapping {
