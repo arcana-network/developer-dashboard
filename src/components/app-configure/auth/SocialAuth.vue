@@ -208,13 +208,23 @@ function showSteamNote() {
                     class="social-auth-input__wrapper"
                   >
                     <div class="flex justify-between space-x-2">
-                      <p class="input-label">Client ID</p>
+                      <p
+                        v-if="auth.verifier === 'firebase'"
+                        class="input-label"
+                      >
+                        Project ID
+                      </p>
+                      <p v-else class="input-label">Client ID</p>
                       <a
                         class="input-doc-link"
                         :href="auth.documentation"
                         target="_blank"
-                        >Get your Client ID</a
                       >
+                        <span v-if="auth.verifier === 'firebase'"
+                          >Get your Project ID</span
+                        >
+                        <span v-else>Get your Client ID</span>
+                      </a>
                     </div>
                     <VTextField
                       :id="auth?.verifier"
