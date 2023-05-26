@@ -87,7 +87,11 @@ async function handleSave() {
     const { auth } = app
     const social = socialAuthRef
       .map((authRef) => {
-        if (authRef.verifier === 'steam') authRef.clientId = app.address
+        if (
+          authRef.verifier === 'steam' &&
+          selectedCredentialInput.value === 'steam'
+        )
+          authRef.clientId = app.address
         const { verifier, clientId, clientSecret } = authRef
         return { verifier, clientId, clientSecret }
       })
