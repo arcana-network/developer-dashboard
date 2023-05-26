@@ -265,6 +265,8 @@ function showSteamNote() {
                       :placeholder="
                         isAWSSelected()
                           ? 'Enter the domain without https://'
+                          : auth.verifier === 'steam'
+                          ? 'Steam API Key'
                           : 'Client Secret'
                       "
                       @keyup.delete="handleInputDelete(auth, 'clientSecret')"
