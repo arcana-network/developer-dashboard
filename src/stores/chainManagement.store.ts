@@ -44,12 +44,10 @@ const useChainManagementStore = defineStore('chain-management', {
         this.appChains = chains
       }
     },
-
     async getAllAppChains(network: Network) {
       const { chains } = (await getAllChains(network)).data
       this.allChains = chains
     },
-
     async addAppChain(appId: string, chainData: object, network: Network) {
       const payload = {
         name: chainData.name,
@@ -63,12 +61,10 @@ const useChainManagementStore = defineStore('chain-management', {
       }
       await addChain(appId, payload, network)
     },
-
     async deleteAppChain(appId: string, id: string, network: Network) {
       const payload = { id }
       await deleteChain(appId, payload, network)
     },
-
     async editAppChain(appId: string, chainData: object, network: Network) {
       const payload = {
         name: chainData.name,
@@ -83,12 +79,10 @@ const useChainManagementStore = defineStore('chain-management', {
       }
       await editChain(appId, payload, network)
     },
-
     async setAppDefaultChain(appId: string, id: number, network: Network) {
       const payload = { id }
       await setDefaultChain(appId, payload, network)
     },
-
     async toggleAppChainStatus(appId: string, data: number, network: Network) {
       const payload = { id: data.id, status: data.status }
       await editChain(appId, payload, network)
