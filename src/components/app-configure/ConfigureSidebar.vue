@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch, computed, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
@@ -20,7 +20,7 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useAppsStore, type AppId } from '@/stores/apps.store'
+import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
 
@@ -30,7 +30,7 @@ const showAppsList = ref(false)
 const router = useRouter()
 const route = useRoute()
 const emit = defineEmits(['switch-tab', 'switch-app'])
-const apps = ref([])
+const apps: Ref<AppConfig[]> = ref([])
 
 const socialLinks = [
   {
@@ -78,6 +78,7 @@ const ConfigureTabs = computed(() => {
           label: 'Social Auth',
           icon: socialMediaIcon,
         },
+
         {
           type: 'chainManagement',
           label: 'Chain Management',
@@ -102,7 +103,6 @@ const ConfigureTabs = computed(() => {
       icon: KeyspaceIcon,
     })
   }
-
   return configureTabsCopy
 })
 
