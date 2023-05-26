@@ -230,13 +230,16 @@ function showSteamNote() {
                     class="social-auth-input__wrapper"
                   >
                     <div class="flex justify-between space-x-2">
-                      <p class="input-label">
-                        {{
-                          isAWSSelected()
-                            ? 'Cognito User Pool Domain'
-                            : 'Client Secret'
-                        }}
+                      <p v-if="isAWSSelected()" class="input-label">
+                        Cognito User Pool Domain
                       </p>
+                      <p
+                        v-else-if="auth.verifier === 'steam'"
+                        class="input-label"
+                      >
+                        Steam API Key
+                      </p>
+                      <p v-else class="input-label">Client Secret</p>
                       <a
                         class="input-doc-link"
                         :href="
@@ -246,12 +249,13 @@ function showSteamNote() {
                         "
                         target="_blank"
                       >
-                        Get your
-                        {{
-                          auth.verifier === 'aws'
-                            ? 'User Pool Domain'
-                            : 'Client Secret'
-                        }}
+                        <span v-if="isAWSSelected()"
+                          >Get your User Pool Domain</span
+                        >
+                        <span v-else-if="auth.verifier === 'steam'"
+                          >Get your Steam API key</span
+                        >
+                        <span v-else>Get your Client Secret</span>
                       </a>
                     </div>
                     <VTextField
@@ -261,6 +265,8 @@ function showSteamNote() {
                       :placeholder="
                         isAWSSelected()
                           ? 'Enter the domain without https://'
+                          : auth.verifier === 'steam'
+                          ? 'Steam API Key'
                           : 'Client Secret'
                       "
                       @keyup.delete="handleInputDelete(auth, 'clientSecret')"
