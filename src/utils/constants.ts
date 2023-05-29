@@ -2,6 +2,7 @@ import bytes from 'bytes'
 
 import AWSIcon from '@/assets/aws-sso.svg'
 import DiscordIcon from '@/assets/discord-sso.svg'
+import FirebaseIcon from '@/assets/firebase-sso.svg'
 import GithubIcon from '@/assets/github-sso.svg'
 import GoogleIcon from '@/assets/google-sso.svg'
 import brandingIcon from '@/assets/iconography/branding.svg'
@@ -174,6 +175,7 @@ type SocialAuthVerifier =
   | 'discord'
   | 'aws'
   | 'steam'
+  | 'firebase'
 
 type SocialAuthVerifierLabel =
   | 'Google'
@@ -184,6 +186,7 @@ type SocialAuthVerifierLabel =
   | 'Discord'
   | 'Cognito'
   | 'Steam'
+  | 'Firebase'
 
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
@@ -241,13 +244,21 @@ const socialLogins: readonly SocialAuthOption[] = [
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
   },
-  // {
-  //   name: 'Steam',
-  //   verifier: 'steam',
-  //   icon: SteamIcon,
-  //   hasClientSecret: true,
-  //   documentation: 'https://steamcommunity.com/dev/apikey',
-  // },
+  {
+    name: 'Steam',
+    verifier: 'steam',
+    icon: SteamIcon,
+    hasClientSecret: true,
+    documentation: 'https://steamcommunity.com/dev/apikey',
+  },
+  {
+    name: 'Firebase',
+    verifier: 'firebase',
+    icon: FirebaseIcon,
+    hasClientSecret: false,
+    documentation:
+      'https://firebase.google.com/docs/projects/learn-more#project-id',
+  },
 ]
 
 enum ChainMapping {
