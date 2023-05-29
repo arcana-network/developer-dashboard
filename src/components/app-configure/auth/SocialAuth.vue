@@ -163,36 +163,31 @@ function showSteamNote() {
         </p>
       </template>
       <form @submit.prevent="handleSave">
-        <div class="social-auth-creds__container">
-          <div>
-            <VStack
+        <div class="flex space-x-2">
+          <div class="space-y-2.5">
+            <button
               v-for="auth in socialAuthRef"
               :key="`social-login-${auth.verifier}`"
-              direction="column"
-              align="start"
+              :for="auth.verifier"
+              class="text-lg font-normal w-14 flex flex-col items-center bg-transparent border-none outline-none"
+              @click.prevent="() => (selectedCredentialInput = auth.verifier)"
             >
-              <button
-                :for="auth.verifier"
-                class="text-lg font-normal verifier-name"
-                @click.prevent="() => (selectedCredentialInput = auth.verifier)"
+              <div
+                class="logo"
+                :class="{
+                  'logo--active': selectedCredentialInput === auth.verifier,
+                }"
               >
-                <div
-                  class="logo"
+                <img
+                  :src="auth.icon"
+                  class="logo-img"
                   :class="{
-                    'logo--active': selectedCredentialInput === auth.verifier,
+                    'logo-img--inactive': isAuthActive(auth.verifier),
                   }"
-                >
-                  <img
-                    :src="auth.icon"
-                    class="logo-img"
-                    :class="{
-                      'logo-img--inactive': isAuthActive(auth.verifier),
-                    }"
-                  />
-                </div>
-                <p class="auth-label">{{ auth.name }}</p>
-              </button>
-            </VStack>
+                />
+              </div>
+              <p class="auth-label">{{ auth.name }}</p>
+            </button>
           </div>
           <span class="seperator"></span>
           <div class="social-auth__input">
@@ -313,16 +308,6 @@ function showSteamNote() {
   border: 1px solid #8d8d8d33;
 }
 
-.verifier-name {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 10px;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-
 .input-label {
   font-size: 12px;
 }
@@ -363,14 +348,6 @@ function showSteamNote() {
 .auth-label {
   font-size: 12px;
   color: #8d8d8dde;
-}
-
-.social-auth-creds__container {
-  display: flex;
-}
-
-.social-auth-creds__container > * + * {
-  margin-left: 30px;
 }
 
 .social-auth__input {
