@@ -163,7 +163,7 @@ function showSteamNote() {
         </p>
       </template>
       <form @submit.prevent="handleSave">
-        <div class="flex space-x-2">
+        <div class="flex space-x-2 divide-x-[1px] divide-[#8d8d8d33]">
           <div class="space-y-2.5">
             <button
               v-for="auth in socialAuthRef"
@@ -189,8 +189,7 @@ function showSteamNote() {
               <p class="auth-label">{{ auth.name }}</p>
             </button>
           </div>
-          <span class="seperator"></span>
-          <div class="social-auth__input">
+          <div class="w-full pl-4">
             <div v-for="auth in socialAuthRef" :key="auth.verifier">
               <div class="social-auth-input__container">
                 <VStack
@@ -348,10 +347,6 @@ function showSteamNote() {
 .auth-label {
   font-size: 12px;
   color: #8d8d8dde;
-}
-
-.social-auth__input {
-  width: 100%;
 }
 
 .social-auth-input__container {
