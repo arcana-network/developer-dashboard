@@ -241,13 +241,13 @@ const socialLogins: readonly SocialAuthOption[] = [
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
   },
-  {
-    name: 'Steam',
-    verifier: 'steam',
-    icon: SteamIcon,
-    hasClientSecret: true,
-    documentation: 'https://steamcommunity.com/dev/apikey',
-  },
+  // {
+  //   name: 'Steam',
+  //   verifier: 'steam',
+  //   icon: SteamIcon,
+  //   hasClientSecret: true,
+  //   documentation: 'https://steamcommunity.com/dev/apikey',
+  // },
 ]
 
 enum ChainMapping {

@@ -45,8 +45,8 @@ const enableSave = computed(() => {
     chainType.length &&
     currency.length &&
     name.length &&
-    isValidUrl(explorerURL) &&
-    isValidUrl(rpcURL)
+    isValidUrl(explorerURL.trim()) &&
+    isValidUrl(rpcURL.trim())
   )
 })
 
@@ -125,7 +125,7 @@ async function onSave(formData: object) {
               </p>
               <input
                 v-else
-                v-model="formData.name"
+                v-model.trim="formData.name"
                 type="text"
                 class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                 name="network-name"
@@ -136,7 +136,7 @@ async function onSave(formData: object) {
                 >RPC URL</label
               >
               <input
-                v-model="formData.rpcURL"
+                v-model.trim="formData.rpcURL"
                 type="text"
                 class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                 name="rpc-url"
@@ -162,7 +162,7 @@ async function onSave(formData: object) {
                   </p>
                   <input
                     v-else
-                    v-model="formData.chainId"
+                    v-model.trim="formData.chainId"
                     type="text"
                     class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                     name="chain-id"
@@ -182,7 +182,7 @@ async function onSave(formData: object) {
                 </p>
                 <input
                   v-else
-                  v-model="formData.currency"
+                  v-model.trim="formData.currency"
                   type="text"
                   class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                   name="currency"
@@ -198,7 +198,7 @@ async function onSave(formData: object) {
               </p>
               <input
                 v-else
-                v-model="formData.explorerURL"
+                v-model.trim="formData.explorerURL"
                 type="text"
                 class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                 name="explorer"
