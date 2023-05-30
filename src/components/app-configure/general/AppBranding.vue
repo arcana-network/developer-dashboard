@@ -158,9 +158,11 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
               <label for="light-logo">Logo Mark</label>
               <div
                 v-if="themeLogos.light.vertical.logo"
-                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-4 rounded-[10px]"
               >
-                <span>{{ themeLogos.light.vertical.logo }}</span>
+                <span>
+                  {{ themeLogos.light.vertical.logo }}
+                </span>
                 <button
                   class="w-6"
                   @click.stop="handleDelete('light', 'vertical')"
@@ -181,9 +183,12 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
                   @change-file="handleFileChange('light', 'vertical', $event)"
                   @remove-file="handleFileRemove('light', 'vertical')"
                 />
-                <div v-if="themeLogos.light.vertical.selectedFile">
+                <div
+                  v-if="themeLogos.light.vertical.selectedFile"
+                  class="flex justify-end"
+                >
                   <button
-                    class="text-[#13A3FD]"
+                    class="text-[#13A3FD] uppercase"
                     @click.stop="handleSave('light', 'vertical')"
                   >
                     Save
@@ -201,7 +206,7 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
               <label for="light-horizontal-logo">Horizontal Logo</label>
               <div
                 v-if="themeLogos.light.horizontal.logo"
-                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-4 rounded-[10px]"
               >
                 <span>{{ themeLogos.light.horizontal.logo }}</span>
                 <button
@@ -224,9 +229,12 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
                   @change-file="handleFileChange('light', 'horizontal', $event)"
                   @remove-file="handleFileRemove('light', 'horizontal')"
                 />
-                <div v-if="themeLogos.light.horizontal.selectedFile">
+                <div
+                  v-if="themeLogos.light.horizontal.selectedFile"
+                  class="flex justify-end"
+                >
                   <button
-                    class="text-[#13A3FD]"
+                    class="text-[#13A3FD] uppercase"
                     @click.stop="handleSave('light', 'horizontal')"
                   >
                     Save
@@ -251,7 +259,7 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
               <label for="dark-logo">Logo Mark</label>
               <div
                 v-if="themeLogos.dark.vertical.logo"
-                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-4 rounded-[10px]"
               >
                 <span>{{ themeLogos.dark.vertical.logo }}</span>
                 <button
@@ -274,9 +282,12 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
                   @change-file="handleFileChange('dark', 'vertical', $event)"
                   @remove-file="handleFileRemove('dark', 'vertical')"
                 />
-                <div v-if="themeLogos.dark.vertical.selectedFile">
+                <div
+                  v-if="themeLogos.dark.vertical.selectedFile"
+                  class="flex justify-end"
+                >
                   <button
-                    class="text-[#13A3FD]"
+                    class="text-[#13A3FD] uppercase"
                     @click.stop="handleSave('dark', 'vertical')"
                   >
                     Save
@@ -294,7 +305,7 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
               <label for="dark-horizontal-logo">Horizontal Logo</label>
               <div
                 v-if="themeLogos.dark.horizontal.logo"
-                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-4 rounded-[10px]"
               >
                 <span>{{ themeLogos.dark.horizontal.logo }}</span>
                 <button
@@ -317,9 +328,12 @@ async function handleDelete(mode: Theme, orientation: Orientation) {
                   @change-file="handleFileChange('dark', 'horizontal', $event)"
                   @remove-file="handleFileRemove('dark', 'horizontal')"
                 />
-                <div v-if="themeLogos.dark.horizontal.selectedFile">
+                <div
+                  v-if="themeLogos.dark.horizontal.selectedFile"
+                  class="flex justify-end"
+                >
                   <button
-                    class="text-[#13A3FD]"
+                    class="text-[#13A3FD] uppercase"
                     @click.stop="handleSave('dark', 'horizontal')"
                   >
                     Save
