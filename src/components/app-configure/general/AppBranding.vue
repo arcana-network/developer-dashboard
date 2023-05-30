@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import type { Orientation } from '@arcana/auth/types/typings'
 import bytes from 'bytes'
 import { reactive } from 'vue'
 
@@ -9,20 +10,22 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
-import { useAppsStore } from '@/stores/apps.store'
+import { useAppsStore, type Theme } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { api } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const appsStore = useAppsStore()
+const loaderStore = useLoaderStore()
 const toast = useToast()
 const appId = useAppId()
 const currentApp = appsStore.app(appId)
 
 type OrientationOption = {
   logo?: string
-  isLoading: boolean
   hasError: boolean
+  selectedFile: File | null
 }
 
 type ThemeLogoOption = {
@@ -39,72 +42,77 @@ const themeLogos: ThemeLogo = reactive({
   dark: {
     vertical: {
       logo: currentApp.logos.dark.vertical,
-      isLoading: false,
       hasError: false,
+      selectedFile: null,
     },
     horizontal: {
       logo: currentApp.logos.dark.horizontal,
-      isLoading: false,
       hasError: false,
+      selectedFile: null,
     },
   },
   light: {
     vertical: {
       logo: currentApp.logos.light.vertical,
-      isLoading: false,
       hasError: false,
+      selectedFile: null,
     },
     horizontal: {
       logo: currentApp.logos.light.horizontal,
-      isLoading: false,
       hasError: false,
+      selectedFile: null,
     },
   },
 })
 
 async function handleFileChange(
-  mode: 'light' | 'dark',
-  orientation: 'vertical' | 'horizontal',
+  mode: Theme,
+  orientation: Orientation,
   files: File[]
 ) {
   if (files[0].size > bytes('1 MB')) {
     return (themeLogos[mode][orientation].hasError = true)
   }
   themeLogos[mode][orientation].hasError = false
-  themeLogos[mode][orientation].isLoading = true
+  themeLogos[mode][orientation].selectedFile = files[0]
+}
+
+async function handleFileRemove(mode: Theme, orientation: Orientation) {
+  themeLogos[mode][orientation].selectedFile = null
+}
+
+async function handleSave(mode: Theme, orientation: Orientation) {
   try {
+    loaderStore.showLoader('Uploading...')
     const app = appsStore.app(appId)
-    await uploadThemeLogo(appId, files[0], mode, app.network, orientation)
-    toast.success('Logo uploaded successfully')
+    const file = themeLogos[mode][orientation].selectedFile
+    await uploadThemeLogo(appId, file, mode, app.network, orientation)
     const logoUrl = `${api.gateway[app.network]}${getEnvApi(
       'v2'
     )}/app/${appId}/logo?type=${mode}&orientation=${orientation}`
     themeLogos[mode][orientation].logo = logoUrl
+    themeLogos[mode][orientation].selectedFile = null
     currentApp.logos[mode][orientation] = logoUrl
     appsStore.updateApp(appId, currentApp, currentApp.network)
   } catch (e) {
-    console.error(e)
     toast.error("Couldn't upload logo. Please try again or contact support")
   } finally {
-    themeLogos[mode][orientation].isLoading = false
+    loaderStore.hideLoader()
   }
 }
 
-async function handleFileRemove(
-  mode: 'light' | 'dark',
-  orientation: 'vertical' | 'horizontal'
-) {
-  themeLogos[mode][orientation].isLoading = true
+async function handleDelete(mode: Theme, orientation: Orientation) {
   try {
+    loaderStore.showLoader('Uploading...')
     const app = appsStore.app(appId)
     await removeThemeLogo(appId, mode, app.network, orientation)
-    toast.success('Logo removed successfully')
     themeLogos[mode][orientation].logo = ''
+    currentApp.logos[mode][orientation] = ''
+    appsStore.updateApp(appId, currentApp, currentApp.network)
   } catch (e) {
-    console.error(e)
     toast.error("Couldn't remove logo. Please try again or contact support")
   } finally {
-    themeLogos[mode][orientation].isLoading = false
+    loaderStore.hideLoader()
   }
 }
 </script>
@@ -122,22 +130,20 @@ async function handleFileRemove(
               on the Arcana wallet screen. The shape of the logo can vary.
             </p>
             <VStack gap="1rem">
-              <p class="flex justify-center items-center example__logo-mark">
+              <p class="flex justify-center items-center mr-[10px]">
                 <span class="description">Logo Mark Example:</span>
                 <img
                   src="@/assets/google-logo-mark.png"
                   alt="google logo mark"
-                  class="example-logo"
+                  class="h-4 ml-[5px]"
                 />
               </p>
-              <p
-                class="flex justify-center items-center example__logo-horizontal"
-              >
+              <p class="flex justify-center items-center ml-[10px]">
                 <span class="description">Horizontal Logo Example:</span>
                 <img
                   src="@/assets/google-horizontal-logo.png"
                   alt="google horizontal logo"
-                  class="example-logo"
+                  class="h-4 ml-[5px]"
                 />
               </p>
             </VStack>
@@ -150,37 +156,89 @@ async function handleFileRemove(
           >
             <VStack direction="column" gap="0.375rem" class="flex-1">
               <label for="light-logo">Logo Mark</label>
-              <VFileUpload
-                id="light-logo"
-                placeholder="Upload .png or .svg"
-                allowed-file-type=".png,.svg"
-                :value="themeLogos.light.vertical.logo"
-                :is-loading="themeLogos.light.vertical.isLoading"
-                @change-file="handleFileChange('light', 'vertical', $event)"
-                @remove-file="handleFileRemove('light', 'vertical')"
-              />
-              <span
-                class="body-3 font-light file-upload-hint"
-                :class="{ error: themeLogos.light.vertical.hasError }"
-                >Maximum image size: 1MB</span
+              <div
+                v-if="themeLogos.light.vertical.logo"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
               >
+                <span>{{ themeLogos.light.vertical.logo }}</span>
+                <button
+                  class="w-6"
+                  @click.stop="handleDelete('light', 'vertical')"
+                >
+                  <img
+                    src="@/assets/iconography/delete.svg"
+                    alt="close icon"
+                    class="w-4"
+                  />
+                </button>
+              </div>
+              <div v-else class="space-y-2">
+                <VFileUpload
+                  id="light-logo"
+                  placeholder="Upload .png or .svg"
+                  allowed-file-type=".png,.svg"
+                  :value="themeLogos.light.vertical.selectedFile?.name"
+                  @change-file="handleFileChange('light', 'vertical', $event)"
+                  @remove-file="handleFileRemove('light', 'vertical')"
+                />
+                <div v-if="themeLogos.light.vertical.selectedFile">
+                  <button
+                    class="text-[#13A3FD]"
+                    @click.stop="handleSave('light', 'vertical')"
+                  >
+                    Save
+                  </button>
+                </div>
+                <span
+                  v-else
+                  class="body-3 font-light file-upload-hint"
+                  :class="{ error: themeLogos.light.vertical.hasError }"
+                  >Maximum image size: 1MB</span
+                >
+              </div>
             </VStack>
             <VStack direction="column" gap="0.375rem" class="flex-1">
               <label for="light-horizontal-logo">Horizontal Logo</label>
-              <VFileUpload
-                id="light-horizontal-logo"
-                :value="themeLogos.light.horizontal.logo"
-                :is-loading="themeLogos.light.horizontal.isLoading"
-                placeholder="Upload .png,or .svg"
-                allowed-file-type=".png,.svg"
-                @change-file="handleFileChange('light', 'horizontal', $event)"
-                @remove-file="handleFileRemove('light', 'horizontal')"
-              />
-              <span
-                class="body-3 font-light file-upload-hint"
-                :class="{ error: themeLogos.light.horizontal.hasError }"
-                >Maximum image size: 1MB</span
+              <div
+                v-if="themeLogos.light.horizontal.logo"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
               >
+                <span>{{ themeLogos.light.horizontal.logo }}</span>
+                <button
+                  class="w-6"
+                  @click.stop="handleDelete('light', 'horizontal')"
+                >
+                  <img
+                    src="@/assets/iconography/delete.svg"
+                    alt="close icon"
+                    class="w-4"
+                  />
+                </button>
+              </div>
+              <div v-else class="space-y-2">
+                <VFileUpload
+                  id="light-logo"
+                  placeholder="Upload .png or .svg"
+                  allowed-file-type=".png,.svg"
+                  :value="themeLogos.light.horizontal.selectedFile?.name"
+                  @change-file="handleFileChange('light', 'horizontal', $event)"
+                  @remove-file="handleFileRemove('light', 'horizontal')"
+                />
+                <div v-if="themeLogos.light.horizontal.selectedFile">
+                  <button
+                    class="text-[#13A3FD]"
+                    @click.stop="handleSave('light', 'horizontal')"
+                  >
+                    Save
+                  </button>
+                </div>
+                <span
+                  v-else
+                  class="body-3 font-light file-upload-hint"
+                  :class="{ error: themeLogos.light.horizontal.hasError }"
+                  >Maximum image size: 1MB</span
+                >
+              </div>
             </VStack>
           </div>
         </VStack>
@@ -191,37 +249,89 @@ async function handleFileRemove(
           >
             <VStack direction="column" gap="0.375rem" class="flex-1 w-full">
               <label for="dark-logo">Logo Mark</label>
-              <VFileUpload
-                id="dark-logo"
-                :value="themeLogos.dark.vertical.logo"
-                :is-loading="themeLogos.dark.vertical.isLoading"
-                placeholder="Upload .png or .svg"
-                allowed-file-type=".png,.svg"
-                @change-file="handleFileChange('dark', 'vertical', $event)"
-                @remove-file="handleFileRemove('dark', 'vertical')"
-              />
-              <span
-                class="body-3 font-light file-upload-hint"
-                :class="{ error: themeLogos.dark.vertical.hasError }"
-                >Maximum image size: 1MB</span
+              <div
+                v-if="themeLogos.dark.vertical.logo"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
               >
+                <span>{{ themeLogos.dark.vertical.logo }}</span>
+                <button
+                  class="w-6"
+                  @click.stop="handleDelete('dark', 'vertical')"
+                >
+                  <img
+                    src="@/assets/iconography/delete.svg"
+                    alt="close icon"
+                    class="w-4"
+                  />
+                </button>
+              </div>
+              <div v-else class="space-y-2">
+                <VFileUpload
+                  id="light-logo"
+                  placeholder="Upload .png or .svg"
+                  allowed-file-type=".png,.svg"
+                  :value="themeLogos.dark.vertical.selectedFile?.name"
+                  @change-file="handleFileChange('dark', 'vertical', $event)"
+                  @remove-file="handleFileRemove('dark', 'vertical')"
+                />
+                <div v-if="themeLogos.dark.vertical.selectedFile">
+                  <button
+                    class="text-[#13A3FD]"
+                    @click.stop="handleSave('dark', 'vertical')"
+                  >
+                    Save
+                  </button>
+                </div>
+                <span
+                  v-else
+                  class="body-3 font-light file-upload-hint"
+                  :class="{ error: themeLogos.dark.vertical.hasError }"
+                  >Maximum image size: 1MB</span
+                >
+              </div>
             </VStack>
             <VStack direction="column" gap="0.375rem" class="flex-1">
               <label for="dark-horizontal-logo">Horizontal Logo</label>
-              <VFileUpload
-                id="dark-horizontal-log"
-                :value="themeLogos.dark.horizontal.logo"
-                :is-loading="themeLogos.dark.horizontal.isLoading"
-                placeholder="Upload .png or .svg"
-                allowed-file-type=".png,.svg"
-                @change-file="handleFileChange('dark', 'horizontal', $event)"
-                @remove-file="handleFileRemove('dark', 'horizontal')"
-              />
-              <span
-                class="body-3 font-light file-upload-hint"
-                :class="{ error: themeLogos.dark.horizontal.hasError }"
-                >Maximum image size: 1MB</span
+              <div
+                v-if="themeLogos.dark.horizontal.logo"
+                class="text-base font-normal flex space-x-2 bg-[#161616] p-2 rounded-[10px]"
               >
+                <span>{{ themeLogos.dark.horizontal.logo }}</span>
+                <button
+                  class="w-6"
+                  @click.stop="handleDelete('dark', 'horizontal')"
+                >
+                  <img
+                    src="@/assets/iconography/delete.svg"
+                    alt="close icon"
+                    class="w-4"
+                  />
+                </button>
+              </div>
+              <div v-else class="space-y-2">
+                <VFileUpload
+                  id="light-logo"
+                  placeholder="Upload .png or .svg"
+                  allowed-file-type=".png,.svg"
+                  :value="themeLogos.dark.horizontal.selectedFile?.name"
+                  @change-file="handleFileChange('dark', 'horizontal', $event)"
+                  @remove-file="handleFileRemove('dark', 'horizontal')"
+                />
+                <div v-if="themeLogos.dark.horizontal.selectedFile">
+                  <button
+                    class="text-[#13A3FD]"
+                    @click.stop="handleSave('dark', 'horizontal')"
+                  >
+                    Save
+                  </button>
+                </div>
+                <span
+                  v-else
+                  class="body-3 font-light file-upload-hint"
+                  :class="{ error: themeLogos.dark.horizontal.hasError }"
+                  >Maximum image size: 1MB</span
+                >
+              </div>
             </VStack>
           </div>
         </VStack>
@@ -240,19 +350,6 @@ label,
 
 h3 {
   font-size: 1.125rem;
-}
-
-.example__logo-mark {
-  margin-right: 10px;
-}
-
-.example__logo-horizontal {
-  margin-left: 10px;
-}
-
-.example-logo {
-  height: 16px;
-  margin-left: 5px;
 }
 
 .file-upload-hint {
