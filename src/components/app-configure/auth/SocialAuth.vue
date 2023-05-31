@@ -11,7 +11,11 @@ import { deleteCred, updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
-import { socialLogins, DOCS_URL } from '@/utils/constants'
+import {
+  socialLogins,
+  DOCS_URL,
+  isProductionDashboard,
+} from '@/utils/constants'
 import type { SocialAuthVerifier } from '@/utils/constants'
 
 const appsStore = useAppsStore()
@@ -21,17 +25,26 @@ const toast = useToast()
 const app = appsStore.app(appId)
 const selectedCredentialInput: Ref<SocialAuthVerifier> = ref('aws')
 
-const socialAuth = socialLogins.map((login) => {
-  const auth = app.auth.social.find((el) => el.verifier === login.verifier)
-  if (auth) {
-    return {
-      ...login,
-      ...auth,
-      error: '',
+const appNetwork = isProductionDashboard
+  ? app.network
+  : app.network === 'mainnet'
+  ? 'testnet'
+  : 'dev'
+
+const socialAuth = socialLogins
+  .filter((el) => (appNetwork === 'dev' ? true : el.verifier !== 'firebase'))
+  .filter((el) => (appNetwork === 'mainnet' ? el.verifier !== 'steam' : true))
+  .map((login) => {
+    const auth = app.auth.social.find((el) => el.verifier === login.verifier)
+    if (auth) {
+      return {
+        ...login,
+        ...auth,
+        error: '',
+      }
     }
-  }
-  return { ...login, error: '' }
-})
+    return { ...login, error: '' }
+  })
 
 const socialAuthRef = reactive(socialAuth)
 
@@ -163,39 +176,33 @@ function showSteamNote() {
         </p>
       </template>
       <form @submit.prevent="handleSave">
-        <div class="social-auth-creds__container">
-          <div>
-            <VStack
+        <div class="flex space-x-2 divide-x-[1px] divide-[#8d8d8d33]">
+          <div class="space-y-2.5">
+            <button
               v-for="auth in socialAuthRef"
               :key="`social-login-${auth.verifier}`"
-              direction="column"
-              align="start"
+              :for="auth.verifier"
+              class="text-lg font-normal w-14 flex flex-col items-center bg-transparent border-none outline-none"
+              @click.prevent="() => (selectedCredentialInput = auth.verifier)"
             >
-              <button
-                :for="auth.verifier"
-                class="text-lg font-normal verifier-name"
-                @click.prevent="() => (selectedCredentialInput = auth.verifier)"
+              <div
+                class="logo"
+                :class="{
+                  'logo--active': selectedCredentialInput === auth.verifier,
+                }"
               >
-                <div
-                  class="logo"
+                <img
+                  :src="auth.icon"
+                  class="logo-img"
                   :class="{
-                    'logo--active': selectedCredentialInput === auth.verifier,
+                    'logo-img--inactive': isAuthActive(auth.verifier),
                   }"
-                >
-                  <img
-                    :src="auth.icon"
-                    class="logo-img"
-                    :class="{
-                      'logo-img--inactive': isAuthActive(auth.verifier),
-                    }"
-                  />
-                </div>
-                <p class="auth-label">{{ auth.name }}</p>
-              </button>
-            </VStack>
+                />
+              </div>
+              <p class="auth-label">{{ auth.name }}</p>
+            </button>
           </div>
-          <span class="seperator"></span>
-          <div class="social-auth__input">
+          <div class="w-full pl-4">
             <div v-for="auth in socialAuthRef" :key="auth.verifier">
               <div class="social-auth-input__container">
                 <VStack
@@ -208,13 +215,23 @@ function showSteamNote() {
                     class="social-auth-input__wrapper"
                   >
                     <div class="flex justify-between space-x-2">
-                      <p class="input-label">Client ID</p>
+                      <p
+                        v-if="auth.verifier === 'firebase'"
+                        class="input-label"
+                      >
+                        Project ID
+                      </p>
+                      <p v-else class="input-label">Client ID</p>
                       <a
                         class="input-doc-link"
                         :href="auth.documentation"
                         target="_blank"
-                        >Get your Client ID</a
                       >
+                        <span v-if="auth.verifier === 'firebase'"
+                          >Get your Project ID</span
+                        >
+                        <span v-else>Get your Client ID</span>
+                      </a>
                     </div>
                     <VTextField
                       :id="auth?.verifier"
@@ -303,16 +320,6 @@ function showSteamNote() {
   border: 1px solid #8d8d8d33;
 }
 
-.verifier-name {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 10px;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-
 .input-label {
   font-size: 12px;
 }
@@ -353,18 +360,6 @@ function showSteamNote() {
 .auth-label {
   font-size: 12px;
   color: #8d8d8dde;
-}
-
-.social-auth-creds__container {
-  display: flex;
-}
-
-.social-auth-creds__container > * + * {
-  margin-left: 30px;
-}
-
-.social-auth__input {
-  width: 100%;
 }
 
 .social-auth-input__container {
