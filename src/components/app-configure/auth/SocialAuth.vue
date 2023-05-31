@@ -33,7 +33,7 @@ const appNetwork = isProductionDashboard
 
 const socialAuth = socialLogins
   .filter((el) => (appNetwork === 'dev' ? true : el.verifier !== 'firebase'))
-  .filter((el) => (isProductionDashboard ? el.verifier !== 'steam' : true))
+  .filter((el) => (appNetwork === 'mainnet' ? el.verifier !== 'steam' : true))
   .map((login) => {
     const auth = app.auth.social.find((el) => el.verifier === login.verifier)
     if (auth) {
