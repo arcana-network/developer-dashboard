@@ -11,7 +11,11 @@ import { deleteCred, updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
-import { socialLogins, DOCS_URL } from '@/utils/constants'
+import {
+  socialLogins,
+  DOCS_URL,
+  isProductionDashboard,
+} from '@/utils/constants'
 import type { SocialAuthVerifier } from '@/utils/constants'
 
 const appsStore = useAppsStore()
@@ -21,17 +25,26 @@ const toast = useToast()
 const app = appsStore.app(appId)
 const selectedCredentialInput: Ref<SocialAuthVerifier> = ref('aws')
 
-const socialAuth = socialLogins.map((login) => {
-  const auth = app.auth.social.find((el) => el.verifier === login.verifier)
-  if (auth) {
-    return {
-      ...login,
-      ...auth,
-      error: '',
+const appNetwork = isProductionDashboard
+  ? app.network
+  : app.network === 'mainnet'
+  ? 'testnet'
+  : 'dev'
+
+const socialAuth = socialLogins
+  .filter((el) => (appNetwork === 'dev' ? true : el.verifier !== 'firebase'))
+  .filter((el) => (isProductionDashboard ? el.verifier !== 'steam' : true))
+  .map((login) => {
+    const auth = app.auth.social.find((el) => el.verifier === login.verifier)
+    if (auth) {
+      return {
+        ...login,
+        ...auth,
+        error: '',
+      }
     }
-  }
-  return { ...login, error: '' }
-})
+    return { ...login, error: '' }
+  })
 
 const socialAuthRef = reactive(socialAuth)
 
