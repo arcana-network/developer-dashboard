@@ -37,11 +37,7 @@ onBeforeMount(async () => {
 </script>
 
 <template>
-  <div class="root relative">
-    <div class="sticky top-0 left-0 z-[2147483647] bg-[#13a3fd] w-full p-2">
-      Testnet update will happen from 12:30 PM UTC to 3:00 PM UTC so users may
-      face disruption in service. Mainnet apps will NOT be affected
-    </div>
+  <div class="root">
     <router-view
       v-if="isAuthLoaded"
       v-slot="{ Component }"
