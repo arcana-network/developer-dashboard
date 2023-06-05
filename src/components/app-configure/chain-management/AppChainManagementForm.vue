@@ -45,7 +45,7 @@ const enableSave = computed(() => {
     chainType.length &&
     currency.length &&
     name.length &&
-    isValidUrl(explorerURL.trim()) &&
+    (explorerURL.length ? isValidUrl(explorerURL.trim()) : true) &&
     isValidUrl(rpcURL.trim())
   )
 })
@@ -107,7 +107,7 @@ async function onSave(formData: object) {
         >
           <p>Please Wait ...</p>
         </div>
-        <div v-else>
+        <div v-else class="space-y-5">
           <div class="space-y-[10px]">
             <p class="text-sm">{{ TitleAction }} a Custom EVM Chain</p>
             <p class="text-sm text-[#8D8D8D] leading-4">
@@ -118,7 +118,7 @@ async function onSave(formData: object) {
           <form class="space-y-5">
             <div class="flex flex-col space-y-2">
               <label for="network-name" class="text-xs text-[#8D8D8D]"
-                >Network Name</label
+                >Network Name*</label
               >
               <p v-if="formData.built_in" class="text-sm">
                 {{ formData.name }}
@@ -133,7 +133,7 @@ async function onSave(formData: object) {
             </div>
             <div class="flex flex-col space-y-2">
               <label for="rpc-url" class="text-xs text-[#8D8D8D]"
-                >RPC URL</label
+                >RPC URL*</label
               >
               <input
                 v-model.trim="formData.rpcURL"
@@ -148,20 +148,13 @@ async function onSave(formData: object) {
             <div class="flex space-x-2">
               <div class="flex flex-col space-y-2 w-1/2">
                 <label for="chain-id" class="text-xs text-[#8D8D8D]"
-                  >Chain ID</label
+                  >Chain ID*</label
                 >
                 <p v-if="formData.built_in" class="text-sm">
                   {{ formData.chainId }}
                 </p>
                 <div v-else>
-                  <p
-                    v-if="!formData.rpcURL.length"
-                    class="h-full text-sm m-auto w-full text-[#8D8D8D] bg-[#313131] p-2"
-                  >
-                    Enter RPC URL
-                  </p>
                   <input
-                    v-else
                     v-model.trim="formData.chainId"
                     type="text"
                     class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
@@ -205,7 +198,7 @@ async function onSave(formData: object) {
               />
             </div>
             <div class="space-y-2">
-              <legend class="text-xs text-[#8D8D8D]">Chain Type</legend>
+              <legend class="text-xs text-[#8D8D8D]">Chain Type*</legend>
               <p v-if="formData.built_in" class="text-sm">
                 {{ formData.chainType }}
               </p>
