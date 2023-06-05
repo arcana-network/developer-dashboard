@@ -97,7 +97,7 @@ async function onSave(formData: object) {
 
 <template>
   <VOverlay>
-    <div class="h-full flex">
+    <div class="h-full flex overflow-y-auto py-2">
       <div
         class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
       >
