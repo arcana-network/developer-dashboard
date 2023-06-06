@@ -168,7 +168,7 @@ async function onSave(formData: object) {
               </div>
               <div class="flex flex-col space-y-2 w-1/2">
                 <label for="currency" class="text-xs text-[#8D8D8D]"
-                  >Currency</label
+                  >Currency*</label
                 >
                 <p v-if="formData.built_in" class="text-sm">
                   {{ formData.currency }}
