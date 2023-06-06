@@ -279,6 +279,15 @@ enum WalletMode {
   UI = 1,
 }
 
+enum WalletUIMode {
+  Custom = 0,
+  Arcana = 1,
+}
+
+const walletUIModes = [
+  { value: 0, label: 'Custom UI' },
+  { value: 1, label: 'Arcana UI' },
+]
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
 const HelpItems = [
@@ -340,6 +349,7 @@ export {
   NetworkName,
   HelpItems,
   ProfileItems,
+  walletUIModes,
 }
 
 export type {
@@ -353,6 +363,7 @@ export type {
   SocialAuthVerifier,
   SocialAuthVerifierLabel,
   Network,
+  WalletUIMode,
 }
 
 export default constants

@@ -15,6 +15,7 @@ import {
   type Network,
   type SocialAuthVerifier,
   api,
+  type WalletUIMode,
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
@@ -58,6 +59,7 @@ type AppConfig = {
   logo: AppConfigThemeLogo
   status: 0 | 1 | 2 | 3
   global: boolean
+  wallet_mode: WalletUIMode
 }
 
 const gatewayInstance = {

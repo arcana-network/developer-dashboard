@@ -60,5 +60,6 @@ export function createAppConfig(
       },
       redirectUri: `${api.verify[network]}/${app.address}/`,
     },
+    walletMode: app.wallet_mode,
   }
 }

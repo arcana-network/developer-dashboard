@@ -13,6 +13,7 @@ import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import { walletUIModes } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 import validateRPCandChainId from '@/utils/validateRPCandChainId'
@@ -26,6 +27,8 @@ const hasAppNameError = ref(false)
 const chainManagementStore = useChainManagementStore()
 const showLoader = ref(false)
 
+const selectedWalletUIMode = ref(walletUIModes[1])
+
 const emit = defineEmits(['close'])
 
 function getPayloadForCreateApp() {
@@ -33,6 +36,7 @@ function getPayloadForCreateApp() {
     name: appName.value,
     chain: selectedChainId.value,
     default_chain: selectedChainId.value,
+    wallet_mode: selectedWalletUIMode.value.value,
   }
 }
 
@@ -82,7 +86,7 @@ function onChainSelect(_, option) {
 <template>
   <VOverlay>
     <div
-      class="rounded-[10px] fixed top-[50%] left-[50%] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[560px] min-w-[200px] w-[70%] h-[450px] translate-x-[-50%] translate-y-[-50%]"
+      class="rounded-[10px] fixed top-[50%] left-[50%] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[520px] min-w-[200px] w-[70%] h-[550px] translate-x-[-50%] translate-y-[-50%]"
     >
       <div v-if="showLoader" class="h-full flex justify-center items-center">
         <p>Please wait...</p>
@@ -101,29 +105,49 @@ function onChainSelect(_, option) {
         <VSeperator class="full-bleed" />
         <form @submit.prevent="handleCreateApp">
           <VStack direction="column" class="space-y-6">
-            <VStack direction="column" gap="0.5rem">
-              <label class="text-lg font-normal text-[#8d8d8d]" for="app-name"
-                >Enter App Name</label
-              >
-              <VTextField
-                id="app-name"
-                v-model.trim="appName"
-                :message-type="hasAppNameError ? 'error' : ''"
-                message="App Name cannot be empty"
-              />
-              <label
-                class="text-lg font-normal text-[#8d8d8d]"
-                for="default-chain"
-                >Default Chain*</label
-              >
-              <VDropdown
-                :options="chainManagementStore.allChains"
-                display-field="name"
-                @change="onChainSelect"
-              />
-              <p class="text-[#8D8D8D]">
-                *You can change the default chain later
-              </p>
+            <VStack direction="column" gap="0.5rem" class="space-y-6">
+              <VStack direction="column">
+                <label class="text-lg font-normal text-[#8d8d8d]" for="app-name"
+                  >Enter App Name</label
+                >
+                <VTextField
+                  id="app-name"
+                  v-model.trim="appName"
+                  :message-type="hasAppNameError ? 'error' : ''"
+                  message="App Name cannot be empty"
+                  :no-message="!hasAppNameError"
+                />
+              </VStack>
+              <VStack direction="column">
+                <label
+                  class="text-lg font-normal text-[#8d8d8d]"
+                  for="default-chain"
+                  >Default Chain*</label
+                >
+                <VDropdown
+                  :options="chainManagementStore.allChains"
+                  display-field="name"
+                  @change="onChainSelect"
+                />
+                <p class="text-[#8D8D8D]">
+                  *You can change the default chain later
+                </p>
+              </VStack>
+              <VStack direction="column">
+                <label
+                  class="text-lg font-normal text-[#8d8d8d]"
+                  for="default-chain"
+                  >Wallet UI Mode</label
+                >
+                <VDropdown
+                  v-model="selectedWalletUIMode"
+                  :options="walletUIModes"
+                  display-field="label"
+                />
+                <p class="text-[#8D8D8D]">
+                  *You cannot change the UI Mode later
+                </p>
+              </VStack>
             </VStack>
             <VButton
               type="submit"
