@@ -11,6 +11,7 @@ import { updateApp } from '@/services/gateway.service'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
+import { WalletUIModes } from '@/utils/constants'
 import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
@@ -36,6 +37,9 @@ const availableThemes: ThemeData[] = [
     value: 'dark',
   },
 ]
+
+const choosenWalletUIMode =
+  WalletUIModes.find((mode) => mode.value === app.wallet_mode)?.label || '-'
 
 const selectedTheme = ref(
   availableThemes.find(
@@ -100,16 +104,26 @@ async function handleSave() {
                 READ MORE
               </a>
             </div>
-            <VTextField
-              v-model.trim="walletWebsiteDomain"
-              class="web-wallet-input"
-              :icon="walletWebsiteDomain ? CloseIcon : ''"
-              :message-type="isEdited && !isValidWebsiteDomain() ? 'error' : ''"
-              message="Invalid website domain - must be a valid url"
-              clickable-icon
-              @icon-clicked="clearWebsiteDomain()"
-              @blur="isEdited = true"
-            />
+            <div class="space-x-5 flex">
+              <VTextField
+                v-model.trim="walletWebsiteDomain"
+                label="Domain URL"
+                class="web-wallet-input"
+                :icon="walletWebsiteDomain ? CloseIcon : ''"
+                :message-type="
+                  isEdited && !isValidWebsiteDomain() ? 'error' : ''
+                "
+                message="Invalid website domain - must be a valid url"
+                clickable-icon
+                @icon-clicked="clearWebsiteDomain()"
+                @blur="isEdited = true"
+              />
+              <VTextField
+                label="Choosen UI Mode"
+                :model-value="choosenWalletUIMode"
+                :disabled="true"
+              />
+            </div>
           </VStack>
           <ConfigureActionButtons
             :save-disabled="hasSameValuesInStore() || !isValidWebsiteDomain()"
