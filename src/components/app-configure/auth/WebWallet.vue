@@ -38,7 +38,7 @@ const availableThemes: ThemeData[] = [
   },
 ]
 
-const choosenWalletUIMode =
+const chosenWalletUIMode =
   WalletUIModes.find((mode) => mode.value === app.wallet_mode)?.label || '-'
 
 const selectedTheme = ref(
@@ -119,8 +119,8 @@ async function handleSave() {
                 @blur="isEdited = true"
               />
               <VTextField
-                label="Choosen UI Mode"
-                :model-value="choosenWalletUIMode"
+                label="Chosen UI Mode"
+                :model-value="chosenWalletUIMode"
                 :disabled="true"
               />
             </div>
