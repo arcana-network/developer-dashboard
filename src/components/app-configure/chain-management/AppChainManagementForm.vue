@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import { getChainIDUsingRPCUrl } from '@/services/gateway.service'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import validateRPCandChainId from '@/utils/validateRPCandChainId'
 import { isValidUrl } from '@/utils/validation'
@@ -12,6 +13,7 @@ const chainManagementStore = useChainManagementStore()
 const showRpcError = ref(false)
 const showChainIdMismatchError = ref(false)
 const showLoader = ref(false)
+const showLoaderRPCValidation = ref(false)
 
 const props = defineProps({
   formAction: {
@@ -45,9 +47,15 @@ const enableSave = computed(() => {
     chainType.length &&
     currency.length &&
     name.length &&
-    isValidUrl(explorerURL.trim()) &&
+    (explorerURL.length ? isValidUrl(explorerURL.trim()) : true) &&
     isValidUrl(rpcURL.trim())
   )
+})
+
+watch(formData.value, (newValue) => {
+  const { rpcURL } = newValue
+  const isValid = isValidUrl(rpcURL.trim())
+  if (isValid) fetchChainIdUsingRPCUrl(rpcURL)
 })
 
 function populateFormData() {
@@ -93,11 +101,27 @@ async function onSave(formData: object) {
     showLoader.value = false
   }
 }
+
+async function fetchChainIdUsingRPCUrl(rpcURL: string) {
+  try {
+    showLoaderRPCValidation.value = true
+    const {
+      data: { result },
+    } = await getChainIDUsingRPCUrl(rpcURL)
+    formData.value.chainId = `${parseInt(result, 16)}`
+    showRpcError.value = false
+  } catch (e) {
+    showRpcError.value = true
+    formData.value.chainId = '-'
+  } finally {
+    showLoaderRPCValidation.value = false
+  }
+}
 </script>
 
 <template>
   <VOverlay>
-    <div class="h-full flex">
+    <div class="h-full flex overflow-y-auto py-2">
       <div
         class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
       >
@@ -107,7 +131,7 @@ async function onSave(formData: object) {
         >
           <p>Please Wait ...</p>
         </div>
-        <div v-else>
+        <div v-else class="space-y-5">
           <div class="space-y-[10px]">
             <p class="text-sm">{{ TitleAction }} a Custom EVM Chain</p>
             <p class="text-sm text-[#8D8D8D] leading-4">
@@ -118,7 +142,7 @@ async function onSave(formData: object) {
           <form class="space-y-5">
             <div class="flex flex-col space-y-2">
               <label for="network-name" class="text-xs text-[#8D8D8D]"
-                >Network Name</label
+                >Network Name*</label
               >
               <p v-if="formData.built_in" class="text-sm">
                 {{ formData.name }}
@@ -132,9 +156,17 @@ async function onSave(formData: object) {
               />
             </div>
             <div class="flex flex-col space-y-2">
-              <label for="rpc-url" class="text-xs text-[#8D8D8D]"
-                >RPC URL</label
-              >
+              <div class="flex items-center space-x-5">
+                <label for="rpc-url" class="text-xs text-[#8D8D8D]"
+                  >RPC URL*</label
+                >
+                <p
+                  v-if="showLoaderRPCValidation"
+                  class="text-xs text-[#8D8D8D]"
+                >
+                  Validating RPC URL...
+                </p>
+              </div>
               <input
                 v-model.trim="formData.rpcURL"
                 type="text"
@@ -148,34 +180,21 @@ async function onSave(formData: object) {
             <div class="flex space-x-2">
               <div class="flex flex-col space-y-2 w-1/2">
                 <label for="chain-id" class="text-xs text-[#8D8D8D]"
-                  >Chain ID</label
+                  >Chain ID*</label
                 >
-                <p v-if="formData.built_in" class="text-sm">
+                <p
+                  class="text-sm w-full h-full border-none outline-none"
+                  :class="[formData.built_in ? 'p-0' : 'p-[10px] bg-[#313131]']"
+                >
                   {{ formData.chainId }}
                 </p>
-                <div v-else>
-                  <p
-                    v-if="!formData.rpcURL.length"
-                    class="h-full text-sm m-auto w-full text-[#8D8D8D] bg-[#313131] p-2"
-                  >
-                    Enter RPC URL
-                  </p>
-                  <input
-                    v-else
-                    v-model.trim="formData.chainId"
-                    type="text"
-                    class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
-                    name="chain-id"
-                    :disabled="!formData.rpcURL.length"
-                  />
-                </div>
                 <p v-if="showChainIdMismatchError" class="text-xs text-red-700">
                   Chain ID doesn't match with network
                 </p>
               </div>
               <div class="flex flex-col space-y-2 w-1/2">
                 <label for="currency" class="text-xs text-[#8D8D8D]"
-                  >Currency</label
+                  >Currency*</label
                 >
                 <p v-if="formData.built_in" class="text-sm">
                   {{ formData.currency }}
@@ -205,7 +224,7 @@ async function onSave(formData: object) {
               />
             </div>
             <div class="space-y-2">
-              <legend class="text-xs text-[#8D8D8D]">Chain Type</legend>
+              <legend class="text-xs text-[#8D8D8D]">Chain Type*</legend>
               <p v-if="formData.built_in" class="text-sm">
                 {{ formData.chainType }}
               </p>
