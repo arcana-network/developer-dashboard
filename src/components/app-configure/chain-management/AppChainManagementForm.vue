@@ -169,18 +169,12 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
                 <label for="chain-id" class="text-xs text-[#8D8D8D]"
                   >Chain ID*</label
                 >
-                <p v-if="formData.built_in" class="text-sm">
+                <p
+                  class="text-sm w-full h-full border-none outline-none"
+                  :class="[formData.built_in ? 'p-0' : 'p-[10px] bg-[#313131]']"
+                >
                   {{ formData.chainId }}
                 </p>
-                <div v-else>
-                  <input
-                    v-model.trim="formData.chainId"
-                    type="text"
-                    class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
-                    name="chain-id"
-                    :disabled="!formData.rpcURL.length"
-                  />
-                </div>
                 <p v-if="showChainIdMismatchError" class="text-xs text-red-700">
                   Chain ID doesn't match with network
                 </p>
