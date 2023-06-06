@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import { getChainIDUsingRPCUrl } from '@/services/gateway.service'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import validateRPCandChainId from '@/utils/validateRPCandChainId'
 import { isValidUrl } from '@/utils/validation'
@@ -50,6 +51,12 @@ const enableSave = computed(() => {
   )
 })
 
+watch(formData.value, (newValue) => {
+  const { rpcURL } = newValue
+  const isValid = isValidUrl(rpcURL.trim())
+  if (isValid) fetchChainIdUsingRPCUrl(rpcURL)
+})
+
 function populateFormData() {
   const { editChainId } = props
   const chainData = chainManagementStore.appChains.find(
@@ -91,6 +98,18 @@ async function onSave(formData: object) {
     showRpcError.value = true
   } finally {
     showLoader.value = false
+  }
+}
+
+async function fetchChainIdUsingRPCUrl(rpcURL: string) {
+  try {
+    const {
+      data: { result },
+    } = await getChainIDUsingRPCUrl(rpcURL)
+    formData.value.chainId = `${parseInt(result, 16)}`
+    showRpcError.value = false
+  } catch (e) {
+    showRpcError.value = true
   }
 }
 </script>
