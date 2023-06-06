@@ -13,6 +13,7 @@ const chainManagementStore = useChainManagementStore()
 const showRpcError = ref(false)
 const showChainIdMismatchError = ref(false)
 const showLoader = ref(false)
+const showLoaderRPCValidation = ref(false)
 
 const props = defineProps({
   formAction: {
@@ -103,6 +104,7 @@ async function onSave(formData: object) {
 
 async function fetchChainIdUsingRPCUrl(rpcURL: string) {
   try {
+    showLoaderRPCValidation.value = true
     const {
       data: { result },
     } = await getChainIDUsingRPCUrl(rpcURL)
@@ -110,6 +112,9 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
     showRpcError.value = false
   } catch (e) {
     showRpcError.value = true
+    formData.value.chainId = '-'
+  } finally {
+    showLoaderRPCValidation.value = false
   }
 }
 </script>
@@ -151,9 +156,17 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
               />
             </div>
             <div class="flex flex-col space-y-2">
-              <label for="rpc-url" class="text-xs text-[#8D8D8D]"
-                >RPC URL*</label
-              >
+              <div class="flex items-center space-x-5">
+                <label for="rpc-url" class="text-xs text-[#8D8D8D]"
+                  >RPC URL*</label
+                >
+                <p
+                  v-if="showLoaderRPCValidation"
+                  class="text-xs text-[#8D8D8D]"
+                >
+                  Validating RPC URL...
+                </p>
+              </div>
               <input
                 v-model.trim="formData.rpcURL"
                 type="text"
