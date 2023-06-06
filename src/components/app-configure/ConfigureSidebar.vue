@@ -22,7 +22,7 @@ import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import type { ConfigureTab, ConfigureTabType } from '@/utils/constants'
+import { type ConfigureTab, type ConfigureTabType } from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const showConfigureSubmenu = ref(false)
@@ -31,6 +31,11 @@ const router = useRouter()
 const route = useRoute()
 const emit = defineEmits(['switch-tab', 'switch-app'])
 const apps: Ref<AppConfig[]> = ref([])
+
+const walletUIMode = {
+  custom: 0,
+  arcana: 1,
+}
 
 const socialLinks = [
   {
@@ -96,7 +101,10 @@ const ConfigureTabs = computed(() => {
     (tab) => tab.type === 'configure'
   )
 
-  if (props.currentNetwork === 'mainnet') {
+  if (
+    props.currentNetwork === 'mainnet' &&
+    appsStore.app(useAppId()).walletMode === walletUIMode.arcana
+  ) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       label: 'Keyspace',
       type: 'keyspace',
