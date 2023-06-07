@@ -15,6 +15,7 @@ import {
   type Network,
   type SocialAuthVerifier,
   api,
+  type WalletUIMode,
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
@@ -58,6 +59,7 @@ type AppConfig = {
   logo: AppConfigThemeLogo
   status: 0 | 1 | 2 | 3
   global: boolean
+  wallet_mode: WalletUIMode
 }
 
 const gatewayInstance = {
@@ -82,6 +84,7 @@ type CreateAppRequestBody = {
   chain: number
   default_chain: number
   chains?: []
+  wallet_mode: WalletUIMode
 }
 
 type CreateAppResponse = {
@@ -116,6 +119,7 @@ function createApp(
     chain: config.chain,
     default_chain: config.default_chain,
     chains: config.chains,
+    wallet_mode: config.wallet_mode,
   }
   return getGatewayInstance(network).post(
     `${getEnvApi('v2')}/app/`,
