@@ -142,7 +142,6 @@ function onChainSelect(_, option) {
                   v-model="selectedWalletUIMode"
                   :options="WalletUIModes"
                   display-field="label"
-                  @change="onChainSelect"
                 />
                 <p class="text-[#8D8D8D]">*You cannot change UI mode later</p>
               </VStack>
