@@ -10,6 +10,7 @@ import { getChainLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
+import { ChainsSupportGaslessTrxn } from '@/utils/constants'
 
 const emits = defineEmits([
   'edit',
@@ -76,6 +77,10 @@ function getRowOptions(isDefault: boolean, options: Array<object>) {
 function onChainLogoError(e) {
   e.target.src = ChainFallbackLogo
 }
+
+function isSupportsGasless(chainId: number) {
+  return ChainsSupportGaslessTrxn.includes(chainId)
+}
 </script>
 
 <template>
@@ -120,6 +125,11 @@ function onChainLogoError(e) {
                 v-if="chain.default_chain"
                 class="text-[#568DF0] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
                 >Default</span
+              >
+              <span
+                v-if="isSupportsGasless(chain.chain_id)"
+                class="text-[#51C75F] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
+                >Gasless</span
               >
             </div>
           </td>
