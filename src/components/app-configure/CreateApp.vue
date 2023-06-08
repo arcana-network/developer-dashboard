@@ -74,7 +74,11 @@ async function handleCreateApp() {
 }
 
 const enableCreate = computed(() => {
-  return !(appName.value.trim().length > 0 && !!selectedChainId.value)
+  return !(
+    appName.value.trim().length > 0 &&
+    !!selectedChainId.value &&
+    !!selectedWalletUIMode.value.label
+  )
 })
 
 function onChainSelect(_, option) {
@@ -142,7 +146,6 @@ function onChainSelect(_, option) {
                   v-model="selectedWalletUIMode"
                   :options="WalletUIModes"
                   display-field="label"
-                  @change="onChainSelect"
                 />
                 <p class="text-[#8D8D8D]">*You cannot change UI mode later</p>
               </VStack>
