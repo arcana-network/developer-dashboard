@@ -320,6 +320,8 @@ const ProfileItems = [
   },
 ]
 
+const ChainsSupportGaslessTrxn = [80001, 137]
+
 const constants = {
   sentry,
   api,
@@ -351,6 +353,7 @@ export {
   HelpItems,
   ProfileItems,
   WalletUIModes,
+  ChainsSupportGaslessTrxn,
 }
 
 export type {
