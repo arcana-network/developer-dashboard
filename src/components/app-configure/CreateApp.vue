@@ -74,7 +74,11 @@ async function handleCreateApp() {
 }
 
 const enableCreate = computed(() => {
-  return !(appName.value.trim().length > 0 && !!selectedChainId.value)
+  return !(
+    appName.value.trim().length > 0 &&
+    !!selectedChainId.value &&
+    !!selectedWalletUIMode.value.label
+  )
 })
 
 function onChainSelect(_, option) {
