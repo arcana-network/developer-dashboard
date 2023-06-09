@@ -549,6 +549,10 @@ async function getChainIDUsingRPCUrl(rpcURL: string) {
   return axios.post(rpcURL, payload)
 }
 
+async function getGaslessSupportChains(network: Network) {
+  return getGatewayInstance(network).get(`${getEnvApi()}/gasless-networks/`)
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -595,6 +599,7 @@ export {
   getAllChains,
   getChainIDUsingRPCUrl,
   getChainLogo,
+  getGaslessSupportChains,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
