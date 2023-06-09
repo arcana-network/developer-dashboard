@@ -19,7 +19,8 @@ const emits = defineEmits([
 ])
 
 const chainManagementStore = useChainManagementStore()
-const { areChainsEmpty, filteredChains } = toRefs(chainManagementStore)
+const { areChainsEmpty, filteredChains, gaslessChains } =
+  toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const toast = useToast()
@@ -76,6 +77,10 @@ function getRowOptions(isDefault: boolean, options: Array<object>) {
 function onChainLogoError(e) {
   e.target.src = ChainFallbackLogo
 }
+
+function isGaslessSupport(chainId: number) {
+  return gaslessChains.value[chainId]
+}
 </script>
 
 <template>
@@ -114,12 +119,17 @@ function onChainLogoError(e) {
             />
           </td>
           <td>
-            <div class="space-x-1 flex items-baseline">
+            <div class="space-x-1 flex items-center">
               <span>{{ chain.name }}</span>
               <span
                 v-if="chain.default_chain"
                 class="text-[#568DF0] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
                 >Default</span
+              >
+              <span
+                v-if="isGaslessSupport(chain.chain_id)"
+                class="text-[#51C75F] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
+                >Gasless</span
               >
             </div>
           </td>

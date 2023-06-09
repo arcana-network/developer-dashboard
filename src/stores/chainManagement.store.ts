@@ -7,6 +7,7 @@ import {
   editChain,
   setDefaultChain,
   getAllChains,
+  getGaslessSupportChains,
 } from '@/services/gateway.service'
 import type { Network } from '@/utils/constants'
 
@@ -14,6 +15,7 @@ const useChainManagementStore = defineStore('chain-management', {
   state: () => ({
     appChains: [],
     allChains: [],
+    gaslessChains: {},
     chainSearchText: '',
   }),
   getters: {
@@ -47,6 +49,10 @@ const useChainManagementStore = defineStore('chain-management', {
     async getAllAppChains(network: Network) {
       const { chains } = (await getAllChains(network)).data
       this.allChains = chains
+    },
+    async getGaslessChains(network: Network) {
+      const chains = (await getGaslessSupportChains(network)).data
+      this.gaslessChains = chains
     },
     async addAppChain(appId: string, chainData: object, network: Network) {
       const payload = {
