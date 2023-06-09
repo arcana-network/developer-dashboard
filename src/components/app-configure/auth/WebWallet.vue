@@ -88,11 +88,10 @@ async function handleSave() {
 <template>
   <section name="web-wallet">
     <SettingCard>
-      <template #title>Wallet</template>
+      <template #title>Arcana Wallet</template>
       <form @submit.prevent="handleSave">
         <VStack direction="column" gap="1rem">
           <VStack direction="column" gap="1rem" class="flex-grow">
-            <h3>Website Domain</h3>
             <div class="text-lg font-normal text-grey">
               Secure Arcana wallet by restricting to load only in the context of
               the specified app domain. Arcana uses frame-ancestors CSP to
@@ -105,24 +104,30 @@ async function handleSave() {
               </a>
             </div>
             <div class="space-x-5 flex">
-              <VTextField
-                v-model.trim="walletWebsiteDomain"
-                label="Domain URL"
-                class="web-wallet-input"
-                :icon="walletWebsiteDomain ? CloseIcon : ''"
-                :message-type="
-                  isEdited && !isValidWebsiteDomain() ? 'error' : ''
-                "
-                message="Invalid website domain - must be a valid url"
-                clickable-icon
-                @icon-clicked="clearWebsiteDomain()"
-                @blur="isEdited = true"
-              />
-              <VTextField
-                label="Chosen UI Mode"
-                :model-value="chosenWalletUIMode"
-                :disabled="true"
-              />
+              <div class="flex flex-col space-y-3">
+                <span>Domain URL</span>
+                <VTextField
+                  v-model.trim="walletWebsiteDomain"
+                  class="web-wallet-input"
+                  :icon="walletWebsiteDomain ? CloseIcon : ''"
+                  :message-type="
+                    isEdited && !isValidWebsiteDomain() ? 'error' : ''
+                  "
+                  message="Invalid website domain - must be a valid url"
+                  clickable-icon
+                  placeholder="Enter Domain URL"
+                  @icon-clicked="clearWebsiteDomain()"
+                  @blur="isEdited = true"
+                />
+              </div>
+              <div class="flex flex-col space-y-3">
+                <span>Wallet UI Mode</span>
+                <VTextField
+                  :model-value="chosenWalletUIMode"
+                  :disabled="true"
+                  input-style="color:#393939"
+                />
+              </div>
             </div>
           </VStack>
           <ConfigureActionButtons
