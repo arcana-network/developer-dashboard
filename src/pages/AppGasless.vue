@@ -46,15 +46,18 @@ const steps = [
       :key="step.indexLabel"
       after="''"
       class="flex flex-column items-start space-y-2 flex-1 max-[1350px]:min-h-[150px]"
-      :class="[
-        index < 3
-          ? 'relative after:content-normal after:left-[65%] after:top-[70%] max-[1350px]:after:left-4 max-[1350px]:after:top-[50%] max-[1350px]:after:h-[70px] max-[1350px]:after:w-[1px] after:border-dotted after:border-[1px] after:absolute after:w-1/3'
-          : '',
-      ]"
     >
-      <span class="text-[#8D8D8D] text-sm ml-[10px]">
-        {{ step.indexLabel }}
-      </span>
+      <div
+        :class="[
+          index < 3
+            ? 'relative flex w-full after:w-4/5 after:content-normal after:left-[15%] after:top-[50%] max-[1350px]:after:left-5 max-[1350px]:after:top-[370%] max-[1350px]:after:h-[70px] max-[1350px]:after:w-[1px] after:border-dotted after:border-[1px] after:absolute'
+            : '',
+        ]"
+      >
+        <span class="text-[#8D8D8D] text-sm ml-[10px]">
+          {{ step.indexLabel }}
+        </span>
+      </div>
       <div class="flex items-center space-x-2 w-2/3">
         <img :src="step.icon" class="w-10 h-10" />
         <span class="text-sm">{{ step.label }}</span>
