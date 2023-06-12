@@ -10,6 +10,7 @@ import brandingIcon from '@/assets/iconography/branding.svg'
 import ChainIcon from '@/assets/iconography/chain.svg'
 import CloseIcon from '@/assets/iconography/close.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
+import GasStationIcon from '@/assets/iconography/gas-station.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
@@ -92,6 +93,11 @@ const ConfigureTabs = computed(() => {
           type: 'arcanaWallet',
           label: 'Arcana Wallet',
           icon: walletIcon,
+        },
+        {
+          type: 'gasLess',
+          label: 'Gasless',
+          icon: GasStationIcon,
         },
       ],
     },
