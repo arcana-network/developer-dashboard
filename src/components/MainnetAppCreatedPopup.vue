@@ -1,11 +1,17 @@
 <script lang="ts" setup>
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import type { AppId } from '@/stores/apps.store'
-import { NetworkName } from '@/utils/constants'
+import { useAppsStore } from '@/stores/apps.store'
+import {
+  NetworkName,
+  WalletUIModes,
+  isProductionDashboard,
+} from '@/utils/constants'
 
 type Props = {
   appId: AppId
@@ -14,11 +20,20 @@ type Props = {
 const props = defineProps<Props>()
 const emit = defineEmits(['close'])
 const router = useRouter()
+const appsStore = useAppsStore()
+const isArcanaUImode = ref(false)
 
 function handleMainnetKeySpace() {
   router.push({ name: 'Keyspace', params: { appId: props.appId } })
   emit('close')
 }
+
+onMounted(() => {
+  const app = appsStore.app(props.appId)
+  isArcanaUImode.value = app.wallet_mode
+    ? app.wallet_mode === WalletUIModes[1].value
+    : false
+})
 </script>
 
 <template>
@@ -27,14 +42,24 @@ function handleMainnetKeySpace() {
       <VCard class="popup-card">
         <img src="@/assets/success-celebrate.svg" style="width: 8rem" />
         <h3 class="popup-title">{{ NetworkName.mainnet }} App Created!</h3>
-        <span class="popup-message">
+        <span
+          v-if="isArcanaUImode && !isProductionDashboard"
+          class="popup-message"
+        >
           {{ NetworkName.mainnet }} app has been configured. <br />Please
           proceed to configure your app's keyspace
         </span>
         <VButton
+          v-if="isArcanaUImode && !isProductionDashboard"
           label="CONFIGURE KEYSPACE"
           style="width: 200px"
           @click.stop="handleMainnetKeySpace()"
+        />
+        <VButton
+          v-else
+          label="Close"
+          style="width: 200px"
+          @click.stop="emit('close')"
         />
       </VCard>
     </div>

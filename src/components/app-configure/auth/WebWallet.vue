@@ -11,6 +11,7 @@ import { updateApp } from '@/services/gateway.service'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
+import { WalletUIModes, isProductionDashboard } from '@/utils/constants'
 import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
@@ -20,6 +21,12 @@ const toast = useToast()
 const app = appsStore.app(appId)
 const wallet = app.auth.wallet
 const isEdited = ref(false)
+
+const appNetwork = isProductionDashboard
+  ? app.network
+  : app.network === 'mainnet'
+  ? 'testnet'
+  : 'dev'
 
 type ThemeData = {
   label: string
@@ -36,6 +43,9 @@ const availableThemes: ThemeData[] = [
     value: 'dark',
   },
 ]
+
+const chosenWalletUIMode =
+  WalletUIModes.find((mode) => mode.value === app.wallet_mode)?.label || '-'
 
 const selectedTheme = ref(
   availableThemes.find(
@@ -84,11 +94,10 @@ async function handleSave() {
 <template>
   <section name="web-wallet">
     <SettingCard>
-      <template #title>Wallet</template>
+      <template #title>Arcana Wallet</template>
       <form @submit.prevent="handleSave">
         <VStack direction="column" gap="1rem">
           <VStack direction="column" gap="1rem" class="flex-grow">
-            <h3>Website Domain</h3>
             <div class="text-lg font-normal text-grey">
               Secure Arcana wallet by restricting to load only in the context of
               the specified app domain. Arcana uses frame-ancestors CSP to
@@ -100,16 +109,35 @@ async function handleSave() {
                 READ MORE
               </a>
             </div>
-            <VTextField
-              v-model.trim="walletWebsiteDomain"
-              class="web-wallet-input"
-              :icon="walletWebsiteDomain ? CloseIcon : ''"
-              :message-type="isEdited && !isValidWebsiteDomain() ? 'error' : ''"
-              message="Invalid website domain - must be a valid url"
-              clickable-icon
-              @icon-clicked="clearWebsiteDomain()"
-              @blur="isEdited = true"
-            />
+            <div class="space-x-5 flex">
+              <div class="flex flex-col space-y-3">
+                <span>Domain URL</span>
+                <VTextField
+                  v-model.trim="walletWebsiteDomain"
+                  class="web-wallet-input"
+                  :icon="walletWebsiteDomain ? CloseIcon : ''"
+                  :message-type="
+                    isEdited && !isValidWebsiteDomain() ? 'error' : ''
+                  "
+                  message="Invalid website domain - must be a valid url"
+                  clickable-icon
+                  placeholder="Enter Domain URL"
+                  @icon-clicked="clearWebsiteDomain()"
+                  @blur="isEdited = true"
+                />
+              </div>
+              <div
+                v-if="appNetwork !== 'mainnet'"
+                class="flex flex-col space-y-3"
+              >
+                <span>Wallet UI Mode</span>
+                <VTextField
+                  :model-value="chosenWalletUIMode"
+                  :disabled="true"
+                  input-style="color:#393939"
+                />
+              </div>
+            </div>
           </VStack>
           <ConfigureActionButtons
             :save-disabled="hasSameValuesInStore() || !isValidWebsiteDomain()"

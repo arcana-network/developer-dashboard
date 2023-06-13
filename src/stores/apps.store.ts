@@ -6,7 +6,12 @@ import {
   getNotifications,
   updateNotificationRead,
 } from '@/services/gateway.service'
-import type { Chain, Network, SocialAuthVerifier } from '@/utils/constants'
+import type {
+  Chain,
+  Network,
+  SocialAuthVerifier,
+  WalletUIMode,
+} from '@/utils/constants'
 import { WalletMode } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 
@@ -64,6 +69,7 @@ type App = {
   }
   status: 0 | 1 | 2 | 3
   keyspace: 'app-specific' | 'global'
+  wallet_mode: WalletUIMode
 }
 
 type AppState = {

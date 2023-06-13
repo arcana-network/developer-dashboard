@@ -160,6 +160,7 @@ async function createMainnetApp(
           region: RegionMapping[selectedRegion.value.value],
           default_chain: chainManagementStore.defaultChainId,
           chains: shouldCopyTestnetConfig ? chainManagementStore.appChains : [],
+          wallet_mode: app.wallet_mode,
         },
         'mainnet'
       )
