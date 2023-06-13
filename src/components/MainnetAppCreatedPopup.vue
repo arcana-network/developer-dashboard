@@ -7,7 +7,11 @@ import VCard from '@/components/lib/VCard/VCard.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import type { AppId } from '@/stores/apps.store'
 import { useAppsStore } from '@/stores/apps.store'
-import { NetworkName, WalletUIModes } from '@/utils/constants'
+import {
+  NetworkName,
+  WalletUIModes,
+  isProductionDashboard,
+} from '@/utils/constants'
 
 type Props = {
   appId: AppId
@@ -38,12 +42,15 @@ onMounted(() => {
       <VCard class="popup-card">
         <img src="@/assets/success-celebrate.svg" style="width: 8rem" />
         <h3 class="popup-title">{{ NetworkName.mainnet }} App Created!</h3>
-        <span v-if="isArcanaUImode" class="popup-message">
+        <span
+          v-if="isArcanaUImode && !isProductionDashboard"
+          class="popup-message"
+        >
           {{ NetworkName.mainnet }} app has been configured. <br />Please
           proceed to configure your app's keyspace
         </span>
         <VButton
-          v-if="isArcanaUImode"
+          v-if="isArcanaUImode && !isProductionDashboard"
           label="CONFIGURE KEYSPACE"
           style="width: 200px"
           @click.stop="handleMainnetKeySpace()"
