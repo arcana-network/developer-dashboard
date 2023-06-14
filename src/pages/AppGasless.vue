@@ -18,7 +18,7 @@ const steps = [
   {
     indexLabel: '03',
     icon: GaslessStep3Icon,
-    label: 'Deposit Crypto to your Gas Tanks',
+    label: 'Setup Whitelists',
   },
   {
     indexLabel: '04',
@@ -50,7 +50,7 @@ const steps = [
       <div
         :class="[
           index < 3
-            ? 'relative flex w-full after:w-4/5 after:content-normal after:left-[15%] after:top-[50%] max-[1350px]:after:left-5 max-[1350px]:after:top-[370%] max-[1350px]:after:h-[70px] max-[1350px]:after:w-[1px] after:border-dotted after:border-[1px] after:absolute'
+            ? 'relative flex w-full after:w-4/5 after:content-normal after:left-[15%] after:top-[50%] max-[1350px]:after:left-5 max-[1350px]:after:top-[370%] max-[1350px]:after:h-[70px] max-[1350px]:after:w-[1px] after:border-dashed after:border-[1px] after:absolute'
             : '',
         ]"
       >
