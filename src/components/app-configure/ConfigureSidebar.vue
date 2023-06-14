@@ -119,6 +119,21 @@ const ConfigureTabs = computed(() => {
   return configureTabsCopy
 })
 
+const gaslessMenu = [
+  {
+    type: 'gasTanks',
+    label: 'Gas Tanks',
+  },
+  // {
+  //   type: 'whitelists',
+  //   label: 'Whitelists',
+  // },
+  // {
+  //   type: 'transactions',
+  //   label: 'Transactions',
+  // },
+]
+
 function onClickOfMenu(tab: ConfigureTab) {
   if (tab.subMenu) {
     showConfigureSubmenu.value = !showConfigureSubmenu.value
@@ -147,9 +162,27 @@ function hasSubMenuSelected(tabLabel: string) {
     const subTab = selectedTab.subMenu.find(
       (el) => el.label === props.currentTab
     )
-    if (subTab) return true
+    const gaslessSubmenu = gaslessMenu.find(
+      (el) => el.label === props.currentTab
+    )
+    if (subTab || gaslessSubmenu) return true
   }
   return false
+}
+
+function isSubmenuSelected(subTab: string) {
+  let isSelected = props.currentTab === subTab
+  console.log(
+    { isSelected, subTab },
+    gaslessMenu.find((item) => item.label === subTab)
+  )
+  if (
+    !isSelected &&
+    subTab === 'Gasless' &&
+    gaslessMenu.find((item) => item.label === props.currentTab)
+  )
+    isSelected = true
+  return isSelected
 }
 
 onMounted(() => {
@@ -158,7 +191,8 @@ onMounted(() => {
     currentTab === 'Branding' ||
     currentTab === 'Social Auth' ||
     currentTab === 'Arcana Wallet' ||
-    currentTab === 'Keyspace'
+    currentTab === 'Keyspace' ||
+    currentTab === 'GasLess'
 })
 
 onMounted(() => {
@@ -273,24 +307,45 @@ watch(
           </div>
           <div
             v-if="tab.subMenu && showConfigureSubmenu"
-            class="sidebar__submenu"
+            class="sidebar__submenu | space-y-3"
           >
-            <VCardButton
-              v-for="subTab in tab.subMenu"
-              :key="subTab.label"
-              class="sidebar__submenu-option"
-              :class="{ 'submenu-active': props.currentTab === subTab.label }"
-              @click.stop="onClickOfMenu(subTab)"
-            >
-              <div class="sidebar__submenu-option-item">
-                <img
-                  :src="subTab.icon"
-                  alt="icon"
-                  class="sidebar__submenu-option-icon"
-                />
-                <span class="submenu-tab-label">{{ subTab.label }}</span>
+            <div v-for="subTab in tab.subMenu" :key="subTab.label">
+              <VCardButton
+                class="sidebar__submenu-option"
+                :class="{ 'submenu-active': isSubmenuSelected(subTab.label) }"
+                @click.stop="onClickOfMenu(subTab)"
+              >
+                <div class="sidebar__submenu-option-item">
+                  <img
+                    :src="subTab.icon"
+                    alt="icon"
+                    class="sidebar__submenu-option-icon"
+                  />
+                  <span class="submenu-tab-label">{{ subTab.label }}</span>
+                </div>
+              </VCardButton>
+              <div
+                v-if="subTab.type === 'gasLess'"
+                class="flex flex-column items-start pl-8 space-y-2 mt-2"
+              >
+                <VCardButton
+                  v-for="menu in gaslessMenu"
+                  :key="menu.type"
+                  class="sidebar__submenu-option"
+                  @click.stop="onClickOfMenu(menu)"
+                >
+                  <div
+                    class="sidebar__submenu-option-item"
+                    :class="{
+                      'bg-white p-1 rounded-[10px] text-black':
+                        props.currentTab === menu.label,
+                    }"
+                  >
+                    <span class="text-sm font-medium">{{ menu.label }}</span>
+                  </div>
+                </VCardButton>
               </div>
-            </VCardButton>
+            </div>
           </div>
         </VCardButton>
       </VStack>
@@ -400,10 +455,6 @@ watch(
 
 .sidebar__submenu-option {
   padding: 0 !important;
-}
-
-.sidebar__submenu-option:not(:last-child) {
-  margin-bottom: 1.5rem;
 }
 
 .sidebar__submenu-option-item {
