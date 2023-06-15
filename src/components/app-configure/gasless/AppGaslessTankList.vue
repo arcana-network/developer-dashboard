@@ -69,13 +69,12 @@ function onChainLogoError(e) {
       <thead class="border-b-[1px] border-b-[#363636]">
         <tr class="text-[#8d8d8d] text-xs">
           <th class="w-[5%]"></th>
-          <th class="w-[10%]">Name</th>
-          <th class="w-[15%]">Network</th>
+          <th class="w-[15%]">Name</th>
+          <th class="w-[20%]">Network</th>
           <th class="w-[10%]">Type</th>
           <th class="w-[10%]">Balance</th>
           <th class="w-[20%]">Deposit Address</th>
           <th class="w-[10%]">Whitelists</th>
-          <th class="w-[10%]">Last Transaction Date</th>
           <th class="w-[10%]">Enabled</th>
           <th class="w-[5%]"></th>
         </tr>
@@ -100,7 +99,6 @@ function onChainLogoError(e) {
           <td>{{ '-' }}</td>
           <td>{{ tank.deposit_address || '-' }}</td>
           <td>{{ tank.whitelists || '-' }}</td>
-          <td>{{ '-' }}</td>
           <td>
             <VSwitch :value="false" />
           </td>
