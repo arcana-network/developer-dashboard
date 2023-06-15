@@ -16,15 +16,22 @@ type GasTank = {
 
 type GaslessState = {
   gastankList: Array<GasTank>
+  chainSearchText: string
 }
 
 const useGaslessStore = defineStore('gasless', {
   state: (): GaslessState => ({
     gastankList: [],
+    chainSearchText: '',
   }),
   getters: {
     areGastankListEmpty: ({ gastankList }) => {
       return gastankList.length === 0
+    },
+    filteredGastankList: ({ gastankList, chainSearchText }) => {
+      return gastankList.filter((item) =>
+        item.name.toLowerCase().includes(chainSearchText.toLowerCase())
+      )
     },
   },
   actions: {

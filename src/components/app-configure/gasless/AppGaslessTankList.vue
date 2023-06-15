@@ -20,7 +20,7 @@ const emits = defineEmits([
 ])
 
 const gaslessStore = useGaslessStore()
-const { gastankList } = toRefs(gaslessStore)
+const { gastankList, filteredGastankList } = toRefs(gaslessStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const route = useRoute()
@@ -82,7 +82,7 @@ function onChainLogoError(e) {
       </thead>
       <tbody>
         <tr
-          v-for="tank in gastankList"
+          v-for="tank in filteredGastankList"
           :key="tank.name"
           class="hover:bg-[#363636]"
         >

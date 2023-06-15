@@ -56,6 +56,10 @@ async function onFormSubmit(formData: object) {
     hideLoader()
   }
 }
+
+function onSearch(value: string) {
+  gaslessStore.chainSearchText = value
+}
 </script>
 
 <template>
@@ -79,7 +83,10 @@ async function onFormSubmit(formData: object) {
           <img :src="PlusIcon" alt="Add Chain" class="w-3" />
           <span>Add Gas Tank</span>
         </button>
-        <SearchBar v-if="!gaslessStore.areGastankListEmpty" />
+        <SearchBar
+          v-if="!gaslessStore.areGastankListEmpty"
+          @search="onSearch"
+        />
       </div>
       <AppGaslessTankList />
     </div>
