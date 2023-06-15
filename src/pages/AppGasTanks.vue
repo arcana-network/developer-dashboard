@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 
 import PlusIcon from '@/assets/iconography/plus.svg'
 import AppGaslessTankList from '@/components/app-configure/gasless/AppGaslessTankList.vue'
+import AppGaslessWhitelist from '@/components/app-configure/gasless/AppGaslessWhitelist.vue'
 import AppGasTankDeposit from '@/components/app-configure/gasless/AppGasTankDeposit.vue'
 import AppGasTankForm from '@/components/app-configure/gasless/AppGasTankForm.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -20,6 +21,7 @@ const appStore = useAppsStore()
 const gaslessStore = useGaslessStore()
 const { showLoader, hideLoader } = useLoaderStore()
 const showDepositForm = ref(false)
+const showWhitelistForm = ref(false)
 
 async function fetchGastankList() {
   const appId = route.params.appId
@@ -90,7 +92,10 @@ function onSearch(value: string) {
           @search="onSearch"
         />
       </div>
-      <AppGaslessTankList @deposit="showDepositForm = true" />
+      <AppGaslessTankList
+        @deposit="showDepositForm = true"
+        @manage-whitelist="showWhitelistForm = true"
+      />
     </div>
     <AppGasTankForm
       v-if="showForm"
@@ -101,5 +106,6 @@ function onSearch(value: string) {
       v-if="showDepositForm"
       @cancel="showDepositForm = false"
     />
+    <AppGaslessWhitelist v-if="showWhitelistForm" />
   </div>
 </template>
