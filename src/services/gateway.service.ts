@@ -553,6 +553,16 @@ async function getGaslessSupportChains(network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/gasless-networks/`)
 }
 
+async function getGastanks(appId: string, network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/?app_id=${appId}`
+  )
+}
+
+async function addGastank(data: object, network: Network) {
+  return getGatewayInstance(network).post(`${getEnvApi()}/gastank/`, data)
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -600,6 +610,8 @@ export {
   getChainIDUsingRPCUrl,
   getChainLogo,
   getGaslessSupportChains,
+  addGastank,
+  getGastanks,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
