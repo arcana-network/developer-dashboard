@@ -4,6 +4,7 @@ import { ref } from 'vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 
 const showTable = ref(false)
+const emits = defineEmits(['add-contract', 'cancel'])
 </script>
 
 <template>
@@ -20,7 +21,9 @@ const showTable = ref(false)
           </p>
         </div>
         <div class="flex flex-column items-end space-y-2 flex-1">
-          <button class="text-sm">Add Contract</button>
+          <button class="text-sm" @click.stop="emits('add-contract')">
+            Add Contract
+          </button>
           <div class="rounded-md border-[1px] border-[#363636] w-full">
             <table
               v-if="showTable"
@@ -44,6 +47,14 @@ const showTable = ref(false)
               </p>
             </div>
           </div>
+        </div>
+        <div class="space-x-2.5 flex justify-end">
+          <button
+            class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md"
+            @click.stop="emits('cancel')"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>

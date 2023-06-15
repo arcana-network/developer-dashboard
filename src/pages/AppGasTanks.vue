@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlusIcon from '@/assets/iconography/plus.svg'
+import AppGaslessSmartContractForm from '@/components/app-configure/gasless/AppGaslessSmartContractForm.vue'
 import AppGaslessTankList from '@/components/app-configure/gasless/AppGaslessTankList.vue'
 import AppGaslessWhitelist from '@/components/app-configure/gasless/AppGaslessWhitelist.vue'
 import AppGasTankDeposit from '@/components/app-configure/gasless/AppGasTankDeposit.vue'
@@ -22,6 +23,7 @@ const gaslessStore = useGaslessStore()
 const { showLoader, hideLoader } = useLoaderStore()
 const showDepositForm = ref(false)
 const showWhitelistForm = ref(false)
+const showSmartContractForm = ref(false)
 
 async function fetchGastankList() {
   const appId = route.params.appId
@@ -63,6 +65,11 @@ async function onFormSubmit(formData: object) {
 
 function onSearch(value: string) {
   gaslessStore.chainSearchText = value
+}
+
+function onAddContract() {
+  showSmartContractForm.value = true
+  showWhitelistForm.value = false
 }
 </script>
 
@@ -106,6 +113,11 @@ function onSearch(value: string) {
       v-if="showDepositForm"
       @cancel="showDepositForm = false"
     />
-    <AppGaslessWhitelist v-if="showWhitelistForm" />
+    <AppGaslessWhitelist
+      v-if="showWhitelistForm"
+      @cancel="showWhitelistForm = false"
+      @add-contract="onAddContract"
+    />
+    <AppGaslessSmartContractForm v-if="showSmartContractForm" />
   </div>
 </template>
