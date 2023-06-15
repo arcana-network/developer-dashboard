@@ -41,7 +41,6 @@ async function fetchAppChains() {
   const appId = route.params.appId
   const app = appStore.app(appId)
   await chainManagementStore.getAppChains(appId, app.network)
-  await chainManagementStore.getGaslessChains(app.network)
 }
 
 function openForm(formActionVal: FormAction, id?: string) {
