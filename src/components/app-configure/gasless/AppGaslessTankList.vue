@@ -58,6 +58,10 @@ const rowOptions = [
 function onChainLogoError(e) {
   e.target.src = ChainFallbackLogo
 }
+
+function onClickOfOption(option: number, id: string) {
+  if (option === 0) emits('deposit', { id })
+}
 </script>
 
 <template>
@@ -120,6 +124,7 @@ function onChainLogoError(e) {
                   v-for="option in rowOptions"
                   :key="option.value"
                   class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
+                  @click.stop="() => onClickOfOption(option.value, tank.id)"
                 >
                   {{ option.label }}
                 </button>
