@@ -37,7 +37,7 @@ const useGaslessStore = defineStore('gasless', {
   actions: {
     async getGastankList(appId: number, network: Network) {
       const gastanks = (await getGastanks(appId, network)).data
-      this.gastankList = gastanks
+      this.gastankList = gastanks || []
     },
   },
 })

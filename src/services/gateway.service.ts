@@ -563,6 +563,12 @@ async function addGastank(data: object, network: Network) {
   return getGatewayInstance(network).post(`${getEnvApi()}/gastank/`, data)
 }
 
+async function getPaymaster(tankId: number, network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/paymaster/?gastank_id=${tankId}`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -612,6 +618,7 @@ export {
   getGaslessSupportChains,
   addGastank,
   getGastanks,
+  getPaymaster,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

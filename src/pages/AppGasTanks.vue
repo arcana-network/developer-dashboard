@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ethers } from 'ethers'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -10,10 +11,11 @@ import AppGasTankDeposit from '@/components/app-configure/gasless/AppGasTankDepo
 import AppGasTankForm from '@/components/app-configure/gasless/AppGasTankForm.vue'
 import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
-import { addGastank } from '@/services/gateway.service'
+import { addGastank, getPaymaster } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { useWalletStore } from '@/stores/wallet.store'
 
 const showForm = ref(false)
 const route = useRoute()
@@ -24,6 +26,8 @@ const { showLoader, hideLoader } = useLoaderStore()
 const showDepositForm = ref(false)
 const showWhitelistForm = ref(false)
 const showSmartContractForm = ref(false)
+const depositTankId = ref(null)
+const walletStore = useWalletStore()
 
 async function fetchGastankList() {
   const appId = route.params.appId
@@ -71,6 +75,38 @@ function onAddContract() {
   showSmartContractForm.value = true
   showWhitelistForm.value = false
 }
+
+function deposit(tankId) {
+  showDepositForm.value = true
+  depositTankId.value = tankId
+}
+
+async function depositHandler(depositAmount: number) {
+  try {
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const { data: paymaster } = (
+      await getPaymaster(depositTankId.value, app.network)
+    ).data
+    const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
+    const wallet = await web3Provider.getSigner()
+    const owner = await wallet.getAddress()
+    const paymasterContract = new ethers.Contract(
+      paymaster.address,
+      paymaster.abi,
+      wallet
+    )
+    let tx = await paymasterContract.depositFor(owner, {
+      value: ethers.utils.parseEther(depositAmount + ''),
+    })
+    console.log(tx, 'tx')
+    await tx.wait()
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    showDepositForm.value = false
+  }
+}
 </script>
 
 <template>
@@ -100,7 +136,7 @@ function onAddContract() {
         />
       </div>
       <AppGaslessTankList
-        @deposit="showDepositForm = true"
+        @deposit="deposit"
         @manage-whitelist="showWhitelistForm = true"
       />
     </div>
@@ -111,7 +147,9 @@ function onAddContract() {
     />
     <AppGasTankDeposit
       v-if="showDepositForm"
-      @cancel="showDepositForm = false"
+      :deposit-tank-id="depositTankId"
+      @close="showDepositForm = false"
+      @proceed="depositHandler"
     />
     <AppGaslessWhitelist
       v-if="showWhitelistForm"
