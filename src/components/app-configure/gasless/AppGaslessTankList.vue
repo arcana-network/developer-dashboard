@@ -42,16 +42,8 @@ const rowOptions = [
     value: 1,
   },
   {
-    label: 'Edit',
-    value: 2,
-  },
-  {
-    label: 'Delete',
-    value: 3,
-  },
-  {
     label: 'Manage Whitelist',
-    value: 4,
+    value: 2,
   },
 ]
 
@@ -61,7 +53,7 @@ function onChainLogoError(e) {
 
 function onClickOfOption(option: number, id: number) {
   if (option === 0) emits('deposit', id)
-  if (option === 4) emits('manage-whitelist')
+  if (option === 2) emits('manage-whitelist')
 }
 </script>
 
@@ -75,9 +67,8 @@ function onClickOfOption(option: number, id: number) {
         <tr class="text-[#8d8d8d] text-xs">
           <th class="w-[5%]"></th>
           <th class="w-[15%]">Name</th>
-          <th class="w-[20%]">Network</th>
+          <th class="w-[30%]">Network</th>
           <th class="w-[10%]">Type</th>
-          <th class="w-[10%]">Balance</th>
           <th class="w-[20%]">Deposit Address</th>
           <th class="w-[10%]">Whitelists</th>
           <th class="w-[10%]">Enabled</th>
@@ -101,7 +92,6 @@ function onClickOfOption(option: number, id: number) {
           <td>{{ tank.name }}</td>
           <td>{{ tank.network }}</td>
           <td>{{ tank.type }}</td>
-          <td>{{ '-' }}</td>
           <td>{{ tank.deposit_address || '-' }}</td>
           <td>{{ tank.whitelists || '-' }}</td>
           <td>
