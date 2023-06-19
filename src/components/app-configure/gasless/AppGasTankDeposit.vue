@@ -1,7 +1,11 @@
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue'
+import { ethers } from 'ethers'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import { getPaymaster } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useWalletStore } from '@/stores/wallet.store'
@@ -12,7 +16,11 @@ const gaslessStore = useGaslessStore()
 const walletStore = useWalletStore()
 const chainStore = useChainManagementStore()
 const isConnected = ref(false)
+const appStore = useAppsStore()
 const depositAmount = ref('')
+const route = useRoute()
+const walletBalance = ref('')
+const walletDeposit = ref('')
 
 const emits = defineEmits(['close', 'proceed'])
 
@@ -26,8 +34,8 @@ async function connectWallet() {
     if (connectedChainId !== selectedGasTankChainId) {
       await switchChain(`0x${selectedGasTankChainId.toString(16)}`)
     }
-    isConnected.value = true
     walletStore.setWalletProvider(provider)
+    isConnected.value = true
   } catch (err) {
     if (err.code === 4902) {
       const chainInfo = chainStore.appChains.find(
@@ -39,6 +47,26 @@ async function connectWallet() {
       console.log(err, 'Failed to switch to the network')
     }
   }
+}
+
+async function fetchBalanceAndDeposit() {
+  const appId = route.params.appId
+  const app = appStore.app(appId)
+  const { data: paymaster } = (
+    await getPaymaster(props.depositTankId, app.network)
+  ).data
+  const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
+  const wallet = await web3Provider.getSigner()
+  const owner = await wallet.getAddress()
+  const paymasterContract = new ethers.Contract(
+    paymaster.address,
+    paymaster.abi,
+    wallet
+  )
+  const balance = await paymasterContract.getBalance(owner)
+  const deposit = await paymasterContract.getDeposit()
+  walletBalance.value = ethers.utils.formatEther(balance)
+  walletDeposit.value = ethers.utils.formatEther(deposit)
 }
 
 const props = defineProps({
@@ -54,6 +82,13 @@ onMounted(() => {
     return item.id === depositTankId
   })
 })
+
+watch(
+  () => isConnected.value,
+  () => {
+    fetchBalanceAndDeposit()
+  }
+)
 
 const enableSave = computed(() => {
   return isConnected.value && Number(depositAmount.value) > 0
@@ -74,6 +109,16 @@ const enableSave = computed(() => {
           </p>
         </div>
         <div v-if="isConnected">
+          <div>
+            <p class="text-[10px]">
+              <span class="text-[#8D8D8D]">Total balance:</span>
+              {{ walletBalance }}
+            </p>
+            <p class="text-[10px]">
+              <span class="text-[#8D8D8D]">Total deposit:</span>
+              {{ walletDeposit }}
+            </p>
+          </div>
           <label for="amount" class="text-xs">Amount</label>
           <input
             v-model="depositAmount"
