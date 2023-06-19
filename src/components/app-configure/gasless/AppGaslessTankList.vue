@@ -95,7 +95,7 @@ function onClickOfOption(option: number, id: number) {
           <td>{{ tank.deposit_address || '-' }}</td>
           <td>{{ tank.whitelists || '-' }}</td>
           <td>
-            <VSwitch :value="false" />
+            <VSwitch :value="tank.enabled" />
           </td>
           <td>
             <div class="relative">
