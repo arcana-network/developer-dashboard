@@ -21,12 +21,27 @@ const depositAmount = ref('')
 const route = useRoute()
 const walletBalance = ref('')
 const walletDeposit = ref('')
+const loader = ref({
+  show: false,
+  message: '',
+})
 
 const emits = defineEmits(['close', 'proceed'])
+
+function showLoader(message: string) {
+  loader.value.show = true
+  loader.value.message = message
+}
+
+function hideLoader() {
+  loader.value.show = false
+  loader.value.message = ''
+}
 
 async function connectWallet() {
   const { connect, switchChain, createChain } = useMetaMask()
   const selectedGasTankChainId = selectedGasTank.value.chainId
+  showLoader('connecting to wallet...')
   try {
     const { provider } = await connect()
     const { chainId } = provider
@@ -46,27 +61,36 @@ async function connectWallet() {
     } else {
       console.log(err, 'Failed to switch to the network')
     }
+  } finally {
+    hideLoader()
   }
 }
 
 async function fetchBalanceAndDeposit() {
-  const appId = route.params.appId
-  const app = appStore.app(appId)
-  const { data: paymaster } = (
-    await getPaymaster(props.depositTankId, app.network)
-  ).data
-  const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
-  const wallet = await web3Provider.getSigner()
-  const owner = await wallet.getAddress()
-  const paymasterContract = new ethers.Contract(
-    paymaster.address,
-    paymaster.abi,
-    wallet
-  )
-  const balance = await paymasterContract.getBalance(owner)
-  const deposit = await paymasterContract.getDeposit()
-  walletBalance.value = ethers.utils.formatEther(balance)
-  walletDeposit.value = ethers.utils.formatEther(deposit)
+  try {
+    showLoader('fetching balance and deposit amount...')
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const { data: paymaster } = (
+      await getPaymaster(props.depositTankId, app.network)
+    ).data
+    const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
+    const wallet = await web3Provider.getSigner()
+    const owner = await wallet.getAddress()
+    const paymasterContract = new ethers.Contract(
+      paymaster.address,
+      paymaster.abi,
+      wallet
+    )
+    const balance = await paymasterContract.getBalance(owner)
+    const deposit = await paymasterContract.getDeposit()
+    walletBalance.value = ethers.utils.formatEther(balance)
+    walletDeposit.value = ethers.utils.formatEther(deposit)
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoader()
+  }
 }
 
 const props = defineProps({
@@ -98,57 +122,63 @@ const enableSave = computed(() => {
 <template>
   <VOverlay>
     <div class="h-full flex overflow-y-auto py-2">
+      <div v-if="loader.show" class="flex justify-center items-center m-auto">
+        {{ loader.message }}
+      </div>
       <div
-        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
+        v-else
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 bg-[#1F1F1F] m-auto"
       >
-        <div class="space-y-[10px]">
-          <p class="text-sm">Deposit Crypto to Gas Tank</p>
-          <p class="text-sm text-[#8D8D8D] leading-4">
-            Declare the owner of the gas tank by signing a message with your
-            wallet:
-          </p>
-        </div>
-        <div v-if="isConnected">
-          <div>
-            <p class="text-[10px]">
-              <span class="text-[#8D8D8D]">Total balance:</span>
-              {{ walletBalance }}
-            </p>
-            <p class="text-[10px]">
-              <span class="text-[#8D8D8D]">Total deposit:</span>
-              {{ walletDeposit }}
+        <div class="space-y-5">
+          <div class="space-y-[10px]">
+            <p class="text-sm">Deposit Crypto to Gas Tank</p>
+            <p class="text-sm text-[#8D8D8D] leading-4">
+              Declare the owner of the gas tank by signing a message with your
+              wallet:
             </p>
           </div>
-          <label for="amount" class="text-xs">Amount</label>
-          <input
-            v-model="depositAmount"
-            type="text"
-            class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none rounded-md"
-            name="amount"
-          />
-        </div>
-        <button
-          v-else
-          class="uppercase border-2 text-sm w-full p-1 rounded-md bg-white text-black"
-          @click="connectWallet"
-        >
-          Connect Wallet
-        </button>
-        <div class="space-x-2.5 flex justify-end">
+          <div v-if="isConnected">
+            <div>
+              <p class="text-[10px]">
+                <span class="text-[#8D8D8D]">Total balance:</span>
+                {{ walletBalance }}
+              </p>
+              <p class="text-[10px]">
+                <span class="text-[#8D8D8D]">Total deposit:</span>
+                {{ walletDeposit }}
+              </p>
+            </div>
+            <label for="amount" class="text-xs">Amount</label>
+            <input
+              v-model="depositAmount"
+              type="text"
+              class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none rounded-md"
+              name="amount"
+            />
+          </div>
           <button
-            class="border-[1.5px] text-sm border-[#F7F7F7] w-[100px] p-2 rounded-md"
-            @click="emits('close')"
+            v-else
+            class="uppercase border-2 text-sm w-full p-1 rounded-md bg-white text-black"
+            @click="connectWallet"
           >
-            Cancel
+            Connect Wallet
           </button>
-          <button
-            class="bg-[#FFFFFF] text-sm text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
-            :disabled="!enableSave"
-            :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
-            @click.prevent="emits('proceed', depositAmount)"
-          >
-            Proceed
-          </button>
+          <div class="space-x-2.5 flex justify-end">
+            <button
+              class="border-[1.5px] text-sm border-[#F7F7F7] w-[100px] p-2 rounded-md"
+              @click="emits('close')"
+            >
+              Cancel
+            </button>
+            <button
+              class="bg-[#FFFFFF] text-sm text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
+              :disabled="!enableSave"
+              :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
+              @click.prevent="emits('proceed', depositAmount)"
+            >
+              Proceed
+            </button>
+          </div>
         </div>
       </div>
     </div>
