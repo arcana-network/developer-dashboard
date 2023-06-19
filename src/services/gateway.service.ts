@@ -569,6 +569,30 @@ async function getPaymaster(tankId: number, network: Network) {
   )
 }
 
+async function getFundingMessage(network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/funding-message/`
+  )
+}
+
+async function updateSignature(
+  owner: string,
+  gastankId: number,
+  signature: string,
+  network: Network
+) {
+  const data = {
+    address: owner,
+    gastank_id: gastankId,
+    signature,
+    type: 'paymasterFundingKey',
+  }
+  return getGatewayInstance(network).patch(
+    `${getEnvApi()}/gastank/submit-signature/`,
+    data
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -619,6 +643,8 @@ export {
   addGastank,
   getGastanks,
   getPaymaster,
+  getFundingMessage,
+  updateSignature,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

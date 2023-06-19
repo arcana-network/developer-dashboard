@@ -5,7 +5,11 @@ import { useRoute } from 'vue-router'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { useToast } from '@/components/lib/VToast'
-import { getPaymaster } from '@/services/gateway.service'
+import {
+  getFundingMessage,
+  getPaymaster,
+  updateSignature,
+} from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useGaslessStore } from '@/stores/gasless.store'
@@ -63,6 +67,28 @@ async function connectWallet() {
     } else {
       toast.error('Failed to switch to the network')
     }
+  } finally {
+    hideLoader()
+  }
+}
+
+async function setupGasTank() {
+  try {
+    showLoader('setting up gastank...')
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const { data } = (await getFundingMessage(app.network)).data
+    const fundingMessage = data.fundingMessage
+    const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
+    const wallet = await web3Provider.getSigner()
+    const owner = await wallet.getAddress()
+    const signature = await wallet.signMessage(fundingMessage)
+    await updateSignature(owner, props.depositTankId, signature, app.network)
+    toast.success('Gas tank setup complete')
+    fetchBalanceAndDeposit()
+  } catch (e) {
+    toast.error('Unable to register gas tank request')
+    emits('close')
   } finally {
     hideLoader()
   }
@@ -141,8 +167,8 @@ onMounted(() => {
 
 watch(
   () => isConnected.value,
-  () => {
-    fetchBalanceAndDeposit()
+  async () => {
+    await setupGasTank()
   }
 )
 

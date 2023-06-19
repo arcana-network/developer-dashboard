@@ -125,6 +125,9 @@ function deposit(tankId) {
       @cancel="showWhitelistForm = false"
       @add-contract="onAddContract"
     />
-    <AppGaslessSmartContractForm v-if="showSmartContractForm" />
+    <AppGaslessSmartContractForm
+      v-if="showSmartContractForm"
+      @cancel="showSmartContractForm = false"
+    />
   </div>
 </template>
