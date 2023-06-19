@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useWalletStore } from '@/stores/wallet.store'
 import { useMetaMask } from '@/use/metamask'
@@ -9,26 +10,34 @@ import { useMetaMask } from '@/use/metamask'
 const selectedGasTank = ref(null)
 const gaslessStore = useGaslessStore()
 const walletStore = useWalletStore()
+const chainStore = useChainManagementStore()
 const isConnected = ref(false)
 const depositAmount = ref('')
 
 const emits = defineEmits(['close', 'proceed'])
 
 async function connectWallet() {
+  const { connect, switchChain, createChain } = useMetaMask()
+  const selectedGasTankChainId = selectedGasTank.value.chainId
   try {
-    const { connect, switchChain } = useMetaMask()
     const { provider } = await connect()
     const { chainId } = provider
     const connectedChainId = Number.parseInt(chainId)
-    const selectedGasTankChainId = selectedGasTank.value.chainId
     if (connectedChainId !== selectedGasTankChainId) {
       await switchChain(`0x${selectedGasTankChainId.toString(16)}`)
     }
     isConnected.value = true
     walletStore.setWalletProvider(provider)
   } catch (err) {
-    console.log({ err })
-    isConnected.value = false
+    if (err.code === 4902) {
+      const chainInfo = chainStore.appChains.find(
+        (item) => item.chain_id === selectedGasTankChainId
+      )
+      await createChain(chainInfo)
+      isConnected.value = true
+    } else {
+      console.log(err, 'Failed to switch to the network')
+    }
   }
 }
 

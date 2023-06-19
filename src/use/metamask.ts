@@ -14,19 +14,32 @@ async function connect() {
 }
 
 async function switchChain(chainId: number) {
-  try {
-    await provider.request({
-      method: 'wallet_switchEthereumChain',
-      params: [{ chainId }],
-    })
-    return { provider }
-  } catch (err) {
-    console.log(err, 'Failed to switch to the network')
-  }
+  await provider.request({
+    method: 'wallet_switchEthereumChain',
+    params: [{ chainId }],
+  })
+}
+
+async function createChain(chainInfo) {
+  const params = [
+    {
+      chainId: `0x${Number(chainInfo.chain_id).toString(16)}`,
+      chainName: chainInfo.name,
+      rpcUrls: [chainInfo.rpc_url],
+      nativeCurrency: {
+        symbol: chainInfo.currency,
+        decimals: 18,
+      },
+    },
+  ]
+  await provider.request({
+    method: 'wallet_addEthereumChain',
+    params,
+  })
 }
 
 function useMetaMask() {
-  return { connect, switchChain }
+  return { connect, switchChain, createChain }
 }
 
 export { useMetaMask }
