@@ -4,6 +4,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import { useToast } from '@/components/lib/VToast'
 import { getPaymaster } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
@@ -21,6 +22,7 @@ const depositAmount = ref('')
 const route = useRoute()
 const walletBalance = ref('')
 const walletDeposit = ref('')
+const toast = useToast()
 const loader = ref({
   show: false,
   message: '',
@@ -59,7 +61,7 @@ async function connectWallet() {
       await createChain(chainInfo)
       isConnected.value = true
     } else {
-      console.log(err, 'Failed to switch to the network')
+      toast.error('Failed to switch to the network')
     }
   } finally {
     hideLoader()
@@ -87,7 +89,7 @@ async function fetchBalanceAndDeposit() {
     walletBalance.value = ethers.utils.formatEther(balance)
     walletDeposit.value = ethers.utils.formatEther(deposit)
   } catch (e) {
-    console.log(e)
+    toast.error('Failed to fetch deposit or balance')
   } finally {
     hideLoader()
   }
@@ -113,8 +115,10 @@ async function depositHandler() {
       value: ethers.utils.parseEther(depositAmount.value + ''),
     })
     await tx.wait()
+    toast.success('Deposit complete')
   } catch (e) {
-    console.log({ e })
+    if (e?.data?.code === -32000) toast.error('Insufficient funds')
+    else toast.error('Deposit failed')
   } finally {
     hideLoader()
     emits('close')
@@ -150,7 +154,10 @@ const enableSave = computed(() => {
 <template>
   <VOverlay>
     <div class="h-full flex overflow-y-auto py-2">
-      <div v-if="loader.show" class="flex justify-center items-center m-auto">
+      <div
+        v-if="loader.show"
+        class="flex justify-center items-center m-auto h-[200px] w-[330px] border-[1px] border-[#363636] bg-[#1F1F1F] rounded-lg"
+      >
         {{ loader.message }}
       </div>
       <div
