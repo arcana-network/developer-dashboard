@@ -93,6 +93,34 @@ async function fetchBalanceAndDeposit() {
   }
 }
 
+async function depositHandler() {
+  showLoader('depositing...')
+  try {
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const { data: paymaster } = (
+      await getPaymaster(props.depositTankId, app.network)
+    ).data
+    const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
+    const wallet = await web3Provider.getSigner()
+    const owner = await wallet.getAddress()
+    const paymasterContract = new ethers.Contract(
+      paymaster.address,
+      paymaster.abi,
+      wallet
+    )
+    let tx = await paymasterContract.depositFor(owner, {
+      value: ethers.utils.parseEther(depositAmount.value + ''),
+    })
+    await tx.wait()
+  } catch (e) {
+    console.log({ e })
+  } finally {
+    hideLoader()
+    emits('close')
+  }
+}
+
 const props = defineProps({
   depositTankId: {
     type: Number,
@@ -174,7 +202,7 @@ const enableSave = computed(() => {
               class="bg-[#FFFFFF] text-sm text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
-              @click.prevent="emits('proceed', depositAmount)"
+              @click.prevent="depositHandler"
             >
               Proceed
             </button>
