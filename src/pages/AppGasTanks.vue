@@ -99,7 +99,6 @@ async function depositHandler(depositAmount: number) {
     let tx = await paymasterContract.depositFor(owner, {
       value: ethers.utils.parseEther(depositAmount + ''),
     })
-    console.log(tx, 'tx')
     await tx.wait()
   } catch (e) {
     console.log({ e })
