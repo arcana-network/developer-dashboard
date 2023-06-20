@@ -27,21 +27,19 @@ const showSmartContractForm = ref(false)
 const depositTankId = ref(null)
 
 async function fetchGastankList() {
-  const appId = route.params.appId
-  const app = appStore.app(appId)
-  await gaslessStore.getGastankList(appId, app.network)
-}
-
-onMounted(async () => {
   try {
     showLoader('Please wait')
-    await fetchGastankList()
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    await gaslessStore.getGastankList(appId, app.network)
   } catch (e) {
     console.log({ e })
   } finally {
     hideLoader()
   }
-})
+}
+
+onMounted(fetchGastankList)
 
 async function onFormSubmit(formData: object) {
   try {
@@ -77,6 +75,16 @@ function deposit(tankId) {
   showDepositForm.value = true
   depositTankId.value = tankId
 }
+
+function whitelist(tankId) {
+  showWhitelistForm.value = true
+  depositTankId.value = tankId
+}
+
+async function hideSmartContractForm() {
+  showSmartContractForm.value = false
+  await fetchGastankList()
+}
 </script>
 
 <template>
@@ -105,10 +113,7 @@ function deposit(tankId) {
           @search="onSearch"
         />
       </div>
-      <AppGaslessTankList
-        @deposit="deposit"
-        @manage-whitelist="showWhitelistForm = true"
-      />
+      <AppGaslessTankList @deposit="deposit" @manage-whitelist="whitelist" />
     </div>
     <AppGasTankForm
       v-if="showForm"
@@ -127,7 +132,8 @@ function deposit(tankId) {
     />
     <AppGaslessSmartContractForm
       v-if="showSmartContractForm"
-      @cancel="showSmartContractForm = false"
+      :deposit-tank-id="depositTankId"
+      @close="hideSmartContractForm"
     />
   </div>
 </template>

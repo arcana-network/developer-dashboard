@@ -53,7 +53,7 @@ function onChainLogoError(e) {
 
 function onClickOfOption(option: number, id: number) {
   if (option === 0) emits('deposit', id)
-  if (option === 2) emits('manage-whitelist')
+  if (option === 2) emits('manage-whitelist', id)
 }
 </script>
 
