@@ -127,6 +127,7 @@ async function hideSmartContractForm() {
     />
     <AppGaslessWhitelist
       v-if="showWhitelistForm"
+      :gas-tank-id="depositTankId"
       @cancel="showWhitelistForm = false"
       @add-contract="onAddContract"
     />
