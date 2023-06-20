@@ -593,6 +593,23 @@ async function updateSignature(
   )
 }
 
+async function getAbi(
+  chainId: number,
+  contractAddress: string,
+  network: Network
+) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/get-abi/?chain_id=${chainId}&contract_address=${contractAddress}`
+  )
+}
+
+async function createSmartContract(payload: object, network: Network) {
+  return getGatewayInstance(network).post(
+    `${getEnvApi()}/gastank/smart-contract/`,
+    payload
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -645,6 +662,8 @@ export {
   getPaymaster,
   getFundingMessage,
   updateSignature,
+  getAbi,
+  createSmartContract,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
