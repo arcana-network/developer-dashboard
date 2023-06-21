@@ -13,8 +13,6 @@ import { useClickOutside } from '@/use/clickOutside'
 const emits = defineEmits([
   'deposit',
   'withdraw',
-  'edit',
-  'delete',
   'toggle-chain-status',
   'manage-whitelist',
 ])
@@ -53,6 +51,7 @@ function onChainLogoError(e) {
 
 function onClickOfOption(option: number, id: number) {
   if (option === 0) emits('deposit', id)
+  if (option === 1) emits('withdraw', id)
   if (option === 2) emits('manage-whitelist', id)
 }
 </script>

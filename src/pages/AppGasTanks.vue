@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlusIcon from '@/assets/iconography/plus.svg'
@@ -15,6 +15,8 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useLoaderStore } from '@/stores/loader.store'
 
+type DepositType = 'deposit' | 'withdraw'
+
 const showForm = ref(false)
 const route = useRoute()
 const toast = useToast()
@@ -25,6 +27,7 @@ const showDepositForm = ref(false)
 const showWhitelistForm = ref(false)
 const showSmartContractForm = ref(false)
 const depositTankId = ref(null)
+const depositType: Ref<DepositType | null> = ref(null)
 
 async function fetchGastankList() {
   try {
@@ -74,6 +77,13 @@ function onAddContract() {
 function deposit(tankId) {
   showDepositForm.value = true
   depositTankId.value = tankId
+  depositType.value = 'deposit'
+}
+
+function withdraw(tankId) {
+  showDepositForm.value = true
+  depositTankId.value = tankId
+  depositType.value = 'withdraw'
 }
 
 function whitelist(tankId) {
@@ -113,7 +123,11 @@ async function hideSmartContractForm() {
           @search="onSearch"
         />
       </div>
-      <AppGaslessTankList @deposit="deposit" @manage-whitelist="whitelist" />
+      <AppGaslessTankList
+        @deposit="deposit"
+        @manage-whitelist="whitelist"
+        @withdraw="withdraw"
+      />
     </div>
     <AppGasTankForm
       v-if="showForm"
@@ -123,6 +137,7 @@ async function hideSmartContractForm() {
     <AppGasTankDeposit
       v-if="showDepositForm"
       :deposit-tank-id="depositTankId"
+      :deposit-type="depositType"
       @close="showDepositForm = false"
     />
     <AppGaslessWhitelist

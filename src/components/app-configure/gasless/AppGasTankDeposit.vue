@@ -121,6 +121,11 @@ async function fetchBalanceAndDeposit() {
   }
 }
 
+function onProceed() {
+  if (props.depositType === 'deposit') depositHandler()
+  if (props.depositType === 'withdraw') withdrawHandler()
+}
+
 async function depositHandler() {
   showLoader('depositing...')
   try {
@@ -151,10 +156,46 @@ async function depositHandler() {
   }
 }
 
+async function withdrawHandler() {
+  showLoader('withdrawing...')
+  try {
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const { data: paymaster } = (
+      await getPaymaster(props.depositTankId, app.network)
+    ).data
+    const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
+    const wallet = await web3Provider.getSigner()
+    const owner = await wallet.getAddress()
+    const paymasterContract = new ethers.Contract(
+      paymaster.address,
+      paymaster.abi,
+      wallet
+    )
+    console.log({ paymasterContract })
+    let tx = await paymasterContract.withdrawTo(owner, {
+      value: ethers.utils.parseEther(depositAmount.value + ''),
+    })
+    await tx.wait()
+    toast.success('Withdraw complete')
+  } catch (e) {
+    console.log(e)
+    // if (e?.data?.code === -32000) toast.error('Insufficient funds')
+    // else toast.error('Deposit failed')
+  } finally {
+    hideLoader()
+    emits('close')
+  }
+}
+
 const props = defineProps({
   depositTankId: {
     type: Number,
     default: null,
+  },
+  depositType: {
+    type: String,
+    default: 'deposit',
   },
 })
 
@@ -167,8 +208,9 @@ onMounted(() => {
 
 watch(
   () => isConnected.value,
-  async () => {
-    await setupGasTank()
+  () => {
+    if (!selectedGasTank.value.created) setupGasTank()
+    else fetchBalanceAndDeposit()
   }
 )
 
@@ -192,7 +234,10 @@ const enableSave = computed(() => {
       >
         <div class="space-y-5">
           <div class="space-y-[10px]">
-            <p class="text-sm">Deposit Crypto to Gas Tank</p>
+            <p v-if="props.depositType === 'deposit'" class="text-sm">
+              Deposit Crypto to Gas Tank
+            </p>
+            <p v-else class="text-sm">Withdraw Crypto from Gas Tank</p>
             <p class="text-sm text-[#8D8D8D] leading-4">
               Declare the owner of the gas tank by signing a message with your
               wallet:
@@ -235,7 +280,7 @@ const enableSave = computed(() => {
               class="bg-[#FFFFFF] text-sm text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
-              @click.prevent="depositHandler"
+              @click.prevent="onProceed"
             >
               Proceed
             </button>
