@@ -30,6 +30,20 @@ const route = useRoute()
 const whitelists = ref([])
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
+const loader = ref({
+  show: false,
+  message: '',
+})
+
+function showLoader(message: string) {
+  loader.value.show = true
+  loader.value.message = message
+}
+
+function hideLoader() {
+  loader.value.show = false
+  loader.value.message = ''
+}
 
 useClickOutside(showRowOptions_menu, () => {
   showRowOptionsOf.value = null
@@ -45,11 +59,18 @@ const props = defineProps({
 onMounted(fetchWhitelists)
 
 async function fetchWhitelists() {
-  const appId = route.params.appId
-  const app = appStore.app(appId)
-  const gasTankId = props.gasTankId
-  const list = (await getSmartContracts(gasTankId, app.network)).data
-  whitelists.value = list
+  try {
+    showLoader('Fetching Whitelists...')
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const gasTankId = props.gasTankId
+    const list = (await getSmartContracts(gasTankId, app.network)).data
+    whitelists.value = list
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoader()
+  }
 }
 
 function onClickOfOption(option: number, listIndex: number) {
@@ -59,11 +80,19 @@ function onClickOfOption(option: number, listIndex: number) {
 }
 
 async function deleteHandler(listIndex: number) {
-  const appId = route.params.appId
-  const app = appStore.app(appId)
-  const selectedContract = whitelists.value[listIndex]
-  const smartContractId = selectedContract.id
-  await deleteSmartContract(smartContractId, app.network)
+  try {
+    showLoader('deleting...')
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const selectedContract = whitelists.value[listIndex]
+    const smartContractId = selectedContract.id
+    await deleteSmartContract(smartContractId, app.network)
+  } catch (e) {
+    console.log(e)
+  } finally {
+    hideLoader()
+    await fetchWhitelists()
+  }
 }
 </script>
 
@@ -71,6 +100,13 @@ async function deleteHandler(listIndex: number) {
   <VOverlay>
     <div class="h-full flex overflow-y-auto py-2">
       <div
+        v-if="loader.show"
+        class="flex justify-center items-center m-auto h-[330px] w-[630px] border-[1px] border-[#363636] bg-[#1F1F1F] rounded-lg"
+      >
+        {{ loader.message }}
+      </div>
+      <div
+        v-else
         class="flex flex-column border-[1px] border-[#363636] rounded-lg min-h-[330px] max-h-[430px] w-[630px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto overflow-hidden"
       >
         <div class="space-y-[10px]">
