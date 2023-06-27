@@ -6,8 +6,8 @@ import { useAuthStore } from '@/stores/auth.store'
 
 const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
-const POLYGON_MAINNET = '0x89'
-const POLYGON_MUMBAI_TESTNET = '0x13881'
+const POLYGON_MAINNET = '137'
+const POLYGON_MUMBAI_TESTNET = '80001'
 
 let authInstance: AuthProvider
 let network: 'testnet' | 'mainnet' | any
