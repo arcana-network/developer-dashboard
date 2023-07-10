@@ -132,13 +132,18 @@ function updateApp(
   fieldsToUpdate: Partial<AppState>,
   network: Network
 ) {
-  const app = appsStore.app(appId)
-  const updatedAppConfig = { ...app, ...fieldsToUpdate }
-  const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
-  return getGatewayInstance(network).patch(
-    `${getEnvApi('v2')}/app/?id=${appId}`,
-    appConfigRequestBody
-  )
+  const app =
+    network === 'mainnet'
+      ? (appsStore.getMainnetApp(appId) as AppState)
+      : appsStore.app(appId)
+  if (app) {
+    const updatedAppConfig = { ...app, ...fieldsToUpdate }
+    const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
+    return getGatewayInstance(network).patch(
+      `${getEnvApi('v2')}/app/?id=${appId}`,
+      appConfigRequestBody
+    )
+  }
 }
 
 function updateAppLogos(
