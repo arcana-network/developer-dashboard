@@ -31,20 +31,17 @@ const appNetwork = isProductionDashboard
   ? 'testnet'
   : 'dev'
 
-const socialAuth = socialLogins
-  .filter((el) => (appNetwork === 'dev' ? true : el.verifier !== 'firebase'))
-  .filter((el) => (appNetwork === 'mainnet' ? el.verifier !== 'steam' : true))
-  .map((login) => {
-    const auth = app.auth.social.find((el) => el.verifier === login.verifier)
-    if (auth) {
-      return {
-        ...login,
-        ...auth,
-        error: '',
-      }
+const socialAuth = socialLogins.map((login) => {
+  const auth = app.auth.social.find((el) => el.verifier === login.verifier)
+  if (auth) {
+    return {
+      ...login,
+      ...auth,
+      error: '',
     }
-    return { ...login, error: '' }
-  })
+  }
+  return { ...login, error: '' }
+})
 
 const socialAuthRef = reactive(socialAuth)
 
