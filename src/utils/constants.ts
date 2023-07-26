@@ -106,6 +106,7 @@ type ConfigureTabType =
   | 'Arcana Wallet'
   | 'Profile'
   | 'Keyspace'
+  | 'GasLess'
 
 type ConfigureTabSubMenu = {
   type: string

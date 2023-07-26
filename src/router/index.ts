@@ -26,6 +26,7 @@ const AppBranding = () =>
 const AppKeyspace = () => import('@/components/app-configure/AppKeyspace.vue')
 const AppChainManagement = () => import('@/pages/AppChainManagement.vue')
 const AppGasless = () => import('@/pages/AppGasless.vue')
+const AppGasTanks = () => import('@/pages/AppGasTanks.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -118,6 +119,14 @@ const routes: RouteRecordRaw[] = [
         name: 'Gasless',
         path: 'configure/gasless',
         component: AppGasless,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Gas Tanks',
+        path: 'configure/gasless/gastanks',
+        component: AppGasTanks,
         meta: {
           requiresAuth: true,
         },
