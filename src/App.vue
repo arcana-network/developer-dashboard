@@ -43,7 +43,7 @@ onBeforeMount(async () => {
       <!-- <h4>Caution:</h4> -->
       <h5>
         Arcana testnet undergoing maintenance. User logins on testnet may be
-        affected for a few hours
+        affected for a few hours.
       </h5>
       <!-- <span class="banner-close" role="button" @click.stop="onCloseBanner">
         <CloseIcon color="#FFFFFF" />
