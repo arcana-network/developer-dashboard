@@ -11,7 +11,7 @@ import { updateApp } from '@/services/gateway.service'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
-import { WalletUIModes } from '@/utils/constants'
+import { WalletUIModes, isProductionDashboard } from '@/utils/constants'
 import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
@@ -21,6 +21,12 @@ const toast = useToast()
 const app = appsStore.app(appId)
 const wallet = app.auth.wallet
 const isEdited = ref(false)
+
+const appNetwork = isProductionDashboard
+  ? app.network
+  : app.network === 'mainnet'
+  ? 'testnet'
+  : 'dev'
 
 type ThemeData = {
   label: string
@@ -120,7 +126,10 @@ async function handleSave() {
                   @blur="isEdited = true"
                 />
               </div>
-              <div class="flex flex-col space-y-3">
+              <div
+                v-if="appNetwork !== 'mainnet'"
+                class="flex flex-col space-y-3"
+              >
                 <span>Wallet UI Mode</span>
                 <VTextField
                   :model-value="chosenWalletUIMode"

@@ -1,13 +1,15 @@
+import { AuthProvider } from '@arcana/auth'
+
 import { getConfig } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 
-const { AuthProvider, CHAIN } = window.arcana.auth
-
 const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
+const POLYGON_MAINNET = '0x89'
+const POLYGON_MUMBAI_TESTNET = '0x13881'
 
-let authInstance: typeof AuthProvider
+let authInstance: AuthProvider
 let network: 'testnet' | 'mainnet' | any
 
 if (ARCANA_AUTH_NETWORK === 'mainnet') {
@@ -32,8 +34,8 @@ function useArcanaAuth() {
         chainConfig: {
           chainId:
             ARCANA_AUTH_NETWORK === 'mainnet'
-              ? CHAIN.POLYGON_MAINNET
-              : CHAIN.POLYGON_MUMBAI_TESTNET,
+              ? POLYGON_MAINNET
+              : POLYGON_MUMBAI_TESTNET,
           rpcUrl: getConfig().rpcUrl,
         },
       })
