@@ -16,6 +16,11 @@ import { useGaslessStore } from '@/stores/gasless.store'
 import { useLoaderStore } from '@/stores/loader.store'
 
 type DepositType = 'deposit' | 'withdraw'
+type SmartContractFormType = 'add' | 'edit'
+type SmartContractForm = {
+  show: boolean
+  type: SmartContractFormType
+}
 
 const showForm = ref(false)
 const route = useRoute()
@@ -25,7 +30,11 @@ const gaslessStore = useGaslessStore()
 const { showLoader, hideLoader } = useLoaderStore()
 const showDepositForm = ref(false)
 const showWhitelistForm = ref(false)
-const showSmartContractForm = ref(false)
+const showSmartContractForm: Ref<SmartContractForm> = ref({
+  show: false,
+  type: 'add',
+})
+const editSmartContractInfo = ref({})
 const depositTankId = ref(null)
 const depositType: Ref<DepositType | null> = ref(null)
 
@@ -70,7 +79,8 @@ function onSearch(value: string) {
 }
 
 function onAddContract() {
-  showSmartContractForm.value = true
+  showSmartContractForm.value.show = true
+  showSmartContractForm.value.type = 'add'
   showWhitelistForm.value = false
 }
 
@@ -91,8 +101,15 @@ function whitelist(tankId) {
   depositTankId.value = tankId
 }
 
+function editWhitelist(info) {
+  showSmartContractForm.value.show = true
+  showSmartContractForm.value.type = 'edit'
+  showWhitelistForm.value = false
+  editSmartContractInfo.value = info
+}
+
 async function hideSmartContractForm() {
-  showSmartContractForm.value = false
+  showSmartContractForm.value.show = false
   await fetchGastankList()
 }
 </script>
@@ -143,12 +160,15 @@ async function hideSmartContractForm() {
     <AppGaslessWhitelist
       v-if="showWhitelistForm"
       :gas-tank-id="depositTankId"
+      @edit="editWhitelist"
       @cancel="showWhitelistForm = false"
       @add-contract="onAddContract"
     />
     <AppGaslessSmartContractForm
-      v-if="showSmartContractForm"
+      v-if="showSmartContractForm.show"
+      :form-type="showSmartContractForm.type"
       :deposit-tank-id="depositTankId"
+      :edit-smart-contract-info="editSmartContractInfo"
       @close="hideSmartContractForm"
     />
   </div>

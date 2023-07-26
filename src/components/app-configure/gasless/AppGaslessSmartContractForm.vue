@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
@@ -39,6 +39,14 @@ const props = defineProps({
   depositTankId: {
     type: Number,
     default: null,
+  },
+  formType: {
+    type: String,
+    default: 'add',
+  },
+  editSmartContractInfo: {
+    type: Object,
+    default: () => ({}),
   },
 })
 
@@ -145,6 +153,10 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  console.log(props.editSmartContractInfo)
+})
 </script>
 
 <template>
