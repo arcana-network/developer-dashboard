@@ -55,7 +55,7 @@ useClickOutside(notification_menu, () => {
 })
 
 onMounted(() => {
-  canShowBanner.value = false
+  canShowBanner.value = true
   document.querySelector('#app')?.addEventListener('scroll', handleScroll)
 })
 
