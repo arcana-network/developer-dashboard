@@ -172,10 +172,6 @@ function hasSubMenuSelected(tabLabel: string) {
 
 function isSubmenuSelected(subTab: string) {
   let isSelected = props.currentTab === subTab
-  console.log(
-    { isSelected, subTab },
-    gaslessMenu.find((item) => item.label === subTab)
-  )
   if (
     !isSelected &&
     subTab === 'Gasless' &&
