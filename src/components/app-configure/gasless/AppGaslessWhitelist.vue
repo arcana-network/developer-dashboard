@@ -74,8 +74,8 @@ async function fetchWhitelists() {
 }
 
 function onClickOfOption(option: number, listIndex: number) {
-  const tankId = whitelists.value[listIndex]
-  if (option === 0) emits('edit', tankId)
+  const info = whitelists.value[listIndex].id
+  if (option === 0) emits('edit', info)
   if (option === 1) deleteHandler(listIndex)
 }
 
