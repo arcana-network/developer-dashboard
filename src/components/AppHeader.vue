@@ -105,14 +105,14 @@ function toggleNotifications() {
 <template>
   <section class="header-section" :class="hideHeader ? 'hide-header' : ''">
     <div v-if="canShowBanner" class="banner">
-      <h4>Caution:</h4>
+      <!-- <h4>Caution:</h4> -->
       <h5>
-        Arcana Network SDKs and apps (Beta Release) are not recommended for
-        production usage.
+        Arcana testnet undergoing maintenance. User logins on testnet may be
+        affected for a few hours
       </h5>
-      <span class="banner-close" role="button" @click.stop="onCloseBanner">
+      <!-- <span class="banner-close" role="button" @click.stop="onCloseBanner">
         <CloseIcon color="#FFFFFF" />
-      </span>
+      </span> -->
     </div>
     <header class="flex" :class="{ container: props.container }">
       <div class="logo" @click.stop="onLogoClick">
