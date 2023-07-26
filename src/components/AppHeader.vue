@@ -107,7 +107,7 @@ function toggleNotifications() {
     <div v-if="canShowBanner" class="banner">
       <!-- <h4>Caution:</h4> -->
       <h5>
-        Arcana Mainnet undergoing maintenance. User logins on testnet may be
+        Arcana Mainnet undergoing maintenance. User logins on Mainnet may be
         affected for a few hours
       </h5>
       <!-- <span class="banner-close" role="button" @click.stop="onCloseBanner">
