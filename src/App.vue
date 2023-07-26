@@ -13,7 +13,6 @@ const loaderStore = useLoaderStore()
 const router = useRouter()
 const arcanaAuth = useArcanaAuth()
 const isAuthLoaded = ref(false)
-const canShowBanner = ref(true)
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -39,16 +38,6 @@ onBeforeMount(async () => {
 
 <template>
   <div class="root">
-    <div v-if="canShowBanner" class="banner">
-      <!-- <h4>Caution:</h4> -->
-      <h5>
-        Arcana Mainnet undergoing maintenance. User logins on Mainnet may be
-        affected for a few hours.
-      </h5>
-      <!-- <span class="banner-close" role="button" @click.stop="onCloseBanner">
-        <CloseIcon color="#FFFFFF" />
-      </span> -->
-    </div>
     <router-view
       v-if="isAuthLoaded"
       v-slot="{ Component }"

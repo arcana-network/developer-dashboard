@@ -4,7 +4,6 @@ import { useRouter } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import AppNotifications from '@/components/AppNotifications.vue'
-import CloseIcon from '@/components/icons/CloseIcon.vue'
 import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
@@ -35,11 +34,6 @@ const scrollDelta = 10
 
 function onLogoClick() {
   router.push('/')
-}
-
-function onCloseBanner() {
-  sessionStorage.setItem('hide-banner', 'true')
-  canShowBanner.value = false
 }
 
 useClickOutside(profile_menu, () => {
@@ -104,16 +98,6 @@ function toggleNotifications() {
 
 <template>
   <section class="header-section" :class="hideHeader ? 'hide-header' : ''">
-    <div v-if="canShowBanner" class="banner">
-      <!-- <h4>Caution:</h4> -->
-      <h5>
-        Arcana Mainnet undergoing maintenance. User logins on Mainnet may be
-        affected for a few hours
-      </h5>
-      <!-- <span class="banner-close" role="button" @click.stop="onCloseBanner">
-        <CloseIcon color="#FFFFFF" />
-      </span> -->
-    </div>
     <header class="flex" :class="{ container: props.container }">
       <div class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />
