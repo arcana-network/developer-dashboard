@@ -5,7 +5,11 @@ import { useRoute } from 'vue-router'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { useToast } from '@/components/lib/VToast'
-import { getAbi, createSmartContract } from '@/services/gateway.service'
+import {
+  getAbi,
+  createSmartContract,
+  getSmartContractMethods,
+} from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 
@@ -45,12 +49,12 @@ const props = defineProps({
     default: 'add',
   },
   editSmartContractInfo: {
-    type: Object,
-    default: () => ({}),
+    type: Number,
+    default: null,
   },
 })
 
-function extractValidABI(abiList: Array<object>) {
+function extractValidABI(abiList: Array<object>, enabledMethods = []) {
   return abiList
     .filter(
       (item) =>
@@ -59,7 +63,7 @@ function extractValidABI(abiList: Array<object>) {
         item.stateMutability !== 'view'
     )
     .map((item) => {
-      item.enabled = false
+      item.enabled = enabledMethods.includes(item.name)
       return item
     })
 }
@@ -81,6 +85,29 @@ async function fetchAbi() {
     if (e?.response?.data?.err) {
       toast.error(e?.response?.data?.err)
     } else toast.error('Failed to fetch ABI')
+  } finally {
+    hideLoader()
+  }
+}
+
+async function fetchSmartContractMethods() {
+  try {
+    showLoader('Fetching Whitelists...')
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const smartContractId = props.editSmartContractInfo
+    const methods = (
+      await getSmartContractMethods(smartContractId, app.network)
+    ).data
+    contractName.value = methods.name
+    contractAddress.value = methods.address
+    fetchedAbi.value = methods.abi
+    abi.value = extractValidABI(
+      JSON.parse(fetchedAbi.value),
+      methods.whitelisted_methods
+    )
+  } catch (e) {
+    console.log(e)
   } finally {
     hideLoader()
   }
@@ -154,9 +181,7 @@ watch(
   }
 )
 
-onMounted(() => {
-  console.log(props.editSmartContractInfo)
-})
+onMounted(fetchSmartContractMethods)
 </script>
 
 <template>
