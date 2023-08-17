@@ -69,7 +69,6 @@ function onClickOfOption(option: number, id: number) {
           <th class="w-[30%]">Network</th>
           <th class="w-[20%]">Type</th>
           <th class="w-[10%]">Whitelists</th>
-          <th class="w-[10%]">Enabled</th>
           <th class="w-[5%]"></th>
         </tr>
       </thead>
@@ -91,9 +90,6 @@ function onClickOfOption(option: number, id: number) {
           <td>{{ tank.network }}</td>
           <td>{{ tank.type }}</td>
           <td>{{ tank.whitelists || '-' }}</td>
-          <td>
-            <VSwitch :value="tank.enabled" />
-          </td>
           <td>
             <div class="relative">
               <button
