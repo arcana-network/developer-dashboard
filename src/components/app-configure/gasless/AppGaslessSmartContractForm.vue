@@ -9,6 +9,7 @@ import {
   getAbi,
   createSmartContract,
   getSmartContractMethods,
+  editSmartContract,
 } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
@@ -118,30 +119,51 @@ function toggleFunction(itemIndex: number) {
   abi.value[itemIndex].enabled = !enabledStated
 }
 
-async function save() {
-  try {
-    showLoader('Creating Smart Contract')
-    const appId = route.params.appId
-    const app = appStore.app(appId)
+function getPayload() {
+  const formType = props.formType
 
-    const whitelistedMethods = abi.value
-      .filter((item) => item.enabled)
-      .map((item) => item.name)
+  const whitelistedMethods = abi.value
+    .filter((item) => item.enabled)
+    .map((item) => item.name)
 
-    const payload = {
+  if (formType === 'add') {
+    return {
       gas_tank: props.depositTankId,
       name: contractName.value,
       address: contractAddress.value,
       abi: JSON.stringify(abi.value),
       whitelisted_methods: whitelistedMethods,
     }
-    await createSmartContract(payload, app.network)
-    toast.success('Smart Contract created successfully')
+  }
+  if (formType === 'edit') {
+    return {
+      name: contractName.value,
+      id: props.editSmartContractInfo,
+      whitelisted_methods: whitelistedMethods,
+    }
+  }
+}
+
+async function save() {
+  try {
+    showLoader('Creating Smart Contract')
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const payload = getPayload()
+
+    if (props.formType === 'edit') {
+      await editSmartContract(payload, app.network)
+      toast.success('Whitelist edited successfully')
+    }
+    if (props.formType === 'add') {
+      await createSmartContract(payload, app.network)
+      toast.success('Smart Contract created successfully')
+    }
     emits('close')
   } catch (e) {
     if (e?.response?.data?.err) {
       toast.error(e?.response?.data?.err)
-    } else toast.error('Failed to fetch ABI')
+    } else toast.error('Failed to Update or Create')
   } finally {
     hideLoader()
   }
@@ -181,7 +203,9 @@ watch(
   }
 )
 
-onMounted(fetchSmartContractMethods)
+onMounted(() => {
+  if (props.formType === 'edit') fetchSmartContractMethods()
+})
 </script>
 
 <template>
