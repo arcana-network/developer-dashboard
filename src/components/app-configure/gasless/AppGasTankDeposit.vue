@@ -110,8 +110,8 @@ async function fetchBalanceAndDeposit() {
       paymaster.abi,
       wallet
     )
-    const balance = await paymasterContract.getBalance(owner)
-    const deposit = await paymasterContract.getDeposit()
+    const balance = await web3Provider.getBalance(owner)
+    const deposit = await paymasterContract.getBalance(owner)
     walletBalance.value = ethers.utils.formatEther(balance)
     walletDeposit.value = ethers.utils.formatEther(deposit)
   } catch (e) {
