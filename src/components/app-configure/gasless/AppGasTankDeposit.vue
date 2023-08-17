@@ -172,16 +172,15 @@ async function withdrawHandler() {
       paymaster.abi,
       wallet
     )
-    console.log({ paymasterContract })
-    let tx = await paymasterContract.withdrawTo(owner, {
-      value: ethers.utils.parseEther(depositAmount.value + ''),
-    })
+    let tx = await paymasterContract.withdrawTo(
+      owner,
+      ethers.utils.parseEther(depositAmount.value + '')
+    )
     await tx.wait()
     toast.success('Withdraw complete')
   } catch (e) {
     console.log(e)
-    // if (e?.data?.code === -32000) toast.error('Insufficient funds')
-    // else toast.error('Deposit failed')
+    toast.error('Withdraw failed')
   } finally {
     hideLoader()
     emits('close')
