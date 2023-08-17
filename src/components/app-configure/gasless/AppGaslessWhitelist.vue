@@ -12,7 +12,7 @@ import {
 import { useAppsStore } from '@/stores/apps.store'
 import { useClickOutside } from '@/use/clickOutside'
 
-const emits = defineEmits(['edit'])
+const emits = defineEmits(['edit', 'add-contract', 'cancel'])
 
 const rowOptions = [
   {
