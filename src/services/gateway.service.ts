@@ -615,6 +615,13 @@ async function createSmartContract(payload: object, network: Network) {
   )
 }
 
+async function editSmartContract(payload: object, network: Network) {
+  return getGatewayInstance(network).patch(
+    `${getEnvApi()}/gastank/whitelist/`,
+    payload
+  )
+}
+
 async function getSmartContracts(tankId: number, network: Network) {
   return getGatewayInstance(network).get(
     `${getEnvApi()}/gastank/smart-contract/?gas_tank_id=${tankId}`
@@ -693,6 +700,7 @@ export {
   getSmartContracts,
   deleteSmartContract,
   getSmartContractMethods,
+  editSmartContract,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
