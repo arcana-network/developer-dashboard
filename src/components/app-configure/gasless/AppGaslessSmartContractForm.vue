@@ -22,7 +22,7 @@ const route = useRoute()
 const appStore = useAppsStore()
 const abi = ref([])
 const fetchedAbi = ref([])
-const enteredAbi = ref(null)
+const enteredAbi = ref('')
 const showEnteredAbiError = ref(false)
 const toast = useToast()
 const loader = ref({
@@ -188,6 +188,7 @@ watch(
   () => enteredAbi.value,
   () => {
     try {
+      if (enteredAbi.value === '') showEnteredAbiError.value = false
       const parsedAbi = JSON.parse(`${enteredAbi.value}`)
       if (Array.isArray(parsedAbi)) {
         const validAbi = extractValidABI(parsedAbi)
@@ -198,7 +199,10 @@ watch(
         }
       } else showEnteredAbiError.value = true
     } catch (e) {
-      showEnteredAbiError.value = true
+      if (enteredAbi.value === '') {
+        showEnteredAbiError.value = false
+        abi.value = []
+      } else showEnteredAbiError.value = true
     }
   }
 )
@@ -246,7 +250,7 @@ onMounted(() => {
                   >Smart Contract Address</label
                 >
                 <button
-                  v-if="contractAddress.length"
+                  v-if="contractAddress.length && props.formType === 'add'"
                   class="text-xs underline"
                   @click.prevent="fetchAbi"
                 >
@@ -257,7 +261,12 @@ onMounted(() => {
                 v-model="contractAddress"
                 type="text"
                 class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
+                :class="{
+                  'text-gray-500': props.formType === 'edit',
+                  'bg-opacity-50 cursor-not-allowed': !!enteredAbi.length,
+                }"
                 name="network-name"
+                :disabled="props.formType === 'edit' || !!enteredAbi.length"
               />
             </div>
             <div class="flex flex-col space-y-2 flex-1">
@@ -269,6 +278,13 @@ onMounted(() => {
                 type="text"
                 class="text-sm bg-[#313131] p-[10px] w-full flex-1 border-none outline-none"
                 name="network-name"
+                :class="{
+                  'text-gray-500': props.formType === 'edit',
+                  'bg-opacity-50 cursor-not-allowed': !!contractAddress.length,
+                }"
+                :disabled="
+                  props.formType === 'edit' || !!contractAddress.length
+                "
               ></textarea>
               <p v-if="showEnteredAbiError" class="text-xs text-red-500">
                 Entered ABI is invalid, please add a valid JSON ABI
