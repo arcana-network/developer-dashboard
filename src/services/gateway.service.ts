@@ -343,7 +343,7 @@ function fetchDau(
   appAddress: string,
   network: Network
 ): Promise<AxiosResponse<ActiveUsersChartData[]>> {
-  const api = `/get-dau/?app=${appAddress}`
+  const api = `get-dau/?app=${appAddress}`
   return getGatewayInstance(network).get(`${getEnvApi()}/${api}`)
 }
 
