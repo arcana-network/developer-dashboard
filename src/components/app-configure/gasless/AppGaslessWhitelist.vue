@@ -183,31 +183,32 @@ function hideDeleteConfirm() {
                       }}
                     </td>
                     <td>
-                      <div class="relative">
+                      <PopperJs placement="left-start" :arrow="true">
                         <button
                           class="flex justify-center items-center cursor-pointer w-7 h-7 bg-[#262626] rounded-[5px]"
-                          @click.stop="showRowOptionsOf = index"
                         >
                           <img :src="MoreIcon" alt="more" />
                         </button>
-                        <dialog
-                          v-if="index === showRowOptionsOf"
-                          ref="showRowOptions_menu"
-                          open
-                          class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
-                        >
-                          <button
-                            v-for="option in rowOptions"
-                            :key="option.value"
-                            class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
-                            @click.stop="
-                              () => onClickOfOption(option.value, index)
-                            "
+                        <template #content>
+                          <ul
+                            ref="showRowOptions_menu"
+                            class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
                           >
-                            {{ option.label }}
-                          </button>
-                        </dialog>
-                      </div>
+                            <li
+                              v-for="option in rowOptions"
+                              :key="option.value"
+                              class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
+                              @click.stop="
+                                () => onClickOfOption(option.value, index)
+                              "
+                            >
+                              <button>
+                                {{ option.label }}
+                              </button>
+                            </li>
+                          </ul>
+                        </template>
+                      </PopperJs>
                     </td>
                   </tr>
                 </tbody>

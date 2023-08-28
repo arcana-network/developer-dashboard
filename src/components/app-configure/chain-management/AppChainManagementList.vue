@@ -146,34 +146,36 @@ function isGaslessSupport(chainId: number) {
             />
           </td>
           <td>
-            <div class="relative">
+            <PopperJs placement="left-start" :arrow="true">
               <button
-                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-[#262626] rounded-[5px]"
-                @click.stop="showRowOptionsOf = chain.id"
+                class="flex justify-center items-center w-7 h-7 bg-[#262626] rounded-[5px]"
               >
                 <img :src="MoreIcon" alt="more" />
               </button>
-              <dialog
-                v-if="chain.id === showRowOptionsOf"
-                ref="showRowOptions_menu"
-                open
-                class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-32 left-[-100px] top-[10px] z-[999]"
-              >
-                <button
-                  v-for="option in getRowOptions(
-                    chain.default_chain,
-                    rowOptions
-                  )"
-                  :key="option.value"
-                  class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
-                  @click.stop="
-                    () => onClickOfOption(option.value, chain.id, chain)
-                  "
+              <template #content>
+                <ul
+                  ref="showRowOptions_menu"
+                  open
+                  class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 relative"
                 >
-                  {{ option.label }}
-                </button>
-              </dialog>
-            </div>
+                  <li
+                    v-for="option in getRowOptions(
+                      chain.default_chain,
+                      rowOptions
+                    )"
+                    :key="option.value"
+                    class="p-1 rounded-[5px] hover:bg-[#363636] text-left cursor-pointer"
+                    @click.stop="
+                      () => onClickOfOption(option.value, chain.id, chain)
+                    "
+                  >
+                    <button>
+                      {{ option.label }}
+                    </button>
+                  </li>
+                </ul>
+              </template>
+            </PopperJs>
           </td>
         </tr>
       </tbody>
@@ -197,5 +199,18 @@ td {
   font-size: 14px;
   font-weight: 500;
   text-overflow: ellipsis;
+}
+
+.btn-group {
+  white-space: nowrap;
+}
+
+.btn-group .btn {
+  display: inline-block;
+  float: none;
+}
+
+.btn + .dropdown-toggle {
+  margin-left: -4px;
 }
 </style>
