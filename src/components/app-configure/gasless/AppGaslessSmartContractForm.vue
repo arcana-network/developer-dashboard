@@ -263,10 +263,9 @@ onMounted(() => {
                 class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
-                  'bg-opacity-50 cursor-not-allowed': !!enteredAbi.length,
                 }"
                 name="network-name"
-                :disabled="props.formType === 'edit' || !!enteredAbi.length"
+                :disabled="props.formType === 'edit'"
               />
             </div>
             <div class="flex flex-col space-y-2 flex-1">
@@ -280,11 +279,8 @@ onMounted(() => {
                 name="network-name"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
-                  'bg-opacity-50 cursor-not-allowed': !!contractAddress.length,
                 }"
-                :disabled="
-                  props.formType === 'edit' || !!contractAddress.length
-                "
+                :disabled="props.formType === 'edit'"
               ></textarea>
               <p v-if="showEnteredAbiError" class="text-xs text-red-500">
                 Entered ABI is invalid, please add a valid JSON ABI
