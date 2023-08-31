@@ -590,7 +590,7 @@ async function updateSignature(
     address: owner,
     gastank_id: gastankId,
     signature,
-    type: 'paymasterFundingKey',
+    type: 'paymasterFundingId',
   }
   return getGatewayInstance(network).patch(
     `${getEnvApi()}/gastank/submit-signature/`,
@@ -617,7 +617,7 @@ async function createSmartContract(payload: object, network: Network) {
 
 async function editSmartContract(payload: object, network: Network) {
   return getGatewayInstance(network).patch(
-    `${getEnvApi()}/gastank/whitelist/`,
+    `${getEnvApi()}/gastank/smart-contract/`,
     payload
   )
 }
