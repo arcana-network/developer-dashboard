@@ -16,7 +16,6 @@ const formData = ref({
 })
 
 async function onSave(formData: object) {
-  console.log(formData)
   emits('submit', formData)
 }
 
