@@ -128,11 +128,7 @@ async function hideSmartContractForm() {
     </div>
     <div class="flex flex-col space-y-5">
       <div class="flex items-baseline w-full justify-end space-x-5">
-        <button
-          class="text-white flex items-center space-x-1.5"
-          @click="showForm = true"
-        >
-          <img :src="PlusIcon" alt="Add Chain" class="w-3" />
+        <button class="text-white space-x-1.5" @click="showForm = true">
           <span>Add Gas Tank</span>
         </button>
         <SearchBar
