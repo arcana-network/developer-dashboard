@@ -213,11 +213,25 @@ function hideDeleteConfirm() {
                   </tr>
                 </tbody>
               </table>
-              <div v-else class="h-40 flex justify-center items-center">
-                <p class="text-[#8D8D8D]">
-                  Begin by adding a Contract for which you'd like to Sponsor the
-                  Gas Fees
-                </p>
+              <div v-else class="h-40 flex flex-col">
+                <table
+                  class="table-fixed text-white block overflow-x-auto border-collapse w-full"
+                >
+                  <thead class="border-b-[1px] border-b-[#363636]">
+                    <tr class="text-[#8d8d8d] text-xs">
+                      <th class="w-[25%]">Contract Name</th>
+                      <th class="w-[25%]">Functions Enabled</th>
+                      <th class="w-[40%]">Date Added</th>
+                      <th class="w-[5%]"></th>
+                    </tr>
+                  </thead>
+                </table>
+                <div class="flex-1 flex justify-center items-center">
+                  <p class="text-[#8D8D8D]">
+                    Begin by adding a Contract for which you'd like to Sponsor
+                    the Gas Fees
+                  </p>
+                </div>
               </div>
             </div>
           </div>

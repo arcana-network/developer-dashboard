@@ -118,8 +118,25 @@ function onClickOfOption(option: number, id: number) {
         </tr>
       </tbody>
     </table>
-    <div v-else class="h-40 flex justify-center items-center">
-      <p class="text-[#8D8D8D]">Begin by Adding a Gas Tank</p>
+    <div v-else class="h-40 flex flex-col">
+      <table
+        class="table-fixed text-white block overflow-x-auto border-collapse w-full"
+      >
+        <thead class="border-b-[1px] border-b-[#363636]">
+          <tr class="text-[#8d8d8d]">
+            <th class="w-[14%]">Name</th>
+            <th class="w-[14%]">Balance</th>
+            <th class="w-[14%]">Deposit Address</th>
+            <th class="w-[14%]">Network</th>
+            <th class="w-[14%]">Type</th>
+            <th class="w-[14%]">Last Transaction Date</th>
+            <th class="w-[14%]">Whitelists</th>
+          </tr>
+        </thead>
+      </table>
+      <div class="flex-1 flex justify-center items-center">
+        <p class="text-[#8D8D8D]">Begin by Adding a Gas Tank</p>
+      </div>
     </div>
   </div>
 </template>
