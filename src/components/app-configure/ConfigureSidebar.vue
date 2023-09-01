@@ -311,36 +311,47 @@ watch(
                 :class="{ 'submenu-active': isSubmenuSelected(subTab.label) }"
                 @click.stop="onClickOfMenu(subTab)"
               >
-                <div class="sidebar__submenu-option-item">
-                  <img
-                    :src="subTab.icon"
-                    alt="icon"
-                    class="sidebar__submenu-option-icon"
-                  />
-                  <span class="submenu-tab-label">{{ subTab.label }}</span>
+                <div
+                  class="space-y-3 flex flex-col"
+                  :class="[
+                    subTab.type === 'gasLess'
+                      ? 'flex w-full after:w-[1px] after:h-7 after:content-normal after:left-[7.5%] after:top-6 after:bg-[#8D8D8D33] after:absolute'
+                      : '',
+                  ]"
+                >
+                  <div class="sidebar__submenu-option-item">
+                    <img
+                      :src="subTab.icon"
+                      alt="icon"
+                      class="sidebar__submenu-option-icon"
+                    />
+                    <span class="submenu-tab-label">{{ subTab.label }}</span>
+                  </div>
+                  <div
+                    v-if="subTab.type === 'gasLess'"
+                    class="flex flex-column items-start pl-8"
+                  >
+                    <VCardButton
+                      v-for="menu in gaslessMenu"
+                      :key="menu.type"
+                      class="sidebar__submenu-option"
+                      @click.stop="onClickOfMenu(menu)"
+                    >
+                      <div
+                        class="sidebar__submenu-option-item"
+                        :class="{
+                          'bg-white rounded-[10px] text-black p-1':
+                            props.currentTab === menu.label,
+                        }"
+                      >
+                        <span class="text-sm font-medium">{{
+                          menu.label
+                        }}</span>
+                      </div>
+                    </VCardButton>
+                  </div>
                 </div>
               </VCardButton>
-              <div
-                v-if="subTab.type === 'gasLess'"
-                class="flex flex-column items-start pl-8 space-y-2 mt-2"
-              >
-                <VCardButton
-                  v-for="menu in gaslessMenu"
-                  :key="menu.type"
-                  class="sidebar__submenu-option"
-                  @click.stop="onClickOfMenu(menu)"
-                >
-                  <div
-                    class="sidebar__submenu-option-item"
-                    :class="{
-                      'bg-white p-1 rounded-[10px] text-black':
-                        props.currentTab === menu.label,
-                    }"
-                  >
-                    <span class="text-sm font-medium">{{ menu.label }}</span>
-                  </div>
-                </VCardButton>
-              </div>
             </div>
           </div>
         </VCardButton>
@@ -450,6 +461,7 @@ watch(
 }
 
 .sidebar__submenu-option {
+  position: relative;
   padding: 0 !important;
 }
 
@@ -458,7 +470,7 @@ watch(
   flex-direction: row;
   gap: 12px;
   align-items: center;
-  justify-content: center;
+  justify-content: ;
 }
 
 .arrow-icon {
