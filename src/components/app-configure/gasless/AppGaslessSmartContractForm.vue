@@ -240,7 +240,7 @@ onMounted(() => {
               <input
                 v-model="contractName"
                 type="text"
-                class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
+                class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none rounded-md"
                 name="network-name"
               />
             </div>
@@ -260,7 +260,7 @@ onMounted(() => {
               <input
                 v-model="contractAddress"
                 type="text"
-                class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none"
+                class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none rounded-md"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
                 }"
@@ -275,7 +275,7 @@ onMounted(() => {
               <textarea
                 v-model="enteredAbi"
                 type="text"
-                class="text-sm bg-[#313131] p-[10px] w-full flex-1 border-none outline-none"
+                class="text-sm bg-[#313131] p-[10px] w-full flex-1 border-none outline-none rounded-md"
                 name="network-name"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
