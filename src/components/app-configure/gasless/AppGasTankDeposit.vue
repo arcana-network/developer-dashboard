@@ -231,8 +231,8 @@ const enableSave = computed(() => {
         v-else
         class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 bg-[#1F1F1F] m-auto"
       >
-        <div class="space-y-5">
-          <div class="space-y-[10px]">
+        <div class="space-y-7">
+          <div class="space-y-2.5">
             <p v-if="props.depositType === 'deposit'" class="text-sm">
               Deposit Crypto to Gas Tank
             </p>
@@ -261,13 +261,15 @@ const enableSave = computed(() => {
               name="amount"
             />
           </div>
-          <button
-            v-else
-            class="uppercase border-2 text-sm w-full p-1 rounded-md bg-white text-black"
-            @click="connectWallet"
-          >
-            Connect Wallet
-          </button>
+          <div v-else>
+            <span class="text-sm text-[#8D8D8D] leading-4">Tank Owner</span>
+            <button
+              class="uppercase border-2 text-sm w-full p-1 rounded-md bg-white text-black"
+              @click="connectWallet"
+            >
+              Connect Wallet
+            </button>
+          </div>
           <div class="space-x-2.5 flex justify-end">
             <button
               class="border-[1.5px] text-sm border-[#F7F7F7] w-[100px] p-2 rounded-md"
