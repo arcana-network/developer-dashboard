@@ -1,8 +1,6 @@
-let provider
+const provider = window.ethereum
 
 async function connect() {
-  provider = window.ethereum
-
   if (provider === undefined) {
     throw new Error('Please install Meta Mask')
   }
@@ -18,6 +16,10 @@ async function switchChain(chainId: number) {
     method: 'wallet_switchEthereumChain',
     params: [{ chainId }],
   })
+}
+
+async function checkConnection() {
+  return await provider.request({ method: 'eth_accounts' })
 }
 
 async function createChain(chainInfo) {
@@ -39,7 +41,7 @@ async function createChain(chainInfo) {
 }
 
 function useMetaMask() {
-  return { connect, switchChain, createChain }
+  return { connect, switchChain, createChain, checkConnection }
 }
 
 export { useMetaMask }
