@@ -44,6 +44,12 @@ function hideLoader() {
   loader.value.message = ''
 }
 
+async function checkIfConnectedToMetaMask() {
+  const { checkConnection } = useMetaMask()
+  const [address] = await checkConnection()
+  if (address) connectWallet()
+}
+
 async function connectWallet() {
   const { connect, switchChain, createChain } = useMetaMask()
   const selectedGasTankChainId = selectedGasTank.value.chainId
@@ -197,6 +203,8 @@ const props = defineProps({
     default: 'deposit',
   },
 })
+
+onMounted(checkIfConnectedToMetaMask)
 
 onMounted(() => {
   const depositTankId = props.depositTankId
