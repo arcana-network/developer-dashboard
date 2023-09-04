@@ -27,6 +27,7 @@ const AppKeyspace = () => import('@/components/app-configure/AppKeyspace.vue')
 const AppChainManagement = () => import('@/pages/AppChainManagement.vue')
 const AppGasless = () => import('@/pages/AppGasless.vue')
 const AppGasTanks = () => import('@/pages/AppGasTanks.vue')
+const AppGaslessAddress = () => import('@/pages/AppGaslessAddress.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -127,6 +128,14 @@ const routes: RouteRecordRaw[] = [
         name: 'Gas Tanks',
         path: 'configure/gasless/gastanks',
         component: AppGasTanks,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Address',
+        path: 'configure/gasless/address',
+        component: AppGaslessAddress,
         meta: {
           requiresAuth: true,
         },

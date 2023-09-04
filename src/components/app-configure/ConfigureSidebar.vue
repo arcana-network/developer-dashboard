@@ -124,10 +124,10 @@ const gaslessMenu = [
     type: 'gasTanks',
     label: 'Gas Tanks',
   },
-  // {
-  //   type: 'whitelists',
-  //   label: 'Whitelists',
-  // },
+  {
+    type: 'address',
+    label: 'Address',
+  },
   // {
   //   type: 'transactions',
   //   label: 'Transactions',
@@ -315,7 +315,7 @@ watch(
                   class="space-y-3 flex flex-col"
                   :class="[
                     subTab.type === 'gasLess'
-                      ? 'flex w-full after:w-[1px] after:h-7 after:content-normal after:left-[7.5%] after:top-6 after:bg-[#8D8D8D33] after:absolute'
+                      ? 'flex w-full after:w-[1px] after:h-14 after:content-normal after:left-[7.5%] after:top-6 after:bg-[#8D8D8D33] after:absolute'
                       : '',
                   ]"
                 >
@@ -329,7 +329,7 @@ watch(
                   </div>
                   <div
                     v-if="subTab.type === 'gasLess'"
-                    class="flex flex-column items-start pl-8"
+                    class="flex flex-column items-start pl-8 space-y-2"
                   >
                     <VCardButton
                       v-for="menu in gaslessMenu"

@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
-
 const emit = defineEmits(['close'])
 
 type MobileMenuProps = {
