@@ -2,7 +2,6 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
-import PlusIcon from '@/assets/iconography/plus.svg'
 import AppGaslessSmartContractForm from '@/components/app-configure/gasless/AppGaslessSmartContractForm.vue'
 import AppGaslessTankList from '@/components/app-configure/gasless/AppGaslessTankList.vue'
 import AppGaslessWhitelist from '@/components/app-configure/gasless/AppGaslessWhitelist.vue'
@@ -10,7 +9,7 @@ import AppGasTankDeposit from '@/components/app-configure/gasless/AppGasTankDepo
 import AppGasTankForm from '@/components/app-configure/gasless/AppGasTankForm.vue'
 import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
-import { addGastank } from '@/services/gateway.service'
+import { addGastank, changeGastankStatus } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -112,6 +111,22 @@ async function hideSmartContractForm() {
   showSmartContractForm.value.show = false
   await fetchGastankList()
 }
+
+async function toggleChainStatus(info: object) {
+  try {
+    showLoader('Toggling...')
+    const appId = route.params.appId
+    const app = appStore.app(appId)
+    const { id: tankId, enabled } = info
+    const status = !enabled
+    await changeGastankStatus(tankId, status, app.network)
+    await fetchGastankList()
+  } catch (e) {
+    console.log(e, 'error')
+  } finally {
+    hideLoader()
+  }
+}
 </script>
 
 <template>
@@ -140,6 +155,7 @@ async function hideSmartContractForm() {
         @deposit="deposit"
         @manage-whitelist="whitelist"
         @withdraw="withdraw"
+        @toggle-chain-status="toggleChainStatus"
       />
     </div>
     <AppGasTankForm

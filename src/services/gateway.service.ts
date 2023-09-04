@@ -574,6 +574,17 @@ async function getPaymaster(tankId: number, network: Network) {
   )
 }
 
+async function changeGastankStatus(
+  tankId: number,
+  status: boolean,
+  network: Network
+) {
+  return getGatewayInstance(network).patch(
+    `${getEnvApi()}/gastank/paymaster/?gastank_id=${tankId}`,
+    { active: status, gastank_id: tankId, type: 'status' }
+  )
+}
+
 async function getFundingMessage(network: Network) {
   return getGatewayInstance(network).get(
     `${getEnvApi()}/gastank/funding-message/`
@@ -701,6 +712,7 @@ export {
   deleteSmartContract,
   getSmartContractMethods,
   editSmartContract,
+  changeGastankStatus,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 
 import ChainFallbackLogo from '@/assets/chain-fallback-logo.png'
 import MoreIcon from '@/assets/iconography/more.svg'
+import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
 import { getChainLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
@@ -63,12 +64,13 @@ function onClickOfOption(option: number, id: number) {
     >
       <thead class="border-b-[1px] border-b-[#363636]">
         <tr class="text-[#8d8d8d]">
-          <th class="w-[15%]"></th>
-          <th class="w-[25%]">Name</th>
-          <th class="w-[30%]">Network</th>
-          <th class="w-[20%]">Type</th>
-          <th class="w-[10%]">Whitelists</th>
           <th class="w-[5%]"></th>
+          <th class="w-[20%]">Name</th>
+          <th class="w-[20%]">Network</th>
+          <th class="w-[15%]">Type</th>
+          <th class="w-[5%]">Whitelists</th>
+          <th class="w-[15%]">Enabled</th>
+          <th class="w-[10%]"></th>
         </tr>
       </thead>
       <tbody>
@@ -89,6 +91,12 @@ function onClickOfOption(option: number, id: number) {
           <td>{{ tank.network }}</td>
           <td>{{ tank.type }}</td>
           <td>{{ tank.whitelists || '-' }}</td>
+          <td>
+            <VSwitch
+              :value="tank.enabled"
+              @update:model-value="() => emits('toggle-chain-status', tank)"
+            />
+          </td>
           <td>
             <PopperJs placement="left-start" :arrow="true">
               <button
