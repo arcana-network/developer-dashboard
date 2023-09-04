@@ -42,6 +42,11 @@ import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
             >Switching from SCWs to EOAs not possible on certain chains.</span
           >
         </div>
+        <div class="flex justify-end">
+          <button class="bg-white text-black text-sm rounded-md w-28 h-9">
+            Save
+          </button>
+        </div>
       </div>
     </div>
   </div>
