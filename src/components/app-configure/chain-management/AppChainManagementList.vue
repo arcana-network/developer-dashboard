@@ -70,8 +70,16 @@ function onChainToggle(chain: object) {
   })
 }
 
-function getRowOptions(isDefault: boolean, options: Array<object>) {
-  return isDefault ? [options[0], options[1]] : options
+function getRowOptions(
+  isDefault: boolean,
+  isBuiltIn: boolean,
+  options: Array<object>
+) {
+  return isDefault
+    ? [options[0], options[1]]
+    : isBuiltIn
+    ? [options[0], options[2]]
+    : options
 }
 
 function onChainLogoError(e) {
@@ -161,6 +169,7 @@ function isGaslessSupport(chainId: number) {
                   <li
                     v-for="option in getRowOptions(
                       chain.default_chain,
+                      chain.built_in,
                       rowOptions
                     )"
                     :key="option.value"
