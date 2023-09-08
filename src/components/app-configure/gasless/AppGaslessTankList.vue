@@ -69,7 +69,7 @@ function onClickOfOption(option: number, id: number) {
           <th class="w-[20%]">Network</th>
           <th class="w-[15%]">Type</th>
           <th class="w-[5%]">Whitelists</th>
-          <th class="w-[15%]">Enabled</th>
+          <th class="w-[15%]">Enable Smart Account</th>
           <th class="w-[10%]"></th>
         </tr>
       </thead>
