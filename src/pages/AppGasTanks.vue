@@ -2,6 +2,7 @@
 import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
+import AddressSwitchConfirmation from '@/components/app-configure/gasless/AddressSwitchConfirmation.vue'
 import AppGaslessSmartContractForm from '@/components/app-configure/gasless/AppGaslessSmartContractForm.vue'
 import AppGaslessTankList from '@/components/app-configure/gasless/AppGaslessTankList.vue'
 import AppGaslessWhitelist from '@/components/app-configure/gasless/AppGaslessWhitelist.vue'
@@ -36,6 +37,8 @@ const showSmartContractForm: Ref<SmartContractForm> = ref({
 const editSmartContractInfo = ref({})
 const depositTankId = ref(null)
 const depositType: Ref<DepositType | null> = ref(null)
+const showAddressSwitchConfirmation = ref(false)
+const gastankInfoForSwitchingAddress: Ref<object | null> = ref(null)
 
 async function fetchGastankList() {
   try {
@@ -112,7 +115,14 @@ async function hideSmartContractForm() {
   await fetchGastankList()
 }
 
+function onToggleChainStatus(info: object) {
+  showAddressSwitchConfirmation.value = true
+  gastankInfoForSwitchingAddress.value = info
+}
+
 async function toggleChainStatus(info: object) {
+  showAddressSwitchConfirmation.value = false
+  gastankInfoForSwitchingAddress.value = null
   try {
     showLoader('Toggling...')
     const appId = route.params.appId
@@ -155,7 +165,7 @@ async function toggleChainStatus(info: object) {
         @deposit="deposit"
         @manage-whitelist="whitelist"
         @withdraw="withdraw"
-        @toggle-chain-status="toggleChainStatus"
+        @toggle-chain-status="onToggleChainStatus"
       />
     </div>
     <AppGasTankForm
@@ -182,6 +192,12 @@ async function toggleChainStatus(info: object) {
       :deposit-tank-id="depositTankId"
       :edit-smart-contract-info="editSmartContractInfo"
       @close="hideSmartContractForm"
+    />
+    <AddressSwitchConfirmation
+      v-if="showAddressSwitchConfirmation"
+      :info="gastankInfoForSwitchingAddress"
+      @proceed="toggleChainStatus"
+      @close="showAddressSwitchConfirmation = false"
     />
   </div>
 </template>
