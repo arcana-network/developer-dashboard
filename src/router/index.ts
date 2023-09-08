@@ -119,23 +119,7 @@ const routes: RouteRecordRaw[] = [
       {
         name: 'Gasless',
         path: 'configure/gasless',
-        component: AppGasless,
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        name: 'Gas Tanks',
-        path: 'configure/gasless/gastanks',
         component: AppGasTanks,
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        name: 'Address',
-        path: 'configure/gasless/address',
-        component: AppGaslessAddress,
         meta: {
           requiresAuth: true,
         },
