@@ -579,10 +579,10 @@ async function changeGastankStatus(
   status: boolean,
   network: Network
 ) {
-  return getGatewayInstance(network).patch(
-    `${getEnvApi()}/gastank/paymaster/?gastank_id=${tankId}`,
-    { active: status, gastank_id: tankId, type: 'status' }
-  )
+  return getGatewayInstance(network).post(`${getEnvApi()}/gastank/status/`, {
+    active: status,
+    gastank_id: tankId,
+  })
 }
 
 async function getFundingMessage(network: Network) {
