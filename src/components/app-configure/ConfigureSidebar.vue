@@ -545,11 +545,13 @@ watch(
 }
 
 .active-tab .sidebar__option-icon {
-  filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
+  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
+    brightness(105%) contrast(103%);
 }
 
 .submenu-active .sidebar__submenu-option-icon {
-  filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
+  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
+    brightness(105%) contrast(103%);
 }
 
 .social-icon {
