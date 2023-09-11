@@ -11,11 +11,12 @@ async function connect() {
   return { address, provider }
 }
 
-async function switchChain(chainId: number) {
+async function switchChain(chainId: string) {
   await provider.request({
     method: 'wallet_switchEthereumChain',
     params: [{ chainId }],
   })
+  return provider
 }
 
 async function checkConnection() {
@@ -38,6 +39,7 @@ async function createChain(chainInfo) {
     method: 'wallet_addEthereumChain',
     params,
   })
+  return provider
 }
 
 function useMetaMask() {
