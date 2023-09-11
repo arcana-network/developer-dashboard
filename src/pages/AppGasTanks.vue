@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import { ethers } from 'ethers'
 import { onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -10,10 +11,18 @@ import AppGasTankDeposit from '@/components/app-configure/gasless/AppGasTankDepo
 import AppGasTankForm from '@/components/app-configure/gasless/AppGasTankForm.vue'
 import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
-import { addGastank, changeGastankStatus } from '@/services/gateway.service'
+import {
+  getFundingMessage,
+  updateSignature,
+  addGastank,
+  changeGastankStatus,
+} from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
+import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { useWalletStore } from '@/stores/wallet.store'
+import { connectWallet } from '@/utils/connectToMetaMask'
 
 type DepositType = 'deposit' | 'withdraw'
 type SmartContractFormType = 'add' | 'edit'
@@ -27,6 +36,8 @@ const route = useRoute()
 const toast = useToast()
 const appStore = useAppsStore()
 const gaslessStore = useGaslessStore()
+const walletStore = useWalletStore()
+const chainStore = useChainManagementStore()
 const { showLoader, hideLoader } = useLoaderStore()
 const showDepositForm = ref(false)
 const showWhitelistForm = ref(false)
@@ -66,7 +77,12 @@ async function onFormSubmit(formData: object) {
       chain_id: formData.chainId,
       name: formData.name,
     }
-    await addGastank(payload, app.network)
+    const provider = await connectWallet(formData.chainId, chainStore.allChains)
+    walletStore.setWalletProvider(provider)
+    const gasTankInfo = (await addGastank(payload, app.network)).data
+    const gasTankId = gasTankInfo.ID
+    await setupGasTank(gasTankId)
+    toast.success('Gas tank added successfully')
   } catch (e) {
     const errorMessage = e.response?.data?.err || 'Something went wrong'
     toast.error(errorMessage)
@@ -74,6 +90,20 @@ async function onFormSubmit(formData: object) {
     await fetchGastankList()
     hideLoader()
   }
+}
+
+async function setupGasTank(gasTankId: number) {
+  showLoader('setting up gastank...')
+  const appId = route.params.appId
+  const app = appStore.app(appId)
+  const { data } = (await getFundingMessage(app.network)).data
+  const fundingMessage = data.fundingMessage
+  const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
+  const wallet = await web3Provider.getSigner()
+  const owner = await wallet.getAddress()
+  const signature = await wallet.signMessage(fundingMessage)
+  await updateSignature(owner, gasTankId, signature, app.network)
+  toast.success('Gas tank setup is complete')
 }
 
 function onSearch(value: string) {

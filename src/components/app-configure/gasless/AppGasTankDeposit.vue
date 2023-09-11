@@ -5,16 +5,12 @@ import { useRoute } from 'vue-router'
 
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { useToast } from '@/components/lib/VToast'
-import {
-  getFundingMessage,
-  getPaymaster,
-  updateSignature,
-} from '@/services/gateway.service'
+import { getPaymaster } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useWalletStore } from '@/stores/wallet.store'
-import { useMetaMask } from '@/use/metamask'
+import { connectWallet } from '@/utils/connectToMetaMask'
 
 const selectedGasTank = ref(null)
 const gaslessStore = useGaslessStore()
@@ -34,6 +30,17 @@ const loader = ref({
 
 const emits = defineEmits(['close', 'proceed'])
 
+const props = defineProps({
+  depositTankId: {
+    type: Number,
+    default: null,
+  },
+  depositType: {
+    type: String,
+    default: 'deposit',
+  },
+})
+
 function showLoader(message: string) {
   loader.value.show = true
   loader.value.message = message
@@ -42,62 +49,6 @@ function showLoader(message: string) {
 function hideLoader() {
   loader.value.show = false
   loader.value.message = ''
-}
-
-async function checkIfConnectedToMetaMask() {
-  const { checkConnection } = useMetaMask()
-  const [address] = await checkConnection()
-  if (address) connectWallet()
-}
-
-async function connectWallet() {
-  const { connect, switchChain, createChain } = useMetaMask()
-  const selectedGasTankChainId = selectedGasTank.value.chainId
-  showLoader('connecting to wallet...')
-  try {
-    const { provider } = await connect()
-    const { chainId } = provider
-    const connectedChainId = Number.parseInt(chainId)
-    if (connectedChainId !== selectedGasTankChainId) {
-      await switchChain(`0x${selectedGasTankChainId.toString(16)}`)
-    }
-    walletStore.setWalletProvider(provider)
-    isConnected.value = true
-  } catch (err) {
-    if (err.code === 4902) {
-      const chainInfo = chainStore.appChains.find(
-        (item) => item.chain_id === selectedGasTankChainId
-      )
-      await createChain(chainInfo)
-      isConnected.value = true
-    } else {
-      toast.error('Failed to switch to the network')
-    }
-  } finally {
-    hideLoader()
-  }
-}
-
-async function setupGasTank() {
-  try {
-    showLoader('setting up gastank...')
-    const appId = route.params.appId
-    const app = appStore.app(appId)
-    const { data } = (await getFundingMessage(app.network)).data
-    const fundingMessage = data.fundingMessage
-    const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
-    const wallet = await web3Provider.getSigner()
-    const owner = await wallet.getAddress()
-    const signature = await wallet.signMessage(fundingMessage)
-    await updateSignature(owner, props.depositTankId, signature, app.network)
-    toast.success('Gas tank setup complete')
-    fetchBalanceAndDeposit()
-  } catch (e) {
-    toast.error('Unable to register gas tank request')
-    emits('close')
-  } finally {
-    hideLoader()
-  }
 }
 
 async function fetchBalanceAndDeposit() {
@@ -193,33 +144,30 @@ async function withdrawHandler() {
   }
 }
 
-const props = defineProps({
-  depositTankId: {
-    type: Number,
-    default: null,
-  },
-  depositType: {
-    type: String,
-    default: 'deposit',
-  },
-})
+async function connectToWallet(chainId: number) {
+  console.log({ chainId })
+  try {
+    showLoader('connecting to wallet...')
+    const provider = await connectWallet(chainId, chainStore.allChains)
+    walletStore.setWalletProvider(provider)
+    isConnected.value = true
+  } catch (e) {
+    toast.error(e.message)
+  } finally {
+    hideLoader()
+  }
+}
 
-onMounted(checkIfConnectedToMetaMask)
-
-onMounted(() => {
+onMounted(async () => {
   const depositTankId = props.depositTankId
   selectedGasTank.value = gaslessStore.gastankList.find((item) => {
     return item.id === depositTankId
   })
+  const chainId = selectedGasTank.value.chainId
+  connectToWallet(chainId)
 })
 
-watch(
-  () => isConnected.value,
-  () => {
-    if (!selectedGasTank.value.created) setupGasTank()
-    else fetchBalanceAndDeposit()
-  }
-)
+watch(() => isConnected.value, fetchBalanceAndDeposit)
 
 const enableSave = computed(() => {
   return isConnected.value && Number(depositAmount.value) > 0
@@ -273,7 +221,7 @@ const enableSave = computed(() => {
             <span class="text-sm text-[#8D8D8D] leading-4">Tank Owner</span>
             <button
               class="uppercase border-2 text-sm w-full p-1 rounded-md bg-white text-black"
-              @click="connectWallet"
+              @click.stop="connectToWallet(selectedGasTank.chainId)"
             >
               Connect Wallet
             </button>
