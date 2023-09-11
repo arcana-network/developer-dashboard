@@ -75,7 +75,7 @@ function getRowOptions(
   isBuiltIn: boolean,
   options: Array<object>
 ) {
-  if (isDefault) return isBuiltIn ? [options[0]] : [options[0], options[1]]
+  if (isDefault) return [options[0]]
   if (isBuiltIn) return [options[0], options[2]]
   return options
 }
