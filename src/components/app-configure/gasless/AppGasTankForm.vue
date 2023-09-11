@@ -4,9 +4,11 @@ import { onMounted, ref, computed } from 'vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import { useGaslessStore } from '@/stores/gasless.store'
 
 const chainManagementStore = useChainManagementStore()
 const { gaslessChains, appChains } = chainManagementStore
+const { gastankList } = useGaslessStore()
 const emits = defineEmits(['close', 'submit'])
 const supportedGaslessChains = ref([])
 
@@ -24,9 +26,12 @@ function onChainSelect(_, option) {
 }
 
 onMounted(() => {
-  const supportedChain = appChains.filter(
-    (chain) => gaslessChains[chain.chain_id]
-  )
+  const supportedChain = appChains
+    .filter((chain) => gaslessChains[chain.chain_id])
+    .filter(
+      (chain) =>
+        !gastankList.find((gasTank) => gasTank.chainId === chain.chain_id)
+    )
   supportedGaslessChains.value = supportedChain
 })
 
