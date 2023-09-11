@@ -75,11 +75,9 @@ function getRowOptions(
   isBuiltIn: boolean,
   options: Array<object>
 ) {
-  return isDefault
-    ? [options[0], options[1]]
-    : isBuiltIn
-    ? [options[0], options[2]]
-    : options
+  if (isDefault) return isBuiltIn ? [options[0]] : [options[0], options[1]]
+  if (isBuiltIn) return [options[0], options[2]]
+  return options
 }
 
 function onChainLogoError(e) {
