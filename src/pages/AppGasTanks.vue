@@ -79,6 +79,7 @@ async function onFormSubmit(formData: object) {
     }
     const provider = await connectWallet(formData.chainId, chainStore.allChains)
     walletStore.setWalletProvider(provider)
+    payload.owner = provider.selectedAddress
     const gasTankInfo = (await addGastank(payload, app.network)).data
     const gasTankId = gasTankInfo.ID
     await setupGasTank(gasTankId)
