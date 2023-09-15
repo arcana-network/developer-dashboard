@@ -9,6 +9,7 @@ import { getChainLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useClickOutside } from '@/use/clickOutside'
+import shrinkWalletAddress from '@/utils/shrinkWalletAddress'
 
 const emits = defineEmits([
   'deposit',
@@ -68,6 +69,7 @@ function onClickOfOption(option: number, id: number) {
           <th class="w-[20%]">Name</th>
           <th class="w-[20%]">Network</th>
           <th class="w-[15%]">Type</th>
+          <th class="w-[15%]">Owner</th>
           <th class="w-[5%]">Whitelists</th>
           <th class="w-[15%]">Enable Smart Account</th>
           <th class="w-[10%]"></th>
@@ -90,6 +92,7 @@ function onClickOfOption(option: number, id: number) {
           <td>{{ tank.name }}</td>
           <td>{{ tank.network }}</td>
           <td>{{ tank.type }}</td>
+          <td :title="tank.owner">{{ shrinkWalletAddress(tank.owner) }}</td>
           <td>{{ tank.whitelists || '-' }}</td>
           <td>
             <VSwitch
