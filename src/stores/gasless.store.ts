@@ -14,6 +14,7 @@ type GasTank = {
   whitelists: number
   enabled: boolean
   created: boolean
+  owner: string
 }
 
 type GaslessState = {
