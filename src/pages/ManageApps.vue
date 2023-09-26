@@ -125,6 +125,13 @@ async function handleAppNameSave(app: AppData) {
     toast.error('App name is required')
   }
 }
+
+function ellipsisAppName(appName: string) {
+  if (appName.length > 10) {
+    return `${appName.slice(0, 10)}...`
+  }
+  return appName
+}
 </script>
 
 <template>
@@ -282,11 +289,11 @@ async function handleAppNameSave(app: AppData) {
                 />
                 <span
                   v-else
-                  class="text-xl font-semibold app-name text-ellipsis overflow-hidden"
+                  class="text-xl font-semibold app-name text-center text-ellipsis overflow-hidden"
                   :title="app.name"
                   style="max-width: calc(100% - 1rem)"
                 >
-                  {{ app.name }}
+                  {{ ellipsisAppName(app.name) }}
                 </span>
                 <img
                   v-if="!app.editState"

@@ -179,6 +179,13 @@ watch(
         : appsStore.apps
   }
 )
+
+function ellipsisAppName(appName: string) {
+  if (appName.length > 6) {
+    return `${appName.slice(0, 6)}...`
+  }
+  return appName
+}
 </script>
 
 <template>
@@ -191,11 +198,12 @@ watch(
         <VStack class="apps-name__container relative">
           <button
             class="flex space-x-2 justify-between app-name__container cursor-pointer"
+            :title="appsStore.app(useAppId()).name"
             @click="showAppsList = !showAppsList"
           >
             <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
             <label class="text-ellipsis font-bold text-2xl overflow-hidden">{{
-              appsStore.app(useAppId()).name
+              ellipsisAppName(appsStore.app(useAppId()).name)
             }}</label>
             <img
               :src="arrowIcon"
