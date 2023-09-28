@@ -27,6 +27,7 @@ const loader = ref({
   show: false,
   message: '',
 })
+const connectedWalletAddress = ref('')
 
 const emits = defineEmits(['close', 'proceed'])
 
@@ -61,6 +62,7 @@ async function fetchBalanceAndDeposit() {
     ).data
     const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
     const wallet = await web3Provider.getSigner()
+    connectedWalletAddress.value = await wallet.getAddress()
     const owner = selectedGasTank.value.owner
     const paymasterContract = new ethers.Contract(
       paymaster.address,
@@ -158,6 +160,13 @@ async function connectToWallet(chainId: number) {
   }
 }
 
+function isConnectedAddressSameAsOwner() {
+  return (
+    connectedWalletAddress.value.toLowerCase() ===
+    selectedGasTank.value.owner.toLowerCase()
+  )
+}
+
 onMounted(async () => {
   const depositTankId = props.depositTankId
   selectedGasTank.value = gaslessStore.gastankList.find((item) => {
@@ -212,10 +221,22 @@ const enableSave = computed(() => {
             <label for="amount" class="text-xs">Amount</label>
             <input
               v-model="depositAmount"
+              :disabled="!isConnectedAddressSameAsOwner()"
               type="text"
+              :class="{
+                'bg-neutral-900 cursor-not-allowed':
+                  !isConnectedAddressSameAsOwner(),
+              }"
               class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none rounded-md"
               name="amount"
             />
+            <p
+              v-if="!isConnectedAddressSameAsOwner()"
+              class="text-xs mt-3 text-red-800"
+            >
+              Address of the connected wallet is different from this Gastank's
+              owner address
+            </p>
           </div>
           <div v-else>
             <span class="text-sm text-[#8D8D8D] leading-4">Tank Owner</span>
