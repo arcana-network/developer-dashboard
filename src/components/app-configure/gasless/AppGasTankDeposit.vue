@@ -61,7 +61,7 @@ async function fetchBalanceAndDeposit() {
     ).data
     const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
     const wallet = await web3Provider.getSigner()
-    const owner = await wallet.getAddress()
+    const owner = selectedGasTank.value.owner
     const paymasterContract = new ethers.Contract(
       paymaster.address,
       paymaster.abi,
@@ -93,7 +93,7 @@ async function depositHandler() {
     ).data
     const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
     const wallet = await web3Provider.getSigner()
-    const owner = await wallet.getAddress()
+    const owner = selectedGasTank.value.owner
     const paymasterContract = new ethers.Contract(
       paymaster.address,
       paymaster.abi,
@@ -123,7 +123,7 @@ async function withdrawHandler() {
     ).data
     const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
     const wallet = await web3Provider.getSigner()
-    const owner = await wallet.getAddress()
+    const owner = selectedGasTank.value.owner
     const paymasterContract = new ethers.Contract(
       paymaster.address,
       paymaster.abi,
