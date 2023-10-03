@@ -147,7 +147,6 @@ async function withdrawHandler() {
 }
 
 async function connectToWallet(chainId: number) {
-  console.log({ chainId })
   try {
     showLoader('connecting to wallet...')
     const provider = await connectWallet(chainId, chainStore.allChains)

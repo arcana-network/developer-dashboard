@@ -172,9 +172,7 @@ function isGaslessSupport(chainId: number) {
                     )"
                     :key="option.value"
                     class="p-1 rounded-[5px] hover:bg-[#363636] text-left cursor-pointer"
-                    @click.stop="
-                      () => onClickOfOption(option.value, chain.id, chain)
-                    "
+                    @click.stop="onClickOfOption(option.value, chain.id, chain)"
                   >
                     <button>
                       {{ option.label }}
@@ -206,18 +204,5 @@ td {
   font-size: 14px;
   font-weight: 500;
   text-overflow: ellipsis;
-}
-
-.btn-group {
-  white-space: nowrap;
-}
-
-.btn-group .btn {
-  display: inline-block;
-  float: none;
-}
-
-.btn + .dropdown-toggle {
-  margin-left: -4px;
 }
 </style>

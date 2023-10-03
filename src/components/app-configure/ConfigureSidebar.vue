@@ -311,7 +311,7 @@ watch(
                 :class="{ 'submenu-active': isSubmenuSelected(subTab.label) }"
                 @click.stop="onClickOfMenu(subTab)"
               >
-                <div class="space-y-3 flex flex-col">
+                <div class="gap-3 flex flex-col">
                   <div class="sidebar__submenu-option-item">
                     <img
                       :src="subTab.icon"
@@ -440,7 +440,6 @@ watch(
   flex-direction: row;
   gap: 12px;
   align-items: center;
-  justify-content: ;
 }
 
 .arrow-icon {
