@@ -43,7 +43,8 @@
     "vue-gtag": "^2.0.1",
     "vue-router": "^4.0.10",
     "vue3-carousel": "^0.2.9",
-    "vue3-circle-progress": "^1.0.6"
+    "vue3-circle-progress": "^1.0.6",
+    "vue3-popper": "^1.5.0"
   },
   "devDependencies": {
     "@fullhuman/postcss-purgecss": "^4.0.3",

@@ -10,6 +10,7 @@ import brandingIcon from '@/assets/iconography/branding.svg'
 import ChainIcon from '@/assets/iconography/chain.svg'
 import CloseIcon from '@/assets/iconography/close.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
+import GasStationIcon from '@/assets/iconography/gas-station.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
@@ -93,6 +94,11 @@ const ConfigureTabs = computed(() => {
           label: 'Arcana Wallet',
           icon: walletIcon,
         },
+        {
+          type: 'gasLess',
+          label: 'Gasless',
+          icon: GasStationIcon,
+        },
       ],
     },
   ]
@@ -112,6 +118,21 @@ const ConfigureTabs = computed(() => {
   }
   return configureTabsCopy
 })
+
+const gaslessMenu = [
+  {
+    type: 'gasTanks',
+    label: 'Gas Tanks',
+  },
+  {
+    type: 'address',
+    label: 'Address',
+  },
+  // {
+  //   type: 'transactions',
+  //   label: 'Transactions',
+  // },
+]
 
 function onClickOfMenu(tab: ConfigureTab) {
   if (tab.subMenu) {
@@ -141,9 +162,23 @@ function hasSubMenuSelected(tabLabel: string) {
     const subTab = selectedTab.subMenu.find(
       (el) => el.label === props.currentTab
     )
-    if (subTab) return true
+    const gaslessSubmenu = gaslessMenu.find(
+      (el) => el.label === props.currentTab
+    )
+    if (subTab || gaslessSubmenu) return true
   }
   return false
+}
+
+function isSubmenuSelected(subTab: string) {
+  let isSelected = props.currentTab === subTab
+  if (
+    !isSelected &&
+    subTab === 'Gasless' &&
+    gaslessMenu.find((item) => item.label === props.currentTab)
+  )
+    isSelected = true
+  return isSelected
 }
 
 onMounted(() => {
@@ -152,7 +187,8 @@ onMounted(() => {
     currentTab === 'Branding' ||
     currentTab === 'Social Auth' ||
     currentTab === 'Arcana Wallet' ||
-    currentTab === 'Keyspace'
+    currentTab === 'Keyspace' ||
+    currentTab === 'GasLess'
 })
 
 onMounted(() => {
@@ -267,24 +303,26 @@ watch(
           </div>
           <div
             v-if="tab.subMenu && showConfigureSubmenu"
-            class="sidebar__submenu"
+            class="sidebar__submenu | space-y-3"
           >
-            <VCardButton
-              v-for="subTab in tab.subMenu"
-              :key="subTab.label"
-              class="sidebar__submenu-option"
-              :class="{ 'submenu-active': props.currentTab === subTab.label }"
-              @click.stop="onClickOfMenu(subTab)"
-            >
-              <div class="sidebar__submenu-option-item">
-                <img
-                  :src="subTab.icon"
-                  alt="icon"
-                  class="sidebar__submenu-option-icon"
-                />
-                <span class="submenu-tab-label">{{ subTab.label }}</span>
-              </div>
-            </VCardButton>
+            <div v-for="subTab in tab.subMenu" :key="subTab.label">
+              <VCardButton
+                class="sidebar__submenu-option"
+                :class="{ 'submenu-active': isSubmenuSelected(subTab.label) }"
+                @click.stop="onClickOfMenu(subTab)"
+              >
+                <div class="gap-3 flex flex-col">
+                  <div class="sidebar__submenu-option-item">
+                    <img
+                      :src="subTab.icon"
+                      alt="icon"
+                      class="sidebar__submenu-option-icon"
+                    />
+                    <span class="submenu-tab-label">{{ subTab.label }}</span>
+                  </div>
+                </div>
+              </VCardButton>
+            </div>
           </div>
         </VCardButton>
       </VStack>
@@ -393,11 +431,8 @@ watch(
 }
 
 .sidebar__submenu-option {
+  position: relative;
   padding: 0 !important;
-}
-
-.sidebar__submenu-option:not(:last-child) {
-  margin-bottom: 1.5rem;
 }
 
 .sidebar__submenu-option-item {
@@ -405,7 +440,6 @@ watch(
   flex-direction: row;
   gap: 12px;
   align-items: center;
-  justify-content: center;
 }
 
 .arrow-icon {
@@ -510,11 +544,13 @@ watch(
 }
 
 .active-tab .sidebar__option-icon {
-  filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
+  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
+    brightness(105%) contrast(103%);
 }
 
 .submenu-active .sidebar__submenu-option-icon {
-  filter: invert(1) sepia(80%) hue-rotate(140deg) brightness(0.4) saturate(600);
+  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
+    brightness(105%) contrast(103%);
 }
 
 .social-icon {

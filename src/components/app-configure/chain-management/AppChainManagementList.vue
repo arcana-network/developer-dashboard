@@ -19,7 +19,8 @@ const emits = defineEmits([
 ])
 
 const chainManagementStore = useChainManagementStore()
-const { areChainsEmpty, filteredChains } = toRefs(chainManagementStore)
+const { areChainsEmpty, filteredChains, gaslessChains } =
+  toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const toast = useToast()
@@ -69,12 +70,22 @@ function onChainToggle(chain: object) {
   })
 }
 
-function getRowOptions(isDefault: boolean, options: Array<object>) {
-  return isDefault ? [options[0], options[1]] : options
+function getRowOptions(
+  isDefault: boolean,
+  isBuiltIn: boolean,
+  options: Array<object>
+) {
+  if (isDefault) return [options[0]]
+  if (isBuiltIn) return [options[0], options[2]]
+  return options
 }
 
 function onChainLogoError(e) {
   e.target.src = ChainFallbackLogo
+}
+
+function isGaslessSupport(chainId: number) {
+  return gaslessChains.value[chainId]
 }
 </script>
 
@@ -114,12 +125,17 @@ function onChainLogoError(e) {
             />
           </td>
           <td>
-            <div class="space-x-1 flex items-baseline">
+            <div class="space-x-1 flex items-center">
               <span>{{ chain.name }}</span>
               <span
                 v-if="chain.default_chain"
                 class="text-[#568DF0] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
                 >Default</span
+              >
+              <span
+                v-if="isGaslessSupport(chain.chain_id)"
+                class="text-[#51C75F] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
+                >Gasless</span
               >
             </div>
           </td>
@@ -136,34 +152,35 @@ function onChainLogoError(e) {
             />
           </td>
           <td>
-            <div class="relative">
+            <PopperJs placement="left-start" :arrow="true">
               <button
-                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-[#262626] rounded-[5px]"
-                @click.stop="showRowOptionsOf = chain.id"
+                class="flex justify-center items-center w-7 h-7 bg-[#262626] rounded-[5px]"
               >
                 <img :src="MoreIcon" alt="more" />
               </button>
-              <dialog
-                v-if="chain.id === showRowOptionsOf"
-                ref="showRowOptions_menu"
-                open
-                class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-32 left-[-100px] top-[10px] z-[999]"
-              >
-                <button
-                  v-for="option in getRowOptions(
-                    chain.default_chain,
-                    rowOptions
-                  )"
-                  :key="option.value"
-                  class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
-                  @click.stop="
-                    () => onClickOfOption(option.value, chain.id, chain)
-                  "
+              <template #content>
+                <ul
+                  ref="showRowOptions_menu"
+                  open
+                  class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 relative"
                 >
-                  {{ option.label }}
-                </button>
-              </dialog>
-            </div>
+                  <li
+                    v-for="option in getRowOptions(
+                      chain.default_chain,
+                      chain.built_in,
+                      rowOptions
+                    )"
+                    :key="option.value"
+                    class="p-1 rounded-[5px] hover:bg-[#363636] text-left cursor-pointer"
+                    @click.stop="onClickOfOption(option.value, chain.id, chain)"
+                  >
+                    <button>
+                      {{ option.label }}
+                    </button>
+                  </li>
+                </ul>
+              </template>
+            </PopperJs>
           </td>
         </tr>
       </tbody>

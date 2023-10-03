@@ -1,7 +1,24 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
+import { useGaslessStore } from '@/stores/gasless.store'
 
 const emits = defineEmits(['cancel', 'delete'])
+
+const isGasTankConfigured = ref(false)
+const gaslessStore = useGaslessStore()
+
+const props = defineProps({
+  deleteChainId: String,
+})
+
+onMounted(() => {
+  const gastanks = gaslessStore.gastankList
+  isGasTankConfigured.value = gastanks.some(
+    (gastank) => Number(gastank.chainId) === Number(props.deleteChainId)
+  )
+})
 </script>
 
 <template>
@@ -12,7 +29,11 @@ const emits = defineEmits(['cancel', 'delete'])
       >
         <div class="space-y-2.5">
           <h3>Delete a Chain</h3>
-          <p class="text-[#8D8D8D] leading-4">
+          <p v-if="isGasTankConfigured" class="text-[#8D8D8D] leading-4">
+            Warning: A Gastank is configured for this chain. Deleting this chain
+            may disable the Gastank.
+          </p>
+          <p v-else class="text-[#8D8D8D] leading-4">
             Please confirm the deletion of the chain by clicking ‘Delete’ below.
           </p>
         </div>

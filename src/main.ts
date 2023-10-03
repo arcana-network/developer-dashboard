@@ -3,6 +3,7 @@ import { init as SentryInit, vueRouterInstrumentation } from '@sentry/vue'
 import VWave from 'v-wave'
 import { createApp } from 'vue'
 import VueGtag from 'vue-gtag'
+import Popper from 'vue3-popper'
 
 import App from '@/App.vue'
 import router from '@/router'
@@ -30,6 +31,7 @@ if (import.meta.env.PROD) {
   })
 }
 
+app.component('PopperJs', Popper)
 app.use(store)
 app.use(router)
 app.use(VWave)
