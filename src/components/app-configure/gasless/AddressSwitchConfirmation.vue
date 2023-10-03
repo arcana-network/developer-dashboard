@@ -22,7 +22,7 @@ const showEOAswitchWarning = ref(props.info.enabled)
         class="flex flex-col items-center space-y-5 p-5 m-auto h-[300px] w-[420px] border-[1px] border-[#363636] bg-[#1F1F1F] rounded-lg"
       >
         <img
-          src="@/assets/iconography/question-red.png"
+          src="@/assets/iconography/question-red.svg"
           alt="Confirm"
           class="w-10 h-10"
         />
