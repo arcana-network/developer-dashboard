@@ -94,11 +94,6 @@ const ConfigureTabs = computed(() => {
           label: 'Arcana Wallet',
           icon: walletIcon,
         },
-        {
-          type: 'gasLess',
-          label: 'Gasless',
-          icon: GasStationIcon,
-        },
       ],
     },
   ]
@@ -116,6 +111,14 @@ const ConfigureTabs = computed(() => {
       icon: KeyspaceIcon,
     })
   }
+
+  if (props.currentNetwork === 'testnet') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push({
+      type: 'gasLess',
+      label: 'Gasless',
+      icon: GasStationIcon,
+    })
+  }
   return configureTabsCopy
 })
 
@@ -128,10 +131,6 @@ const gaslessMenu = [
     type: 'address',
     label: 'Address',
   },
-  // {
-  //   type: 'transactions',
-  //   label: 'Transactions',
-  // },
 ]
 
 function onClickOfMenu(tab: ConfigureTab) {
