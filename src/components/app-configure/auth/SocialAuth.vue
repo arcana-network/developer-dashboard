@@ -11,25 +11,18 @@ import { deleteCred, updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
-import {
-  socialLogins,
-  DOCS_URL,
-  isProductionDashboard,
-} from '@/utils/constants'
+import { socialLogins, DOCS_URL } from '@/utils/constants'
 import type { SocialAuthVerifier } from '@/utils/constants'
 
+const DEFAULT_SELECTED_AUTH_PROVIDER = socialLogins[0].verifier
 const appsStore = useAppsStore()
 const appId = useAppId()
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const app = appsStore.app(appId)
-const selectedCredentialInput: Ref<SocialAuthVerifier> = ref('aws')
-
-const appNetwork = isProductionDashboard
-  ? app.network
-  : app.network === 'mainnet'
-  ? 'testnet'
-  : 'dev'
+const selectedCredentialInput: Ref<SocialAuthVerifier> = ref(
+  DEFAULT_SELECTED_AUTH_PROVIDER
+)
 
 const socialAuth = socialLogins.map((login) => {
   const auth = app.auth.social.find((el) => el.verifier === login.verifier)
@@ -42,6 +35,8 @@ const socialAuth = socialLogins.map((login) => {
   }
   return { ...login, error: '' }
 })
+
+console.log({ socialAuth })
 
 const socialAuthRef = reactive(socialAuth)
 
@@ -142,8 +137,8 @@ function isAuthActive(verifier: SocialAuthVerifier) {
   } else return !auth.clientId?.length
 }
 
-function showCognitoNote() {
-  return ['aws', 'google'].includes(selectedCredentialInput.value)
+function showGoogleNote() {
+  return ['google'].includes(selectedCredentialInput.value)
 }
 
 function showSteamNote() {
@@ -154,14 +149,14 @@ function showSteamNote() {
 <template>
   <section name="social-auth">
     <SettingCard>
-      <template #title>Social Auth</template>
+      <template #title>Social Providers</template>
       <template #description>
         Select the social login provider for onboarding app users by specifying
         authentication verification details.
         <a :href="`${DOCS_URL}/howto/config_social/index.html`" target="_blank">
           READ MORE
         </a>
-        <p v-if="showCognitoNote()" class="mt-3">
+        <p v-if="showGoogleNote()" class="mt-3">
           <strong>Note:</strong> If you enable Cognito as one of the multiple
           onboarding options then you can directly configure Google login
           through Cognito itself instead of using Arcana Dashboard.
@@ -256,11 +251,7 @@ function showSteamNote() {
                       <p v-else class="input-label">Client Secret</p>
                       <a
                         class="input-doc-link"
-                        :href="
-                          auth.verifier === 'aws'
-                            ? auth.userPoolDomainDoc
-                            : auth.documentation
-                        "
+                        :href="auth.documentation"
                         target="_blank"
                       >
                         <span v-if="isAWSSelected()"
@@ -313,10 +304,6 @@ function showSteamNote() {
 </template>
 
 <style scoped>
-.seperator {
-  border: 1px solid #8d8d8d33;
-}
-
 .input-label {
   font-size: 12px;
 }
