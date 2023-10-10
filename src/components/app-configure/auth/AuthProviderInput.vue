@@ -49,7 +49,7 @@ function handleInput2(value: string) {
       class="flex flex-1 flex-col space-y-2"
     >
       <div class="flex justify-between">
-        <span class="text-xs">{{ provider.inputLabels.label1 }}</span>
+        <span class="text-xs">{{ provider.inputLabels.label2 }}</span>
         <a
           :href="provider?.documentation2?.link"
           target="_blank"
