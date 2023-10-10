@@ -41,7 +41,7 @@ onBeforeMount(async () => {
     <div class="bg-[#13a3fd] text-white z-[999] w-full p-2">
       <p class="text-center font-bold">
         Arcana Testnet undergoing scheduled maintenance from 6:30 - 7:30 AM UTC.
-        Logins on Testnet may be affected
+        Logins on Testnet may be affected.
       </p>
     </div>
     <router-view
