@@ -36,8 +36,6 @@ const socialAuth = socialLogins.map((login) => {
   return { ...login, error: '' }
 })
 
-console.log({ socialAuth })
-
 const socialAuthRef = reactive(socialAuth)
 
 function isAuthValid(auth: typeof socialAuth[0]) {
