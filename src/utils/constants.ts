@@ -210,6 +210,8 @@ type SocialAuthOption = {
   inputLabels: SocialAuthOptionTitle
   documentation1: SocialAuthOptionDocumentation
   documentation2?: SocialAuthOptionDocumentation
+  clientId?: string
+  clientSecret?: string
 }
 
 const socialLogins: readonly SocialAuthOption[] = [
@@ -227,6 +229,8 @@ const socialLogins: readonly SocialAuthOption[] = [
       label: 'Get your Client ID',
       link: 'https://support.google.com/cloud/answer/6158849?hl=en',
     },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Twitch',
@@ -242,6 +246,8 @@ const socialLogins: readonly SocialAuthOption[] = [
       label: 'Get your Client ID',
       link: 'https://dev.twitch.tv/docs/authentication#registration',
     },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Discord',
@@ -261,6 +267,8 @@ const socialLogins: readonly SocialAuthOption[] = [
       label: 'Get your Client Secret',
       link: 'https://discord.com/developers/applications',
     },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'GitHub',
@@ -281,6 +289,8 @@ const socialLogins: readonly SocialAuthOption[] = [
       label: 'Get your Client Secret',
       link: 'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
     },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Twitter',
@@ -300,6 +310,8 @@ const socialLogins: readonly SocialAuthOption[] = [
       label: 'Get your Client Secret',
       link: 'https://developer.twitter.com/en/docs/apps/overview',
     },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Steam',
@@ -315,6 +327,8 @@ const socialLogins: readonly SocialAuthOption[] = [
       label: 'Get your Steam API key',
       link: 'https://steamcommunity.com/dev/apikey',
     },
+    clientId: '',
+    clientSecret: '',
   },
 ]
 
@@ -329,9 +343,11 @@ const IAM_Providers: SocialAuthOption[] = [
       label2: '',
     },
     documentation1: {
-      label: 'Project ID',
+      label: 'Get your Project ID',
       link: 'https://firebase.google.com/docs/projects/learn-more#project-id',
     },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Cognito',
@@ -340,7 +356,7 @@ const IAM_Providers: SocialAuthOption[] = [
     hasClientSecret: true,
     inputLabels: {
       label1: 'Client ID',
-      label2: 'Cognito User Pool URL',
+      label2: 'Cognito User Pool Domain',
     },
     documentation1: {
       label: 'Get your Client ID',
@@ -350,6 +366,8 @@ const IAM_Providers: SocialAuthOption[] = [
       label: 'Get your User Pool Domain',
       link: 'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html',
     },
+    clientId: '',
+    clientSecret: '',
   },
 ]
 
