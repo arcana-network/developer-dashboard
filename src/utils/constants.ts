@@ -123,6 +123,8 @@ type ConfigureTab = {
 
 const userLimitOptions: string[] = ['Limited', 'Unlimited']
 
+const EMPTY_STRING = ''
+
 const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
   {
@@ -442,6 +444,7 @@ export {
   ProfileItems,
   WalletUIModes,
   IAM_Providers,
+  EMPTY_STRING,
 }
 
 export type {
