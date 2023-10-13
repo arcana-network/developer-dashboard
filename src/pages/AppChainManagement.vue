@@ -41,6 +41,7 @@ async function fetchAppChains() {
   const appId = route.params.appId
   const app = appStore.app(appId)
   await chainManagementStore.getAppChains(appId, app.network)
+  await chainManagementStore.getGaslessChains(app.network)
 }
 
 function openForm(formActionVal: FormAction, id?: string) {
@@ -73,8 +74,8 @@ async function onChainFormSubmit(formData: object) {
 }
 
 function onDeleteChain({ id }: { id: string }) {
-  showDeleteChainModal.value = true
   deleteChainId.value = id
+  showDeleteChainModal.value = true
 }
 
 async function deleteChain() {
@@ -184,6 +185,7 @@ async function toggleChainStatus(chainData: object) {
     />
     <DeleteChain
       v-if="showDeleteChainModal"
+      :delete-chain-id="deleteChainId"
       @cancel="showDeleteChainModal = false"
       @delete="deleteChain"
     />

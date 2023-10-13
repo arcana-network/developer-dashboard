@@ -110,6 +110,8 @@ onBeforeMount(async () => {
   const address = appsStore.app(appId).address
   createTransactionSigner(address, app.network)
   await appsStore.fetchNotifications()
+  await chainManagementStore.getGaslessChains('testnet')
+  await chainManagementStore.getAppChains(appId, app.network)
   loaderStore.hideLoader()
 })
 

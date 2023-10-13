@@ -343,7 +343,7 @@ function fetchDau(
   appAddress: string,
   network: Network
 ): Promise<AxiosResponse<ActiveUsersChartData[]>> {
-  const api = `/get-dau/?app=${appAddress}`
+  const api = `get-dau/?app=${appAddress}`
   return getGatewayInstance(network).get(`${getEnvApi()}/${api}`)
 }
 
@@ -554,6 +554,106 @@ async function getChainIDUsingRPCUrl(rpcURL: string) {
   return axios.post(rpcURL, payload)
 }
 
+async function getGaslessSupportChains(network: Network) {
+  return getGatewayInstance(network).get(`${getEnvApi()}/gasless-networks/`)
+}
+
+async function getGastanks(appId: string, network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/?app_id=${appId}`
+  )
+}
+
+async function addGastank(data: object, network: Network) {
+  return getGatewayInstance(network).post(`${getEnvApi()}/gastank/`, data)
+}
+
+async function getPaymaster(tankId: number, network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/paymaster/?gastank_id=${tankId}`
+  )
+}
+
+async function changeGastankStatus(
+  tankId: number,
+  status: boolean,
+  network: Network
+) {
+  return getGatewayInstance(network).post(`${getEnvApi()}/gastank/status/`, {
+    active: status,
+    gastank_id: tankId,
+  })
+}
+
+async function getFundingMessage(network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/funding-message/`
+  )
+}
+
+async function updateSignature(
+  owner: string,
+  gastankId: number,
+  signature: string,
+  network: Network
+) {
+  const data = {
+    address: owner,
+    gastank_id: gastankId,
+    signature,
+    type: 'paymasterFundingId',
+  }
+  return getGatewayInstance(network).patch(
+    `${getEnvApi()}/gastank/submit-signature/`,
+    data
+  )
+}
+
+async function getAbi(
+  chainId: number,
+  contractAddress: string,
+  network: Network
+) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/get-abi/?chain_id=${chainId}&contract_address=${contractAddress}`
+  )
+}
+
+async function createSmartContract(payload: object, network: Network) {
+  return getGatewayInstance(network).post(
+    `${getEnvApi()}/gastank/smart-contract/`,
+    payload
+  )
+}
+
+async function editSmartContract(payload: object, network: Network) {
+  return getGatewayInstance(network).patch(
+    `${getEnvApi()}/gastank/smart-contract/`,
+    payload
+  )
+}
+
+async function getSmartContracts(tankId: number, network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/smart-contract/?gas_tank_id=${tankId}`
+  )
+}
+
+async function getSmartContractMethods(
+  smartContractId: number,
+  network: Network
+) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/gastank/smart-contract/${smartContractId}/`
+  )
+}
+
+async function deleteSmartContract(smartContractId: number, network: Network) {
+  return getGatewayInstance(network).delete(
+    `${getEnvApi()}/gastank/smart-contract/?smart_contract_id=${smartContractId}`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -600,6 +700,19 @@ export {
   getAllChains,
   getChainIDUsingRPCUrl,
   getChainLogo,
+  getGaslessSupportChains,
+  addGastank,
+  getGastanks,
+  getPaymaster,
+  getFundingMessage,
+  updateSignature,
+  getAbi,
+  createSmartContract,
+  getSmartContracts,
+  deleteSmartContract,
+  getSmartContractMethods,
+  editSmartContract,
+  changeGastankStatus,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
