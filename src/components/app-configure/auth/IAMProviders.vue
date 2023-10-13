@@ -1,63 +1,120 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import AuthProviderInput from '@/components/app-configure/auth/AuthProviderInput.vue'
 import AuthProviderList from '@/components/app-configure/auth/AuthProviderList.vue'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
+import { useToast } from '@/components/lib/VToast'
 import { useAppsStore } from '@/stores/apps.store'
+import { useLoaderStore } from '@/stores/loader.store'
+import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
-import { IAM_Providers, type SocialAuthOption } from '@/utils/constants'
+import { IAM_Providers, EMPTY_STRING } from '@/utils/constants'
 
 const appsStore = useAppsStore()
+const loaderStore = useLoaderStore()
+const toast = useToast()
 const appId = useAppId()
 const app = appsStore.app(appId)
+const socialAuthStore = useSocialAuthStore()
+const AUTH_TYPE_IAM = 'iam'
 
-const providers = reactive(
-  IAM_Providers.map((authProvider) => {
-    const auth = app.auth.social.find(
-      (el) => el.verifier === authProvider.verifier
-    )
-    if (auth) {
-      return {
-        ...authProvider,
-        ...auth,
-        error: '',
-      }
-    }
-    return { ...authProvider, error: '' }
-  })
+const authProviders = IAM_Providers.map((login) => {
+  const auth = app.auth.social.find((el) => el.verifier === login.verifier)
+  const credentials = {
+    clientId: auth?.clientId || '',
+    clientSecret: auth?.clientSecret || '',
+  }
+  return {
+    ...login,
+    ...credentials,
+    error: '',
+  }
+})
+
+socialAuthStore.setIAMAuthProviders(authProviders)
+
+const LEARN_MORE_LINK = 'https://docs.arcana.network/howto/config-idm/'
+
+const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = authProviders[0].verifier
+
+const selectedAuthProviderVerifier = ref(
+  DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
 )
 
-const LearnMoreLink = 'https://docs.arcana.network/howto/config-idm/'
-
-const DEFAULT_SELECTED_PROVIDER_VERIFIER = providers[0].verifier
-const selectedProviderVerifier = ref(DEFAULT_SELECTED_PROVIDER_VERIFIER)
-
-type InputType = 'input1' | 'input2'
-
-function getSelectedProvider() {
-  return providers.find(
-    (provider) => provider.verifier === selectedProviderVerifier.value
+const selectedAuthProvider = computed(() => {
+  return socialAuthStore.IAMAuthProviders.find(
+    (authProvider) =>
+      authProvider.verifier === selectedAuthProviderVerifier.value
   )!
-}
+})
 
-function handleInput(type: InputType, value: string) {
-  const selectedProvider = providers.find(
-    (provider) => provider.verifier === selectedProviderVerifier.value
-  )!
-  if (type === 'input1') selectedProvider.clientId = value
-  if (type === 'input2') selectedProvider.clientSecret = value
-}
-
-function hasSameValuesInStore(): boolean {
-  const selectedProvider = providers.find(
-    (provider) => provider.verifier === selectedProviderVerifier.value
-  )!
-  const authInStore = app.auth.social.find(
-    (el) => el.verifier === selectedProvider.verifier
+function handleInput1(value: string) {
+  socialAuthStore.setClientId(
+    AUTH_TYPE_IAM,
+    selectedAuthProviderVerifier.value,
+    value
   )
-  return !authInStore && selectedProvider.clientId === ''
 }
+
+function handleInput2(value: string) {
+  socialAuthStore.setClientSecret(
+    AUTH_TYPE_IAM,
+    selectedAuthProviderVerifier.value,
+    value
+  )
+}
+
+async function handleSubmit() {
+  try {
+    loaderStore.showLoader('Saving IAM auth credentials...')
+    await socialAuthStore.updateIamAuthProviders(appId, app)
+    toast.success('Saved IAM auth credentials')
+  } catch (e) {
+    console.log(e)
+    toast.error('Error occured while saving the IAM auth credentials.')
+  } finally {
+    loaderStore.hideLoader()
+  }
+}
+
+function handleCancel() {
+  const authInStore = app.auth.social.find(
+    (el) => el.verifier === selectedAuthProviderVerifier.value
+  )
+  socialAuthStore.setClientId(
+    AUTH_TYPE_IAM,
+    selectedAuthProviderVerifier.value,
+    authInStore?.clientId || EMPTY_STRING
+  )
+  socialAuthStore.setClientSecret(
+    AUTH_TYPE_IAM,
+    selectedAuthProviderVerifier.value,
+    authInStore?.clientSecret || EMPTY_STRING
+  )
+}
+
+const isEdited = computed(() => {
+  return socialAuthStore.IAMAuthProviders.some((authProvider) => {
+    const { clientId, clientSecret, verifier } = authProvider
+    const { clientId: inputClientId, clientSecret: inputClientSecret } =
+      socialAuthStore.authCredentialsInput[AUTH_TYPE_IAM][verifier]
+    return clientId !== inputClientId || clientSecret !== inputClientSecret
+  })
+})
+
+const areRequiredFieldsFilled = computed(() => {
+  const { hasClientSecret, clientId, clientSecret } = selectedAuthProvider.value
+
+  const verifier = selectedAuthProviderVerifier.value
+  const { authCredentialsInput } = socialAuthStore
+  const { clientId: inputClientId, clientSecret: inputClientSecret } =
+    authCredentialsInput[AUTH_TYPE_IAM][verifier]
+
+  return hasClientSecret
+    ? inputClientId.length > 0 && inputClientSecret.length > 0
+    : inputClientId.length > 0
+})
 </script>
 
 <template>
@@ -71,36 +128,40 @@ function hasSameValuesInStore(): boolean {
         care of issuing public and prviate keys to each user through our
         Decentralised Key Generation (DKG) mechanism and keep them secure.
         <a
-          :href="LearnMoreLink"
+          :href="LEARN_MORE_LINK"
           target="_blank"
           class="no-underline uppercase text-white text-sm font-bold"
           >Learn More</a
         >
       </p>
     </div>
-    <div class="h-64 px-3.5 pb-3.5 flex space-x-10">
+    <form
+      class="h-64 px-3.5 pb-3.5 flex space-x-10"
+      @submit.prevent="handleSubmit"
+    >
       <AuthProviderList
-        :providers="providers"
-        :selected-provider="selectedProviderVerifier"
-        @select-provider="selectedProviderVerifier = $event"
+        :providers="socialAuthStore.IAMAuthProviders"
+        :auth-type="AUTH_TYPE_IAM"
+        :selected-provider-verifier="selectedAuthProviderVerifier"
+        @select-provider="selectedAuthProviderVerifier = $event"
       />
       <div class="flex flex-col flex-wrap justify-between w-full">
         <div class="flex-1">
           <AuthProviderInput
-            :provider="getSelectedProvider()"
-            @input1="(value) => handleInput('input1', value)"
-            @input2="(value) => handleInput('input2', value)"
+            :auth-provider="selectedAuthProvider"
+            :auth-type="AUTH_TYPE_IAM"
+            @input1="handleInput1"
+            @input2="handleInput2"
           />
         </div>
         <div class="space-x-5 flex justify-end">
           <ConfigureActionButtons
-            :save-disabled="true"
-            :cancel-disabled="hasSameValuesInStore()"
-            @cancel="() => {}"
-            @save="() => {}"
+            :save-disabled="!isEdited || !areRequiredFieldsFilled"
+            :cancel-disabled="!isEdited"
+            @cancel="handleCancel"
           />
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </template>
