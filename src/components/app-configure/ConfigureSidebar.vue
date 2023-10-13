@@ -65,6 +65,12 @@ const props = withDefaults(defineProps<ConfigureProps>(), {
   currentNetwork: 'testnet',
 })
 
+const GASLESS_TAB = {
+  type: 'gasLess',
+  label: 'Gasless',
+  icon: GasStationIcon,
+}
+
 const ConfigureTabs = computed(() => {
   const configureTabsCopy = [
     { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
@@ -94,17 +100,16 @@ const ConfigureTabs = computed(() => {
           label: 'Arcana Wallet',
           icon: walletIcon,
         },
-        {
-          type: 'gasLess',
-          label: 'Gasless',
-          icon: GasStationIcon,
-        },
       ],
     },
   ]
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
   )
+
+  if (props.currentNetwork !== 'mainnet') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push(GASLESS_TAB)
+  }
 
   if (
     props.currentNetwork === 'mainnet' &&
