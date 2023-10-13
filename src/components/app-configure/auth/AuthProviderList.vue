@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 
+import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import type { SocialAuthOption } from '@/utils/constants'
 
 const props = defineProps({
-  selectedProvider: {
+  selectedProviderVerifier: {
     type: String,
     required: true,
   },
@@ -12,16 +13,33 @@ const props = defineProps({
     type: Array as PropType<SocialAuthOption[]>,
     required: true,
   },
+  authType: {
+    type: String,
+    required: true,
+  },
 })
 
+const socialAuthStore = useSocialAuthStore()
 const emits = defineEmits(['selectProvider'])
 
 function isSelected(verifier: string) {
-  return props.selectedProvider === verifier
+  return props.selectedProviderVerifier === verifier
 }
 
 function selectProvider(verifier: string) {
   emits('selectProvider', verifier)
+}
+
+function areRequiredFieldsFilled(verifier: string) {
+  const selectedAuthProvider = socialAuthStore.IAMAuthProviders.find(
+    (provider) => provider.verifier === verifier
+  )
+  const { hasClientSecret } = selectedAuthProvider
+  const { clientId, clientSecret } =
+    socialAuthStore.authCredentialsInput[props.authType][verifier]
+  return hasClientSecret
+    ? clientId.length > 0 && clientSecret.length > 0
+    : clientId.length > 0
 }
 </script>
 
@@ -38,8 +56,9 @@ function selectProvider(verifier: string) {
         class="border-2 border-[#363636] bg-[#1F1F1F] cursor-pointer w-14 h-14 rounded-full flex items-center justify-center"
         :class="{
           'border-[#FFFFFF]': isSelected(provider.verifier),
+          grayscale: !areRequiredFieldsFilled(provider.verifier),
         }"
-        @click="selectProvider(provider.verifier)"
+        @click.prevent="selectProvider(provider.verifier)"
       >
         <img
           :src="provider.icon"
