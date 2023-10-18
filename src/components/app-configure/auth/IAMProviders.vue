@@ -111,9 +111,16 @@ const areRequiredFieldsFilled = computed(() => {
   const { clientId: inputClientId, clientSecret: inputClientSecret } =
     authCredentialsInput[AUTH_TYPE_IAM][verifier]
 
-  return hasClientSecret
-    ? inputClientId.length > 0 && inputClientSecret.length > 0
-    : inputClientId.length > 0
+  if (!!clientId || !!clientSecret) {
+    return hasClientSecret
+      ? (!!inputClientId.length && !!inputClientSecret.length) ||
+          (clientId !== inputClientId && clientSecret !== inputClientSecret)
+      : clientId !== inputClientId || clientSecret !== inputClientSecret
+  } else {
+    return hasClientSecret
+      ? inputClientId.length > 0 && inputClientSecret.length > 0
+      : inputClientId.length > 0
+  }
 })
 </script>
 
