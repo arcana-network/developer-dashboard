@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 
 import AuthProviderInput from '@/components/app-configure/auth/AuthProviderInput.vue'
 import AuthProviderList from '@/components/app-configure/auth/AuthProviderList.vue'
