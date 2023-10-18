@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 
 import AuthProviderInput from '@/components/app-configure/auth/AuthProviderInput.vue'
 import AuthProviderList from '@/components/app-configure/auth/AuthProviderList.vue'
@@ -18,25 +18,27 @@ const appId = useAppId()
 const app = appsStore.app(appId)
 const socialAuthStore = useSocialAuthStore()
 const AUTH_TYPE_IAM = 'iam'
-
-const authProviders = IAM_Providers.map((login) => {
-  const auth = app.auth.social.find((el) => el.verifier === login.verifier)
-  const credentials = {
-    clientId: auth?.clientId || '',
-    clientSecret: auth?.clientSecret || '',
-  }
-  return {
-    ...login,
-    ...credentials,
-    error: '',
-  }
-})
-
-socialAuthStore.setIAMAuthProviders(authProviders)
-
 const LEARN_MORE_LINK = 'https://docs.arcana.network/howto/config-idm/'
+const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = IAM_Providers[0].verifier
 
-const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = authProviders[0].verifier
+setIamAuth()
+
+function setIamAuth() {
+  const authProviders = IAM_Providers.map((login) => {
+    const auth = app.auth.social.find((el) => el.verifier === login.verifier)
+    const credentials = {
+      clientId: auth?.clientId || '',
+      clientSecret: auth?.clientSecret || '',
+    }
+    return {
+      ...login,
+      ...credentials,
+      error: '',
+    }
+  })
+
+  socialAuthStore.setIAMAuthProviders(authProviders)
+}
 
 const selectedAuthProviderVerifier = ref(
   DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
@@ -69,6 +71,8 @@ async function handleSubmit() {
   try {
     loaderStore.showLoader('Saving IAM auth credentials...')
     await socialAuthStore.updateIamAuthProviders(appId, app)
+    await appsStore.fetchAndStoreAppConfig(appId, app.network)
+    setIamAuth()
     toast.success('Saved IAM auth credentials')
   } catch (e) {
     console.log(e)
