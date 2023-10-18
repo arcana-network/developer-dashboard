@@ -198,6 +198,14 @@ async function toggleChainStatus(info: object) {
         @withdraw="withdraw"
         @toggle-chain-status="onToggleChainStatus"
       />
+      <div class="flex items-center justify-end">
+        <p class="font-normal text-xs">Powered by</p>
+        <img
+          src="@/assets/biconomy-logo.png"
+          alt="biconomy logo"
+          class="h-5 w-16"
+        />
+      </div>
     </div>
     <AppGasTankForm
       v-if="showForm"
