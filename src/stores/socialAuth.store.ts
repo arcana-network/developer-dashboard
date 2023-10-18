@@ -6,7 +6,11 @@ import type {
   AppConfig,
   SocialAuthState as SocialAuthOptions,
 } from '@/stores/apps.store'
-import type { SocialAuthOption, SocialAuthVerifier } from '@/utils/constants'
+import type {
+  SocialAuthOption,
+  SocialAuthVerifier,
+  Network,
+} from '@/utils/constants'
 
 type AuthType = 'iam' | 'social'
 type SocialAuthState = Array<SocialAuthOption>
@@ -99,16 +103,17 @@ const useSocialAuthStore = defineStore('socialAuth', {
         .filter((cred) => cred.clientId)
 
       auth.social = [...payload, ...newCreds]
+      const authToRemove = auth.social.filter((input) => input.clientId === '')
       await updateApp(appId, { auth }, network)
+      await this.deleteSocialAuthProviders(appId, authToRemove, network)
     },
-    // async deleteSocialAuthProviders(
-    //   appId: number,
-    //   authToRemove: SocialAuthOptions[],
-    //   network: Network
-    // ) {
-    //   const response = await deleteCred(appId, authToRemove, network)
-    //   console.log({ response })
-    // },
+    async deleteSocialAuthProviders(
+      appId: number,
+      authToRemove: SocialAuthOptions[],
+      network: Network
+    ) {
+      await deleteCred(appId, authToRemove, network)
+    },
   },
 })
 
