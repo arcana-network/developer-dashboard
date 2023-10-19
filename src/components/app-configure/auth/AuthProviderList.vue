@@ -31,7 +31,11 @@ function selectProvider(verifier: string) {
 }
 
 function areRequiredFieldsFilled(verifier: string) {
-  const selectedAuthProvider = socialAuthStore.IAMAuthProviders.find(
+  const authProvider =
+    props.authType === 'social'
+      ? socialAuthStore.socialAuthProviders
+      : socialAuthStore.IAMAuthProviders
+  const selectedAuthProvider = authProvider.find(
     (provider) => provider.verifier === verifier
   )
   const { hasClientSecret } = selectedAuthProvider
@@ -45,7 +49,7 @@ function areRequiredFieldsFilled(verifier: string) {
 
 <template>
   <div
-    class="w-32 h-full rounded-xl bg-[#141414] flex flex-col justify-around items-center"
+    class="w-32 h-full py-4 space-y-4 rounded-xl bg-[#141414] flex flex-col justify-around items-center"
   >
     <div
       v-for="provider in providers"
@@ -64,9 +68,6 @@ function areRequiredFieldsFilled(verifier: string) {
           :src="provider.icon"
           :alt="provider.verifier"
           class="transition-all ease-in-out"
-          :class="{
-            'scale-125': isSelected(provider.verifier),
-          }"
         />
       </button>
       <span

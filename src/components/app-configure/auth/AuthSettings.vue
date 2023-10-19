@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import IAMProviders from '@/components/app-configure/auth/IAMProviders.vue'
 import RedirectURI from '@/components/app-configure/auth/RedirectURI.vue'
-import SocialAuth from '@/components/app-configure/auth/SocialAuth.vue'
+import SocialAuthProvider from '@/components/app-configure/auth/SocialAuthProvider.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 </script>
 
@@ -9,7 +9,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
   <main>
     <VStack direction="column" gap="2rem">
       <RedirectURI />
-      <SocialAuth />
+      <SocialAuthProvider />
       <IAMProviders />
     </VStack>
   </main>
