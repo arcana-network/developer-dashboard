@@ -320,10 +320,14 @@ const socialLogins: readonly SocialAuthOption[] = [
     hasClientSecret: true,
     documentation: 'https://steamcommunity.com/dev/apikey',
     inputLabels: {
-      label1: 'Steam API Key',
-      label2: '',
+      label1: '',
+      label2: 'Steam API Key',
     },
     documentation1: {
+      label: 'Get your Steam API key',
+      link: 'https://steamcommunity.com/dev/apikey',
+    },
+    documentation2: {
       label: 'Get your Steam API key',
       link: 'https://steamcommunity.com/dev/apikey',
     },
