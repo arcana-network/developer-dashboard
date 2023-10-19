@@ -118,8 +118,6 @@ const areRequiredFieldsFilled = computed(() => {
   const { clientId: inputClientId, clientSecret: inputClientSecret } =
     socialAuthStore.authCredentialsInput[AUTH_TYPE_SOCIAL][verifier]
 
-  console.log({ inputClientId, inputClientSecret, verifier })
-
   if (!!clientId || !!clientSecret) {
     return hasClientSecret
       ? (!!inputClientId.length && !!inputClientSecret.length) ||
