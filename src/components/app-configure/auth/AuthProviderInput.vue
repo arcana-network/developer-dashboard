@@ -32,7 +32,10 @@ function handleInput2(event: Event) {
   <div
     class="flex space-x-12 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
   >
-    <VStack class="flex flex-1 flex-col space-y-2">
+    <VStack
+      v-if="authProvider.verifier !== 'steam'"
+      class="flex flex-1 flex-col space-y-2"
+    >
       <div class="flex justify-between">
         <span class="text-xs">{{ authProvider.inputLabels.label1 }}</span>
         <a
