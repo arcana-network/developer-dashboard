@@ -9,7 +9,7 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
-import { IAM_Providers, EMPTY_STRING } from '@/utils/constants'
+import { IAM_Providers, EMPTY_STRING, DOCS_URL } from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
@@ -18,8 +18,12 @@ const appId = useAppId()
 const app = appsStore.app(appId)
 const socialAuthStore = useSocialAuthStore()
 const AUTH_TYPE_IAM = 'iam'
-const LEARN_MORE_LINK = 'https://docs.arcana.network/howto/config-idm/'
+const LEARN_MORE_LINK = `${DOCS_URL}/howto/config-idm/`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = IAM_Providers[0].verifier
+
+const selectedAuthProviderVerifier = ref(
+  DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
+)
 
 setIamAuth()
 
@@ -39,10 +43,6 @@ function setIamAuth() {
 
   socialAuthStore.setIAMAuthProviders(authProviders)
 }
-
-const selectedAuthProviderVerifier = ref(
-  DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
-)
 
 const selectedAuthProvider = computed(() => {
   return socialAuthStore.IAMAuthProviders.find(
@@ -70,7 +70,7 @@ function handleInput2(value: string) {
 async function handleSubmit() {
   try {
     loaderStore.showLoader('Saving IAM auth credentials...')
-    await socialAuthStore.updateIamAuthProviders(appId, app)
+    await socialAuthStore.updateSocialAuthProviders(appId, AUTH_TYPE_IAM, app)
     await appsStore.fetchAndStoreAppConfig(appId, app.network)
     setIamAuth()
     toast.success('Saved IAM auth credentials')

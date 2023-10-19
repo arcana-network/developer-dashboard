@@ -76,10 +76,14 @@ const useSocialAuthStore = defineStore('socialAuth', {
     ) {
       this.authCredentialsInput[type][verifier].clientSecret = clientSecret
     },
-    async updateIamAuthProviders(appId: number, app: AppConfig) {
+    async updateSocialAuthProviders(
+      appId: number,
+      authType: AuthType,
+      app: AppConfig
+    ) {
       const { auth, network } = app
 
-      const inputs = { ...this.authCredentialsInput['iam'] }
+      const inputs = { ...this.authCredentialsInput[authType] }
 
       const payload = toRaw(auth.social).map((a) => {
         if (inputs[a.verifier]) {
