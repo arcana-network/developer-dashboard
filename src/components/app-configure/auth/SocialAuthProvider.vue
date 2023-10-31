@@ -137,6 +137,16 @@ watch(
     if (verifier === 'steam') handleInput1(app.address)
   }
 )
+
+socialAuthStore.$subscribe((mutation) => {
+  const verifier = selectedAuthProviderVerifier.value
+  const key = mutation.events.key
+  const newValue = mutation.events.newValue
+  if (verifier === 'steam' && key === 'clientSecret') {
+    if (newValue === '') handleInput1('')
+    if (newValue.length) handleInput1(app.address)
+  }
+})
 </script>
 
 <template>
