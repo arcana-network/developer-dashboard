@@ -145,6 +145,9 @@ const areRequiredFieldsFilled = computed(() => {
           >Learn More</a
         >
       </p>
+      <p class="text-[#13a3fd] text-sm font-normal px-3.5 animate-pulse">
+        {{ selectedAuthProvider.note }}
+      </p>
     </div>
     <form
       class="h-64 px-3.5 pb-3.5 flex space-x-10"

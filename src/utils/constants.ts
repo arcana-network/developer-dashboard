@@ -212,6 +212,7 @@ type SocialAuthOption = {
   documentation2?: SocialAuthOptionDocumentation
   clientId?: string
   clientSecret?: string
+  note?: string
 }
 
 const socialLogins: readonly SocialAuthOption[] = [
@@ -231,6 +232,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     },
     clientId: '',
     clientSecret: '',
+    note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
   },
   {
     name: 'Twitch',
@@ -333,6 +335,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     },
     clientId: '',
     clientSecret: '',
+    note: 'Note: When you are a Steam member, and have already spent more than 5.00 USD in the store you should be able to request your Steam API Key.',
   },
 ]
 
@@ -372,6 +375,7 @@ const IAM_Providers: SocialAuthOption[] = [
     },
     clientId: '',
     clientSecret: '',
+    note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
   },
 ]
 
