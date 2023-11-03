@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import PlusIcon from '@/assets/iconography/plus.svg'
 import AppChainManagementForm from '@/components/app-configure/chain-management/AppChainManagementForm.vue'
 import ChainList from '@/components/app-configure/chain-management/AppChainManagementList.vue'
+import ChainTypeSelection from '@/components/app-configure/chain-management/ChainTypeSelection.vue'
 import DeleteChain from '@/components/app-configure/chain-management/DeleteChain.vue'
 import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
@@ -25,6 +26,7 @@ const showDeleteChainModal = ref(false)
 const deleteChainId = ref('')
 const { showLoader, hideLoader } = useLoaderStore()
 const toast = useToast()
+const selectedChainTypeCurve = ref('secp256k1')
 
 onMounted(async () => {
   try {
@@ -156,18 +158,27 @@ async function toggleChainStatus(chainData: object) {
       </p>
     </div>
     <div class="flex flex-col space-y-5">
-      <div class="flex items-baseline w-full justify-end space-x-5">
-        <button
-          class="text-white flex items-center space-x-1.5"
-          @click="openForm('add')"
-        >
-          <img :src="PlusIcon" alt="Add Chain" class="w-3" />
-          <span>Add Chain</span>
-        </button>
-        <SearchBar
-          v-if="!chainManagementStore.areChainsEmpty"
-          @search="onSearch"
-        />
+      <div class="flex w-full justify-between gap-5 items-center">
+        <div class="flex gap-2 items-center">
+          <span class="text-[#8d8d8d] text-xs">Chain Type</span>
+          <ChainTypeSelection
+            :selected-chain-type-curve="selectedChainTypeCurve"
+            @update:selected-chain-type-curve="selectedChainTypeCurve = $event"
+          />
+        </div>
+        <div class="flex items-center flex-grow justify-end space-x-5">
+          <button
+            class="text-white flex items-center space-x-1.5"
+            @click="openForm('add')"
+          >
+            <img :src="PlusIcon" alt="Add Chain" class="w-3" />
+            <span>Add Chain</span>
+          </button>
+          <SearchBar
+            v-if="!chainManagementStore.areChainsEmpty"
+            @search="onSearch"
+          />
+        </div>
       </div>
       <ChainList
         @edit="({ id }) => openForm('edit', id)"
