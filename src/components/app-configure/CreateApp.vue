@@ -13,6 +13,7 @@ import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import { chainTypes } from '@/utils/chainTypes'
 import { WalletUIModes } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
@@ -23,6 +24,7 @@ const toast = useToast()
 const appsStore = useAppsStore()
 const appName = ref('')
 const selectedChainId: Ref<number | null> = ref(null)
+const selectedChainType = ref(chainTypes[0])
 const hasAppNameError = ref(false)
 const chainManagementStore = useChainManagementStore()
 const showLoader = ref(false)
@@ -34,6 +36,7 @@ function getPayloadForCreateApp() {
   return {
     name: appName.value,
     chain: selectedChainId.value,
+    chain_type: selectedChainType.value.type,
     default_chain: selectedChainId.value,
     wallet_mode: selectedWalletUIMode.value.value,
   }
@@ -128,9 +131,9 @@ function onChainSelect(_, option) {
                   >Chain Type*</label
                 >
                 <VDropdown
-                  :options="chainManagementStore.allChains"
+                  v-model="selectedChainType"
+                  :options="chainTypes"
                   display-field="name"
-                  @change="onChainSelect"
                 />
               </VStack>
               <VStack direction="column">
@@ -140,8 +143,13 @@ function onChainSelect(_, option) {
                   >Default Chain*</label
                 >
                 <VDropdown
-                  :options="chainManagementStore.allChains"
+                  :options="
+                    chainManagementStore.chainTypeSpecificChains(
+                      selectedChainType.type
+                    )
+                  "
                   display-field="name"
+                  :disabled="!selectedChainType"
                   @change="onChainSelect"
                 />
                 <!-- <p class="text-[#8D8D8D]">

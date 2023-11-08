@@ -61,7 +61,10 @@ watch(formData.value, (newValue) => {
 function populateFormData() {
   const { editChainId } = props
   const chainData = chainManagementStore.appChains.find(
-    (chain) => chain.id === editChainId
+    (chain) =>
+      chain.compatibility?.toLowerCase() ===
+        chainManagementStore.selectedChainType.toLowerCase() &&
+      chain.id === editChainId
   )
   formData.value = {
     name: chainData.name,

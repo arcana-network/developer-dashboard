@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref } from 'vue'
+import { computed, onMounted, ref, type Ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import PlusIcon from '@/assets/iconography/plus.svg'
@@ -9,6 +9,7 @@ import ChainTypeSelection from '@/components/app-configure/chain-management/Chai
 import DeleteChain from '@/components/app-configure/chain-management/DeleteChain.vue'
 import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
+import { updateSelectedChainType } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useLoaderStore } from '@/stores/loader.store'
@@ -26,7 +27,9 @@ const showDeleteChainModal = ref(false)
 const deleteChainId = ref('')
 const { showLoader, hideLoader } = useLoaderStore()
 const toast = useToast()
-const selectedChainTypeCurve = ref('secp256k1')
+const selectedChainTypeCurve = computed(() => {
+  return chainManagementStore.selectedChainType?.toLowerCase() || 'evm'
+})
 
 onMounted(async () => {
   try {
@@ -40,7 +43,7 @@ onMounted(async () => {
 })
 
 async function fetchAppChains() {
-  const appId = route.params.appId
+  const appId = Number(route.params.appId)
   const app = appStore.app(appId)
   await chainManagementStore.getAppChains(appId, app.network)
   await chainManagementStore.getGaslessChains(app.network)
@@ -60,13 +63,13 @@ async function onChainFormSubmit(formData: object) {
   try {
     showForm.value = false
     showLoader('Please wait')
-    const appId = route.params.appId
+    const appId = Number(route.params.appId)
     const app = appStore.app(appId)
     if (formAction.value === 'add')
       await chainManagementStore.addAppChain(appId, formData, app.network)
     if (formAction.value === 'edit')
       await chainManagementStore.editAppChain(appId, formData, app.network)
-  } catch (e) {
+  } catch (e: any) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
     toast.error(errorMessage)
   } finally {
@@ -81,18 +84,18 @@ function onDeleteChain({ id }: { id: string }) {
 }
 
 async function deleteChain() {
-  const appId = route.params.appId
+  const appId = Number(route.params.appId)
   const app = appStore.app(appId)
   try {
     showDeleteChainModal.value = false
     showLoader('Please wait')
-    const appId = route.params.appId
+    const appId = Number(route.params.appId)
     await chainManagementStore.deleteAppChain(
       appId,
       Number(deleteChainId.value),
       app.network
     )
-  } catch (e) {
+  } catch (e: any) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
     toast.error(errorMessage)
   } finally {
@@ -106,17 +109,16 @@ function onSearch(value: string) {
 }
 
 async function setDefaultChain({ id }: { id: string }) {
-  const appId = route.params.appId
+  const appId = Number(route.params.appId)
   const app = appStore.app(appId)
   try {
     showLoader('Please wait')
-    const appId = route.params.appId
     await chainManagementStore.setAppDefaultChain(
       appId,
       Number(id),
       app.network
     )
-  } catch (e) {
+  } catch (e: any) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
     toast.error(errorMessage)
   } finally {
@@ -126,7 +128,7 @@ async function setDefaultChain({ id }: { id: string }) {
 }
 
 async function toggleChainStatus(chainData: object) {
-  const appId = route.params.appId
+  const appId = Number(route.params.appId)
   const app = appStore.app(appId)
   try {
     showLoader('Please wait')
@@ -135,13 +137,20 @@ async function toggleChainStatus(chainData: object) {
       chainData,
       app.network
     )
-  } catch (e) {
+  } catch (e: any) {
     const errorMessage = e.response?.data?.msg || 'Something went wrong'
     toast.error(errorMessage)
   } finally {
     await fetchAppChains()
     hideLoader()
   }
+}
+
+async function setSelectedChainTypeCurve($event: string) {
+  const appId = Number(route.params.appId)
+  const app = appStore.app(appId)
+  await updateSelectedChainType(appId, app.network, $event)
+  chainManagementStore.selectedChainType = $event?.toLowerCase() || 'evm'
 }
 </script>
 
@@ -163,11 +172,14 @@ async function toggleChainStatus(chainData: object) {
           <span class="text-[#8d8d8d] text-xs">Chain Type</span>
           <ChainTypeSelection
             :selected-chain-type-curve="selectedChainTypeCurve"
-            @update:selected-chain-type-curve="selectedChainTypeCurve = $event"
+            @update:selected-chain-type-curve="setSelectedChainTypeCurve"
           />
         </div>
         <div class="flex items-center flex-grow justify-end space-x-5">
           <button
+            v-if="
+              chainManagementStore.selectedChainType?.toLowerCase() === 'evm'
+            "
             class="text-white flex items-center space-x-1.5"
             @click="openForm('add')"
           >

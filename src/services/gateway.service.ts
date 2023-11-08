@@ -85,6 +85,7 @@ type CreateAppRequestBody = {
   default_chain: number
   chains?: []
   wallet_mode: WalletUIMode
+  chain_type: string
 }
 
 type CreateAppResponse = {
@@ -117,6 +118,7 @@ function createApp(
     name: config.name,
     region: config.region,
     chain: config.chain,
+    chain_type: config.chain_type,
     default_chain: config.default_chain,
     chains: config.chains,
     wallet_mode: config.wallet_mode,
@@ -208,6 +210,7 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     wallet_type,
     global: app.keyspace === 'global',
     status: app.status,
+    wallet_mode: app.wallet_mode,
   }
 }
 
@@ -510,7 +513,7 @@ function updateNotificationRead(list: number[]) {
   )
 }
 
-function getChains(appId: string, network: Network) {
+function getChains(appId: number, network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/chain/${appId}/all/`)
 }
 
@@ -518,31 +521,31 @@ function getAllChains(network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`)
 }
 
-function getChainLogo(chainId: string, network: Network) {
+function getChainLogo(chainId: number, network: Network) {
   return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
 }
 
-function addChain(appId: string, data: object, network: Network) {
+function addChain(appId: number, data: object, network: Network) {
   return getGatewayInstance(network).post(
     `${getEnvApi()}/chain/${appId}/`,
     data
   )
 }
 
-function editChain(appId: string, data: object, network: Network) {
+function editChain(appId: number, data: object, network: Network) {
   return getGatewayInstance(network).patch(
     `${getEnvApi()}/chain/${appId}/`,
     data
   )
 }
 
-function deleteChain(appId: string, data: object, network: Network) {
+function deleteChain(appId: number, data: object, network: Network) {
   return getGatewayInstance(network).delete(`${getEnvApi()}/chain/${appId}/`, {
     data,
   })
 }
 
-function setDefaultChain(appId: string, data: object, network: Network) {
+function setDefaultChain(appId: number, data: object, network: Network) {
   return getGatewayInstance(network).post(
     `${getEnvApi()}/chain/${appId}/default/`,
     data
@@ -654,6 +657,16 @@ async function deleteSmartContract(smartContractId: number, network: Network) {
   )
 }
 
+async function updateSelectedChainType(
+  appId: string | number,
+  network: Network,
+  chainType: string
+) {
+  return getGatewayInstance(network).post(
+    `${getEnvApi()}/update-chain-type/?app_id=${appId}&chain_type=${chainType}`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -713,6 +726,7 @@ export {
   getSmartContractMethods,
   editSmartContract,
   changeGastankStatus,
+  updateSelectedChainType,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

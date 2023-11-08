@@ -8,20 +8,17 @@ import {
 import { ChevronDownIcon, CheckIcon } from '@heroicons/vue/20/solid'
 import { computed } from 'vue'
 
+import { chainTypes } from '@/utils/chainTypes'
+
 type ChainTypeSelectionProps = {
   selectedChainTypeCurve: string
 }
 const props = defineProps<ChainTypeSelectionProps>()
 const emit = defineEmits(['update:selectedChainTypeCurve'])
 
-const chainTypes = [
-  { name: 'EVM', curve: 'secp256k1' },
-  { name: 'Solana', curve: 'ed25519' },
-]
-
 const selectedChainType = computed(() => {
   return chainTypes.find(
-    (chainType) => chainType.curve === props.selectedChainTypeCurve
+    (chainType) => chainType.type === props.selectedChainTypeCurve
   )
 })
 
@@ -59,13 +56,13 @@ function handleModelValueUpdate(event: string) {
           leave-to-class="opacity-0"
         >
           <ListboxOptions
-            class="absolute bg-[#1f1f1f] border border-solid border-[#363636] mt-1 max-h-60 w-full overflow-auto rounded-md py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none"
+            class="absolute bg-[#0f0f0f] border border-solid border-[#363636] mt-1 max-h-60 w-full overflow-auto rounded-md py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none"
           >
             <ListboxOption
               v-for="chainType in chainTypes"
               v-slot="{ active, selected }"
               :key="`${chainType.name}_${chainType.curve}`"
-              :value="chainType.curve"
+              :value="chainType.type"
               as="template"
             >
               <li
