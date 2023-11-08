@@ -13,6 +13,7 @@ import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import { chainTypes } from '@/utils/chainTypes'
 import { WalletUIModes } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
@@ -23,6 +24,7 @@ const toast = useToast()
 const appsStore = useAppsStore()
 const appName = ref('')
 const selectedChainId: Ref<number | null> = ref(null)
+const selectedChainType = ref(chainTypes[0])
 const hasAppNameError = ref(false)
 const chainManagementStore = useChainManagementStore()
 const showLoader = ref(false)
@@ -34,6 +36,7 @@ function getPayloadForCreateApp() {
   return {
     name: appName.value,
     chain: selectedChainId.value,
+    chain_type: selectedChainType.value.type,
     default_chain: selectedChainId.value,
     wallet_mode: selectedWalletUIMode.value.value,
   }
@@ -89,7 +92,7 @@ function onChainSelect(_, option) {
 <template>
   <VOverlay>
     <div
-      class="rounded-[10px] fixed top-[50%] left-[50%] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[560px] min-w-[200px] w-[70%] h-[550px] translate-x-[-50%] translate-y-[-50%]"
+      class="rounded-[10px] fixed top-[50%] left-[50%] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[560px] min-w-[200px] w-[70%] translate-x-[-50%] translate-y-[-50%]"
     >
       <div v-if="showLoader" class="h-full flex justify-center items-center">
         <p>Please wait...</p>
@@ -107,8 +110,8 @@ function onChainSelect(_, option) {
         </div>
         <VSeperator class="full-bleed" />
         <form @submit.prevent="handleCreateApp">
-          <VStack direction="column" class="space-y-6">
-            <VStack direction="column" gap="0.5rem" class="space-y-6">
+          <VStack direction="column" class="space-y-4">
+            <VStack direction="column" class="space-y-3">
               <VStack direction="column">
                 <label class="text-lg font-normal text-[#8d8d8d]" for="app-name"
                   >Enter App Name</label
@@ -125,16 +128,33 @@ function onChainSelect(_, option) {
                 <label
                   class="text-lg font-normal text-[#8d8d8d]"
                   for="default-chain"
+                  >Chain Type*</label
+                >
+                <VDropdown
+                  v-model="selectedChainType"
+                  :options="chainTypes"
+                  display-field="name"
+                />
+              </VStack>
+              <VStack direction="column">
+                <label
+                  class="text-lg font-normal text-[#8d8d8d]"
+                  for="default-chain"
                   >Default Chain*</label
                 >
                 <VDropdown
-                  :options="chainManagementStore.allChains"
+                  :options="
+                    chainManagementStore.chainTypeSpecificChains(
+                      selectedChainType.type
+                    )
+                  "
                   display-field="name"
+                  :disabled="!selectedChainType"
                   @change="onChainSelect"
                 />
-                <p class="text-[#8D8D8D]">
+                <!-- <p class="text-[#8D8D8D]">
                   *You can change the default chain later
-                </p>
+                </p> -->
               </VStack>
               <VStack direction="column">
                 <label
