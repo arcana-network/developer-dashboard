@@ -20,6 +20,8 @@ const socialAuthStore = useSocialAuthStore()
 const AUTH_TYPE_SOCIAL = 'social'
 const LEARN_MORE_LINK = `${DOCS_URL}/howto/config_social/index.html`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = socialLogins[0].verifier
+const GLOBAL_KEYSPACE = 'global'
+const keyspace = app.keyspace
 
 const selectedAuthProviderVerifier = ref(
   DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
@@ -68,6 +70,10 @@ function handleInput2(value: string) {
 }
 
 async function handleSubmit() {
+  if (keyspace === GLOBAL_KEYSPACE) {
+    toast.error('Login providers are disabled as you have chosen Global keys')
+    return
+  }
   try {
     loaderStore.showLoader('Saving Social auth credentials...')
     await socialAuthStore.updateSocialAuthProviders(
