@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ref, onBeforeUnmount, onMounted, watch } from 'vue'
+import { ref, onBeforeUnmount, onMounted, watch, computed } from 'vue'
 
 const props = defineProps({
   options: {
@@ -35,6 +35,8 @@ const props = defineProps({
     default: false,
   },
 })
+
+const computedOptions = computed(() => props.options)
 
 const emit = defineEmits(['update:modelValue', 'change'])
 
@@ -104,7 +106,7 @@ watch(
     </div>
     <div class="custom-options" role="listbox" tabindex="-1">
       <span
-        v-for="option in options"
+        v-for="option in computedOptions"
         :key="option"
         role="option"
         :data-value="option"

@@ -13,20 +13,32 @@ import type { Network } from '@/utils/constants'
 
 const useChainManagementStore = defineStore('chain-management', {
   state: () => ({
-    appChains: [],
-    allChains: [],
-    gaslessChains: {},
+    appChains: [] as any[],
+    allChains: [] as any[],
+    gaslessChains: {} as any,
     chainSearchText: '',
+    selectedChainType: 'evm',
   }),
   getters: {
     areChainsEmpty: ({ appChains }) => {
       return appChains.length === 0
     },
-    filteredChains: ({ appChains, chainSearchText }) => {
-      return appChains.filter((chain) =>
-        chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
+    filteredChains: ({ appChains, chainSearchText, selectedChainType }) => {
+      return appChains.filter(
+        (chain) =>
+          chain.compatibility?.toLowerCase() ===
+            selectedChainType.toLowerCase() &&
+          chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
       )
     },
+    chainTypeSpecificChains:
+      ({ allChains }) =>
+      (chainType: string) => {
+        return allChains.filter(
+          (chain) =>
+            chain.compatibility?.toLowerCase() === chainType?.toLowerCase()
+        )
+      },
     defaultChainId: ({ appChains }) => {
       const defaultChain =
         appChains.find((chain) => chain.default_chain) || appChains[0]
@@ -34,8 +46,12 @@ const useChainManagementStore = defineStore('chain-management', {
     },
   },
   actions: {
-    async getAppChains(appId: string, network: Network) {
-      const { chains } = (await getChains(appId, network)).data
+    async getAppChains(appId: number, network: Network) {
+      const { chains, selected_chains } = (await getChains(appId, network))
+        .data as {
+        chains: any[]
+        selected_chains: string
+      }
       if (!chains) this.appChains = []
       else {
         let defaultChainIdx = chains.findIndex((chain) => !!chain.default_chain)
@@ -45,6 +61,7 @@ const useChainManagementStore = defineStore('chain-management', {
         chains.unshift(defaultChain)
         this.appChains = chains
       }
+      this.selectedChainType = selected_chains?.toLowerCase() || 'evm'
     },
     async getAllAppChains(network: Network) {
       const { chains } = (await getAllChains(network)).data
@@ -54,7 +71,7 @@ const useChainManagementStore = defineStore('chain-management', {
       const chains = (await getGaslessSupportChains(network)).data
       this.gaslessChains = chains
     },
-    async addAppChain(appId: string, chainData: object, network: Network) {
+    async addAppChain(appId: number, chainData: any, network: Network) {
       const payload = {
         name: chainData.name,
         chain_id: Number(chainData.chainId),
@@ -67,11 +84,11 @@ const useChainManagementStore = defineStore('chain-management', {
       }
       await addChain(appId, payload, network)
     },
-    async deleteAppChain(appId: string, id: string, network: Network) {
+    async deleteAppChain(appId: number, id: number, network: Network) {
       const payload = { id }
       await deleteChain(appId, payload, network)
     },
-    async editAppChain(appId: string, chainData: object, network: Network) {
+    async editAppChain(appId: number, chainData: any, network: Network) {
       const payload = {
         name: chainData.name,
         chain_id: Number(chainData.chainId),
@@ -85,11 +102,11 @@ const useChainManagementStore = defineStore('chain-management', {
       }
       await editChain(appId, payload, network)
     },
-    async setAppDefaultChain(appId: string, id: number, network: Network) {
+    async setAppDefaultChain(appId: number, id: number, network: Network) {
       const payload = { id }
       await setDefaultChain(appId, payload, network)
     },
-    async toggleAppChainStatus(appId: string, data: number, network: Network) {
+    async toggleAppChainStatus(appId: number, data: any, network: Network) {
       const payload = { id: data.id, status: data.status }
       await editChain(appId, payload, network)
     },
