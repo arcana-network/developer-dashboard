@@ -61,5 +61,7 @@ export function createAppConfig(
       redirectUri: `${api.verify[network]}/${app.address}/`,
     },
     wallet_mode: app.wallet_mode,
+    chain_type: app.chain_type,
+    chain: app.chain,
   }
 }
