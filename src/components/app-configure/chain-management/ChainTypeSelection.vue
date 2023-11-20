@@ -12,6 +12,7 @@ import { chainTypes } from '@/utils/chainTypes'
 
 type ChainTypeSelectionProps = {
   selectedChainTypeCurve: string
+  disabled?: boolean
 }
 const props = defineProps<ChainTypeSelectionProps>()
 const emit = defineEmits(['update:selectedChainTypeCurve'])
@@ -32,11 +33,15 @@ function handleModelValueUpdate(event: string) {
     <Listbox
       v-slot="{ open }"
       :model-value="selectedChainType"
+      :disabled="props.disabled"
       @update:model-value="handleModelValueUpdate"
     >
       <div class="relative">
         <ListboxButton
-          class="relative w-full cursor-default rounded-md bg-[#1f1f1f] border border-solid border-[#363636] py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300"
+          class="relative w-full cursor-default rounded-md bg-[#1f1f1f] border border-solid border-[#363636] py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 disabled:opacity-75 disabled:cursor-not-allowed"
+          :class="{
+            'opacity-75 cursor-not-allowed': props.disabled,
+          }"
         >
           <span class="block truncate">{{ selectedChainType?.name }}</span>
           <span

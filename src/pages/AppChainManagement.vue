@@ -172,6 +172,7 @@ async function setSelectedChainTypeCurve($event: string) {
           <span class="text-[#8d8d8d] text-xs">Chain Type</span>
           <ChainTypeSelection
             :selected-chain-type-curve="selectedChainTypeCurve"
+            disabled
             @update:selected-chain-type-curve="setSelectedChainTypeCurve"
           />
         </div>

@@ -94,11 +94,6 @@ const ConfigureTabs = computed(() => {
           label: 'Arcana Wallet',
           icon: walletIcon,
         },
-        {
-          type: 'gasLess',
-          label: 'Gasless',
-          icon: GasStationIcon,
-        },
       ],
     },
   ]
@@ -106,14 +101,24 @@ const ConfigureTabs = computed(() => {
     (tab) => tab.type === 'configure'
   )
 
+  const appId = useAppId()
+
   if (
     props.currentNetwork === 'mainnet' &&
-    appsStore.app(useAppId()).wallet_mode === WalletUIModes[1].value
+    appsStore.app(appId).wallet_mode === WalletUIModes[1].value
   ) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       label: 'Keyspace',
       type: 'keyspace',
       icon: KeyspaceIcon,
+    })
+  }
+
+  if (appsStore.app(appId).chain_type?.toLowerCase() === 'evm') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push({
+      label: 'GasLess',
+      type: 'gasless',
+      icon: GasStationIcon,
     })
   }
   return configureTabsCopy
