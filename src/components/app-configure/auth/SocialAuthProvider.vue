@@ -9,7 +9,12 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
-import { socialLogins, EMPTY_STRING, DOCS_URL } from '@/utils/constants'
+import {
+  socialLogins,
+  EMPTY_STRING,
+  DOCS_URL,
+  GLOBAL_KEYSPACE,
+} from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
@@ -20,7 +25,6 @@ const socialAuthStore = useSocialAuthStore()
 const AUTH_TYPE_SOCIAL = 'social'
 const LEARN_MORE_LINK = `${DOCS_URL}/howto/config_social/index.html`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = socialLogins[0].verifier
-const GLOBAL_KEYSPACE = 'global'
 const keyspace = app.keyspace
 
 const selectedAuthProviderVerifier = ref(
