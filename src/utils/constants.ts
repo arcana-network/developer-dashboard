@@ -438,6 +438,8 @@ const ProfileItems = [
   },
 ]
 
+const GLOBAL_KEYSPACE = 'global'
+
 const constants = {
   sentry,
   api,
@@ -471,6 +473,7 @@ export {
   WalletUIModes,
   IAM_Providers,
   EMPTY_STRING,
+  GLOBAL_KEYSPACE,
 }
 
 export type {
