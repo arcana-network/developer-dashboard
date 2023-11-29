@@ -97,7 +97,7 @@ async function setupGasTank(gasTankId: number) {
   showLoader('setting up gastank...')
   const appId = route.params.appId
   const app = appStore.app(appId)
-  const { data } = (await getFundingMessage(app.network)).data
+  const { data } = (await getFundingMessage(app.network, appId as string)).data
   const fundingMessage = data.fundingMessage
   const web3Provider = new ethers.providers.Web3Provider(walletStore.provider)
   const wallet = await web3Provider.getSigner()
