@@ -39,6 +39,8 @@ type App = {
   id: AppId
   name: string
   address: string
+  chain_type: string
+  chain: number
   totalUsers: number
   createdAt: string
   region: string

@@ -9,7 +9,12 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
-import { IAM_Providers, EMPTY_STRING, DOCS_URL } from '@/utils/constants'
+import {
+  IAM_Providers,
+  EMPTY_STRING,
+  DOCS_URL,
+  GLOBAL_KEYSPACE,
+} from '@/utils/constants'
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
@@ -20,6 +25,7 @@ const socialAuthStore = useSocialAuthStore()
 const AUTH_TYPE_IAM = 'iam'
 const LEARN_MORE_LINK = `${DOCS_URL}/howto/config-idm/`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = IAM_Providers[0].verifier
+const keyspace = app.keyspace
 
 const selectedAuthProviderVerifier = ref(
   DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
@@ -68,6 +74,10 @@ function handleInput2(value: string) {
 }
 
 async function handleSubmit() {
+  if (keyspace === GLOBAL_KEYSPACE) {
+    toast.error('Login providers are disabled as you have chosen Global keys')
+    return
+  }
   try {
     loaderStore.showLoader('Saving IAM auth credentials...')
     await socialAuthStore.updateSocialAuthProviders(appId, AUTH_TYPE_IAM, app)

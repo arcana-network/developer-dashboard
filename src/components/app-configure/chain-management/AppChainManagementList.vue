@@ -85,7 +85,7 @@ function onChainLogoError(e: any) {
 }
 
 function isGaslessSupport(chainId: number) {
-  return gaslessChains.value[chainId]
+  return app.chain_type?.toLowerCase() === 'evm' && gaslessChains.value[chainId]
 }
 </script>
 

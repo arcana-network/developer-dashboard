@@ -14,6 +14,7 @@ import { updateApp } from '@/services/gateway.service'
 import { setKeyspace } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { WalletUIModes } from '@/utils/constants'
 
 const showVerificationForm = ref(false)
 const route = useRoute()
@@ -25,6 +26,11 @@ let preSelectedKeyspace = ref(app.keyspace)
 const loaderStore = useLoaderStore()
 const toast = useToast()
 const showWarning = ref(false)
+const CUSTOM_UI = 'Custom UI'
+
+const chosenWalletUIMode = WalletUIModes.find(
+  (mode) => mode.value === app.wallet_mode
+)?.label
 
 async function handleSave() {
   try {
@@ -103,7 +109,7 @@ function handleCancel() {
             </VStack>
           </VStack>
         </VCard>
-        <div class="relative">
+        <div v-if="chosenWalletUIMode !== CUSTOM_UI" class="relative">
           <div
             class="keyspace-card"
             :class="{

@@ -60,6 +60,7 @@ type AppConfig = {
   status: 0 | 1 | 2 | 3
   global: boolean
   wallet_mode: WalletUIMode
+  chain_type: string
 }
 
 const gatewayInstance = {
@@ -83,7 +84,7 @@ type CreateAppRequestBody = {
   region: number
   chain: number
   default_chain: number
-  chains?: []
+  chains?: any[]
   wallet_mode: WalletUIMode
   chain_type: string
 }
