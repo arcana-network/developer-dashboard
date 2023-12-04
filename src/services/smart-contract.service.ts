@@ -63,7 +63,7 @@ async function revokeDelegate(appId: AppId, keyAddress: string) {
 
 async function setKeyspace(appId: AppId, global: boolean) {
   const app = appsStore.app(appId)
-  await signTransactionV2(app.address, 'setUnPartition', global)
+  await signTransactionV2(app.address, 'setUnPartition', global, app.network)
 }
 
 export {

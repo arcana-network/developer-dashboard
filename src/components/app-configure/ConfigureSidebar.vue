@@ -103,10 +103,7 @@ const ConfigureTabs = computed(() => {
 
   const appId = useAppId()
 
-  if (
-    props.currentNetwork === 'mainnet' &&
-    appsStore.app(appId).wallet_mode === WalletUIModes[1].value
-  ) {
+  if (appsStore.app(appId).wallet_mode === WalletUIModes[1].value) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       label: 'Keyspace',
       type: 'keyspace',
@@ -114,9 +111,9 @@ const ConfigureTabs = computed(() => {
     })
   }
 
-  if (appsStore.app(appId).chain_type?.toLowerCase() === 'evm') {
+  if (appsStore.app(appId).chain_type?.toLowerCase() !== 'solana') {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
-      label: 'GasLess',
+      label: 'Gasless',
       type: 'gasless',
       icon: GasStationIcon,
     })
@@ -193,7 +190,7 @@ onMounted(() => {
     currentTab === 'Social Auth' ||
     currentTab === 'Arcana Wallet' ||
     currentTab === 'Keyspace' ||
-    currentTab === 'GasLess'
+    currentTab === 'Gasless'
 })
 
 onMounted(() => {

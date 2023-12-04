@@ -25,6 +25,7 @@ const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 const ApiNetwork = ARCANA_AUTH_NETWORK === 'mainnet' ? 'mainnet' : 'testnet'
 
 let forwarder: string, rpcUrl: string
+let testnetForwarder: string, testnetRpcUrl: string
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
@@ -273,11 +274,22 @@ async function fetchAndStoreConfig() {
   const config = (
     await gatewayInstance.mainnet.get(`${getEnvApi()}/get-config/`)
   ).data
+  const testnetConfig = (
+    await gatewayInstance.testnet.get(`${getEnvApi()}/get-config/`)
+  ).data
   forwarder = config?.Forwarder
   rpcUrl = config?.RPC_URL
+  testnetForwarder = testnetConfig?.Forwarder
+  testnetRpcUrl = testnetConfig?.RPC_URL
 }
 
-function getConfig() {
+function getConfig(network: Network = 'mainnet') {
+  if (network === 'testnet') {
+    return {
+      forwarder: testnetForwarder,
+      rpcUrl: testnetRpcUrl,
+    }
+  }
   return {
     forwarder,
     rpcUrl,
