@@ -59,7 +59,10 @@ const useChainManagementStore = defineStore('chain-management', {
         const defaultChain = chains[defaultChainIdx]
         chains.splice(defaultChainIdx, 1)
         chains.unshift(defaultChain)
-        this.appChains = chains
+        this.appChains = chains.map((chain) => ({
+          ...chain,
+          id: chain.chain_id,
+        }))
       }
       this.selectedChainType = selected_chains?.toLowerCase() || 'evm'
     },
@@ -107,6 +110,7 @@ const useChainManagementStore = defineStore('chain-management', {
       await setDefaultChain(appId, payload, network)
     },
     async toggleAppChainStatus(appId: number, data: any, network: Network) {
+      console.log(data)
       const payload = { chain_id: data.id, status: data.status }
       await editChain(appId, payload, network)
     },
