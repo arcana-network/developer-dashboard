@@ -547,14 +547,14 @@ function addChain(appId: number, data: any, network: Network) {
 
 function editChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).patch(
-    `${getEnvApi()}/chain/${appId}/${data.id}`,
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
     data
   )
 }
 
 function deleteChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).delete(
-    `${getEnvApi()}/chain/${appId}/${data.id}`,
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
     {
       data,
     }
@@ -563,7 +563,7 @@ function deleteChain(appId: number, data: any, network: Network) {
 
 function setDefaultChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/default/${data.id}`,
+    `${getEnvApi()}/chain/${appId}/default/${data.chain_id}`,
     data
   )
 }
