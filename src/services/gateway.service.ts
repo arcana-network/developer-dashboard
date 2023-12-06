@@ -604,9 +604,9 @@ async function changeGastankStatus(
   })
 }
 
-async function getFundingMessage(network: Network) {
+async function getFundingMessage(network: Network, appId: string) {
   return getGatewayInstance(network).get(
-    `${getEnvApi()}/gastank/funding-message/`
+    `${getEnvApi()}/gastank/funding-message/?app_id=${appId}`
   )
 }
 
