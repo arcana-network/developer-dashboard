@@ -64,4 +64,39 @@ onBeforeMount(async () => {
 .root {
   height: 100vh;
 }
+
+.banner {
+  position: relative;
+  padding: 0.25em 1.5em;
+  line-height: 1.5em;
+  color: white;
+  text-align: center;
+  background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
+}
+
+.banner h4 {
+  display: inline-block;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.banner h5 {
+  display: inline-block;
+  margin-right: 2em;
+  margin-left: 1em;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.banner.hide {
+  display: none;
+}
+
+.banner-close {
+  position: absolute;
+  right: 2em;
+  margin-top: 2px;
+  cursor: pointer;
+}
 </style>
