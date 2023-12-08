@@ -27,7 +27,7 @@ const toast = useToast()
 const route = useRoute()
 const appStore = useAppsStore()
 const appId = route.params.appId
-const app = appStore.app(appId)
+const app = appStore.app(Number(appId))
 
 const rowOptions = [
   {
@@ -48,7 +48,7 @@ useClickOutside(showRowOptions_menu, () => {
   showRowOptionsOf.value = null
 })
 
-function onClickOfOption(option: number, id: string, chain?: object) {
+function onClickOfOption(option: number, id: string, chain: any) {
   if (option === 0) emits('edit', { id })
   if (option === 1) {
     if (chain.default_chain) toast.error("Can't delete Default chain")
@@ -63,7 +63,7 @@ function onClickOfOption(option: number, id: string, chain?: object) {
   showRowOptionsOf.value = null
 }
 
-function onChainToggle(chain: object) {
+function onChainToggle(chain: any) {
   emits('toggle-chain-status', {
     id: chain.id,
     status: !chain.status,
@@ -73,19 +73,19 @@ function onChainToggle(chain: object) {
 function getRowOptions(
   isDefault: boolean,
   isBuiltIn: boolean,
-  options: Array<object>
+  options: Array<any>
 ) {
   if (isDefault) return [options[0]]
   if (isBuiltIn) return [options[0], options[2]]
   return options
 }
 
-function onChainLogoError(e) {
+function onChainLogoError(e: any) {
   e.target.src = ChainFallbackLogo
 }
 
 function isGaslessSupport(chainId: number) {
-  return gaslessChains.value[chainId]
+  return app.chain_type?.toLowerCase() === 'evm' && gaslessChains.value[chainId]
 }
 </script>
 
@@ -103,7 +103,7 @@ function isGaslessSupport(chainId: number) {
           <th class="w-[15%]">Name</th>
           <th class="w-[10%]">Chain ID</th>
           <th class="w-[10%]">Currency</th>
-          <th class="w-[10%]">Compatibility</th>
+          <!-- <th class="w-[10%]">Compatibility</th> -->
           <th class="w-[10%]">Type</th>
           <th>RPC URL</th>
           <th class="w-[10%]">Enabled</th>
@@ -113,7 +113,7 @@ function isGaslessSupport(chainId: number) {
       <tbody>
         <tr
           v-for="chain in filteredChains"
-          :key="chain.chain_id"
+          :key="JSON.stringify(chain)"
           class="hover:bg-[#363636]"
         >
           <td>
@@ -129,19 +129,19 @@ function isGaslessSupport(chainId: number) {
               <span>{{ chain.name }}</span>
               <span
                 v-if="chain.default_chain"
-                class="text-[#568DF0] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
+                class="text-[#568DF0] text-[8px] bg-[#568DF0]/[0.1] rounded-[5px] p-[2px] px-[4px]"
                 >Default</span
               >
               <span
                 v-if="isGaslessSupport(chain.chain_id)"
-                class="text-[#51C75F] text-[8px] bg-[#568DF0]/[0.1] p-[2px]"
+                class="text-[#51C75F] text-[8px] bg-[#568DF0]/[0.1] rounded-[5px] p-[2px] px-[4px]"
                 >Gasless</span
               >
             </div>
           </td>
           <td>{{ chain.chain_id }}</td>
           <td>{{ chain.currency }}</td>
-          <td>{{ chain.compatibility }}</td>
+          <!-- <td>{{ chain.compatibility }}</td> -->
           <td>{{ chain.chain_type }}</td>
           <td class="text-ellipsis">{{ chain.rpc_url }}</td>
           <td>

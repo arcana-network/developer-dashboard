@@ -1,6 +1,6 @@
 import bytes from 'bytes'
 
-import AWSIcon from '@/assets/aws-sso.svg'
+import CognitoIcon from '@/assets/cognito-sso.png'
 import DiscordIcon from '@/assets/discord-sso.svg'
 import FirebaseIcon from '@/assets/firebase-sso.svg'
 import GithubIcon from '@/assets/github-sso.svg'
@@ -106,7 +106,7 @@ type ConfigureTabType =
   | 'Arcana Wallet'
   | 'Profile'
   | 'Keyspace'
-  | 'GasLess'
+  | 'Gasless'
 
 type ConfigureTabSubMenu = {
   type: string
@@ -122,6 +122,8 @@ type ConfigureTab = {
 }
 
 const userLimitOptions: string[] = ['Limited', 'Unlimited']
+
+const EMPTY_STRING = ''
 
 const CONFIGURE_TABS: readonly ConfigureTab[] = [
   { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
@@ -189,32 +191,48 @@ type SocialAuthVerifierLabel =
   | 'Steam'
   | 'Firebase'
 
+type SocialAuthOptionTitle = {
+  label1: string
+  label2: string
+}
+
+type SocialAuthOptionDocumentation = {
+  label: string
+  link: string
+}
+
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
   icon: string
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
-  documentation: string
-  userPoolDomainDoc?: string
+  documentation?: string
+  inputLabels: SocialAuthOptionTitle
+  documentation1: SocialAuthOptionDocumentation
+  documentation2?: SocialAuthOptionDocumentation
+  clientId?: string
+  clientSecret?: string
+  note?: string
 }
 
 const socialLogins: readonly SocialAuthOption[] = [
-  {
-    name: 'Cognito',
-    verifier: 'aws',
-    icon: AWSIcon,
-    hasClientSecret: true,
-    documentation:
-      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-idp-settings.html',
-    userPoolDomainDoc:
-      'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html',
-  },
   {
     name: 'Google',
     verifier: 'google',
     icon: GoogleIcon,
     hasClientSecret: false,
     documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
+    inputLabels: {
+      label1: 'Client ID',
+      label2: '',
+    },
+    documentation1: {
+      label: 'Get your Client ID',
+      link: 'https://support.google.com/cloud/answer/6158849?hl=en',
+    },
+    clientId: '',
+    clientSecret: '',
+    note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
   },
   {
     name: 'Twitch',
@@ -222,6 +240,16 @@ const socialLogins: readonly SocialAuthOption[] = [
     icon: TwitchIcon,
     hasClientSecret: false,
     documentation: 'https://dev.twitch.tv/docs/authentication#registration',
+    inputLabels: {
+      label1: 'Client ID',
+      label2: '',
+    },
+    documentation1: {
+      label: 'Get your Client ID',
+      link: 'https://dev.twitch.tv/docs/authentication#registration',
+    },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Discord',
@@ -229,6 +257,20 @@ const socialLogins: readonly SocialAuthOption[] = [
     icon: DiscordIcon,
     hasClientSecret: true,
     documentation: 'https://discord.com/developers/applications',
+    inputLabels: {
+      label1: 'Client ID',
+      label2: 'Client Secret',
+    },
+    documentation1: {
+      label: 'Get your Client ID',
+      link: 'https://discord.com/developers/applications',
+    },
+    documentation2: {
+      label: 'Get your Client Secret',
+      link: 'https://discord.com/developers/applications',
+    },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'GitHub',
@@ -237,6 +279,20 @@ const socialLogins: readonly SocialAuthOption[] = [
     hasClientSecret: true,
     documentation:
       'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
+    inputLabels: {
+      label1: 'Client ID',
+      label2: 'Client Secret',
+    },
+    documentation1: {
+      label: 'Get your Client ID',
+      link: 'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
+    },
+    documentation2: {
+      label: 'Get your Client Secret',
+      link: 'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
+    },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Twitter',
@@ -244,6 +300,20 @@ const socialLogins: readonly SocialAuthOption[] = [
     icon: TwitterIcon,
     hasClientSecret: true,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
+    inputLabels: {
+      label1: 'Client ID',
+      label2: 'Client Secret',
+    },
+    documentation1: {
+      label: 'Get your Client ID',
+      link: 'https://developer.twitter.com/en/docs/apps/overview',
+    },
+    documentation2: {
+      label: 'Get your Client Secret',
+      link: 'https://developer.twitter.com/en/docs/apps/overview',
+    },
+    clientId: '',
+    clientSecret: '',
   },
   {
     name: 'Steam',
@@ -251,14 +321,61 @@ const socialLogins: readonly SocialAuthOption[] = [
     icon: SteamIcon,
     hasClientSecret: true,
     documentation: 'https://steamcommunity.com/dev/apikey',
+    inputLabels: {
+      label1: '',
+      label2: 'Steam API Key',
+    },
+    documentation1: {
+      label: 'Get your Steam API key',
+      link: 'https://steamcommunity.com/dev/apikey',
+    },
+    documentation2: {
+      label: 'Get your Steam API key',
+      link: 'https://steamcommunity.com/dev/apikey',
+    },
+    clientId: '',
+    clientSecret: '',
+    note: 'Note: When you are a Steam member, and have already spent more than 5.00 USD in the store you should be able to request your Steam API Key.',
   },
+]
+
+const IAM_Providers: SocialAuthOption[] = [
   {
     name: 'Firebase',
     verifier: 'firebase',
     icon: FirebaseIcon,
     hasClientSecret: false,
-    documentation:
-      'https://firebase.google.com/docs/projects/learn-more#project-id',
+    inputLabels: {
+      label1: 'Project ID',
+      label2: '',
+    },
+    documentation1: {
+      label: 'Get your Project ID',
+      link: 'https://firebase.google.com/docs/projects/learn-more#project-id',
+    },
+    clientId: '',
+    clientSecret: '',
+  },
+  {
+    name: 'Cognito',
+    verifier: 'aws',
+    icon: CognitoIcon,
+    hasClientSecret: true,
+    inputLabels: {
+      label1: 'Client ID',
+      label2: 'Cognito User Pool Domain',
+    },
+    documentation1: {
+      label: 'Get your Client ID',
+      link: 'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-idp-settings.html',
+    },
+    documentation2: {
+      label: 'Get your User Pool Domain',
+      link: 'https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html',
+    },
+    clientId: '',
+    clientSecret: '',
+    note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
   },
 ]
 
@@ -321,6 +438,8 @@ const ProfileItems = [
   },
 ]
 
+const GLOBAL_KEYSPACE = 'global'
+
 const constants = {
   sentry,
   api,
@@ -352,6 +471,9 @@ export {
   HelpItems,
   ProfileItems,
   WalletUIModes,
+  IAM_Providers,
+  EMPTY_STRING,
+  GLOBAL_KEYSPACE,
 }
 
 export type {
@@ -366,6 +488,7 @@ export type {
   SocialAuthVerifierLabel,
   Network,
   WalletUIMode,
+  SocialAuthOption,
 }
 
 export default constants

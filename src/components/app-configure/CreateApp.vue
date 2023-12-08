@@ -13,16 +13,17 @@ import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import { chainTypes } from '@/utils/chainTypes'
 import { WalletUIModes } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
-import validateRPCandChainId from '@/utils/validateRPCandChainId'
 
 const router = useRouter()
 const toast = useToast()
 const appsStore = useAppsStore()
 const appName = ref('')
 const selectedChainId: Ref<number | null> = ref(null)
+const selectedChainType = ref(chainTypes[0])
 const hasAppNameError = ref(false)
 const chainManagementStore = useChainManagementStore()
 const showLoader = ref(false)
@@ -34,6 +35,7 @@ function getPayloadForCreateApp() {
   return {
     name: appName.value,
     chain: selectedChainId.value,
+    chain_type: selectedChainType.value.type,
     default_chain: selectedChainId.value,
     wallet_mode: selectedWalletUIMode.value.value,
   }
@@ -49,22 +51,13 @@ async function handleCreateApp() {
   try {
     showLoader.value = true
     hasAppNameError.value = false
-    const selectedChain = getChain(selectedChainId.value)
-    const isChainValid = await validateRPCandChainId(
-      selectedChain.rpc_url,
-      selectedChain.chain_id
-    )
-    if (isChainValid) {
-      const {
-        data: { app },
-      } = await createApp(getPayloadForCreateApp(), 'testnet')
-      appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
-      createTransactionSigner(app.address, 'testnet')
-      router.push({ name: 'AppDetails', params: { appId: app.ID } })
-      emit('close')
-    } else {
-      toast.error('Chain is not valid, please change it to another one')
-    }
+    const {
+      data: { app },
+    } = await createApp(getPayloadForCreateApp(), 'testnet')
+    appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
+    createTransactionSigner(app.address, 'testnet')
+    router.push({ name: 'AppDetails', params: { appId: app.ID } })
+    emit('close')
   } catch (e) {
     console.error(e)
     toast.error('Error occurred while creating app')
@@ -88,76 +81,97 @@ function onChainSelect(_, option) {
 
 <template>
   <VOverlay>
-    <div
-      class="rounded-[10px] fixed top-[50%] left-[50%] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[560px] min-w-[200px] w-[70%] h-[550px] translate-x-[-50%] translate-y-[-50%]"
-    >
-      <div v-if="showLoader" class="h-full flex justify-center items-center">
-        <p>Please wait...</p>
-      </div>
-      <div v-else class="gap-4 space-y-5">
-        <div class="flex items-center justify-center relative">
-          <img
-            src="@/assets/iconography/close.svg"
-            class="absolute right-0 w-4 max-[768px]:w-3 cursor-pointer"
-            @click.stop="emit('close')"
-          />
-          <h2 class="text-2xl max-[768px]:text-lg font-bold text-center">
-            Create New App
-          </h2>
+    <div class="fixed inset-0 flex justify-center items-center">
+      <div
+        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[560px] min-w-[200px] w-[70%] max-h-[100vh] overflow-y-auto"
+      >
+        <div v-if="showLoader" class="h-full flex justify-center items-center">
+          <p>Please wait...</p>
         </div>
-        <VSeperator class="full-bleed" />
-        <form @submit.prevent="handleCreateApp">
-          <VStack direction="column" class="space-y-6">
-            <VStack direction="column" gap="0.5rem" class="space-y-6">
-              <VStack direction="column">
-                <label class="text-lg font-normal text-[#8d8d8d]" for="app-name"
-                  >Enter App Name</label
-                >
-                <VTextField
-                  id="app-name"
-                  v-model.trim="appName"
-                  :message-type="hasAppNameError ? 'error' : ''"
-                  message="App Name cannot be empty"
-                  :no-message="!hasAppNameError"
-                />
-              </VStack>
-              <VStack direction="column">
-                <label
-                  class="text-lg font-normal text-[#8d8d8d]"
-                  for="default-chain"
-                  >Default Chain*</label
-                >
-                <VDropdown
-                  :options="chainManagementStore.allChains"
-                  display-field="name"
-                  @change="onChainSelect"
-                />
-                <p class="text-[#8D8D8D]">
-                  *You can change the default chain later
-                </p>
-              </VStack>
-              <VStack direction="column">
-                <label
-                  class="text-lg font-normal text-[#8d8d8d]"
-                  for="default-chain"
-                  >Wallet UI Mode*</label
-                >
-                <VDropdown
-                  v-model="selectedWalletUIMode"
-                  :options="WalletUIModes"
-                  display-field="label"
-                />
-                <p class="text-[#8D8D8D]">*You cannot change UI mode later</p>
-              </VStack>
-            </VStack>
-            <VButton
-              type="submit"
-              label="CREATE"
-              class="px-4 py-16 self-center"
-              :disabled="enableCreate"
+        <div v-else class="gap-4 space-y-5">
+          <div class="flex items-center justify-center relative">
+            <img
+              src="@/assets/iconography/close.svg"
+              class="absolute right-0 w-4 max-[768px]:w-3 cursor-pointer"
+              @click.stop="emit('close')"
             />
-          </VStack>
-        </form>
+            <h2 class="text-2xl max-[768px]:text-lg font-bold text-center">
+              Create New App
+            </h2>
+          </div>
+          <VSeperator class="full-bleed" />
+          <form @submit.prevent="handleCreateApp">
+            <VStack direction="column" class="space-y-4">
+              <VStack direction="column" class="space-y-3">
+                <VStack direction="column">
+                  <label
+                    class="text-lg font-normal text-[#8d8d8d]"
+                    for="app-name"
+                    >Enter App Name</label
+                  >
+                  <VTextField
+                    id="app-name"
+                    v-model.trim="appName"
+                    :message-type="hasAppNameError ? 'error' : ''"
+                    message="App Name cannot be empty"
+                    :no-message="!hasAppNameError"
+                  />
+                </VStack>
+                <VStack direction="column">
+                  <label
+                    class="text-lg font-normal text-[#8d8d8d]"
+                    for="default-chain"
+                    >Chain Type*</label
+                  >
+                  <VDropdown
+                    v-model="selectedChainType"
+                    :options="chainTypes"
+                    display-field="name"
+                  />
+                </VStack>
+                <VStack direction="column">
+                  <label
+                    class="text-lg font-normal text-[#8d8d8d]"
+                    for="default-chain"
+                    >Default Chain*</label
+                  >
+                  <VDropdown
+                    :options="
+                      chainManagementStore.chainTypeSpecificChains(
+                        selectedChainType.type
+                      )
+                    "
+                    display-field="name"
+                    :disabled="!selectedChainType"
+                    @change="onChainSelect"
+                  />
+                  <!-- <p class="text-[#8D8D8D]">
+                  *You can change the default chain later
+                </p> -->
+                </VStack>
+                <VStack direction="column">
+                  <label
+                    class="text-lg font-normal text-[#8d8d8d]"
+                    for="default-chain"
+                    >Wallet UI Mode*</label
+                  >
+                  <VDropdown
+                    v-model="selectedWalletUIMode"
+                    :options="WalletUIModes"
+                    display-field="label"
+                  />
+                  <p class="text-[#8D8D8D]">*You cannot change UI mode later</p>
+                </VStack>
+              </VStack>
+              <VButton
+                type="submit"
+                label="CREATE"
+                class="px-4 py-16 self-center"
+                :disabled="enableCreate"
+              />
+            </VStack>
+          </form>
+        </div>
       </div>
     </div>
   </VOverlay>

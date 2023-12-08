@@ -35,7 +35,7 @@ async function launchLogin(type: string) {
     if (type === 'passwordless') {
       if (!hasValidEmail.value) return
       loaderStore.showLoader(
-        `Click on the verification link sent to your email.`
+        `Click on the login link sent to your email address`
       )
       await arcanaAuth.loginWithLink(email.value)
     } else {

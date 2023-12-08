@@ -25,6 +25,7 @@ const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
 const ApiNetwork = ARCANA_AUTH_NETWORK === 'mainnet' ? 'mainnet' : 'testnet'
 
 let forwarder: string, rpcUrl: string
+let testnetForwarder: string, testnetRpcUrl: string
 
 type Duration = 'month' | 'day' | 'year' | 'quarter'
 
@@ -60,6 +61,7 @@ type AppConfig = {
   status: 0 | 1 | 2 | 3
   global: boolean
   wallet_mode: WalletUIMode
+  chain_type: string
 }
 
 const gatewayInstance = {
@@ -83,8 +85,9 @@ type CreateAppRequestBody = {
   region: number
   chain: number
   default_chain: number
-  chains?: []
+  chains?: any[]
   wallet_mode: WalletUIMode
+  chain_type: string
 }
 
 type CreateAppResponse = {
@@ -117,6 +120,7 @@ function createApp(
     name: config.name,
     region: config.region,
     chain: config.chain,
+    chain_type: config.chain_type,
     default_chain: config.default_chain,
     chains: config.chains,
     wallet_mode: config.wallet_mode,
@@ -208,6 +212,7 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     wallet_type,
     global: app.keyspace === 'global',
     status: app.status,
+    wallet_mode: app.wallet_mode,
   }
 }
 
@@ -269,11 +274,22 @@ async function fetchAndStoreConfig() {
   const config = (
     await gatewayInstance.mainnet.get(`${getEnvApi()}/get-config/`)
   ).data
+  const testnetConfig = (
+    await gatewayInstance.testnet.get(`${getEnvApi()}/get-config/`)
+  ).data
   forwarder = config?.Forwarder
   rpcUrl = config?.RPC_URL
+  testnetForwarder = testnetConfig?.Forwarder
+  testnetRpcUrl = testnetConfig?.RPC_URL
 }
 
-function getConfig() {
+function getConfig(network: Network = 'mainnet') {
+  if (network === 'testnet') {
+    return {
+      forwarder: testnetForwarder,
+      rpcUrl: testnetRpcUrl,
+    }
+  }
   return {
     forwarder,
     rpcUrl,
@@ -510,7 +526,7 @@ function updateNotificationRead(list: number[]) {
   )
 }
 
-function getChains(appId: string, network: Network) {
+function getChains(appId: number, network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/chain/${appId}/all/`)
 }
 
@@ -518,33 +534,36 @@ function getAllChains(network: Network) {
   return getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`)
 }
 
-function getChainLogo(chainId: string, network: Network) {
+function getChainLogo(chainId: number, network: Network) {
   return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
 }
 
-function addChain(appId: string, data: object, network: Network) {
+function addChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/`,
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
     data
   )
 }
 
-function editChain(appId: string, data: object, network: Network) {
+function editChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).patch(
-    `${getEnvApi()}/chain/${appId}/`,
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
     data
   )
 }
 
-function deleteChain(appId: string, data: object, network: Network) {
-  return getGatewayInstance(network).delete(`${getEnvApi()}/chain/${appId}/`, {
-    data,
-  })
+function deleteChain(appId: number, data: any, network: Network) {
+  return getGatewayInstance(network).delete(
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
+    {
+      data,
+    }
+  )
 }
 
-function setDefaultChain(appId: string, data: object, network: Network) {
+function setDefaultChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/default/`,
+    `${getEnvApi()}/chain/${appId}/default/${data.chain_id}`,
     data
   )
 }
@@ -585,9 +604,9 @@ async function changeGastankStatus(
   })
 }
 
-async function getFundingMessage(network: Network) {
+async function getFundingMessage(network: Network, appId: string) {
   return getGatewayInstance(network).get(
-    `${getEnvApi()}/gastank/funding-message/`
+    `${getEnvApi()}/gastank/funding-message/?app_id=${appId}`
   )
 }
 
@@ -654,6 +673,16 @@ async function deleteSmartContract(smartContractId: number, network: Network) {
   )
 }
 
+async function updateSelectedChainType(
+  appId: string | number,
+  network: Network,
+  chainType: string
+) {
+  return getGatewayInstance(network).post(
+    `${getEnvApi()}/update-chain-type/?app_id=${appId}&chain_type=${chainType}`
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -713,6 +742,7 @@ export {
   getSmartContractMethods,
   editSmartContract,
   changeGastankStatus,
+  updateSelectedChainType,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,

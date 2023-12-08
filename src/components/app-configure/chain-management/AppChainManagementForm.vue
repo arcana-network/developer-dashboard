@@ -36,6 +36,7 @@ const formData = ref({
   chainType: '',
   id: '',
   built_in: false,
+  compatibility: 'evm',
 })
 
 const enableSave = computed(() => {
@@ -61,7 +62,10 @@ watch(formData.value, (newValue) => {
 function populateFormData() {
   const { editChainId } = props
   const chainData = chainManagementStore.appChains.find(
-    (chain) => chain.id === editChainId
+    (chain) =>
+      chain.compatibility?.toLowerCase() ===
+        chainManagementStore.selectedChainType.toLowerCase() &&
+      chain.id === editChainId
   )
   formData.value = {
     name: chainData.name,
@@ -72,6 +76,7 @@ function populateFormData() {
     chainType: chainData.chain_type,
     id: Number(chainData.id),
     built_in: chainData.built_in,
+    compatibility: chainData.compatibility,
   }
 }
 
@@ -87,12 +92,16 @@ onMounted(() => {
 async function onSave(formData: object) {
   try {
     showLoader.value = true
-    const isValid = await validateRPCandChainId(
-      formData.rpcURL,
-      formData.chainId
-    )
-    if (isValid) emits('submit', formData)
-    else showChainIdMismatchError.value = true
+    if (formData.compatibility === 'evm') {
+      const isValid = await validateRPCandChainId(
+        formData.rpcURL,
+        formData.chainId
+      )
+      if (isValid) emits('submit', formData)
+      else showChainIdMismatchError.value = true
+    } else {
+      emits('submit', formData)
+    }
     showRpcError.value = false
   } catch (e) {
     showChainIdMismatchError.value = false
@@ -133,10 +142,10 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
         </div>
         <div v-else class="space-y-5">
           <div class="space-y-[10px]">
-            <p class="text-sm">{{ TitleAction }} a Custom EVM Chain</p>
+            <p class="text-sm">{{ TitleAction }} a Custom Chain</p>
             <p class="text-sm text-[#8D8D8D] leading-4">
-              {{ `${TitleAction}ed` }} custom EVM chains will be automatically
-              added to your user’s wallets.
+              {{ `${TitleAction}ed` }} custom chains will be automatically added
+              to your user’s wallets.
             </p>
           </div>
           <form class="space-y-5">
