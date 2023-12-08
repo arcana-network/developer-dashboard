@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref, watch, onMounted, type Ref } from 'vue'
+import { onBeforeMount, ref, watch, onMounted, type Ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
@@ -34,6 +34,7 @@ import {
   regions,
   RegionMapping,
   NetworkName,
+  isProductionDashboard,
 } from '@/utils/constants'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
@@ -49,6 +50,7 @@ const NetworkOptions = [
   },
 ]
 
+const selectedAppId = computed(() => Number(route.params.appId))
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
 const chainManagementStore = useChainManagementStore()
@@ -384,7 +386,10 @@ watch(
           v-model="currentNetwork"
           :options="NetworkOptions"
           display-field="label"
-          :disabled="isOnlyTestnet"
+          :disabled="
+            isProductionDashboard &&
+            appsStore.app(selectedAppId).chain_type === 'solana'
+          "
           class="app-details__network-dropdown"
           @change="(_, option) => onNetworkSwitch(option)"
         />
