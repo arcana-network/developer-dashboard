@@ -540,30 +540,27 @@ function getChainLogo(chainId: number, network: Network) {
 
 function addChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
+    `${getEnvApi()}/chain/${appId}/`,
     data
   )
 }
 
 function editChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).patch(
-    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
+    `${getEnvApi()}/chain/${appId}/`,
     data
   )
 }
 
 function deleteChain(appId: number, data: any, network: Network) {
-  return getGatewayInstance(network).delete(
-    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
-    {
-      data,
-    }
-  )
+  return getGatewayInstance(network).delete(`${getEnvApi()}/chain/${appId}/`, {
+    data,
+  })
 }
 
 function setDefaultChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/default/${data.chain_id}`,
+    `${getEnvApi()}/chain/${appId}/default/`,
     data
   )
 }
