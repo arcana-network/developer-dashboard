@@ -6,6 +6,7 @@ import {
   getNotifications,
   updateNotificationRead,
 } from '@/services/gateway.service'
+import { useChainManagementStore } from '@/stores/chainManagement.store'
 import type {
   Chain,
   Network,
@@ -183,6 +184,7 @@ const useAppsStore = defineStore('apps', {
       await Promise.all(appConfigPromises)
     },
     async fetchAndStoreAppConfig(appId: AppId, network: Network) {
+      const chainManagementStore = useChainManagementStore()
       const app = (await fetchApp(appId, network)).data
       app.ID = appId
       const configInfo = createAppConfig(app, network)
@@ -197,6 +199,11 @@ const useAppsStore = defineStore('apps', {
           ...configInfo,
         }
       }
+      chainManagementStore.setChainType(
+        appId,
+        network,
+        app.chain_type?.toLowerCase() || 'evm'
+      )
     },
     async fetchNotifications() {
       try {

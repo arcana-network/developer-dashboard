@@ -46,11 +46,13 @@ const useChainManagementStore = defineStore('chain-management', {
     },
   },
   actions: {
+    setChainType(appId: number, network: Network, chainType: string) {
+      this.selectedChainType = chainType
+      this.getAppChains(appId, network)
+    },
     async getAppChains(appId: number, network: Network) {
-      const { chains, selected_chains } = (await getChains(appId, network))
-        .data as {
+      const { chains } = (await getChains(appId, network)).data as {
         chains: any[]
-        selected_chains: string
       }
       if (!chains) this.appChains = []
       else {
@@ -64,7 +66,6 @@ const useChainManagementStore = defineStore('chain-management', {
           id: chain.chain_id,
         }))
       }
-      this.selectedChainType = selected_chains?.toLowerCase() || 'evm'
     },
     async getAllAppChains(network: Network) {
       const { chains } = (await getAllChains(network)).data
