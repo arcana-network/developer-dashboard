@@ -108,8 +108,9 @@ const ConfigureTabs = computed(() => {
   )
 
   const appId = useAppId()
+  const app = appsStore.app(appId)
 
-  if (appsStore.app(appId).wallet_mode === WalletUIModes[1].value) {
+  if (app.wallet_mode === WalletUIModes[1].value) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       label: 'Keyspace',
       type: 'keyspace',
@@ -117,7 +118,7 @@ const ConfigureTabs = computed(() => {
     })
   }
 
-  if (appsStore.app(appId).chain_type?.toLowerCase() !== 'solana') {
+  if (app.network !== 'mainnet' && app.chain_type?.toLowerCase() !== 'solana') {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       label: 'Gasless',
       type: 'gasless',
