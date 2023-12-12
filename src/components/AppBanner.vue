@@ -3,10 +3,10 @@ import { ref } from 'vue'
 
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 
-const canShowBanner = ref(true)
+const canShowBanner = ref(false)
 
 function onCloseBanner() {
-  canShowBanner.value = true
+  canShowBanner.value = false
 }
 </script>
 
