@@ -538,29 +538,32 @@ function getChainLogo(chainId: number, network: Network) {
   return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
 }
 
-function addChain(appId: number, data: object, network: Network) {
+function addChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/`,
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
     data
   )
 }
 
-function editChain(appId: number, data: object, network: Network) {
+function editChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).patch(
-    `${getEnvApi()}/chain/${appId}/`,
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
     data
   )
 }
 
-function deleteChain(appId: number, data: object, network: Network) {
-  return getGatewayInstance(network).delete(`${getEnvApi()}/chain/${appId}/`, {
-    data,
-  })
+function deleteChain(appId: number, data: any, network: Network) {
+  return getGatewayInstance(network).delete(
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
+    {
+      data,
+    }
+  )
 }
 
-function setDefaultChain(appId: number, data: object, network: Network) {
+function setDefaultChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/default/`,
+    `${getEnvApi()}/chain/${appId}/default/${data.chain_id}`,
     data
   )
 }
@@ -601,9 +604,9 @@ async function changeGastankStatus(
   })
 }
 
-async function getFundingMessage(network: Network) {
+async function getFundingMessage(network: Network, appId: string) {
   return getGatewayInstance(network).get(
-    `${getEnvApi()}/gastank/funding-message/`
+    `${getEnvApi()}/gastank/funding-message/?app_id=${appId}`
   )
 }
 

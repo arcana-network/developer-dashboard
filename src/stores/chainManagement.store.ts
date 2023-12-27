@@ -59,7 +59,10 @@ const useChainManagementStore = defineStore('chain-management', {
         const defaultChain = chains[defaultChainIdx]
         chains.splice(defaultChainIdx, 1)
         chains.unshift(defaultChain)
-        this.appChains = chains
+        this.appChains = chains.map((chain) => ({
+          ...chain,
+          id: chain.chain_id,
+        }))
       }
       this.selectedChainType = selected_chains?.toLowerCase() || 'evm'
     },
@@ -85,7 +88,7 @@ const useChainManagementStore = defineStore('chain-management', {
       await addChain(appId, payload, network)
     },
     async deleteAppChain(appId: number, id: number, network: Network) {
-      const payload = { id }
+      const payload = { chain_id: id }
       await deleteChain(appId, payload, network)
     },
     async editAppChain(appId: number, chainData: any, network: Network) {
@@ -103,11 +106,12 @@ const useChainManagementStore = defineStore('chain-management', {
       await editChain(appId, payload, network)
     },
     async setAppDefaultChain(appId: number, id: number, network: Network) {
-      const payload = { id }
+      const payload = { chain_id: id }
       await setDefaultChain(appId, payload, network)
     },
     async toggleAppChainStatus(appId: number, data: any, network: Network) {
-      const payload = { id: data.id, status: data.status }
+      console.log(data)
+      const payload = { chain_id: data.id, status: data.status }
       await editChain(appId, payload, network)
     },
   },

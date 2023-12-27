@@ -65,6 +65,12 @@ const props = withDefaults(defineProps<ConfigureProps>(), {
   currentNetwork: 'testnet',
 })
 
+const GASLESS_TAB = {
+  type: 'gasLess',
+  label: 'Gasless',
+  icon: GasStationIcon,
+}
+
 const ConfigureTabs = computed(() => {
   const configureTabsCopy = [
     { type: 'dashboard', label: 'Dashboard', icon: dashboardIcon },
