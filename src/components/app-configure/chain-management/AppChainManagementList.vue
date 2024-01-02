@@ -118,7 +118,9 @@ function isGaslessSupport(chainId: number) {
         >
           <td>
             <img
-              :src="getChainLogo(chain.chain_id, app.network)"
+              :src="
+                getChainLogo(chain.chain_id, chain.compatibility, app.network)
+              "
               alt="chain logo"
               class="w-8"
               @error="onChainLogoError"
