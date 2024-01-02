@@ -74,10 +74,10 @@ function handleInput2(value: string) {
 }
 
 async function handleSubmit() {
-  if (keyspace === GLOBAL_KEYSPACE) {
-    toast.error('Login providers are disabled as you have chosen Global keys')
-    return
-  }
+  // if (keyspace === GLOBAL_KEYSPACE) {
+  //   toast.error('Login providers are disabled as you have chosen Global keys')
+  //   return
+  // }
   try {
     loaderStore.showLoader('Saving Social auth credentials...')
     await socialAuthStore.updateSocialAuthProviders(
