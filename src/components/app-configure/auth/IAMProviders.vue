@@ -14,6 +14,7 @@ import {
   EMPTY_STRING,
   DOCS_URL,
   GLOBAL_KEYSPACE,
+  isProductionDashboard,
 } from '@/utils/constants'
 
 const appsStore = useAppsStore()
@@ -26,6 +27,9 @@ const AUTH_TYPE_IAM = 'iam'
 const LEARN_MORE_LINK = `${DOCS_URL}/howto/config-idm/`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = IAM_Providers[0].verifier
 const keyspace = app.keyspace
+const network = app.network
+
+const disableMainnetNetwork = network === 'mainnet' && !isProductionDashboard
 
 const selectedAuthProviderVerifier = ref(
   DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
@@ -74,10 +78,10 @@ function handleInput2(value: string) {
 }
 
 async function handleSubmit() {
-  // if (keyspace === GLOBAL_KEYSPACE) {
-  //   toast.error('Login providers are disabled as you have chosen Global keys')
-  //   return
-  // }
+  if (keyspace === GLOBAL_KEYSPACE && disableMainnetNetwork) {
+    toast.error('Login providers are disabled as you have chosen Global keys')
+    return
+  }
   try {
     loaderStore.showLoader('Saving IAM auth credentials...')
     await socialAuthStore.updateSocialAuthProviders(appId, AUTH_TYPE_IAM, app)
