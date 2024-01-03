@@ -213,6 +213,7 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     global: app.keyspace === 'global',
     status: app.status,
     wallet_mode: app.wallet_mode,
+    chain_type: app.chain_type,
   }
 }
 
@@ -539,63 +540,60 @@ function getChainLogo(chainId: number, network: Network) {
 }
 
 function addChain(appId: number, data: any, network: Network) {
-  if (network === 'mainnet') {
-    return getGatewayInstance(network).post(
-      `${getEnvApi()}/chain/${appId}/`,
-      data
-    )
-  } else {
-    return getGatewayInstance(network).post(
-      `${getEnvApi()}/chain/${appId}/${data.chain_id}/`,
-      data
-    )
-  }
+  // if (network === 'mainnet') {
+  return getGatewayInstance(network).post(
+    `${getEnvApi()}/chain/${appId}/`,
+    data
+  )
+  // } else {
+  //   return getGatewayInstance(network).post(
+  //     `${getEnvApi()}/chain/${appId}/${data.chain_id}/`,
+  //     data
+  //   )
+  // }
 }
 
 function editChain(appId: number, data: any, network: Network) {
-  if (network === 'mainnet') {
-    return getGatewayInstance(network).patch(
-      `${getEnvApi()}/chain/${appId}/`,
-      data
-    )
-  } else {
-    return getGatewayInstance(network).patch(
-      `${getEnvApi()}/chain/${appId}/${data.id}/`,
-      data
-    )
-  }
+  // if (network === 'mainnet') {
+  return getGatewayInstance(network).patch(
+    `${getEnvApi()}/chain/${appId}/`,
+    data
+  )
+  // } else {
+  //   return getGatewayInstance(network).patch(
+  //     `${getEnvApi()}/chain/${appId}/${data.id}/`,
+  //     data
+  //   )
+  // }
 }
 
 function deleteChain(appId: number, data: any, network: Network) {
-  if (network === 'mainnet') {
-    return getGatewayInstance(network).delete(
-      `${getEnvApi()}/chain/${appId}/`,
-      {
-        data,
-      }
-    )
-  } else {
-    return getGatewayInstance(network).delete(
-      `${getEnvApi()}/chain/${appId}/${data.id}/`,
-      {
-        data,
-      }
-    )
-  }
+  // if (network === 'mainnet') {
+  return getGatewayInstance(network).delete(`${getEnvApi()}/chain/${appId}/`, {
+    data,
+  })
+  // } else {
+  //   return getGatewayInstance(network).delete(
+  //     `${getEnvApi()}/chain/${appId}/${data.id}/`,
+  //     {
+  //       data,
+  //     }
+  //   )
+  // }
 }
 
 function setDefaultChain(appId: number, data: any, network: Network) {
-  if (network === 'mainnet') {
-    return getGatewayInstance(network).post(
-      `${getEnvApi()}/chain/${appId}/default/`,
-      data
-    )
-  } else {
-    return getGatewayInstance(network).post(
-      `${getEnvApi()}/chain/${appId}/default/${data.id}/`,
-      data
-    )
-  }
+  // if (network === 'mainnet') {
+  return getGatewayInstance(network).post(
+    `${getEnvApi()}/chain/${appId}/default/`,
+    data
+  )
+  // } else {
+  //   return getGatewayInstance(network).post(
+  //     `${getEnvApi()}/chain/${appId}/default/${data.id}/`,
+  //     data
+  //   )
+  // }
 }
 
 async function getChainIDUsingRPCUrl(rpcURL: string) {
