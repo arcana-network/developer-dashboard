@@ -404,7 +404,7 @@ function getThemeLogo(
   orientation: 'horizontal' | 'vertical',
   network: Network
 ) {
-  const url = `${api.gateway[network]}${getEnvApi('v2')}/app/${appId}/logo`
+  const url = `${api.gateway[network]}${getEnvApi('v2')}/app/${appId}/logo/`
   return {
     mode,
     orientation,
@@ -422,7 +422,7 @@ function uploadThemeLogo(
   const formData: FormData = new FormData()
   formData.append('file', file)
   return getGatewayInstance(network).put(
-    `${getEnvApi('v2')}/app/${appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo/`,
     formData,
     {
       params: { type: mode, orientation },
@@ -437,7 +437,7 @@ function removeThemeLogo(
   orientation?: 'horizontal' | 'vertical'
 ) {
   return getGatewayInstance(network).delete(
-    `${getEnvApi('v2')}/app/${appId}/logo`,
+    `${getEnvApi('v2')}/app/${appId}/logo/`,
     {
       params: { type: mode, orientation },
     }
@@ -546,7 +546,7 @@ function addChain(appId: number, data: any, network: Network) {
     )
   } else {
     return getGatewayInstance(network).post(
-      `${getEnvApi()}/chain/${appId}/${data.chain_id}`,
+      `${getEnvApi()}/chain/${appId}/${data.chain_id}/`,
       data
     )
   }
@@ -560,7 +560,7 @@ function editChain(appId: number, data: any, network: Network) {
     )
   } else {
     return getGatewayInstance(network).patch(
-      `${getEnvApi()}/chain/${appId}/${data.id}`,
+      `${getEnvApi()}/chain/${appId}/${data.id}/`,
       data
     )
   }
@@ -576,7 +576,7 @@ function deleteChain(appId: number, data: any, network: Network) {
     )
   } else {
     return getGatewayInstance(network).delete(
-      `${getEnvApi()}/chain/${appId}/${data.id}`,
+      `${getEnvApi()}/chain/${appId}/${data.id}/`,
       {
         data,
       }
@@ -592,7 +592,7 @@ function setDefaultChain(appId: number, data: any, network: Network) {
     )
   } else {
     return getGatewayInstance(network).post(
-      `${getEnvApi()}/chain/${appId}/default/${data.id}`,
+      `${getEnvApi()}/chain/${appId}/default/${data.id}/`,
       data
     )
   }
