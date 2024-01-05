@@ -8,6 +8,7 @@ import {
   setDefaultChain,
   getAllChains,
   getGaslessSupportChains,
+  fetchApp,
 } from '@/services/gateway.service'
 import type { Network } from '@/utils/constants'
 
@@ -51,6 +52,8 @@ const useChainManagementStore = defineStore('chain-management', {
       this.getAppChains(appId, network)
     },
     async getAppChains(appId: number, network: Network) {
+      const app = (await fetchApp(appId, network)).data
+      this.selectedChainType = app.chain_type?.toLowerCase() || 'evm'
       const { chains } = (await getChains(appId, network)).data as {
         chains: any[]
       }
@@ -68,8 +71,8 @@ const useChainManagementStore = defineStore('chain-management', {
       }
     },
     async getAllAppChains(network: Network) {
-      const { chains } = (await getAllChains(network)).data
-      this.allChains = chains
+      const [evm, solana] = await getAllChains(network)
+      this.allChains = [...evm.data.chains, ...solana.data.chains]
     },
     async getGaslessChains(network: Network) {
       const chains = (await getGaslessSupportChains(network)).data

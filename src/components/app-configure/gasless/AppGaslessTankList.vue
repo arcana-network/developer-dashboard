@@ -83,7 +83,7 @@ function onClickOfOption(option: number, id: number) {
         >
           <td>
             <img
-              :src="getChainLogo(tank.chainId, app.network)"
+              :src="getChainLogo(tank.chainId, 'evm', app.network)"
               alt="chain logo"
               class="w-8"
               @error="onChainLogoError"
