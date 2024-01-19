@@ -532,11 +532,21 @@ function getChains(appId: number, network: Network) {
 }
 
 function getAllChains(network: Network) {
-  return getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`)
+  return Promise.all([
+    getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/EVM/`),
+    getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/solana/`),
+  ])
 }
 
-function getChainLogo(chainId: number, network: Network) {
-  return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
+function getChainLogo(
+  chainId: number | string,
+  chainType: string,
+  network: Network
+) {
+  const type = chainType?.toLowerCase() === 'solana' ? 'solana' : 'EVM'
+  return `${api.gateway[network]}${getEnvApi(
+    'v2'
+  )}/chain/logo/${chainId}/${type}`
 }
 
 function addChain(appId: number, data: any, network: Network) {
