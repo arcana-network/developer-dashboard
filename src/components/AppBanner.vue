@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 
-const canShowBanner = ref(false)
+const canShowBanner = ref(true)
 
 function onCloseBanner() {
   canShowBanner.value = false
