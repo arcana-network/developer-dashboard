@@ -532,6 +532,12 @@ function getChains(appId: number, network: Network) {
 }
 
 function getAllChains(network: Network) {
+  if (network === 'mainnet') {
+    return Promise.all([
+      getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`),
+      Promise.resolve({ data: { chains: [] } }),
+    ])
+  }
   return Promise.all([
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/EVM/`),
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/solana/`),
@@ -543,6 +549,9 @@ function getChainLogo(
   chainType: string,
   network: Network
 ) {
+  if (network === 'mainnet') {
+    return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
+  }
   const type = chainType?.toLowerCase() === 'solana' ? 'solana' : 'EVM'
   return `${api.gateway[network]}${getEnvApi(
     'v2'
