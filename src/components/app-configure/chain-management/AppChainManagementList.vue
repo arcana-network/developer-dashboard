@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import ChainFallbackLogo from '@/assets/chain-fallback-logo.png'
@@ -21,7 +21,6 @@ const emits = defineEmits([
 const chainManagementStore = useChainManagementStore()
 const { areChainsEmpty, filteredChains, gaslessChains } =
   toRefs(chainManagementStore)
-filteredChains.value.sort((a, b) => Number(a.chain_id) - Number(b.chain_id))
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const toast = useToast()
@@ -113,7 +112,9 @@ function isGaslessSupport(chainId: number) {
       </thead>
       <tbody>
         <tr
-          v-for="chain in filteredChains"
+          v-for="chain in filteredChains.sort(
+            (a, b) => Number(a.chain_id) - Number(b.chain_id)
+          )"
           :key="JSON.stringify(chain)"
           class="hover:bg-[#363636]"
         >
