@@ -532,12 +532,6 @@ function getChains(appId: number, network: Network) {
 }
 
 function getAllChains(network: Network) {
-  if (network === 'mainnet') {
-    return Promise.all([
-      getGatewayInstance(network).get(`${getEnvApi()}/chain/0/all/`),
-      Promise.resolve({ data: { chains: [] } }),
-    ])
-  }
   return Promise.all([
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/EVM/`),
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/solana/`),
@@ -549,9 +543,6 @@ function getChainLogo(
   chainType: string,
   network: Network
 ) {
-  if (network === 'mainnet') {
-    return `${api.gateway[network]}${getEnvApi()}/chain/logo/${chainId}/`
-  }
   const type = chainType?.toLowerCase() === 'solana' ? 'solana' : 'EVM'
   return `${api.gateway[network]}${getEnvApi(
     'v2'
@@ -559,60 +550,30 @@ function getChainLogo(
 }
 
 function addChain(appId: number, data: any, network: Network) {
-  // if (network === 'mainnet') {
   return getGatewayInstance(network).post(
     `${getEnvApi()}/chain/${appId}/`,
     data
   )
-  // } else {
-  //   return getGatewayInstance(network).post(
-  //     `${getEnvApi()}/chain/${appId}/${data.chain_id}/`,
-  //     data
-  //   )
-  // }
 }
 
 function editChain(appId: number, data: any, network: Network) {
-  // if (network === 'mainnet') {
   return getGatewayInstance(network).patch(
     `${getEnvApi()}/chain/${appId}/`,
     data
   )
-  // } else {
-  //   return getGatewayInstance(network).patch(
-  //     `${getEnvApi()}/chain/${appId}/${data.id}/`,
-  //     data
-  //   )
-  // }
 }
 
 function deleteChain(appId: number, data: any, network: Network) {
-  // if (network === 'mainnet') {
   return getGatewayInstance(network).delete(`${getEnvApi()}/chain/${appId}/`, {
     data,
   })
-  // } else {
-  //   return getGatewayInstance(network).delete(
-  //     `${getEnvApi()}/chain/${appId}/${data.id}/`,
-  //     {
-  //       data,
-  //     }
-  //   )
-  // }
 }
 
 function setDefaultChain(appId: number, data: any, network: Network) {
-  // if (network === 'mainnet') {
   return getGatewayInstance(network).post(
     `${getEnvApi()}/chain/${appId}/default/`,
     data
   )
-  // } else {
-  //   return getGatewayInstance(network).post(
-  //     `${getEnvApi()}/chain/${appId}/default/${data.id}/`,
-  //     data
-  //   )
-  // }
 }
 
 async function getChainIDUsingRPCUrl(rpcURL: string) {
