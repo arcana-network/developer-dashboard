@@ -21,6 +21,7 @@ const emits = defineEmits([
 const chainManagementStore = useChainManagementStore()
 const { areChainsEmpty, filteredChains, gaslessChains } =
   toRefs(chainManagementStore)
+filteredChains.value.sort((a, b) => Number(a.chain_id) - Number(b.chain_id))
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const toast = useToast()
