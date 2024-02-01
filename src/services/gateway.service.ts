@@ -551,7 +551,7 @@ function getChainLogo(
 
 function addChain(appId: number, data: any, network: Network) {
   return getGatewayInstance(network).post(
-    `${getEnvApi()}/chain/${appId}/${data.id}/`,
+    `${getEnvApi()}/chain/${appId}/${data.chain_id}/`,
     data
   )
 }
