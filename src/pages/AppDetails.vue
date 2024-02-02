@@ -386,10 +386,6 @@ watch(
           v-model="currentNetwork"
           :options="NetworkOptions"
           display-field="label"
-          :disabled="
-            isProductionDashboard &&
-            appsStore.app(selectedAppId).chain_type === 'solana'
-          "
           class="app-details__network-dropdown"
           @change="(_, option) => onNetworkSwitch(option)"
         />
