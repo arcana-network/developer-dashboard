@@ -546,7 +546,7 @@ function getChainLogo(
   const type = chainType?.toLowerCase() === 'solana' ? 'solana' : 'EVM'
   return `${api.gateway[network]}${getEnvApi(
     'v2'
-  )}/chain/logo/${chainId}/${type}`
+  )}/chain/logo/${chainId}/${type}/`
 }
 
 function addChain(appId: number, data: any, network: Network) {
