@@ -6,7 +6,7 @@ import RedirectURI from '@/components/app-configure/auth/RedirectURI.vue'
 import SocialAuthProvider from '@/components/app-configure/auth/SocialAuthProvider.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
-import { GLOBAL_KEYSPACE, isProductionDashboard } from '@/utils/constants'
+import { GLOBAL_KEYSPACE } from '@/utils/constants'
 
 const route = useRoute()
 const appId = Number(route.params.appId)
@@ -14,9 +14,6 @@ const appsStore = useAppsStore()
 const app = appsStore.app(appId)
 
 const keyspace = app.keyspace
-const network = app.network
-
-const disableMainnetNetwork = network === 'mainnet' && !isProductionDashboard
 </script>
 
 <template>
@@ -25,7 +22,7 @@ const disableMainnetNetwork = network === 'mainnet' && !isProductionDashboard
       <RedirectURI />
       <div class="relative">
         <div
-          v-if="keyspace === GLOBAL_KEYSPACE && disableMainnetNetwork"
+          v-if="keyspace === GLOBAL_KEYSPACE"
           class="absolute bg-[#1F1F1F] opacity-90 w-full h-full flex justify-center items-center z-[999]"
         >
           <div
