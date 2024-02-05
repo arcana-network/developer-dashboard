@@ -2,6 +2,7 @@
 import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter, type RouteRecordName } from 'vue-router'
 
+import AppBanner from '@/components/AppBanner.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -121,6 +122,7 @@ onMounted(async () => {
 
 <template>
   <div class="flex flex-col">
+    <AppBanner />
     <main class="flex divide-x-[1px] divide-[#8d8d8d33]">
       <LandingDescriptor />
       <section class="grid place-items-center w-full">

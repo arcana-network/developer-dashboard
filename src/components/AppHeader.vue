@@ -3,6 +3,7 @@ import { onMounted, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
+import AppBanner from '@/components/AppBanner.vue'
 import AppNotifications from '@/components/AppNotifications.vue'
 import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -13,7 +14,6 @@ import { useClickOutside } from '@/use/clickOutside'
 import { HelpItems, ProfileItems } from '@/utils/constants'
 
 const router = useRouter()
-const canShowBanner = ref(false)
 const hideHeader = ref(false)
 const showHelpMenu = ref(false)
 const showProfileMenu = ref(false)
@@ -49,7 +49,6 @@ useClickOutside(notification_menu, () => {
 })
 
 onMounted(() => {
-  canShowBanner.value = false
   document.querySelector('#app')?.addEventListener('scroll', handleScroll)
 })
 
@@ -98,6 +97,7 @@ function toggleNotifications() {
 
 <template>
   <section class="header-section" :class="hideHeader ? 'hide-header' : ''">
+    <AppBanner />
     <header class="flex" :class="{ container: props.container }">
       <div class="logo" @click.stop="onLogoClick">
         <img :src="ArcanaLogo" alt="Arcana Logo" />

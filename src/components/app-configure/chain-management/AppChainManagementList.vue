@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs } from 'vue'
+import { ref, toRefs, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import ChainFallbackLogo from '@/assets/chain-fallback-logo.png'
@@ -112,13 +112,17 @@ function isGaslessSupport(chainId: number) {
       </thead>
       <tbody>
         <tr
-          v-for="chain in filteredChains"
+          v-for="chain in filteredChains.sort(
+            (a, b) => Number(a.chain_id) - Number(b.chain_id)
+          )"
           :key="JSON.stringify(chain)"
           class="hover:bg-[#363636]"
         >
           <td>
             <img
-              :src="getChainLogo(chain.chain_id, app.network)"
+              :src="
+                getChainLogo(chain.chain_id, chain.compatibility, app.network)
+              "
               alt="chain logo"
               class="w-8"
               @error="onChainLogoError"
