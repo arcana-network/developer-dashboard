@@ -126,10 +126,7 @@ async function handleSave() {
                   @blur="isEdited = true"
                 />
               </div>
-              <div
-                v-if="appNetwork !== 'mainnet'"
-                class="flex flex-col space-y-3"
-              >
+              <div class="flex flex-col space-y-3">
                 <span>Wallet UI Mode</span>
                 <VTextField
                   :model-value="chosenWalletUIMode"
