@@ -23,6 +23,7 @@ import {
   unlimitedUserLimit,
   MAX_DATA_TRANSFER_BYTES,
 } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 
 type UserLimitKind = 'Unlimited' | 'Limited'
 
@@ -125,21 +126,21 @@ function convertUserLimits() {
 
 async function handleSave() {
   try {
-    loaderStore.showLoader('Saving user limits...')
+    loaderStore.showLoader(content.USER_LIMITS.SAVING)
     const store = { ...app.store }
     store.userLimits = {
       storage: { ...storageLimit.value },
       bandwidth: { ...bandwidthLimit.value },
     }
     await updateApp(appId, { store })
-    toast.success('Saved user limits')
-    loaderStore.showLoader('Saving user limits in smart contract...')
+    toast.success(content.USER_LIMITS.SUCCESS)
+    loaderStore.showLoader(content.USER_LIMITS.SAVING_BLOCKCHAIN)
     const { storage, bandwidth } = convertUserLimits()
     await setDefaultLimit(storage, bandwidth)
-    toast.success('User limits saved in blockchain')
+    toast.success(content.USER_LIMITS.SAVING_BLOCKCHAIN_SUCCESS)
     app.store.userLimits = store.userLimits
   } catch (e) {
-    toast.error('Error occured while saving the user limits.')
+    toast.error(errors.USER_LIMITS.ERROR)
   } finally {
     loaderStore.hideLoader()
     isEdited.value = false

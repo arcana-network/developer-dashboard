@@ -23,6 +23,7 @@ import { useGaslessStore } from '@/stores/gasless.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useWalletStore } from '@/stores/wallet.store'
 import { connectWallet } from '@/utils/connectToMetaMask'
+import { content, errors } from '@/utils/content'
 
 type DepositType = 'deposit' | 'withdraw'
 type SmartContractFormType = 'add' | 'edit'
@@ -53,7 +54,7 @@ const gastankInfoForSwitchingAddress: Ref<object | null> = ref(null)
 
 async function fetchGastankList() {
   try {
-    showLoader('Please wait')
+    showLoader(errors.GENERIC.WAIT)
     const appId = route.params.appId
     const app = appStore.app(appId)
     await gaslessStore.getGastankList(appId, app.network)
@@ -69,7 +70,7 @@ onMounted(fetchGastankList)
 async function onFormSubmit(formData: object) {
   try {
     showForm.value = false
-    showLoader('Please wait')
+    showLoader(errors.GENERIC.WAIT)
     const appId = route.params.appId
     const app = appStore.app(appId)
     const payload = {
@@ -83,9 +84,10 @@ async function onFormSubmit(formData: object) {
     const gasTankInfo = (await addGastank(payload, app.network)).data
     const gasTankId = gasTankInfo.ID
     await setupGasTank(gasTankId)
-    toast.success('Gas tank added successfully')
+    toast.success(content.GAS_TANK.ADDED)
   } catch (e) {
-    const errorMessage = e.response?.data?.err || 'Something went wrong'
+    const errorMessage =
+      e.response?.data?.err || errors.GENERIC.SOMETHING_WENT_WRONG
     toast.error(errorMessage)
   } finally {
     await fetchGastankList()
@@ -94,7 +96,7 @@ async function onFormSubmit(formData: object) {
 }
 
 async function setupGasTank(gasTankId: number) {
-  showLoader('setting up gastank...')
+  showLoader(content.GAS_TANK.SETUP)
   const appId = route.params.appId
   const app = appStore.app(appId)
   const { data } = (await getFundingMessage(app.network, appId as string)).data
@@ -104,7 +106,7 @@ async function setupGasTank(gasTankId: number) {
   const owner = await wallet.getAddress()
   const signature = await wallet.signMessage(fundingMessage)
   await updateSignature(owner, gasTankId, signature, app.network)
-  toast.success('Gas tank setup is complete')
+  toast.success(content.GAS_TANK.SETUP_COMPLETE)
 }
 
 function onSearch(value: string) {
@@ -155,7 +157,7 @@ async function toggleChainStatus(info: object) {
   showAddressSwitchConfirmation.value = false
   gastankInfoForSwitchingAddress.value = null
   try {
-    showLoader('Toggling...')
+    showLoader(content.GENERIC.TOGGLING)
     const appId = route.params.appId
     const app = appStore.app(appId)
     const { id: tankId, enabled } = info
@@ -163,7 +165,7 @@ async function toggleChainStatus(info: object) {
     await changeGastankStatus(tankId, status, app.network)
     await fetchGastankList()
   } catch (e) {
-    console.log(e, 'error')
+    console.log(e, errors.GENERIC.ERROR)
   } finally {
     hideLoader()
   }

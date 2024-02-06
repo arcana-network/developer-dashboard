@@ -8,6 +8,7 @@ import { fetchAndStoreConfig } from '@/services/gateway.service'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import constants from '@/utils/constants'
+import { content } from '@/utils/content'
 
 const loaderStore = useLoaderStore()
 const router = useRouter()
@@ -28,7 +29,7 @@ onBeforeMount(async () => {
     isAuthLoaded.value = true
     return router.push({ name: 'AppDown' })
   }
-  loaderStore.showLoader('Initializing Arcana Auth SDK...')
+  loaderStore.showLoader(content.INITIALISATION)
   await fetchAndStoreConfig()
   await arcanaAuth.init()
   isAuthLoaded.value = true

@@ -10,6 +10,7 @@ import { updateApp } from '@/services/gateway.service'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
+import { content, errors } from '@/utils/content'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
@@ -60,12 +61,12 @@ async function handleSave() {
     wallet.websiteDomain = walletWebsiteDomain.value
     wallet.selectedTheme = selectedTheme.value.value
     auth.wallet = wallet
-    loaderStore.showLoader('Saving wallet theme...')
+    loaderStore.showLoader(content.WALLET.THEME.SAVING)
     await updateApp(appId, { auth }, app.network)
-    toast.success('Saved wallet theme')
+    toast.success(content.WALLET.THEME.SUCCESS)
     app.auth.wallet = auth.wallet
   } catch (e) {
-    toast.error('Error occured while saving the wallet theme.')
+    toast.error(errors.WALLET.THEME.ERROR)
   } finally {
     loaderStore.hideLoader()
     isEdited.value = false
