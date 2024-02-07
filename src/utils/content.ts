@@ -16,7 +16,7 @@ const content = {
   },
   INITIALISATION: 'Initializing Arcana Auth SDK...',
   KEYSPACE: {
-    SAVED: 'Saving keyspace preference...',
+    SAVING: 'Saving keyspace preference...',
     SUCCESS: 'Keyspace preference saved successfully.',
   },
   VERIFICATION: {

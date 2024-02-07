@@ -36,7 +36,7 @@ const chosenWalletUIMode = WalletUIModes.find(
 async function handleSave() {
   try {
     showWarning.value = false
-    loaderStore.showLoader(content.KEYSPACE.SAVED)
+    loaderStore.showLoader(content.KEYSPACE.SAVING)
     await updateApp(app.id, { keyspace: selectedKeyspace.value }, app.network)
     await setKeyspace(app.id, selectedKeyspace.value === 'global')
     app.keyspace = selectedKeyspace.value
