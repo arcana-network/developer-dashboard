@@ -13,6 +13,7 @@ import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { socialLogins, DOCS_URL } from '@/utils/constants'
 import type { SocialAuthVerifier } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 
 const DEFAULT_SELECTED_AUTH_PROVIDER = socialLogins[0].verifier
 const appsStore = useAppsStore()
@@ -86,7 +87,7 @@ function handleCancel() {
 
 async function handleSave() {
   try {
-    loaderStore.showLoader('Saving social auth credentials...')
+    loaderStore.showLoader(content.SOCIAL_AUTH.SAVING)
     const { auth } = app
     const social = socialAuthRef
       .map((authRef) => {
@@ -105,10 +106,10 @@ async function handleSave() {
     auth.social = social
     await updateApp(appId, { auth }, app.network)
     await deleteCred(appId, authToRemove, app.network)
-    toast.success('Saved social auth credentials')
+    toast.success(content.SOCIAL_AUTH.SUCCESS)
     app.auth.social = [...social]
   } catch (e) {
-    toast.error('Error occured while saving the social auth.')
+    toast.error(errors.SOCIAL_AUTH.ERROR)
   } finally {
     loaderStore.hideLoader()
   }
