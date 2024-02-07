@@ -13,6 +13,7 @@ import { updateSelectedChainType } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { errors } from '@/utils/content'
 
 type FormAction = 'add' | 'edit'
 
@@ -33,7 +34,7 @@ const selectedChainTypeCurve = computed(() => {
 
 onMounted(async () => {
   try {
-    showLoader('Please wait')
+    showLoader(errors.GENERIC.WAIT)
     await fetchAppChains()
   } catch (e) {
     console.log({ e })
@@ -62,7 +63,7 @@ function hideForm() {
 async function onChainFormSubmit(formData: object) {
   try {
     showForm.value = false
-    showLoader('Please wait')
+    showLoader(errors.GENERIC.WAIT)
     const appId = Number(route.params.appId)
     const app = appStore.app(appId)
     if (formAction.value === 'add')
@@ -70,7 +71,8 @@ async function onChainFormSubmit(formData: object) {
     if (formAction.value === 'edit')
       await chainManagementStore.editAppChain(appId, formData, app.network)
   } catch (e: any) {
-    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    const errorMessage =
+      e.response?.data?.msg || errors.GENERIC.SOMETHING_WENT_WRONG
     toast.error(errorMessage)
   } finally {
     await fetchAppChains()
@@ -88,7 +90,7 @@ async function deleteChain() {
   const app = appStore.app(appId)
   try {
     showDeleteChainModal.value = false
-    showLoader('Please wait')
+    showLoader(errors.GENERIC.WAIT)
     const appId = Number(route.params.appId)
     await chainManagementStore.deleteAppChain(
       appId,
@@ -96,7 +98,8 @@ async function deleteChain() {
       app.network
     )
   } catch (e: any) {
-    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    const errorMessage =
+      e.response?.data?.msg || errors.GENERIC.SOMETHING_WENT_WRONG
     toast.error(errorMessage)
   } finally {
     await fetchAppChains()
@@ -112,14 +115,15 @@ async function setDefaultChain({ id }: { id: string }) {
   const appId = Number(route.params.appId)
   const app = appStore.app(appId)
   try {
-    showLoader('Please wait')
+    showLoader(errors.GENERIC.WAIT)
     await chainManagementStore.setAppDefaultChain(
       appId,
       Number(id),
       app.network
     )
   } catch (e: any) {
-    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    const errorMessage =
+      e.response?.data?.msg || errors.GENERIC.SOMETHING_WENT_WRONG
     toast.error(errorMessage)
   } finally {
     await fetchAppChains()
@@ -131,14 +135,15 @@ async function toggleChainStatus(chainData: object) {
   const appId = Number(route.params.appId)
   const app = appStore.app(appId)
   try {
-    showLoader('Please wait')
+    showLoader(errors.GENERIC.WAIT)
     await chainManagementStore.toggleAppChainStatus(
       appId,
       chainData,
       app.network
     )
   } catch (e: any) {
-    const errorMessage = e.response?.data?.msg || 'Something went wrong'
+    const errorMessage =
+      e.response?.data?.msg || errors.GENERIC.SOMETHING_WENT_WRONG
     toast.error(errorMessage)
   } finally {
     await fetchAppChains()

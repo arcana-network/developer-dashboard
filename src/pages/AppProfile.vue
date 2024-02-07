@@ -22,6 +22,7 @@ import {
 } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { content, errors } from '@/utils/content'
 
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
@@ -94,13 +95,13 @@ async function onUpdateOrganization() {
   organisationDetails.value.sizeErrorMessage = ''
 
   try {
-    loaderStore.showLoader('Updating Profile details...')
+    loaderStore.showLoader(content.GENERIC.UPDATING)
     await updateOrganization({
       name: organisationDetails.value.name,
       size,
       country: organisationDetails.value.country,
     })
-    toast.success('Profile details updated')
+    toast.success(content.GENERIC.UPDATED)
     organisationDetailsCopy = {
       name: organisationDetails.value.name,
       size,
@@ -109,9 +110,7 @@ async function onUpdateOrganization() {
     organisationDetails.value = { ...organisationDetailsCopy }
   } catch (e) {
     console.error(e)
-    toast.error(
-      'An error occurred while saving the profile details. Please try again or contact support'
-    )
+    toast.error(errors.GENERIC.ERROR)
   } finally {
     loaderStore.hideLoader()
   }
@@ -231,27 +230,27 @@ function resetOrganisationDetails() {
 
 async function updateBillingDetails() {
   if (!billingDetails.value.addressLine1) {
-    return toast.error('Address line 1 is required')
+    return toast.error(content.BILLING.DETAILS.ADDRESS)
   }
   if (!billingDetails.value.city) {
-    return toast.error('City is required')
+    return toast.error(content.BILLING.DETAILS.CITY)
   }
   if (!billingDetails.value.state) {
-    return toast.error('State is required')
+    return toast.error(content.BILLING.DETAILS.STATE)
   }
   if (!billingDetails.value.zipCode) {
-    return toast.error('Zip code is required')
+    return toast.error(content.BILLING.DETAILS.ZIP)
   }
   if (
     billingDetails.value.zipCode.length < 4 ||
     billingDetails.value.zipCode.length > 10
   ) {
-    return toast.error('Invalid zip code')
+    return toast.error(content.BILLING.DETAILS.INVALID_ZIP)
   }
   if (!billingDetails.value.zipCode) {
-    return toast.error('Country is required')
+    return toast.error(content.BILLING.DETAILS.COUNTRY)
   }
-  loaderStore.showLoader('Saving the billing address...')
+  loaderStore.showLoader(content.BILLING.DETAILS.SAVING)
   await updateBillingAddress({
     city: billingDetails.value.city,
     country: billingDetails.value.country,
@@ -272,7 +271,7 @@ async function updateBillingDetails() {
   billingDetails.value = { ...billingDetailsCopy }
   loaderStore.hideLoader()
 
-  toast.success('Billing address saved')
+  toast.success(content.BILLING.DETAILS.SAVED)
 }
 
 function hasBillingAddress(details?: typeof billingDetailsCopy) {
@@ -306,15 +305,15 @@ function isOrganisationDetailsSame() {
 
 async function submitCard() {
   if (!cardName.value) {
-    return toast.error('Your card name is incomplete.')
+    return toast.error(content.BILLING.CARD.NAME_INCOMPLETE)
   }
   if (!hasBillingAddress()) {
-    return toast.error('Enter the billing address to continue')
+    return toast.error(content.BILLING.CARD.ENTER_ADDRESS)
   }
   if (!billingDetails.value.isPresentInServer) {
-    return toast.error('Save the billing address to continue')
+    return toast.error(content.BILLING.CARD.SAVE_PLEASE)
   }
-  loaderStore.showLoader('Adding the card...')
+  loaderStore.showLoader(content.BILLING.CARD.ADDING)
   const { token, error } = await stripe.createToken(cardNumber, {
     name: cardName.value,
   })
@@ -322,7 +321,7 @@ async function submitCard() {
     try {
       await addCard(token.id)
       await fetchCardsData()
-      toast.success('Card saved successfully')
+      toast.success(content.BILLING.CARD.SAVED)
     } catch (e) {
       toast.error(e as string)
     }
@@ -334,7 +333,7 @@ async function submitCard() {
 
 async function handleDeleteProceed() {
   showDeleteCardModal.value = false
-  loaderStore.showLoader('Deleting the card...')
+  loaderStore.showLoader(content.BILLING.CARD.DELETE)
   await deleteCard(cardDetails.value.cardId)
   cardDetails.value = {
     cardName: '',

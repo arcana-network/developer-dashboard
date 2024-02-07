@@ -10,6 +10,7 @@ import { getChainLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
+import { content, errors } from '@/utils/content'
 
 const emits = defineEmits([
   'edit',
@@ -51,12 +52,12 @@ useClickOutside(showRowOptions_menu, () => {
 function onClickOfOption(option: number, id: string, chain: any) {
   if (option === 0) emits('edit', { id })
   if (option === 1) {
-    if (chain.default_chain) toast.error("Can't delete Default chain")
+    if (chain.default_chain) toast.error(errors.CHAIN_MANAGEMENT.DEFAULT)
     else emits('delete', { id })
   }
   if (option === 2) {
     if (!chain.status) {
-      toast.error('Please enable the chain and try again')
+      toast.error(errors.CHAIN_MANAGEMENT.ENABLE)
     } else emits('set-as-default', { id })
   }
 

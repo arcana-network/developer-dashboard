@@ -13,6 +13,7 @@ import { submitVerificationForm } from '@/services/gateway.service'
 import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { NetworkName } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 import { isValidEmail } from '@/utils/validation'
 
 type VerificationFormProps = {
@@ -42,34 +43,33 @@ const formData = reactive({
 async function handleSubmit() {
   error.value = ''
   if (!formData.companyName.trim()) {
-    return (error.value = 'Company name is required')
+    return errors.FORM.COMPANY_NAME
   }
   if (!formData.projectName.trim()) {
-    return (error.value = 'Project name is required')
+    return errors.FORM.PROJECT_NAME
   }
   if (!formData.companyLocation.trim()) {
-    return (error.value = 'Company location is required')
+    return errors.FORM.COMPANY_LOCATION
   }
   if (!formData.contactName.trim()) {
-    return (error.value = 'Contact name is required')
+    return errors.FORM.CONTACT_NAME
   }
   if (!formData.contactEmail.trim()) {
-    return (error.value = 'Contact email is required')
+    return errors.FORM.CONTACT_EMAIL
   }
   if (!isValidEmail(formData.contactEmail)) {
-    return (error.value =
-      'Invalid contact email. Please enter a valid email address')
+    return errors.FORM.VALID_MAIL
   }
   if (!formData.appUrl.trim()) {
-    return (error.value = 'Website or app url is required')
+    return errors.FORM.URL
   }
   if (!formData.projectDescription.trim()) {
-    return (error.value = 'A short project description is required')
+    return errors.FORM.DESCRIPTION
   }
   if (formData.projectDescription.length > 160) {
-    return (error.value = 'Project Description should be less than 160 words')
+    return errors.FORM.DESCRIPTION_LENGTH
   }
-  loaderStore.showLoader('Submitting the form for verification...')
+  loaderStore.showLoader(content.VERIFICATION.FORM_SUBMIT)
   try {
     const app = appsStore.app(props.appId)
     await submitVerificationForm(app.network, {
@@ -86,10 +86,10 @@ async function handleSubmit() {
       app_url: formData.appUrl,
       description: formData.projectDescription,
     })
-    toast.success('Form submitted')
+    toast.success(content.VERIFICATION.FORM_SUCCESS)
     emit('submitted')
   } catch (e) {
-    toast.error('Error occurred while submitting the form. Try again.')
+    toast.error(errors.FORM.SUBMIT)
   } finally {
     loaderStore.hideLoader()
   }

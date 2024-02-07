@@ -15,6 +15,7 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { chainTypes } from '@/utils/chainTypes'
 import { WalletUIModes } from '@/utils/constants'
+import { errors } from '@/utils/content'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
@@ -60,7 +61,7 @@ async function handleCreateApp() {
     emit('close')
   } catch (e) {
     console.error(e)
-    toast.error('Error occurred while creating app')
+    toast.error(errors.APP.APP_DETAILS.ERROR_CREATING)
   } finally {
     showLoader.value = false
   }

@@ -10,6 +10,7 @@ import { useToast } from '@/components/lib/VToast'
 import { deleteApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { content, errors } from '@/utils/content'
 
 const router = useRouter()
 const loaderStore = useLoaderStore()
@@ -34,7 +35,7 @@ function handleProceedDeletion() {
 async function handleAppDeletion() {
   showDeleteTimerPopup.value = false
   emit('close')
-  loaderStore.showLoader('Deleting App...')
+  loaderStore.showLoader(content.APP.DELETE_APP.DELETING)
   try {
     const appId = props.appId as number
     const app = appsStore.app(appId)
@@ -47,13 +48,11 @@ async function handleAppDeletion() {
     if (app.global_id) {
       appsStore.deleteApp(app.global_id, globalAppNetwork)
     }
-    toast.success('App deleted successfully')
+    toast.success(content.APP.DELETE_APP.SUCCESS)
     router.push({ name: 'ManageApps' })
   } catch (e) {
     console.error(e)
-    toast.error(
-      'Unable to delete the app at the moment. Please try again or contact support'
-    )
+    toast.error(errors.APP.DELETE_APP.ERROR)
   } finally {
     loaderStore.hideLoader()
   }
