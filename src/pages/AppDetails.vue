@@ -36,6 +36,7 @@ import {
   NetworkName,
   isProductionDashboard,
 } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
@@ -107,7 +108,7 @@ function switchTab(tab: string) {
 onBeforeMount(async () => {
   const appId = Number(route.params.appId)
   const app = appsStore.app(appId)
-  loaderStore.showLoader('Fetching app config')
+  loaderStore.showLoader(content.APP.APP_DETAILS.FETCH_CONFIG)
   await appsStore.fetchAndStoreAppConfig(appId, app.network)
   const address = appsStore.app(appId).address
   createTransactionSigner(address, app.network)
@@ -186,7 +187,7 @@ async function handleCreateMainnetApp({
 }) {
   try {
     showMainnetConfirmation.value = false
-    loaderStore.showLoader('Creating app...')
+    loaderStore.showLoader(content.APP.APP_DETAILS.CREATING)
     const testnetAppId = Number(route.params.appId)
     const testnetApp = appsStore.app(testnetAppId)
 
@@ -232,7 +233,7 @@ async function handleCreateMainnetApp({
   } catch (e) {
     console.error(e)
     currentNetwork.value = NetworkOptions[0]
-    toast.error('Error occured while creating mainnet app')
+    toast.error(errors.APP.APP_DETAILS.ERROR_CREATING_MAINNET)
   } finally {
     loaderStore.hideLoader()
   }

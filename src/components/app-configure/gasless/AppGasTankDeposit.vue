@@ -11,6 +11,7 @@ import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useGaslessStore } from '@/stores/gasless.store'
 import { useWalletStore } from '@/stores/wallet.store'
 import { connectWallet } from '@/utils/connectToMetaMask'
+import { content } from '@/utils/content'
 
 const selectedGasTank = ref(null)
 const gaslessStore = useGaslessStore()
@@ -148,7 +149,7 @@ async function withdrawHandler() {
 
 async function connectToWallet(chainId: number) {
   try {
-    showLoader('connecting to wallet...')
+    showLoader(content.GENERIC.CONNECTING)
     const provider = await connectWallet(chainId, chainStore.allChains)
     walletStore.setWalletProvider(provider)
     isConnected.value = true

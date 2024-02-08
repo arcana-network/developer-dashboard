@@ -13,6 +13,7 @@ import {
 } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useGaslessStore } from '@/stores/gasless.store'
+import { content, errors } from '@/utils/content'
 
 const emits = defineEmits(['close'])
 const contractName = ref('')
@@ -70,7 +71,7 @@ function extractValidABI(abiList: Array<object>, enabledMethods = []) {
 }
 
 async function fetchAbi() {
-  showLoader('Fetching ABI...')
+  showLoader(content.GENERIC.ABI)
   try {
     const depositTankId = props.depositTankId
     const selectedGasTank = gaslessStore.gastankList.find((item) => {
@@ -85,7 +86,7 @@ async function fetchAbi() {
   } catch (e) {
     if (e?.response?.data?.err) {
       toast.error(e?.response?.data?.err)
-    } else toast.error('Failed to fetch ABI')
+    } else toast.error(errors.GENERIC.ABI)
   } finally {
     hideLoader()
   }
@@ -146,24 +147,24 @@ function getPayload() {
 
 async function save() {
   try {
-    showLoader('Creating Smart Contract')
+    showLoader(content.SMART_CONTRACT.CREATING)
     const appId = route.params.appId
     const app = appStore.app(appId)
     const payload = getPayload()
 
     if (props.formType === 'edit') {
       await editSmartContract(payload, app.network)
-      toast.success('Whitelist edited successfully')
+      toast.success(content.SMART_CONTRACT.WHITELIST_EDIT)
     }
     if (props.formType === 'add') {
       await createSmartContract(payload, app.network)
-      toast.success('Smart Contract created successfully')
+      toast.success(content.SMART_CONTRACT.CREATED)
     }
     emits('close')
   } catch (e) {
     if (e?.response?.data?.err) {
       toast.error(e?.response?.data?.err)
-    } else toast.error('Failed to Update or Create')
+    } else toast.error(content.SMART_CONTRACT.FAILED)
   } finally {
     hideLoader()
   }

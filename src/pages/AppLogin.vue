@@ -14,6 +14,7 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
+import { content, errors } from '@/utils/content'
 import { generateLoginInfo } from '@/utils/signerUtils'
 import { isValidEmail } from '@/utils/validation'
 
@@ -34,9 +35,7 @@ async function launchLogin(type: string) {
   try {
     if (type === 'passwordless') {
       if (!hasValidEmail.value) return
-      loaderStore.showLoader(
-        `Click on the login link sent to your email address`
-      )
+      loaderStore.showLoader(content.APP.LOGIN.CLICK)
       await arcanaAuth.loginWithLink(email.value)
     } else {
       loaderStore.showLoader(`Signing with ${capitalize(type)}`)
@@ -51,7 +50,7 @@ async function launchLogin(type: string) {
 
 async function fetchAndStoreDetails() {
   try {
-    loaderStore.showLoader('Fetching user info...')
+    loaderStore.showLoader(content.APP.LOGIN.FETCHING)
     await fetchAndStoreUserInfo()
     await appsStore.fetchAndStoreAllApps('testnet')
     await appsStore.fetchAndStoreAllApps('mainnet')
@@ -73,7 +72,7 @@ async function fetchAndStoreDetails() {
 
 async function fetchAndStoreUserInfo() {
   try {
-    loaderStore.showLoader('Signing In...')
+    loaderStore.showLoader(content.GENERIC.SIGNING)
     const userInfo = await arcanaAuth.fetchUserDetails()
     const loginInfoTestnet = await generateLoginInfo('testnet')
     const accessTokenTestnet = await loginUser(
@@ -111,9 +110,9 @@ async function fetchAndStoreUserInfo() {
 
 onMounted(async () => {
   if (await arcanaAuth.isLoggedIn()) {
-    loaderStore.showLoader('Connecting wallet...')
+    loaderStore.showLoader(content.GENERIC.SIGNING)
     arcanaAuth.getProvider().on('connect', async () => {
-      loaderStore.showLoader('Signing in...')
+      loaderStore.showLoader(content.GENERIC.SIGNING)
       await fetchAndStoreDetails()
     })
   }

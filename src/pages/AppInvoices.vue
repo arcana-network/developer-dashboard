@@ -14,6 +14,7 @@ import {
   getAuthOverview,
 } from '@/services/gateway.service'
 import { useLoaderStore } from '@/stores/loader.store'
+import { content, errors } from '@/utils/content'
 
 const loaderStore = useLoaderStore()
 
@@ -50,7 +51,7 @@ function getDueDate() {
 
 onBeforeMount(async () => {
   try {
-    loaderStore.showLoader('Fetching invoices...')
+    loaderStore.showLoader(content.INVOICES.FETCHING)
     const appsOverview = (await getAuthOverview('mainnet')).data
     if (appsOverview) {
       totalBill.value = appsOverview.bill
@@ -59,7 +60,7 @@ onBeforeMount(async () => {
     if (cards?.length) {
       selectedCard.value = `Card Ending ${cards[0].last4}`
     } else {
-      selectedCard.value = 'No card added'
+      selectedCard.value = errors.INVOICES.CARD_ERROR
     }
     const invoiceData = (await listInvoices('mainnet')).data
     if (invoiceData) {
