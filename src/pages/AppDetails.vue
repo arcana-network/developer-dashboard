@@ -121,7 +121,7 @@ onBeforeMount(async () => {
 async function onLogout() {
   await logout()
   localStorage.clear()
-  router.push({ name: 'Login' })
+  await router.push({ name: 'Login' })
   window.location.reload()
 }
 
