@@ -100,6 +100,7 @@ function isGaslessSupport(chainId: number) {
     >
       <thead class="border-b-[1px] border-b-[#363636]">
         <tr class="text-[#8d8d8d]">
+          <!-- <th class="w-[10%]"><Button>A &#x2192; B</Button></th> -->
           <th class="w-[10%]"></th>
           <th class="w-[15%]">Name</th>
           <th class="w-[10%]">Chain ID</th>
@@ -112,9 +113,16 @@ function isGaslessSupport(chainId: number) {
         </tr>
       </thead>
       <tbody>
-        <tr
+        <!-- <tr
           v-for="chain in filteredChains.sort(
             (a, b) => Number(a.chain_id) - Number(b.chain_id)
+          )"
+          :key="JSON.stringify(chain)"
+          class="hover:bg-[#363636]"
+        > -->
+        <tr
+          v-for="chain in filteredChains.sort((a, b) =>
+            a.name.localeCompare(b.name)
           )"
           :key="JSON.stringify(chain)"
           class="hover:bg-[#363636]"
