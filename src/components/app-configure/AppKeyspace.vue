@@ -15,6 +15,7 @@ import { setKeyspace } from '@/services/smart-contract.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { WalletUIModes } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 
 const showVerificationForm = ref(false)
 const route = useRoute()
@@ -35,17 +36,15 @@ const chosenWalletUIMode = WalletUIModes.find(
 async function handleSave() {
   try {
     showWarning.value = false
-    loaderStore.showLoader('Saving keyspace preference...')
+    loaderStore.showLoader(content.KEYSPACE.SAVING)
     await updateApp(app.id, { keyspace: selectedKeyspace.value }, app.network)
     await setKeyspace(app.id, selectedKeyspace.value === 'global')
     app.keyspace = selectedKeyspace.value
     preSelectedKeyspace.value = selectedKeyspace.value
-    toast.success('Keyspace preference saved successfully')
+    toast.success(content.KEYSPACE.SUCCESS)
   } catch (e) {
     console.error(e)
-    toast.error(
-      'Error occurred while saving keyspace. Try again or contact support'
-    )
+    toast.error(errors.KEYSPACE_ERROR)
   } finally {
     loaderStore.hideLoader()
   }

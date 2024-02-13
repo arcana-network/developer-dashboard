@@ -16,6 +16,7 @@ import {
   GLOBAL_KEYSPACE,
   isProductionDashboard,
 } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 
 const appsStore = useAppsStore()
 const loaderStore = useLoaderStore()
@@ -79,11 +80,11 @@ function handleInput2(value: string) {
 
 async function handleSubmit() {
   if (keyspace === GLOBAL_KEYSPACE && disableMainnetNetwork) {
-    toast.error('Login providers are disabled as you have chosen Global keys')
+    toast.error(errors.GLOBAL_KEYSPACE_ERROR)
     return
   }
   try {
-    loaderStore.showLoader('Saving Social auth credentials...')
+    loaderStore.showLoader(content.SOCIAL_AUTH.SAVING)
     await socialAuthStore.updateSocialAuthProviders(
       appId,
       AUTH_TYPE_SOCIAL,
@@ -91,10 +92,10 @@ async function handleSubmit() {
     )
     await appsStore.fetchAndStoreAppConfig(appId, app.network)
     setIamAuth()
-    toast.success('Saved Social auth credentials')
+    toast.success(content.SOCIAL_AUTH.SUCCESS)
   } catch (e) {
     console.log(e)
-    toast.error('Error occured while saving the Social auth credentials.')
+    toast.error(errors.SOCIAL_AUTH.ERROR)
   } finally {
     loaderStore.hideLoader()
   }

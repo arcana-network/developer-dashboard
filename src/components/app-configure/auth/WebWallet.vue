@@ -12,6 +12,7 @@ import { useAppsStore, type Theme } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { WalletUIModes, isProductionDashboard } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 import { isValidUrl } from '@/utils/validation'
 
 const appsStore = useAppsStore()
@@ -78,12 +79,12 @@ async function handleSave() {
     wallet.websiteDomain = walletWebsiteDomain.value
     wallet.selectedTheme = selectedTheme.value.value
     auth.wallet = wallet
-    loaderStore.showLoader('Saving wallet config...')
+    loaderStore.showLoader(content.WALLET.SAVING)
     await updateApp(appId, { auth }, app.network)
-    toast.success('Saved wallet config')
+    toast.success(content.WALLET.SUCCESS)
     app.auth.wallet = auth.wallet
   } catch (e) {
-    toast.error('Error occured while saving the wallet config.')
+    toast.error(errors.WALLET.ERROR)
   } finally {
     loaderStore.hideLoader()
     isEdited.value = false

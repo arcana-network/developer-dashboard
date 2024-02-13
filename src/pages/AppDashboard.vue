@@ -27,6 +27,7 @@ import {
 } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import chartUtils from '@/utils/chart'
+import { content, errors } from '@/utils/content'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
@@ -186,10 +187,10 @@ watch(
 async function copyAppAddress() {
   try {
     await copyToClipboard(appAddress.value)
-    toast.success('App address copied')
+    toast.success(content.GENERIC.COPY)
   } catch (e) {
     console.error(e)
-    toast.error('Failed to copy. Try again or contact support')
+    toast.error(errors.GENERIC.COPY)
   }
 }
 
