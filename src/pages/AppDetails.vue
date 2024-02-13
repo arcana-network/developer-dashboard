@@ -74,6 +74,9 @@ const toast = useToast()
 const createdMainnetAppId: Ref<AppId | null> = ref(null)
 const showMainnetSuccessPopup = ref(false)
 const isOnlyTestnet = import.meta.env.VITE_IS_ONLY_TESTNET === 'true'
+const selectedApp = computed(() => {
+  return appsStore.app(selectedAppId.value)
+})
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -387,6 +390,9 @@ watch(
           v-model="currentNetwork"
           :options="NetworkOptions"
           display-field="label"
+          :disabled="
+            selectedApp.chain_type === 'multiversx' && isProductionDashboard
+          "
           class="app-details__network-dropdown"
           @change="(_, option) => onNetworkSwitch(option)"
         />
