@@ -544,7 +544,10 @@ function getChainLogo(
   chainType: string,
   network: Network
 ) {
-  const type = chainType?.toLowerCase() === 'solana' ? 'solana' : 'EVM'
+  const type =
+    chainType?.toLowerCase() === 'evm' || !chainType?.trim()
+      ? 'EVM'
+      : chainType?.toLowerCase()
   return `${api.gateway[network]}${getEnvApi(
     'v2'
   )}/chain/logo/${chainId}/${type}/`
