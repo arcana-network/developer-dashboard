@@ -1,27 +1,23 @@
 <script lang="ts" setup>
-import { ref, onBeforeMount, type Ref, onMounted } from 'vue'
+import { ref, onBeforeMount, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
-import DeleteCardConfirmPopup from '@/components/DeleteCardConfirmPopup.vue'
-import VButton from '@/components/lib/VButton/VButton.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import VTextField from '@/components/lib/VTextField/VTextField.vue'
 import { useToast } from '@/components/lib/VToast'
 import {
   fetchProfile,
   updateOrganization,
-  addCard,
-  listCards,
-  deleteCard,
   updateBillingAddress,
   getBillingAddress,
 } from '@/services/gateway.service'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
+import { content, errors } from '@/utils/content'
 
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
@@ -45,13 +41,6 @@ let organisationDetailsCopy = {
   size: 0,
   country: '',
 }
-const cardDetails = ref({
-  cardName: '',
-  cardNumber: '',
-  expiry: '',
-  cardId: '',
-})
-const showDeleteCardModal = ref(false)
 
 const invoiceDetails = ref({
   name: '',
@@ -75,10 +64,6 @@ let billingDetailsCopy = {
   city: '',
   isPresentInServer: false,
 }
-const cardName = ref('')
-const cardNumberSelected = ref(false)
-const cardExpirySelected = ref(false)
-const cardCVCSelected = ref(false)
 
 const name = ref(authStore.name)
 const email = ref(authStore.email)
@@ -94,13 +79,13 @@ async function onUpdateOrganization() {
   organisationDetails.value.sizeErrorMessage = ''
 
   try {
-    loaderStore.showLoader('Updating Profile details...')
+    loaderStore.showLoader(content.GENERIC.UPDATING)
     await updateOrganization({
       name: organisationDetails.value.name,
       size,
       country: organisationDetails.value.country,
     })
-    toast.success('Profile details updated')
+    toast.success(content.GENERIC.UPDATED)
     organisationDetailsCopy = {
       name: organisationDetails.value.name,
       size,
@@ -109,9 +94,7 @@ async function onUpdateOrganization() {
     organisationDetails.value = { ...organisationDetailsCopy }
   } catch (e) {
     console.error(e)
-    toast.error(
-      'An error occurred while saving the profile details. Please try again or contact support'
-    )
+    toast.error(errors.GENERIC.ERROR)
   } finally {
     loaderStore.hideLoader()
   }
@@ -119,7 +102,6 @@ async function onUpdateOrganization() {
 
 onBeforeMount(async () => {
   await fetchProfileData()
-  await fetchCardsData()
   await getBillingDetails()
 })
 
@@ -148,79 +130,6 @@ async function fetchProfileData() {
   organisationDetails.value = { ...organisationDetailsCopy }
 }
 
-async function fetchCardsData() {
-  const cards = (await listCards()).data
-  if (cards?.[0]) {
-    cardDetails.value = {
-      cardName: cards[0].name,
-      cardNumber: `XXXX ... ${cards[0].last4}`,
-      expiry: `${getMonth(cards[0].exp_month)} / ${cards[0].exp_year}`,
-      cardId: cards[0].id,
-    }
-  }
-}
-
-function getMonth(month: number) {
-  if (month < 10) {
-    return `0${month}`
-  } else {
-    return `${month}`
-  }
-}
-
-let stripe: any, cardNumber: any
-
-onMounted(() => {
-  const { scrollTo } = router.currentRoute.value.params
-  if (scrollTo === 'billing') scrollToBilling()
-  if (!cardDetails.value.cardNumber) {
-    loadStripe()
-  }
-})
-
-function scrollToBilling() {
-  const element = document.getElementById('billing-details')
-  element?.scrollIntoView()
-}
-
-function loadStripe() {
-  stripe = window.Stripe(import.meta.env.VITE_ARCANA_STRIPE_API_KEY)
-  const elements = stripe.elements()
-  const style = {
-    base: {
-      fontFamily: '"Sora", sans-serif',
-      fontSmoothing: 'antialiased',
-      fontSize: '16px',
-      color: '#f7f7f7',
-      backgroundColor: 'transparent',
-      '::placeholder': {
-        color: '#393939',
-      },
-    },
-  }
-
-  cardNumber = elements.create('cardNumber', {
-    style,
-  })
-  cardNumber.mount('#card-number')
-  cardNumber.on('focus', () => (cardNumberSelected.value = true))
-  cardNumber.on('blur', () => (cardNumberSelected.value = false))
-
-  const cardExpiry = elements.create('cardExpiry', {
-    style,
-  })
-  cardExpiry.mount('#card-expiry')
-  cardExpiry.on('focus', () => (cardExpirySelected.value = true))
-  cardExpiry.on('blur', () => (cardExpirySelected.value = false))
-
-  const cardCVC = elements.create('cardCvc', {
-    style,
-  })
-  cardCVC.mount('#card-cvc')
-  cardCVC.on('focus', () => (cardCVCSelected.value = true))
-  cardCVC.on('blur', () => (cardCVCSelected.value = false))
-}
-
 function resetOrganisationDetails() {
   organisationDetails.value = { ...organisationDetailsCopy }
 
@@ -231,27 +140,27 @@ function resetOrganisationDetails() {
 
 async function updateBillingDetails() {
   if (!billingDetails.value.addressLine1) {
-    return toast.error('Address line 1 is required')
+    return toast.error(content.BILLING.DETAILS.ADDRESS)
   }
   if (!billingDetails.value.city) {
-    return toast.error('City is required')
+    return toast.error(content.BILLING.DETAILS.CITY)
   }
   if (!billingDetails.value.state) {
-    return toast.error('State is required')
+    return toast.error(content.BILLING.DETAILS.STATE)
   }
   if (!billingDetails.value.zipCode) {
-    return toast.error('Zip code is required')
+    return toast.error(content.BILLING.DETAILS.ZIP)
   }
   if (
     billingDetails.value.zipCode.length < 4 ||
     billingDetails.value.zipCode.length > 10
   ) {
-    return toast.error('Invalid zip code')
+    return toast.error(content.BILLING.DETAILS.INVALID_ZIP)
   }
   if (!billingDetails.value.zipCode) {
-    return toast.error('Country is required')
+    return toast.error(content.BILLING.DETAILS.COUNTRY)
   }
-  loaderStore.showLoader('Saving the billing address...')
+  loaderStore.showLoader(content.BILLING.DETAILS.SAVING)
   await updateBillingAddress({
     city: billingDetails.value.city,
     country: billingDetails.value.country,
@@ -272,7 +181,7 @@ async function updateBillingDetails() {
   billingDetails.value = { ...billingDetailsCopy }
   loaderStore.hideLoader()
 
-  toast.success('Billing address saved')
+  toast.success(content.BILLING.DETAILS.SAVED)
 }
 
 function hasBillingAddress(details?: typeof billingDetailsCopy) {
@@ -302,50 +211,6 @@ function isOrganisationDetailsSame() {
     organisationDetails.value.country === organisationDetailsCopy.country &&
     organisationDetails.value.size === organisationDetailsCopy.size
   )
-}
-
-async function submitCard() {
-  if (!cardName.value) {
-    return toast.error('Your card name is incomplete.')
-  }
-  if (!hasBillingAddress()) {
-    return toast.error('Enter the billing address to continue')
-  }
-  if (!billingDetails.value.isPresentInServer) {
-    return toast.error('Save the billing address to continue')
-  }
-  loaderStore.showLoader('Adding the card...')
-  const { token, error } = await stripe.createToken(cardNumber, {
-    name: cardName.value,
-  })
-  if (token) {
-    try {
-      await addCard(token.id)
-      await fetchCardsData()
-      toast.success('Card saved successfully')
-    } catch (e) {
-      toast.error(e as string)
-    }
-  } else {
-    toast.error(error.message)
-  }
-  loaderStore.hideLoader()
-}
-
-async function handleDeleteProceed() {
-  showDeleteCardModal.value = false
-  loaderStore.showLoader('Deleting the card...')
-  await deleteCard(cardDetails.value.cardId)
-  cardDetails.value = {
-    cardName: '',
-    expiry: '',
-    cardNumber: '',
-    cardId: '',
-  }
-  setTimeout(() => {
-    loadStripe()
-    loaderStore.hideLoader()
-  })
 }
 
 function isBillingCopySame() {
@@ -550,112 +415,6 @@ function handleCancel() {
           </form>
         </SettingCard>
       </section>
-      <section style="margin-top: 3em">
-        <SettingCard style="overflow: hidden">
-          <template #title>PAYMENT METHODS</template>
-          <form
-            class="payment-form"
-            :class="{
-              'hide-payment-form': !billingDetails.isPresentInServer,
-            }"
-            @submit.prevent="submitCard"
-          >
-            <VStack
-              class="flex sm-column flex-wrap justify-between payment-container"
-              gap="0.5rem"
-            >
-              <VStack direction="column" class="flex-1">
-                <VStack justify="space-between">
-                  <span class="payment-title">Card Details</span>
-                  <VButton
-                    v-if="cardDetails.cardNumber"
-                    variant="link"
-                    label="DELETE CARD"
-                    @click.stop="showDeleteCardModal = true"
-                  />
-                </VStack>
-                <div class="payment-input">
-                  <div class="flex column payment-details-input flex-1">
-                    <label for="card-name">Card Name</label>
-                    <VTextField
-                      v-if="!cardDetails.cardNumber"
-                      id="card-name"
-                      v-model.trim="cardName"
-                      type="text"
-                      placeholder="Name on the card"
-                      no-message
-                    />
-                    <VTextField
-                      v-else
-                      id="card-name"
-                      :model-value="cardDetails.cardName"
-                      type="text"
-                      disabled
-                      no-message
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-1">
-                    <label for="card-number">Card Number</label>
-                    <div
-                      v-if="!cardDetails.cardNumber"
-                      class="card-element"
-                      :class="{ 'stripe-focused': cardNumberSelected }"
-                    >
-                      <div id="card-number" style="flex: 1"></div>
-                    </div>
-                    <VTextField
-                      v-else
-                      id="card-number"
-                      :model-value="cardDetails.cardNumber"
-                      type="text"
-                      disabled
-                      no-message
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-1">
-                    <label for="card-expiry">Expiry Date</label>
-                    <div
-                      v-if="!cardDetails.expiry"
-                      class="card-element"
-                      :class="{ 'stripe-focused': cardExpirySelected }"
-                    >
-                      <div id="card-expiry" style="flex: 1"></div>
-                    </div>
-                    <VTextField
-                      v-else
-                      id="card-expiry"
-                      :model-value="cardDetails.expiry"
-                      type="text"
-                      disabled
-                      no-message
-                    />
-                  </div>
-                  <div class="flex column payment-details-input flex-1">
-                    <label v-if="!cardDetails.expiry" for="card-cvc">CVC</label>
-                    <div
-                      v-if="!cardDetails.expiry"
-                      class="card-element"
-                      :class="{ 'stripe-focused': cardCVCSelected }"
-                    >
-                      <div id="card-cvc" style="flex: 1"></div>
-                    </div>
-                  </div>
-                </div>
-              </VStack>
-            </VStack>
-            <ConfigureActionButtons
-              :save-disabled="!!cardDetails.cardNumber"
-              hide-cancel
-              style="margin-top: 3rem"
-            />
-          </form>
-        </SettingCard>
-      </section>
-      <DeleteCardConfirmPopup
-        v-if="showDeleteCardModal"
-        @cancel="showDeleteCardModal = false"
-        @proceed="handleDeleteProceed"
-      />
     </main>
   </div>
 </template>

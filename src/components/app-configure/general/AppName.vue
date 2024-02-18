@@ -9,6 +9,7 @@ import { updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
+import { content, errors } from '@/utils/content'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
@@ -28,12 +29,12 @@ function hasSameAppName() {
 
 async function handleSave() {
   try {
-    loaderStore.showLoader('Saving app name...')
+    loaderStore.showLoader(content.APP.APP_NAME.SAVING)
     await updateApp(appId, { name: appName.value }, app.network)
-    toast.success('Saved app name')
+    toast.success(content.APP.APP_NAME.SUCCESS)
     app.name = appName.value
   } catch (e) {
-    toast.error('Error occured while saving the app name.')
+    toast.error(errors.APP.APP_NAME.ERROR)
   } finally {
     loaderStore.hideLoader()
   }

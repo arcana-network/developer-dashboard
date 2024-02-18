@@ -36,6 +36,7 @@ import {
   NetworkName,
   isProductionDashboard,
 } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
@@ -73,6 +74,9 @@ const toast = useToast()
 const createdMainnetAppId: Ref<AppId | null> = ref(null)
 const showMainnetSuccessPopup = ref(false)
 const isOnlyTestnet = import.meta.env.VITE_IS_ONLY_TESTNET === 'true'
+const selectedApp = computed(() => {
+  return appsStore.app(selectedAppId.value)
+})
 
 useClickOutside(profile_menu, () => {
   showProfileMenu.value = false
@@ -107,7 +111,7 @@ function switchTab(tab: string) {
 onBeforeMount(async () => {
   const appId = Number(route.params.appId)
   const app = appsStore.app(appId)
-  loaderStore.showLoader('Fetching app config')
+  loaderStore.showLoader(content.APP.APP_DETAILS.FETCH_CONFIG)
   await appsStore.fetchAndStoreAppConfig(appId, app.network)
   const address = appsStore.app(appId).address
   createTransactionSigner(address, app.network)
@@ -120,7 +124,7 @@ onBeforeMount(async () => {
 async function onLogout() {
   await logout()
   localStorage.clear()
-  router.push({ name: 'Login' })
+  await router.push({ name: 'Login' })
   window.location.reload()
 }
 
@@ -186,7 +190,7 @@ async function handleCreateMainnetApp({
 }) {
   try {
     showMainnetConfirmation.value = false
-    loaderStore.showLoader('Creating app...')
+    loaderStore.showLoader(content.APP.APP_DETAILS.CREATING)
     const testnetAppId = Number(route.params.appId)
     const testnetApp = appsStore.app(testnetAppId)
 
@@ -232,7 +236,7 @@ async function handleCreateMainnetApp({
   } catch (e) {
     console.error(e)
     currentNetwork.value = NetworkOptions[0]
-    toast.error('Error occured while creating mainnet app')
+    toast.error(errors.APP.APP_DETAILS.ERROR_CREATING_MAINNET)
   } finally {
     loaderStore.hideLoader()
   }
@@ -386,6 +390,9 @@ watch(
           v-model="currentNetwork"
           :options="NetworkOptions"
           display-field="label"
+          :disabled="
+            selectedApp.chain_type === 'multiversx' && isProductionDashboard
+          "
           class="app-details__network-dropdown"
           @change="(_, option) => onNetworkSwitch(option)"
         />

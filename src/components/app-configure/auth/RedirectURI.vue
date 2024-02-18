@@ -5,6 +5,7 @@ import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
+import { content, errors } from '@/utils/content'
 import copyToClipboard from '@/utils/copyToClipboard'
 
 const toast = useToast()
@@ -16,9 +17,9 @@ const redirectUri = appsStore.app(appId).auth.redirectUri
 async function copyRedirectUri() {
   try {
     await copyToClipboard(redirectUri)
-    toast.success('Copied Redirect URI to clipboard')
+    toast.success(content.REDIRECT_URI.COPIED)
   } catch (e) {
-    toast.error('Unable to copy. Please try again or contact support')
+    toast.error(errors.REDIRECT_URI.ERROR)
   }
 }
 </script>
