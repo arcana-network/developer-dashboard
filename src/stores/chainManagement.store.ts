@@ -45,6 +45,9 @@ const useChainManagementStore = defineStore('chain-management', {
         appChains.find((chain) => chain.default_chain) || appChains[0]
       if (defaultChain) return defaultChain.chain_id
     },
+    chainIDs: ({ appChains }) => {
+      return appChains.map((chain) => chain.chain_id.toString())
+    },
   },
   actions: {
     setChainType(appId: number, network: Network, chainType: string) {
