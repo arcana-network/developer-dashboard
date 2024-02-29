@@ -111,6 +111,8 @@ async function onSave(formData: object) {
   }
 }
 
+const chainIDs = chainManagementStore.chainIDs
+
 async function fetchChainIdUsingRPCUrl(rpcURL: string) {
   try {
     showLoaderRPCValidation.value = true
@@ -196,6 +198,12 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
                   :class="[formData.built_in ? 'p-0' : 'p-[10px] bg-[#313131]']"
                 >
                   {{ formData.chainId }}
+                </p>
+                <p
+                  v-if="chainIDs.find((chain) => chain === formData.chainId)"
+                  class="text-xs text-red-700"
+                >
+                  Chain Already Exists!
                 </p>
                 <p v-if="showChainIdMismatchError" class="text-xs text-red-700">
                   Chain ID doesn't match with network
