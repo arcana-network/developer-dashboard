@@ -32,6 +32,16 @@ const useChainManagementStore = defineStore('chain-management', {
           chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
       )
     },
+    defaultOrderChains: ({ appChains, chainSearchText, selectedChainType }) => {
+      return appChains
+        .filter(
+          (chain) =>
+            chain.compatibility?.toLowerCase() ===
+              selectedChainType.toLowerCase() &&
+            chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
+        )
+        .sort((a, b) => a.name.localeCompare(b.name))
+    },
     chainTypeSpecificChains:
       ({ allChains }) =>
       (chainType: string) => {
