@@ -275,8 +275,16 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
               </button>
               <button
                 class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
-                :disabled="!enableSave"
-                :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
+                :disabled="
+                  !enableSave ||
+                  chainIDs.find((chain) => chain === formData.chainId)
+                "
+                :class="[
+                  !enableSave ||
+                  chainIDs.find((chain) => chain === formData.chainId)
+                    ? 'opacity-5'
+                    : 'opacity-100',
+                ]"
                 @click.prevent="onSave(formData)"
               >
                 Save
