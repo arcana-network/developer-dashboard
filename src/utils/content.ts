@@ -118,7 +118,7 @@ const errors = {
     CONTACT_NAME: 'Contact name is required.',
     CONTACT_EMAIL: 'Contact email is required.',
     VALID_MAIL: 'Invalid Contact Email! Please enter a valid email address.',
-    URL: 'Website or App url is required.',
+    URL: 'Website or App URL is required.',
     DESCRIPTION: 'A short project description is required',
     DESCRIPTION_LENGTH: 'Project Description should be less than 160 words',
   },
@@ -127,7 +127,7 @@ const errors = {
     ERROR: 'Error occurred while saving the IAM auth credentials.',
   },
   SOCIAL_AUTH: {
-    ERROR: 'Error occurred while saving the social auth.',
+    ERROR: 'Error occurred while saving the social auth settings.',
   },
   WALLET: {
     ERROR: 'Error occurred while saving the wallet configurations.',
@@ -144,8 +144,8 @@ const errors = {
       ERROR: 'Error occurred while saving the app name.',
     },
     APP_DETAILS: {
-      ERROR_CREATING: 'Error occurred while creating mainnet app.',
-      ERROR_CREATING_MAINNET: 'Error occurred while creating mainnet app.',
+      ERROR_CREATING: 'Error occurred while creating the Mainnet app.',
+      ERROR_CREATING_MAINNET: 'Error occurred while creating the Mainnet app.',
     },
   },
   USER_LIMITS: {
@@ -156,10 +156,10 @@ const errors = {
   },
   REDIRECT_URI: {
     ERROR:
-      'Unable to copy the redirect url. Please try again or contact support.',
+      'Unable to copy the redirect URL. Please try again or contact support.',
   },
   CHAIN_MANAGEMENT: {
-    DEFAULT: 'The chain marked as 'default' cannot be deleted.',
+    DEFAULT: 'The chain marked as default cannot be deleted.',
     ENABLE: 'Please enable the chain and try again.',
   },
 }
