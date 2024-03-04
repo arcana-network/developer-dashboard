@@ -159,7 +159,7 @@ const errors = {
       'Unable to copy the redirect url. Please try again or contact support.',
   },
   CHAIN_MANAGEMENT: {
-    DEFAULT: 'The default chain cannot be deleted.',
+    DEFAULT: 'The chain marked as 'default' cannot be deleted.',
     ENABLE: 'Please enable the chain and try again.',
   },
 }
