@@ -32,6 +32,16 @@ const useChainManagementStore = defineStore('chain-management', {
           chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
       )
     },
+    defaultOrderChains: ({ appChains, chainSearchText, selectedChainType }) => {
+      return appChains
+        .filter(
+          (chain) =>
+            chain.compatibility?.toLowerCase() ===
+              selectedChainType.toLowerCase() &&
+            chain.name.toLowerCase().includes(chainSearchText.toLowerCase())
+        )
+        .sort((a, b) => a.name.localeCompare(b.name))
+    },
     chainTypeSpecificChains:
       ({ allChains }) =>
       (chainType: string) => {
@@ -44,6 +54,9 @@ const useChainManagementStore = defineStore('chain-management', {
       const defaultChain =
         appChains.find((chain) => chain.default_chain) || appChains[0]
       if (defaultChain) return defaultChain.chain_id
+    },
+    chainIDs: ({ appChains }) => {
+      return appChains.map((chain) => chain.chain_id.toString())
     },
   },
   actions: {
