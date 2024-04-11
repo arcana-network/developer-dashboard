@@ -201,7 +201,7 @@ async function updateForm() {
     appAddress: app.address,
   }
   try {
-    await updateCustomVerifier(appId as string, app.network, data)
+    await updateCustomVerifier(Number(fetchedData.value.ID), app.network, data)
     toast.success('Configuration updated successfully')
   } catch (e) {
     toast.error('Failed to update the configuration')

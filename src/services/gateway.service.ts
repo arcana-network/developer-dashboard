@@ -716,12 +716,12 @@ async function fetchCustomVerifier(appId: string | number, network: Network) {
 }
 
 async function updateCustomVerifier(
-  appId: string | number,
+  verifierId: number,
   network: Network,
   data: any
 ) {
   return getGatewayInstance(network).patch(
-    `${getEnvApi('v2')}/custom-provider/`,
+    `${getEnvApi('v2')}/custom-provider/${verifierId}`,
     data
   )
 }
