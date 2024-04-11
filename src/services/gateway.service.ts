@@ -698,6 +698,34 @@ async function updateSelectedChainType(
   )
 }
 
+async function createCustomVerifer(
+  appId: string | number,
+  network: Network,
+  data: any
+) {
+  return getGatewayInstance(network).post(
+    `${getEnvApi('v2')}/custom-provider`,
+    data
+  )
+}
+
+async function fetchCustomVerifier(appId: string | number, network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi('v2')}/custom-provider?appID=${appId}`
+  )
+}
+
+async function updateCustomVerifier(
+  verifierId: number,
+  network: Network,
+  data: any
+) {
+  return getGatewayInstance(network).patch(
+    `${getEnvApi('v2')}/custom-provider/${verifierId}`,
+    data
+  )
+}
+
 export {
   getAppConfigRequestBody,
   createApp,
@@ -758,6 +786,9 @@ export {
   editSmartContract,
   changeGastankStatus,
   updateSelectedChainType,
+  createCustomVerifer,
+  fetchCustomVerifier,
+  updateCustomVerifier,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
