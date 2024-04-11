@@ -35,6 +35,7 @@ const issuer = ref('')
 const audience = ref('')
 const idParam = ref('sub')
 const fetchedData = ref({
+  ID: '',
   jwkUrl: '',
   issuer: '',
   audience: '',
@@ -47,7 +48,9 @@ const fetchedData = ref({
   ],
 })
 
-onMounted(async () => {
+onMounted(fetchAndSetData)
+
+async function fetchAndSetData() {
   const data = await getCustomProvider()
   if (data) {
     fetchedData.value = data
@@ -62,7 +65,7 @@ onMounted(async () => {
       })
     )
   }
-})
+}
 
 function addValidationField() {
   const entries = validationFields.value
@@ -125,12 +128,15 @@ function disableSubmitButton() {
     audience.value === fetchedData.value.audience &&
     idParam.value === fetchedData.value.idParam &&
     validationFields.value.every((item, idx) => {
-      console.log(item.field, fetchedData.value.params[idx].field)
-      console.log(item.value, fetchedData.value.params[idx].value)
-      return (
-        item.field === fetchedData.value.params[idx].field &&
-        item.value === fetchedData.value.params[idx].value
-      )
+      const fetchedDataParams = fetchedData.value.params
+      if (!fetchedDataParams[idx]) {
+        return item.field === '' || item.value === ''
+      } else {
+        return (
+          item.field === fetchedData.value.params[idx].field &&
+          item.value === fetchedData.value.params[idx].value
+        )
+      }
     })
   )
 }
@@ -181,6 +187,7 @@ async function saveForm() {
   }
   try {
     await createCustomVerifer(appId as string, app.network, data)
+    await fetchAndSetData()
     toast.success('Configuration saved successfully')
   } catch (e) {
     toast.error('Failed to save the configuration')
@@ -202,6 +209,7 @@ async function updateForm() {
   }
   try {
     await updateCustomVerifier(Number(fetchedData.value.ID), app.network, data)
+    await fetchAndSetData()
     toast.success('Configuration updated successfully')
   } catch (e) {
     toast.error('Failed to update the configuration')
