@@ -157,9 +157,6 @@ div.text-field {
   display: flex;
   background: #ededec;
   border-radius: 25px;
-
-  /* box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%); */
 }
 
 .text-field.focused {
@@ -250,6 +247,7 @@ input[type='number'] {
   margin: auto 1.25rem auto 0;
   cursor: pointer !important;
 }
+
 @media only screen and (max-width: 1023px) {
   label {
     margin-bottom: 0.1rem;
