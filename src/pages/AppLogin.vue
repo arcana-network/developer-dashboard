@@ -14,7 +14,7 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useAuthStore } from '@/stores/auth.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
-import { content, errors } from '@/utils/content'
+import { content } from '@/utils/content'
 import { generateLoginInfo } from '@/utils/signerUtils'
 import { isValidEmail } from '@/utils/validation'
 
@@ -120,69 +120,81 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col bg-[#f7f7f7]">
     <AppBanner />
-    <main class="flex divide-x-[1px] divide-[#8d8d8d33]">
+    <main class="flex flex-col md:flex-row">
       <LandingDescriptor />
-      <section class="grid place-items-center w-full">
-        <div class="max-w-[640px] space-y-9 p-2 my-[5vh] lg:my-0">
-          <img
-            src="@/assets/logo.svg"
-            alt="Arcana Logo"
-            class="laptop-remove m-auto"
-          />
-          <div class="space-y-4 text-center">
-            <h1 class="text-4xl font-bold tracking-normal">Welcome</h1>
-            <h5 class="font-light text-xl">
+      <section
+        class="z-[10] lg:z-[0] grid place-items-center px-2 md:px-0 w-full md:mt-[140px]"
+      >
+        <div
+          class="max-w-[700px] md:space-y-9 p-2 py-[4vh] md:py-[10vh] lg:my-0 bg-white rounded-[25px] w-fit lg:w-[700px] h-[300px] md:h-[500px]"
+        >
+          <div
+            class="p-2 space-y-2 md:space-y-4 text-center flex flex-col items-center justify-center"
+          >
+            <h1
+              class="text-[24px] md:text-[32px] font-bold leading-7 tracking-tight md:tracking-normal text-black"
+            >
+              Welcome to Developer Dashboard
+            </h1>
+            <h5
+              class="font-light text-[12px] md:text-[1rem] text-black text-left md:text-center"
+            >
               We’ll email you a login link for a password-free sign in.
             </h5>
           </div>
           <form
-            class="flex column items-center space-y-1"
+            class="flex column items-center -space-y-4"
             @submit.prevent="launchLogin('passwordless')"
           >
             <VTextField
               v-model.trim="email"
               label="Email"
-              placeholder="Enter your email"
-              class="w-full max-w-[25rem]"
+              placeholder="someone@gmail.com"
+              class="w-full max-w-[20rem]"
+              color="white"
             />
             <VButton
-              label="SEND LINK"
-              class="w-full max-w-[18rem]"
+              label="Send Link"
+              class="w-full max-w-[20rem]"
               type="submit"
               :disabled="!hasValidEmail"
             />
           </form>
-          <section class="flex justify-center flex-wrap space-y-1">
+          <section
+            class="flex justify-center flex-wrap space-y-1 md:space-y-0 mt-5 md:mt-0"
+          >
             <div class="flex items-center">
-              <span class="font-light text-white">Or sign in with </span>
+              <span class="font-light text-[#8f8e8f] text-[11px] md:text-[14px]"
+                >Or sign in with
+              </span>
             </div>
             <div class="flex flex-wrap">
               <VTooltip title="Sign in with Google">
                 <img
-                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
                   src="@/assets/google-sso.svg"
                   @click.stop="launchLogin('google')"
                 />
               </VTooltip>
               <VTooltip title="Sign in with Github">
                 <img
-                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
-                  src="@/assets/github-sso.svg"
+                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  src="@/assets/github-sso-light.svg"
                   @click.stop="launchLogin('github')"
                 />
               </VTooltip>
               <VTooltip title="Sign in with Twitch">
                 <img
-                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
                   src="@/assets/twitch-sso.svg"
                   @click.stop="launchLogin('twitch')"
                 />
               </VTooltip>
               <VTooltip title="Sign in with Discord">
                 <img
-                  class="inline-block w-[30px] ml-8 cursor-pointer hover:opacity-80 transition-opacity duration-300"
+                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
                   src="@/assets/discord-sso.svg"
                   @click.stop="launchLogin('discord')"
                 />
@@ -191,7 +203,15 @@ onMounted(async () => {
           </section>
         </div>
       </section>
+      <img
+        src="@/assets/login-bg.png"
+        class="mobile-remove tablet-remove absolute z-[2] bottom-0 block mx-auto mt-24 md:h-[55vh]"
+      />
+      <img
+        src="@/assets/mobile-login-bg.png"
+        class="laptop-hide absolute bottom-0 block mx-auto mt-24"
+      />
     </main>
-    <AppFooter show-social-icons />
+    <AppFooter class="mobile-remove" />
   </div>
 </template>
