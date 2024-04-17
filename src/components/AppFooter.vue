@@ -31,7 +31,7 @@ const socialLinks = [
 
 <template>
   <footer
-    class="sticky top-[100vh] right-0 bottom-0 left-0 py-[0.75rem] px-[2rem] bg-transparent drop-shadow-[0_9px_25px_rgba(15,15,15,0.25)]"
+    class="sticky top-[100vh] right-0 bottom-0 left-0 py-3 px-8 bg-transparent drop-shadow-[0_9px_25px_rgba(15,15,15,0.25)]"
   >
     <VStack justify="space-between">
       <VStack
@@ -71,7 +71,7 @@ const socialLinks = [
           </a>
           <div class="flex flex-row ml-5">
             <a
-              class="text-[14px] font-normal mt-[2px] text-black no-underline"
+              class="text-sm font-normal mt-[2px] text-black no-underline"
               href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
               target="_blank"
             >
@@ -80,7 +80,7 @@ const socialLinks = [
             <img
               src="@/assets/arcana-logo.webp"
               alt="Arcana Logo"
-              class="ml-1 w-[100px] align-middle"
+              class="ml-1 w-24 align-middle"
             />
           </div>
         </VStack>

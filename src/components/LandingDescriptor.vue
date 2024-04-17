@@ -4,7 +4,7 @@ const docsLink = 'https://docs.arcana.network/howto/config_dapp.html'
 
 <template>
   <div
-    class="w-auto md:w-[45%] m-[2rem] md:mt-[10vh] md:ml-[50px] space-y-2 md:space-y-4"
+    class="w-auto md:w-[45%] m-8 md:mt-[10vh] md:ml-[50px] space-y-2 md:space-y-4"
   >
     <img
       src="@/assets/arcana-logo.webp"
