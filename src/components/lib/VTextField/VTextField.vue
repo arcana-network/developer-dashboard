@@ -146,19 +146,17 @@ div.form-group {
 
 label {
   margin-bottom: 0.5rem;
-  margin-left: 0.25rem;
-  font-size: 1rem;
+  margin-left: 0.5rem;
+  font-size: 0.8rem;
   font-weight: 500;
-  line-height: 1.5em;
+  line-height: 1rem;
   color: var(--text-grey);
 }
 
 div.text-field {
   display: flex;
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
-  border-radius: 10px;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+  background: #ededec;
+  border-radius: 25px;
 }
 
 .text-field.focused {
@@ -190,10 +188,10 @@ div.text-field {
 input {
   width: 100%;
   padding: 0;
-  margin: 0.875rem 1rem;
+  margin: 0.5rem 1rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--text-white);
+  color: #000;
   background: transparent;
   border: none;
   outline: none;
@@ -203,7 +201,7 @@ input {
 }
 
 input::placeholder {
-  font-size: 1rem;
+  font-size: 0.9rem;
   line-height: 1.5;
   color: #393939;
 }
@@ -217,7 +215,7 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
   box-shadow: 0 0 0 1000px #181818 inset;
-  -webkit-text-fill-color: var(--text-white);
+  -webkit-text-fill-color: var(--text-black);
 }
 
 div.text-field.icon input {
@@ -248,5 +246,37 @@ input[type='number'] {
 .input-icon {
   margin: auto 1.25rem auto 0;
   cursor: pointer !important;
+}
+
+@media only screen and (max-width: 1023px) {
+  label {
+    margin-bottom: 0.1rem;
+    margin-left: 0.7rem;
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 1rem;
+    color: var(--text-grey);
+  }
+
+  input {
+    width: 100%;
+    padding: 0;
+    margin: 0.5rem 1rem;
+    font-size: 11px;
+    line-height: 1;
+    color: #000;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+
+    --webkit-outline: none;
+  }
+
+  input::placeholder {
+    font-size: 11px;
+    line-height: 1;
+    color: #393939;
+  }
 }
 </style>
