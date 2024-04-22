@@ -43,31 +43,31 @@ const formData = reactive({
 async function handleSubmit() {
   error.value = ''
   if (!formData.companyName.trim()) {
-    return errors.FORM.COMPANY_NAME
+    return toast.error(errors.FORM.COMPANY_NAME)
   }
   if (!formData.projectName.trim()) {
-    return errors.FORM.PROJECT_NAME
+    return toast.error(errors.FORM.PROJECT_NAME)
   }
   if (!formData.companyLocation.trim()) {
-    return errors.FORM.COMPANY_LOCATION
+    return toast.error(errors.FORM.COMPANY_LOCATION)
   }
   if (!formData.contactName.trim()) {
-    return errors.FORM.CONTACT_NAME
+    return toast.error(errors.FORM.CONTACT_NAME)
   }
   if (!formData.contactEmail.trim()) {
-    return errors.FORM.CONTACT_EMAIL
+    return toast.error(errors.FORM.CONTACT_EMAIL)
   }
   if (!isValidEmail(formData.contactEmail)) {
-    return errors.FORM.VALID_MAIL
+    return toast.error(errors.FORM.VALID_MAIL)
   }
   if (!formData.appUrl.trim()) {
-    return errors.FORM.URL
+    return toast.error(errors.FORM.URL)
   }
   if (!formData.projectDescription.trim()) {
-    return errors.FORM.DESCRIPTION
+    return toast.error(errors.FORM.DESCRIPTION)
   }
   if (formData.projectDescription.length > 160) {
-    return errors.FORM.DESCRIPTION_LENGTH
+    return toast.error(errors.FORM.DESCRIPTION_LENGTH)
   }
   loaderStore.showLoader(content.VERIFICATION.FORM_SUBMIT)
   try {
