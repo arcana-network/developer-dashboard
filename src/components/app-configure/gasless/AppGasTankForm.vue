@@ -11,7 +11,7 @@ const { gaslessChains, appChains } = chainManagementStore
 const { gastankList } = useGaslessStore()
 const emits = defineEmits(['close', 'submit'])
 const supportedGaslessChains = ref([])
-const isMetaMaskInstalled = ref(window?.ethereum?.isMetaMask)
+const isMetaMaskInstalled = window?.ethereum?.isMetaMask
 
 const formData = ref({
   name: '',
