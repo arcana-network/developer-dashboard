@@ -11,6 +11,7 @@ const { gaslessChains, appChains } = chainManagementStore
 const { gastankList } = useGaslessStore()
 const emits = defineEmits(['close', 'submit'])
 const supportedGaslessChains = ref([])
+const isMetaMaskInstalled = ref(window?.ethereum?.isMetaMask)
 
 const formData = ref({
   name: '',
@@ -45,6 +46,22 @@ const enableSave = computed(() => {
   <VOverlay>
     <div class="h-full flex overflow-y-auto py-2">
       <div
+        v-if="!isMetaMaskInstalled"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] h-[230px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto text-center flex flex-col justify-center items-center"
+      >
+        <p>
+          Looks like Metamask extension is not installed, please install to add
+          gas tank
+        </p>
+        <button
+          class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
+          @click="emits('close')"
+        >
+          Close
+        </button>
+      </div>
+      <div
+        v-else
         class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
       >
         <div class="space-y-[10px]">
