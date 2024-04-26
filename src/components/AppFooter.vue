@@ -31,7 +31,7 @@ const socialLinks = [
 
 <template>
   <footer
-    class="sticky top-[100vh] right-0 bottom-0 left-0 py-[0.75rem] px-[2rem] bg-[#1f1f1f] drop-shadow-[0_9px_25px_rgba(15,15,15,0.25)]"
+    class="sticky top-[100vh] right-0 bottom-0 left-0 py-3 px-8 bg-[#1f1f1f] drop-shadow-[0_9px_25px_rgba(15,15,15,0.25)]"
   >
     <VStack justify="space-between">
       <VStack
