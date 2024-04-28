@@ -97,21 +97,21 @@ button,
 a {
   position: relative;
   min-width: 9em;
-  padding: 0.625rem;
+  padding: 0.5rem;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.5;
   text-align: center;
   cursor: pointer;
   background: none;
   border: none;
-  border-radius: 10px;
+  border-radius: 25px;
   transition: opacity 0.3s;
 }
 
 button.primary {
   color: var(--text-white);
-  background: linear-gradient(to bottom, #0085ff, #29c8fa);
+  background: #000;
 }
 
 button.primary:disabled {
@@ -181,14 +181,14 @@ progress {
   button,
   a {
     min-width: 8rem;
-    padding: 0.6rem 0.8rem;
-    font-size: 0.9rem;
-    font-weight: 600;
+    padding: 0.5rem 0.8rem;
+    font-size: 11px;
+    font-weight: 400;
     line-height: 1.5;
     text-align: center;
-    background: none;
+    background: #000;
     border: none;
-    border-radius: 10px;
+    border-radius: 25px;
   }
 }
 </style>

@@ -3,11 +3,11 @@ import { onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter, type RouteRecordName } from 'vue-router'
 
 import AppBanner from '@/components/AppBanner.vue'
-import AppFooter from '@/components/AppFooter.vue'
 import LandingDescriptor from '@/components/LandingDescriptor.vue'
-import VButton from '@/components/lib/VButton/VButton.vue'
-import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import VButtonSecondary from '@/components/lib/VButtonSecondary/VButtonSecondary.vue'
+import VTextFieldSecondary from '@/components/lib/VTextFieldSecondary/VTextFieldSecondary.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
+import LoginFooter from '@/components/LoginFooter.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import { useAppsStore } from '@/stores/apps.store'
@@ -148,14 +148,14 @@ onMounted(async () => {
             class="flex column items-center -space-y-4"
             @submit.prevent="launchLogin('passwordless')"
           >
-            <VTextField
+            <VTextFieldSecondary
               v-model.trim="email"
               label="Email"
               placeholder="someone@gmail.com"
               class="w-full max-w-[20rem]"
               color="white"
             />
-            <VButton
+            <VButtonSecondary
               label="Send Link"
               class="w-full max-w-[20rem]"
               type="submit"
@@ -212,6 +212,6 @@ onMounted(async () => {
         class="laptop-hide absolute bottom-0 block mx-auto mt-24"
       />
     </main>
-    <AppFooter class="mobile-remove" />
+    <LoginFooter class="mobile-remove" />
   </div>
 </template>
