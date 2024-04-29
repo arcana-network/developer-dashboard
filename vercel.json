@@ -1,14 +1,8 @@
 {
-  "redirects": [
+  "rewrites": [
     {
       "source": "/(.*)",
-      "destination": "/index.html",
-      "statusCode": 200
-    },
-    {
-      "source": "/:path(.*)",
-      "destination": "/index.html",
-      "statusCode": 200
+      "destination": "/"
     }
   ],
   "headers": [
