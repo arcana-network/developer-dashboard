@@ -70,7 +70,7 @@ const enableSave = computed(() => {
             Please provide the following details to setup a gas tank:
           </p>
         </div>
-        <form class="space-y-5">
+        <form class="space-y-5" @submit.prevent="onSave(formData)">
           <div class="flex flex-col space-y-2">
             <label for="network-name" class="text-xs text-[#8D8D8D]"
               >Name</label
@@ -94,16 +94,17 @@ const enableSave = computed(() => {
           </div>
           <div class="space-x-2.5 flex justify-end">
             <button
+              type="button"
               class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md"
-              @click="emits('close')"
+              @click.stop="emits('close')"
             >
               Cancel
             </button>
             <button
+              type="submit"
               class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
-              @click.prevent="onSave(formData)"
             >
               Save
             </button>
