@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
 
-import CustomVerifier from '@/components/app-configure/auth/CustomVerifier.vue'
+// import CustomVerifier from '@/components/app-configure/auth/CustomVerifier.vue'
 import IAMProviders from '@/components/app-configure/auth/IAMProviders.vue'
 import RedirectURI from '@/components/app-configure/auth/RedirectURI.vue'
 import SocialAuthProvider from '@/components/app-configure/auth/SocialAuthProvider.vue'
@@ -34,7 +34,7 @@ const keyspace = app.keyspace
         </div>
         <SocialAuthProvider />
         <IAMProviders />
-        <CustomVerifier />
+        <!-- <CustomVerifier /> -->
       </div>
     </VStack>
   </main>
