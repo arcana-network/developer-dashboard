@@ -10,7 +10,7 @@ import { getChainLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { useClickOutside } from '@/use/clickOutside'
-import { content, errors } from '@/utils/content'
+import { errors } from '@/utils/content'
 
 const emits = defineEmits([
   'edit',
@@ -20,7 +20,7 @@ const emits = defineEmits([
 ])
 
 const chainManagementStore = useChainManagementStore()
-const { areChainsEmpty, filteredChains, gaslessChains } =
+const { areChainsEmpty, filteredChains, gaslessChains, defaultOrderChains } =
   toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
@@ -48,6 +48,51 @@ const rowOptions = [
 useClickOutside(showRowOptions_menu, () => {
   showRowOptionsOf.value = null
 })
+
+const sortOrder = ref({
+  column: null,
+  ascending: true,
+})
+
+const sortedList = computed(() => {
+  if (!sortOrder.value.column) return defaultOrderChains.value
+
+  return filteredChains.value.slice().sort((a, b) => {
+    const column = sortOrder.value.column
+    const ascending = sortOrder.value.ascending
+
+    if (column !== null) {
+      if (a[column] === null) return ascending ? 1 : -1
+      if (b[column] === null) return ascending ? -1 : 1
+
+      const isBoolean = typeof a[column] === 'boolean'
+      const isNumeric = !isNaN(parseFloat(a[column])) && isFinite(a[column])
+
+      if (isBoolean) {
+        const aValue = a[column] ? 1 : 0
+        const bValue = b[column] ? 1 : 0
+        return ascending ? aValue - bValue : bValue - aValue
+      } else if (isNumeric) {
+        return ascending ? a[column] - b[column] : b[column] - a[column]
+      } else {
+        const lowerA = a[column].toLowerCase()
+        const lowerB = b[column].toLowerCase()
+        return ascending
+          ? lowerA.localeCompare(lowerB)
+          : lowerB.localeCompare(lowerA)
+      }
+    }
+  })
+})
+
+const sortBy = (column: null) => {
+  if (sortOrder.value.column === column) {
+    sortOrder.value.ascending = !sortOrder.value.ascending
+  } else {
+    sortOrder.value.column = column
+    sortOrder.value.ascending = true
+  }
+}
 
 function onClickOfOption(option: number, id: string, chain: any) {
   if (option === 0) emits('edit', { id })
@@ -100,23 +145,32 @@ function isGaslessSupport(chainId: number) {
     >
       <thead class="border-b-[1px] border-b-[#363636]">
         <tr class="text-[#8d8d8d]">
+          <!-- <th class="w-[10%]"><Button>A &#x2192; B</Button></th> -->
           <th class="w-[10%]"></th>
-          <th class="w-[15%]">Name</th>
-          <th class="w-[10%]">Chain ID</th>
-          <th class="w-[10%]">Currency</th>
+          <th class="w-[15%]" @click="sortBy('name')">
+            <Button>Name</Button>
+          </th>
+          <th class="w-[10%]" @click="sortBy('chain_id')">
+            <Button>Chain ID</Button>
+          </th>
+          <th class="w-[10%]" @click="sortBy('currency')">
+            <Button>Currency</Button>
+          </th>
           <!-- <th class="w-[10%]">Compatibility</th> -->
-          <th class="w-[10%]">Type</th>
+          <th class="w-[10%]" @click="sortBy('chain_type')">
+            <Button>Type</Button>
+          </th>
           <th>RPC URL</th>
-          <th class="w-[10%]">Enabled</th>
+          <th class="w-[10%]" @click="sortBy('status')">
+            <Button>Enabled</Button>
+          </th>
           <th class="w-[5%]"></th>
         </tr>
       </thead>
       <tbody>
         <tr
-          v-for="chain in filteredChains.sort(
-            (a, b) => Number(a.chain_id) - Number(b.chain_id)
-          )"
-          :key="JSON.stringify(chain)"
+          v-for="chain in sortedList"
+          :key="chain.id"
           class="hover:bg-[#363636]"
         >
           <td>

@@ -1,0 +1,48 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/assets(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "max-age=31536000, immutable"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "font-src 'self' fonts.gstatic.com gstatic.com *.gstatic.com;img-src 'self' data: *.arcana.network;script-src 'self' 'unsafe-inline' js.stripe.com *.google-analytics.com *.googletagmanager.com network.us1.list-manage.com;style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;frame-src js.stripe.com *.arcana.network;frame-ancestors 'self';"
+        }
+      ]
+    }
+  ]
+}

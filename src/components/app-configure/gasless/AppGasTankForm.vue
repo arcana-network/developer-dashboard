@@ -11,6 +11,7 @@ const { gaslessChains, appChains } = chainManagementStore
 const { gastankList } = useGaslessStore()
 const emits = defineEmits(['close', 'submit'])
 const supportedGaslessChains = ref([])
+const isMetaMaskInstalled = window?.ethereum?.isMetaMask
 
 const formData = ref({
   name: '',
@@ -45,6 +46,22 @@ const enableSave = computed(() => {
   <VOverlay>
     <div class="h-full flex overflow-y-auto py-2">
       <div
+        v-if="!isMetaMaskInstalled"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] h-[230px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto text-center flex flex-col justify-center items-center"
+      >
+        <p>
+          Looks like Metamask extension is not installed, please install to add
+          gas tank
+        </p>
+        <button
+          class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
+          @click="emits('close')"
+        >
+          Close
+        </button>
+      </div>
+      <div
+        v-else
         class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
       >
         <div class="space-y-[10px]">
@@ -53,7 +70,7 @@ const enableSave = computed(() => {
             Please provide the following details to setup a gas tank:
           </p>
         </div>
-        <form class="space-y-5">
+        <form class="space-y-5" @submit.prevent="onSave(formData)">
           <div class="flex flex-col space-y-2">
             <label for="network-name" class="text-xs text-[#8D8D8D]"
               >Name</label
@@ -77,16 +94,17 @@ const enableSave = computed(() => {
           </div>
           <div class="space-x-2.5 flex justify-end">
             <button
+              type="button"
               class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md"
-              @click="emits('close')"
+              @click.stop="emits('close')"
             >
               Cancel
             </button>
             <button
+              type="submit"
               class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
-              @click.prevent="onSave(formData)"
             >
               Save
             </button>
