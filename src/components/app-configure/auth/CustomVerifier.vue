@@ -114,31 +114,32 @@ function validateForm() {
     toast.error('Please fill the Audience field')
     return false
   }
-  if (!validationFields.value.every((item) => item.field && item.value)) {
-    toast.error('Please fill all the validation fields')
+  if (
+    (validationFields.value[0].field && !validationFields.value[0].value) ||
+    (validationFields.value[0].value && !validationFields.value[0].field)
+  ) {
+    toast.error('Please fill the Validation fields')
     return false
   }
   return true
 }
 
 function disableSubmitButton() {
-  return (
-    jwkUrl.value === fetchedData.value.jwkUrl &&
-    issuer.value === fetchedData.value.issuer &&
-    audience.value === fetchedData.value.audience &&
-    idParam.value === fetchedData.value.idParam &&
-    validationFields.value.every((item, idx) => {
-      const fetchedDataParams = fetchedData.value.params
-      if (!fetchedDataParams[idx]) {
-        return item.field === '' || item.value === ''
-      } else {
-        return (
-          item.field === fetchedData.value.params[idx].field &&
-          item.value === fetchedData.value.params[idx].value
-        )
-      }
-    })
-  )
+  if (isFetchedDataEmpty()) {
+    return !jwkUrl.value || !issuer.value || !audience.value
+  } else {
+    return (
+      jwkUrl.value === fetchedData.value.jwkUrl &&
+      issuer.value === fetchedData.value.issuer &&
+      audience.value === fetchedData.value.audience &&
+      idParam.value === fetchedData.value.idParam &&
+      validationFields.value.every(
+        (field, index) =>
+          field.field === fetchedData.value.params[index].field &&
+          field.value === fetchedData.value.params[index].value
+      )
+    )
+  }
 }
 
 async function getCustomProvider() {
@@ -176,7 +177,10 @@ function isFetchedDataEmpty() {
 
 async function saveForm() {
   loaderStore.showLoader('Saving configuration')
-  if (!validateForm()) return
+  if (!validateForm()) {
+    loaderStore.hideLoader()
+    return
+  }
   const data = {
     idParam: idParam.value,
     jwkUrl: jwkUrl.value,
@@ -198,7 +202,10 @@ async function saveForm() {
 
 async function updateForm() {
   loaderStore.showLoader('Updating configuration')
-  if (!validateForm()) return
+  if (!validateForm()) {
+    loaderStore.hideLoader()
+    return
+  }
   const data = {
     idParam: idParam.value,
     jwkUrl: jwkUrl.value,
@@ -270,7 +277,7 @@ async function updateForm() {
         <div class="flex flex-col space-y-2">
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
-              JWK Validation
+              JWK Validation (Optional)
             </legend>
             <span class="text-xs font-normal">What are Validation fields?</span>
           </div>
