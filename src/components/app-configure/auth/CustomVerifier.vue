@@ -15,7 +15,10 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { DOCS_URL } from '@/utils/constants'
 
-const LEARN_MORE_LINK = `${DOCS_URL}/howto/custom-Verifier`
+const LEARN_MORE_LINK = `${DOCS_URL}/setup/config-custom-oauth/`
+const WHATS_JWK_URL_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwk-url`
+const WHATS_ID_URL_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwk-id`
+const WHATS_JWK_VALIDATION_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwt-attributesclaims`
 const toast = useToast()
 const appStore = useAppsStore()
 const loaderStore = useLoaderStore()
@@ -234,8 +237,8 @@ async function updateForm() {
       </h2>
       <p class="text-[#8D8D8D] text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
-        care of issuing public and prviate keys to each user through our
-        Decentralised Key Generation (DKG) mechanism and keep them secure.
+        care of issuing public and private keys to each user through our
+        De-centralized Key Generation (DKG) mechanism and keep them secure.
         <a
           :href="LEARN_MORE_LINK"
           target="_blank"
@@ -249,7 +252,12 @@ async function updateForm() {
         <fieldset class="space-y-2">
           <div class="flex justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">ID Param</legend>
-            <span class="text-xs font-normal">What is ID?</span>
+            <a
+              :href="WHATS_ID_URL_LINK"
+              target="_blank"
+              class="text-xs font-normal no-underline text-white"
+              >What is ID?</a
+            >
           </div>
           <div class="flex items-baseline space-x-5">
             <div class="space-x-2">
@@ -279,7 +287,12 @@ async function updateForm() {
             <legend class="text-[#8D8D8D] text-xs font-normal">
               JWK Validation (Optional)
             </legend>
-            <span class="text-xs font-normal">What are Validation fields?</span>
+            <a
+              :href="WHATS_JWK_VALIDATION_LINK"
+              target="_blank"
+              class="text-xs no-underline text-white font-normal"
+              >What are Validation fields?</a
+            >
           </div>
           <div
             v-for="(item, idx) in validationFields"
@@ -329,7 +342,12 @@ async function updateForm() {
         <div>
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">JWK URL</legend>
-            <span class="text-xs font-normal">What is JWK URL?</span>
+            <a
+              :href="WHATS_JWK_URL_LINK"
+              target="_blank"
+              class="text-xs no-underline text-white font-normal"
+              >What is JWK URL?</a
+            >
           </div>
           <div class="w-full">
             <input
