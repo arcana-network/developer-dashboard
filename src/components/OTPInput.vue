@@ -108,14 +108,14 @@ async function resendOTP() {
 <template>
   <AppOverlay>
     <div
-      class="max-w-[360px] w-screen bg-[#1e1f1e] rounded-[10px] border-1 border-jet flex flex-col relative p-[1.75rem] gap-4"
+      class="max-w-[360px] w-screen bg-overlay-background rounded-[10px] border-1 border-jet flex flex-col relative p-7 gap-4"
       role="dialog"
     >
       <button class="absolute right-4 top-4" @click="emit('dismiss')">
-        <img src="../assets/close.svg" alt="Close" />
+        <img src="@/assets/close.svg" alt="Close" />
       </button>
       <div class="flex flex-col items-center justify-center gap-3 text-center">
-        <h2 class="text-[2rem] font-bold">Verification</h2>
+        <h2 class="text-otp font-bold">Verification</h2>
         <span class="text-sm text-secondary-400"
           >Please enter the OTP that was sent to your email address</span
         >
@@ -139,7 +139,7 @@ async function resendOTP() {
             pattern="\d*"
             maxlength="1"
             autocomplete="off"
-            class="outline-none border-none rounded-md p-2 bg-[#313030] placeholder:text-[#989898] flex flex-grow justify-center items-center text-center"
+            class="outline-none border-none rounded-md p-2 bg-overlay-input placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center"
             @input="void 0"
             @keydown="handleKeyDown($event, i - 1)"
             @paste.prevent="handlePaste"
@@ -189,11 +189,5 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   appearance: none;
   margin: 0;
-}
-
-/* Firefox */
-input[type='number'] {
-  appearance: textfield;
-  appearance: textfield;
 }
 </style>
