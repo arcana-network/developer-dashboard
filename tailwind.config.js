@@ -16,6 +16,11 @@ const config = {
       fontSize: {
         otp: '2rem',
       },
+      zIndex: {
+        surface: 0,
+        overlay: 99999,
+        overlayTop: 100000,
+      },
     },
   },
 }

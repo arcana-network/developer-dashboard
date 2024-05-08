@@ -147,7 +147,7 @@ async function resendOTP() {
         </div>
         <span
           :class="[
-            'relative z-0 -mt-3 ml-2 text-start text-xs text-tertiary-500 transition-all duration-200 ease-in-out',
+            'relative z-surface -mt-3 ml-2 text-start text-xs text-tertiary-500 transition-all duration-200 ease-in-out',
             hasOTPError
               ? 'translate-y-0 opacity-100'
               : '-translate-y-8 opacity-0',
