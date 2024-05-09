@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import DeleteIcon from '@/assets/iconography/delete-icon.svg'
@@ -16,8 +16,7 @@ import { useLoaderStore } from '@/stores/loader.store'
 import { DOCS_URL } from '@/utils/constants'
 
 const LEARN_MORE_LINK = `${DOCS_URL}/setup/config-custom-oauth/`
-const WHATS_JWK_URL_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwk-url`
-const WHATS_ID_URL_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwk-id`
+const WHATS_JWKS_URL_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwk-url`
 const WHATS_JWK_VALIDATION_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwt-attributesclaims`
 const toast = useToast()
 const appStore = useAppsStore()
@@ -26,6 +25,7 @@ const loaderStore = useLoaderStore()
 const route = useRoute()
 const appId = route.params.appId
 const app = appStore.app(Number(appId))
+const selectedIdParam = ref('sub')
 
 const validationFields = ref([
   {
@@ -60,6 +60,10 @@ async function fetchAndSetData() {
     jwkUrl.value = data.jwkUrl
     issuer.value = data.issuer
     audience.value = data.audience
+    selectedIdParam.value =
+      data.idParam !== 'sub' && data.idParam !== 'email'
+        ? 'custom'
+        : data.idParam
     idParam.value = data.idParam
     validationFields.value = data.params.map(
       ({ field, value }: { field: string; value: string }) => ({
@@ -109,14 +113,6 @@ function validateForm() {
     toast.error('Please fill the JWK URL field')
     return false
   }
-  if (!issuer.value) {
-    toast.error('Please fill the Issuer field')
-    return false
-  }
-  if (!audience.value) {
-    toast.error('Please fill the Audience field')
-    return false
-  }
   if (
     (validationFields.value[0].field && !validationFields.value[0].value) ||
     (validationFields.value[0].value && !validationFields.value[0].field)
@@ -129,7 +125,7 @@ function validateForm() {
 
 function disableSubmitButton() {
   if (isFetchedDataEmpty()) {
-    return !jwkUrl.value || !issuer.value || !audience.value
+    return !jwkUrl.value || !idParam.value
   } else {
     return (
       jwkUrl.value === fetchedData.value.jwkUrl &&
@@ -227,6 +223,15 @@ async function updateForm() {
     loaderStore.hideLoader()
   }
 }
+
+watch(
+  () => selectedIdParam.value,
+  (newValue) => {
+    if (newValue === 'custom')
+      idParam.value = isFetchedDataEmpty() ? '' : fetchedData.value.idParam
+    else idParam.value = newValue
+  }
+)
 </script>
 
 <template>
@@ -250,20 +255,14 @@ async function updateForm() {
     <div class="p-3.5 flex">
       <div class="flex flex-col flex-1 space-y-5">
         <fieldset class="space-y-2">
-          <div class="flex justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">ID Param</legend>
-            <a
-              :href="WHATS_ID_URL_LINK"
-              target="_blank"
-              class="text-xs font-normal no-underline text-white"
-              >What is ID?</a
-            >
-          </div>
+          <legend class="text-[#8D8D8D] text-xs font-normal">
+            User Identifier String
+          </legend>
           <div class="flex items-baseline space-x-5">
             <div class="space-x-2">
               <input
                 id="sub"
-                v-model="idParam"
+                v-model="selectedIdParam"
                 type="radio"
                 name="idParam"
                 value="sub"
@@ -273,13 +272,32 @@ async function updateForm() {
             <div class="space-x-2">
               <input
                 id="email"
-                v-model="idParam"
+                v-model="selectedIdParam"
                 type="radio"
                 name="idParam"
                 value="email"
               />
               <label for="email">Email</label>
             </div>
+            <div class="space-x-2">
+              <input
+                id="custom"
+                v-model="selectedIdParam"
+                type="radio"
+                name="idParam"
+                value="custom"
+              />
+              <label for="custom">Custom</label>
+            </div>
+          </div>
+          <div>
+            <input
+              v-if="selectedIdParam === 'custom'"
+              v-model="idParam"
+              type="text"
+              name="idParam"
+              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+            />
           </div>
         </fieldset>
         <div class="flex flex-col space-y-2">
@@ -341,12 +359,15 @@ async function updateForm() {
       <div class="flex-1 ml-10 space-y-2">
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">JWK URL</legend>
+            <legend class="text-[#8D8D8D] text-xs font-normal">
+              <span>JWKS URL</span>
+              <span class="text-red-800 text-lg">*</span>
+            </legend>
             <a
-              :href="WHATS_JWK_URL_LINK"
+              :href="WHATS_JWKS_URL_LINK"
               target="_blank"
               class="text-xs no-underline text-white font-normal"
-              >What is JWK URL?</a
+              >What is JWKS Endpoint?</a
             >
           </div>
           <div class="w-full">
