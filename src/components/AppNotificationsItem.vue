@@ -40,7 +40,7 @@ function getNotificationsTime(timeStamp) {
       <div class="w-[10%] flex flex-col items-center justify-center">
         <span
           v-if="!notification.read"
-          class="w-2.5 h-2.5 bg-[#13a3fd] rounded-full"
+          class="w-2.5 h-2.5 bg-[#000] rounded-full"
         ></span>
       </div>
     </li>

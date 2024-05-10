@@ -27,7 +27,7 @@ const areUnreadNotificationAvaiable = computed(() => {
       <span class="notification-bubble__ripple"></span>
     </div>
     <img
-      :src="NotificationIcon"
+      src="@/assets/iconography/notification.svg"
       class="cursor-pointer notification-icon"
       @click.stop="emits('click')"
     />
@@ -45,7 +45,7 @@ const areUnreadNotificationAvaiable = computed(() => {
   min-width: 18px;
   min-height: 18px;
   padding: 1px;
-  font-size: 10px;
+  font-size: 15px;
   color: #fff;
   background: var(--primary);
   border-radius: 50%;
@@ -66,7 +66,7 @@ const areUnreadNotificationAvaiable = computed(() => {
 }
 
 .notification-icon {
-  width: 18px;
+  width: 22px;
 }
 
 @keyframes ripple {

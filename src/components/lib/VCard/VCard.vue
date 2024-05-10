@@ -52,19 +52,20 @@ const classes = computed(() => {
 <style scoped>
 .card {
   display: flex;
-  color: var(--text-white);
-  background: #262626;
+  color: var(--text-black);
+  background: #fff;
   border-radius: 10px;
 }
 
 .card.elevated {
-  box-shadow: 4px 5px 4px rgb(0 0 0 / 25%);
+  /* box-shadow: 4px 5px 4px rgb(0 0 0 / 25%); */
 }
 
 .card.depressed {
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  background: transparent;
   border-radius: 10px;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%);
+
+  /* box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%); */
 }
 
 .card.popup {
@@ -74,6 +75,7 @@ const classes = computed(() => {
     rgb(27 27 27 / 100%) 31.41%,
     rgb(32 32 32 / 100%) 100%
   );
-  box-shadow: 4px 5px 4px rgb(0 0 0 / 25%);
+
+  /* box-shadow: 4px 5px 4px rgb(0 0 0 / 25%); */
 }
 </style>

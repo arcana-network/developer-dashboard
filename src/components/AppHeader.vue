@@ -2,7 +2,7 @@
 import { onMounted, ref, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 
-import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
+import ArcanaLogo from '@/assets/arcana-logo.svg'
 import AppBanner from '@/components/AppBanner.vue'
 import AppNotifications from '@/components/AppNotifications.vue'
 import NotificationIcon from '@/components/icons/NotificationIcon.vue'
@@ -194,7 +194,7 @@ header {
   justify-content: space-between;
   padding: 1.5rem 2rem;
   visibility: visible;
-  background: #1f1f1f;
+  background: #fff;
   transition: transform 0.6s;
 }
 
@@ -228,7 +228,7 @@ header {
 }
 
 .help-button {
-  color: var(--primary);
+  color: var(--primary-black);
   cursor: pointer;
   background: transparent;
   border: none;

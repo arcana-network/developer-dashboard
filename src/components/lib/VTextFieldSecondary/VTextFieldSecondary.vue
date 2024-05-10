@@ -148,7 +148,7 @@ label {
   margin-bottom: 0.5rem;
   margin-left: 0.5rem;
   font-size: 0.8rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1rem;
   color: var(--text-grey);
 }
@@ -225,7 +225,7 @@ div.text-field.icon input {
 input.strong {
   margin: 5px 20px;
   font-size: 1.4em;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.65em;
 }
 
@@ -253,7 +253,7 @@ input[type='number'] {
     margin-bottom: 0.1rem;
     margin-left: 0.7rem;
     font-size: 8px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1rem;
     color: var(--text-grey);
   }

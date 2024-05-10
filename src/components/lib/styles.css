@@ -8,6 +8,7 @@
 
 :root {
   --primary: #13a3fd;
+  --primary-black: #000;
   --primary-light: #fff;
   --primary-dark: #161616;
   --text-white: #fff;
@@ -53,13 +54,17 @@
 
 body {
   line-height: 1.5;
-  color: var(--text-white);
-  background-color: var(--dark-theme-bg);
+
+  /* color: var(--text-white); */
+  color: #000;
+
+  /* background-color: var(--dark-theme-bg); */
+  background-color: #efefef;
 }
 
 h1 {
   font-size: 2.25rem;
-  font-weight: 900;
+  font-weight: 400;
   letter-spacing: 3px;
 }
 

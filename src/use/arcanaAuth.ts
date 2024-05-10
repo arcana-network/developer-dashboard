@@ -31,7 +31,7 @@ function useArcanaAuth() {
       authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
         network,
         debug: true,
-        alwaysVisible: true,
+        alwaysVisible: false,
         chainConfig: {
           chainId:
             ARCANA_AUTH_NETWORK === 'mainnet'

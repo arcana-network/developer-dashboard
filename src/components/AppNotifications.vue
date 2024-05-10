@@ -44,7 +44,7 @@ function onClickofItem(notification) {
       <div class="flex items-center">
         <button
           v-show="appsStore.unreadNotificationCount"
-          class="bg-transparent border-none outline-none cursor-pointer text-sm text-[#13a3fd] | notification__mark-read-btn"
+          class="bg-transparent border-none outline-none cursor-pointer text-sm text-[#000] | notification__mark-read-btn"
           @click="markAllRead"
         >
           Mark all as read
