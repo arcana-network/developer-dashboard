@@ -238,7 +238,7 @@ watch(
   <div class="border-2 border-[#363636] bg-[#1F1F1F] rounded-xl space-y-5">
     <div>
       <h2 class="text-sm uppercase font-bold p-3.5 border-b-2 border-[#363636]">
-        Custom Provider
+        Custom OAuth
       </h2>
       <p class="text-[#8D8D8D] text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
