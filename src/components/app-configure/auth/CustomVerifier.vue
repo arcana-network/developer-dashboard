@@ -185,7 +185,10 @@ async function saveForm() {
     jwkUrl: jwkUrl.value,
     issuer: issuer.value,
     audience: audience.value,
-    params: validationFields.value,
+    params: validationFields.value.map(({ field, value }) => ({
+      field,
+      value,
+    })),
     appAddress: app.address,
   }
   try {
@@ -210,7 +213,10 @@ async function updateForm() {
     jwkUrl: jwkUrl.value,
     issuer: issuer.value,
     audience: audience.value,
-    params: validationFields.value,
+    params: validationFields.value.map(({ field, value }) => ({
+      field,
+      value,
+    })),
     appAddress: app.address,
   }
   try {
