@@ -38,7 +38,7 @@ const issuer = ref('')
 const audience = ref('')
 const idParam = ref('sub')
 const fetchedData = ref({
-  ID: '',
+  id: '',
   jwkUrl: '',
   issuer: '',
   audience: '',
@@ -220,7 +220,7 @@ async function updateForm() {
     appAddress: app.address,
   }
   try {
-    await updateCustomVerifier(Number(fetchedData.value.ID), app.network, data)
+    await updateCustomVerifier(Number(fetchedData.value.id), app.network, data)
     await fetchAndSetData()
     toast.success('Configuration updated successfully')
   } catch (e) {
