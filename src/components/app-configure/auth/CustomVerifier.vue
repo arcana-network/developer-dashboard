@@ -14,6 +14,8 @@ import {
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { DOCS_URL } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
+import copyToClipboard from '@/utils/copyToClipboard'
 
 const LEARN_MORE_LINK = `${DOCS_URL}/setup/config-custom-oauth/`
 const WHATS_JWKS_URL_LINK = `${DOCS_URL}/concepts/authtype/custom-oauth/#jwk-url`
@@ -43,6 +45,7 @@ const fetchedData = ref({
   issuer: '',
   audience: '',
   idParam: 'sub',
+  name: '',
   params: [
     {
       field: '',
@@ -230,6 +233,15 @@ async function updateForm() {
   }
 }
 
+async function copyCustomProviderId(id: string) {
+  try {
+    await copyToClipboard(id)
+    toast.success(content.CUSTOM_PROVIDER_ID.COPIED)
+  } catch (e) {
+    toast.error(errors.CUSTOM_PROVIDER_ID.ERROR)
+  }
+}
+
 watch(
   () => selectedIdParam.value,
   (newValue) => {
@@ -243,9 +255,23 @@ watch(
 <template>
   <div class="border-2 border-[#363636] bg-[#1F1F1F] rounded-xl space-y-5">
     <div>
-      <h2 class="text-sm uppercase font-bold p-3.5 border-b-2 border-[#363636]">
-        Custom OAuth
-      </h2>
+      <div
+        class="flex items-center justify-between border-b-2 border-[#363636] p-3.5"
+      >
+        <h2 class="text-sm uppercase font-bold">Custom OAuth</h2>
+        <div v-if="fetchedData.name" class="flex items-center space-x-2">
+          <span class="text-sm uppercase font-bold">Custom Provider ID</span>
+          <div class="bg-[#313131] py-1 px-2 rounded flex space-x-4">
+            <span class="text-sm">{{ fetchedData.name }}</span>
+            <button @click.stop="copyCustomProviderId(fetchedData.name)">
+              <img
+                src="@/assets/iconography/copy-white.svg"
+                class="cursor-pointer w-4"
+              />
+            </button>
+          </div>
+        </div>
+      </div>
       <p class="text-[#8D8D8D] text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
         care of issuing public and private keys to each user through our
