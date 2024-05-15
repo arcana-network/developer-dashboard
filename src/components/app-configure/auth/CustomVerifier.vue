@@ -116,6 +116,14 @@ function validateForm() {
     toast.error('Please fill the JWK URL field')
     return false
   }
+  if (!issuer.value) {
+    toast.error('Please fill the Issuer field')
+    return false
+  }
+  if (!audience.value) {
+    toast.error('Please fill the Audience field')
+    return false
+  }
   if (
     (validationFields.value[0].field && !validationFields.value[0].value) ||
     (validationFields.value[0].value && !validationFields.value[0].field)
@@ -128,7 +136,7 @@ function validateForm() {
 
 function disableSubmitButton() {
   if (isFetchedDataEmpty()) {
-    return !jwkUrl.value || !idParam.value
+    return !jwkUrl.value || !idParam.value || !issuer.value || !audience.value
   } else {
     return (
       jwkUrl.value === fetchedData.value.jwkUrl &&
@@ -357,7 +365,10 @@ watch(
         </div>
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">Issuer</legend>
+            <legend class="text-[#8D8D8D] text-xs font-normal">
+              <span>Issuer</span>
+              <span class="text-red-800 text-lg">*</span>
+            </legend>
           </div>
           <div class="w-full">
             <input
@@ -371,7 +382,10 @@ watch(
         </div>
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">Audience</legend>
+            <legend class="text-[#8D8D8D] text-xs font-normal">
+              <span>Audience</span>
+              <span class="text-red-800 text-lg">*</span>
+            </legend>
           </div>
           <div class="w-full">
             <input
