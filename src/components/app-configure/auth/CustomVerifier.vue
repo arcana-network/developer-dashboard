@@ -58,6 +58,11 @@ onMounted(fetchAndSetData)
 
 async function fetchAndSetData() {
   const data = await getCustomProvider()
+  const fields =
+    Object.values(data.params).length > 0
+      ? Object.entries(data.params).map(([field, value]) => ({ field, value }))
+      : [{ field: '', value: '' }]
+
   if (data) {
     fetchedData.value = data
     jwkUrl.value = data.jwkUrl
@@ -68,9 +73,7 @@ async function fetchAndSetData() {
         ? 'custom'
         : data.idParam
     idParam.value = data.idParam
-    validationFields.value = Object.entries(data.params).map(
-      ([field, value]) => ({ field, value })
-    )
+    validationFields.value = fields
   }
 }
 
@@ -121,7 +124,10 @@ function validateForm() {
     toast.error('Please fill the Audience field')
     return false
   }
-  if (validationFields.value.some(({ field, value }) => !field || !value)) {
+  if (
+    Object.values(validationFields.value).length > 1 &&
+    validationFields.value.some(({ field, value }) => !field || !value)
+  ) {
     toast.error('Please fill all the validation fields')
     return false
   }
