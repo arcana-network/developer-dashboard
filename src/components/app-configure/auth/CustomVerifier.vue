@@ -121,11 +121,8 @@ function validateForm() {
     toast.error('Please fill the Audience field')
     return false
   }
-  if (
-    (validationFields.value[0].field && !validationFields.value[0].value) ||
-    (validationFields.value[0].value && !validationFields.value[0].field)
-  ) {
-    toast.error('Please fill the Validation fields')
+  if (validationFields.value.some(({ field, value }) => !field || !value)) {
+    toast.error('Please fill all the validation fields')
     return false
   }
   return true
@@ -139,7 +136,14 @@ function disableSubmitButton() {
       jwkUrl.value === fetchedData.value.jwkUrl &&
       issuer.value === fetchedData.value.issuer &&
       audience.value === fetchedData.value.audience &&
-      idParam.value === fetchedData.value.idParam
+      idParam.value === fetchedData.value.idParam &&
+      JSON.stringify(validationFields.value) ===
+        JSON.stringify(
+          Object.entries(fetchedData.value.params).map(([field, value]) => ({
+            field,
+            value,
+          }))
+        )
     )
   }
 }
