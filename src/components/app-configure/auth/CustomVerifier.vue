@@ -285,7 +285,7 @@ watch(
       </p>
     </div>
     <div class="p-3.5 flex">
-      <div class="flex flex-col flex-1 space-y-5">
+      <div class="flex-1 space-y-2">
         <fieldset class="space-y-2">
           <legend class="text-[#8D8D8D] text-xs font-normal">
             User Identifier String
@@ -332,6 +332,59 @@ watch(
             />
           </div>
         </fieldset>
+        <div>
+          <div class="flex w-full justify-between">
+            <legend class="text-[#8D8D8D] text-xs font-normal">
+              <span>JWKS URL</span>
+              <span class="text-red-800 text-lg">*</span>
+            </legend>
+            <a
+              :href="WHATS_JWKS_URL_LINK"
+              target="_blank"
+              class="text-xs no-underline text-white font-normal"
+              >What is JWKS Endpoint?</a
+            >
+          </div>
+          <div class="w-full">
+            <input
+              id="value"
+              v-model="jwkUrl"
+              type="text"
+              name="validation"
+              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex w-full justify-between">
+            <legend class="text-[#8D8D8D] text-xs font-normal">Issuer</legend>
+          </div>
+          <div class="w-full">
+            <input
+              id="value"
+              v-model="issuer"
+              type="text"
+              name="Issuer"
+              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+            />
+          </div>
+        </div>
+        <div>
+          <div class="flex w-full justify-between">
+            <legend class="text-[#8D8D8D] text-xs font-normal">Audience</legend>
+          </div>
+          <div class="w-full">
+            <input
+              id="value"
+              v-model="audience"
+              type="text"
+              name="audience"
+              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-col flex-1 space-y-5 ml-10">
         <div class="flex flex-col space-y-2">
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
@@ -385,59 +438,6 @@ watch(
                 <img :src="PlusIcon" alt="Add Chain" class="w-7 h-7" />
               </button>
             </div>
-          </div>
-        </div>
-      </div>
-      <div class="flex-1 ml-10 space-y-2">
-        <div>
-          <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">
-              <span>JWKS URL</span>
-              <span class="text-red-800 text-lg">*</span>
-            </legend>
-            <a
-              :href="WHATS_JWKS_URL_LINK"
-              target="_blank"
-              class="text-xs no-underline text-white font-normal"
-              >What is JWKS Endpoint?</a
-            >
-          </div>
-          <div class="w-full">
-            <input
-              id="value"
-              v-model="jwkUrl"
-              type="text"
-              name="validation"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
-            />
-          </div>
-        </div>
-        <div>
-          <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">Issuer</legend>
-          </div>
-          <div class="w-full">
-            <input
-              id="value"
-              v-model="issuer"
-              type="text"
-              name="Issuer"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
-            />
-          </div>
-        </div>
-        <div>
-          <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">Audience</legend>
-          </div>
-          <div class="w-full">
-            <input
-              id="value"
-              v-model="audience"
-              type="text"
-              name="audience"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
-            />
           </div>
         </div>
       </div>
