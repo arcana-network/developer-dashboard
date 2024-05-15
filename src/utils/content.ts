@@ -95,6 +95,9 @@ const content = {
   REDIRECT_URI: {
     COPIED: 'Copied Redirect URI to clipboard',
   },
+  CUSTOM_PROVIDER_ID: {
+    COPIED: 'Copied Custom Provider ID to clipboard',
+  },
 }
 const errors = {
   GENERIC: {
@@ -161,6 +164,10 @@ const errors = {
   CHAIN_MANAGEMENT: {
     DEFAULT: 'The chain marked as default cannot be deleted.',
     ENABLE: 'Please enable the chain and try again.',
+  },
+  CUSTOM_PROVIDER_ID: {
+    ERROR:
+      'Unable to copy the Custom Provider ID. Please try again or contact support.',
   },
 }
 export { errors, content }
