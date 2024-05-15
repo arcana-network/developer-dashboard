@@ -68,11 +68,8 @@ async function fetchAndSetData() {
         ? 'custom'
         : data.idParam
     idParam.value = data.idParam
-    validationFields.value = data.params.map(
-      ({ field, value }: { field: string; value: string }) => ({
-        field,
-        value,
-      })
+    validationFields.value = Object.entries(data.params).map(
+      ([field, value]) => ({ field, value })
     )
   }
 }
@@ -142,12 +139,7 @@ function disableSubmitButton() {
       jwkUrl.value === fetchedData.value.jwkUrl &&
       issuer.value === fetchedData.value.issuer &&
       audience.value === fetchedData.value.audience &&
-      idParam.value === fetchedData.value.idParam &&
-      validationFields.value.every(
-        (field, index) =>
-          field.field === fetchedData.value.params[index].field &&
-          field.value === fetchedData.value.params[index].value
-      )
+      idParam.value === fetchedData.value.idParam
     )
   }
 }
@@ -185,6 +177,16 @@ function isFetchedDataEmpty() {
   return !fetchedData.value.jwkUrl
 }
 
+function getParamsInObj(validationFields: any[]): { [key: string]: string } {
+  const params: { [key: string]: string } = {}
+  for (const { field, value } of validationFields) {
+    if (field && value) {
+      params[field] = value
+    }
+  }
+  return params
+}
+
 async function saveForm() {
   loaderStore.showLoader('Saving configuration')
   if (!validateForm()) {
@@ -196,9 +198,7 @@ async function saveForm() {
     jwkUrl: jwkUrl.value,
     issuer: issuer.value,
     audience: audience.value,
-    params: validationFields.value.map(({ field, value }) => ({
-      [field]: value,
-    })),
+    params: getParamsInObj(validationFields.value),
     appAddress: app.address,
   }
   try {
@@ -223,9 +223,7 @@ async function updateForm() {
     jwkUrl: jwkUrl.value,
     issuer: issuer.value,
     audience: audience.value,
-    params: validationFields.value.map(({ field, value }) => ({
-      [field]: value,
-    })),
+    params: getParamsInObj(validationFields.value),
     appAddress: app.address,
   }
   try {
