@@ -197,8 +197,7 @@ async function saveForm() {
     issuer: issuer.value,
     audience: audience.value,
     params: validationFields.value.map(({ field, value }) => ({
-      field,
-      value,
+      [field]: value,
     })),
     appAddress: app.address,
   }
@@ -225,8 +224,7 @@ async function updateForm() {
     issuer: issuer.value,
     audience: audience.value,
     params: validationFields.value.map(({ field, value }) => ({
-      field,
-      value,
+      [field]: value,
     })),
     appAddress: app.address,
   }
