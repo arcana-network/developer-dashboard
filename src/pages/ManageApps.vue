@@ -140,7 +140,6 @@ function ellipsisAppName(appName: string) {
       v-if="accountStatus !== 'active'"
       :status="accountStatus"
     />
-    <AppHeader />
     <main>
       <VStack direction="column" gap="2rem" class="container">
         <VStack gap="2rem">

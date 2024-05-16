@@ -155,10 +155,8 @@ label {
 
 div.text-field {
   display: flex;
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
-  border-radius: 10px;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
+  background: #dfecee;
+  border-radius: 25px;
 }
 
 .text-field.focused {
@@ -193,7 +191,7 @@ input {
   margin: 0.875rem 1rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--text-white);
+  color: var(--text-black);
   background: transparent;
   border: none;
   outline: none;

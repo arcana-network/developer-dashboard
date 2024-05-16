@@ -2,6 +2,7 @@
 import { onBeforeMount, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import AppHeader from '@/components/AppHeader.vue'
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
 import { fetchAndStoreConfig } from '@/services/gateway.service'
@@ -39,6 +40,7 @@ onBeforeMount(async () => {
 
 <template>
   <div class="root">
+    <AppHeader />
     <router-view
       v-if="isAuthLoaded"
       v-slot="{ Component }"

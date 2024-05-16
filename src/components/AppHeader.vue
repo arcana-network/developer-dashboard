@@ -185,6 +185,7 @@ function toggleNotifications() {
   top: 0;
   z-index: 1000;
   width: 100%;
+  border-bottom: #d9d9d9 1px solid;
   transition: transform 0.4s;
 }
 

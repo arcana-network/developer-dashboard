@@ -302,103 +302,19 @@ watch(
         @switch-app="switchApp"
       />
     </div>
-    <VStack direction="column" class="app-details__content">
-      <VStack justify="space-between">
-        <div
-          class="logo tablet-remove laptop-remove"
-          @click.stop="router.push({ name: 'ManageApps' })"
-        >
-          <img :src="ArcanaLogo" alt="Arcana Logo" />
-        </div>
-        <VStack class="justify-end help-button__container flex-grow">
-          <div id="help_menu" ref="help_menu" class="relative flex">
-            <button class="help-button" @click.stop="toggleHelpMenu">
-              Help
-            </button>
-            <VCard v-if="showHelpMenu" class="help-menu-items absolute">
-              <ul style="margin: 0">
-                <li
-                  v-for="helpItem in HelpItems"
-                  :key="helpItem.label"
-                  class="cursor-pointer help-menu-item"
-                  @click.stop="showHelpMenu = false"
-                >
-                  <a
-                    :href="helpItem.link"
-                    class="flex"
-                    style="gap: 0.75rem"
-                    target="_blank"
-                  >
-                    <img :src="helpItem.icon" />
-                    <span>{{ helpItem.label }} </span></a
-                  >
-                </li>
-              </ul>
-            </VCard>
-          </div>
-          <div class="tablet-remove laptop-remove">
-            <button class="help-button" @click.stop="toggleMobileMenu">
-              <img src="@/assets/iconography/menu.svg" alt="menu icon" />
-            </button>
-          </div>
-          <div ref="notification_menu" class="notification-container flex">
-            <NotificationIcon @click="toggleNotifications" />
-            <AppNotifications
-              v-if="showNotifications"
-              @close="toggleNotifications"
-            />
-          </div>
-          <div id="profile_menu" ref="profile_menu" class="relative flex">
-            <img
-              src="@/assets/iconography/profile.svg"
-              class="cursor-pointer"
-              @click.stop="toggleProfileMenu"
-            />
-            <VCard v-if="showProfileMenu" class="help-menu-items absolute">
-              <ul style="margin: 0">
-                <li
-                  v-for="profileItem in ProfileItems"
-                  :key="profileItem.label"
-                  class="cursor-pointer help-menu-item"
-                  @click.stop="showProfileMenu = false"
-                >
-                  <RouterLink
-                    :to="{ name: `App${profileItem.label}` }"
-                    class="flex"
-                    style="gap: 0.75rem"
-                    ><img :src="profileItem.icon" />
-                    <span>{{ profileItem.label }} </span></RouterLink
-                  >
-                </li>
-                <li
-                  class="cursor-pointer help-menu-item"
-                  style="margin-top: 1.5rem"
-                >
-                  <VButton
-                    label="LOGOUT"
-                    variant="secondary"
-                    @click.stop="onLogout"
-                  />
-                </li>
-              </ul>
-            </VCard>
-          </div>
-        </VStack>
-      </VStack>
-      <VStack direction="column" gap="2rem" class="flex-grow">
-        <VDropdown
-          v-model="currentNetwork"
-          :options="NetworkOptions"
-          display-field="label"
-          :disabled="
-            selectedApp.chain_type === 'multiversx' && isProductionDashboard
-          "
-          class="app-details__network-dropdown"
-          @change="(_, option) => onNetworkSwitch(option)"
-        />
-        <RouterView />
-        <AppFooter class="footer-bleed" />
-      </VStack>
+    <VStack direction="column" class="app-details__content" gap="2rem">
+      <!-- <VDropdown
+        v-model="currentNetwork"
+        :options="NetworkOptions"
+        display-field="label"
+        :disabled="
+          selectedApp.chain_type === 'multiversx' && isProductionDashboard
+        "
+        class="app-details__network-dropdown"
+        @change="(_, option) => onNetworkSwitch(option)"
+      /> -->
+      <RouterView />
+      <AppFooter class="footer-bleed" />
     </VStack>
     <SwitchToMainnetConfirmation
       v-if="showMainnetConfirmation"

@@ -31,16 +31,16 @@ defineProps({
   cursor: pointer;
   background: transparent;
   border: none;
-  border-radius: 10px;
+  border-radius: 25px;
   box-shadow: unset;
 }
 
 .card-button:not(:disabled):hover {
-  color: #13a3fd;
+  color: #000;
 }
 
 .card-button.active:not(:disabled) {
-  color: #13a3fd;
+  color: #fff;
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
     inset -50px 49px 29px 22px rgb(28 28 28 / 84%);

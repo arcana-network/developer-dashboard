@@ -13,6 +13,7 @@ import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import GasStationIcon from '@/assets/iconography/gas-station.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
+import UserGroupIcon from '@/assets/iconography/user-group.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
 import TelegramIcon from '@/assets/telegram-white.svg'
@@ -36,24 +37,6 @@ const router = useRouter()
 const route = useRoute()
 const emit = defineEmits(['switch-tab', 'switch-app'])
 const apps: Ref<AppConfig[]> = ref([])
-
-const socialLinks = [
-  {
-    href: 'https://twitter.com/arcananetwork',
-    image: TwitterIcon,
-    alt: 'Twitter',
-  },
-  {
-    href: 'https://t.me/ArcanaNetwork',
-    image: TelegramIcon,
-    alt: 'Telegram',
-  },
-  {
-    href: 'https://discord.gg/6g7fQvEpdy',
-    image: DiscordIcon,
-    alt: 'Discord',
-  },
-]
 
 type ConfigureProps = {
   currentTab?: ConfigureTabType
@@ -102,6 +85,7 @@ const ConfigureTabs = computed(() => {
         },
       ],
     },
+    { type: 'users', label: 'Users', icon: UserGroupIcon },
   ]
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
@@ -236,63 +220,7 @@ function ellipsisAppName(appName: string) {
 <template>
   <aside class="configure-sidebar">
     <VCard class="configure-sidebar-card">
-      <button class="logo" @click.stop="onLogoClick">
-        <img :src="ArcanaLogo" alt="Arcana Logo" />
-      </button>
       <VStack direction="column" gap="1rem" class="configure-tabs flex-1">
-        <VStack class="apps-name__container relative">
-          <button
-            class="flex space-x-2 justify-between app-name__container cursor-pointer"
-            :title="appsStore.app(useAppId()).name"
-            @click="showAppsList = !showAppsList"
-          >
-            <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
-            <label class="text-ellipsis font-bold text-2xl overflow-hidden">{{
-              ellipsisAppName(appsStore.app(useAppId()).name)
-            }}</label>
-            <img
-              :src="arrowIcon"
-              alt="arrow-icon"
-              class="arrow-icon"
-              :class="{
-                'arrow-icon--active': showAppsList,
-              }"
-            />
-          </button>
-          <VCard v-if="showAppsList" class="apps-name__list-container absolute">
-            <button
-              class="apps-name__close-btn"
-              @click.stop="showAppsList = false"
-            >
-              <img :src="CloseIcon" alt="close" />
-            </button>
-            <VCardButton
-              v-for="app in apps"
-              :key="app.name"
-              class="apps-name__list-item"
-              :class="{ 'active-app': useAppId() === app.id }"
-              @click="onAppClick(app.id)"
-            >
-              <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
-              <span class="app-name text-ellipsis overflow-hidden">{{
-                app.name
-              }}</span>
-            </VCardButton>
-            <VSeperator class="app-full-bleed" />
-            <VCardButton
-              class="apps-name__list-item"
-              @click="router.push({ name: 'ManageApps' })"
-            >
-              <img
-                src="@/assets/iconography/manage.svg"
-                alt="manage apps"
-                class="app-icon"
-              />
-              <span class="app-name text-ellipsis">Manage Apps</span>
-            </VCardButton>
-          </VCard>
-        </VStack>
-        <VSeperator class="full-bleed" />
         <VCardButton
           v-for="tab in ConfigureTabs"
           :key="`configure-sidebar-tab-${tab.type}`"
@@ -343,20 +271,6 @@ function ellipsisAppName(appName: string) {
           </div>
         </VCardButton>
       </VStack>
-      <VStack gap="1.5rem" align="center" class="social-links">
-        <a
-          v-for="socialLink in socialLinks"
-          :key="socialLink.alt"
-          :href="socialLink.href"
-          target="_blank"
-        >
-          <img
-            :src="socialLink.image"
-            :alt="socialLink.alt"
-            class="social-icon"
-          />
-        </a>
-      </VStack>
     </VCard>
   </aside>
 </template>
@@ -390,7 +304,7 @@ function ellipsisAppName(appName: string) {
 }
 
 .configure-sidebar {
-  width: 16rem;
+  width: 12rem;
   height: 100%;
 }
 
@@ -417,7 +331,6 @@ function ellipsisAppName(appName: string) {
 }
 
 .configure-tabs {
-  margin-top: 4rem;
   margin-bottom: 2rem;
 }
 
@@ -526,16 +439,16 @@ function ellipsisAppName(appName: string) {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--text-white);
+  color: #989898;
   text-align: left;
 }
 
 .active-app .app-name {
-  color: var(--primary);
+  color: #000;
 }
 
 .apps-name__list-item .app-name:hover {
-  color: var(--primary);
+  color: #000;
 }
 
 .app-name__container {
@@ -553,21 +466,31 @@ function ellipsisAppName(appName: string) {
 }
 
 .active-tab .tab-label {
-  color: var(--primary);
+  color: #000;
 }
 
 .submenu-active .submenu-tab-label {
-  color: var(--primary);
+  color: #000;
+}
+
+.sidebar__option-icon {
+  filter: brightness(0) saturate(100%) invert(71%) sepia(5%) saturate(24%)
+    hue-rotate(340deg) brightness(85%) contrast(91%);
+}
+
+.sidebar__submenu-option-icon {
+  filter: brightness(0) saturate(100%) invert(71%) sepia(5%) saturate(24%)
+    hue-rotate(340deg) brightness(85%) contrast(91%);
 }
 
 .active-tab .sidebar__option-icon {
-  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
-    brightness(105%) contrast(103%);
+  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7494%)
+    hue-rotate(212deg) brightness(89%) contrast(100%);
 }
 
 .submenu-active .sidebar__submenu-option-icon {
-  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
-    brightness(105%) contrast(103%);
+  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7494%)
+    hue-rotate(212deg) brightness(89%) contrast(100%);
 }
 
 .social-icon {
