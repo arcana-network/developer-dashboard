@@ -34,7 +34,7 @@ const keyspace = app.keyspace
         </div>
         <SocialAuthProvider />
         <IAMProviders />
-        <!-- <CustomVerifier /> -->
+        <CustomVerifier />
       </div>
     </VStack>
   </main>
