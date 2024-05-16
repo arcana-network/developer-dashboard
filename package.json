@@ -24,7 +24,7 @@
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false"
   },
   "dependencies": {
-    "@arcana/auth": "^1.0.8",
+    "@arcana/auth": "^1.0.11-beta.1",
     "@headlessui/vue": "^1.7.16",
     "@heroicons/vue": "^2.0.18",
     "@sentry/tracing": "^6.16.1",

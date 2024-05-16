@@ -42,4 +42,9 @@ function isValidUrl(url: string) {
   return URLRegex.test(url)
 }
 
-export { isValidEmail, isValidUrl }
+export const useValidator = () => {
+  return {
+    email: isValidEmail,
+    url: isValidUrl,
+  }
+}
