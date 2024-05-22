@@ -110,7 +110,7 @@ function toggle() {
   height: 100%;
 
   /* background: linear-gradient(143.36deg, #c6c6c6 -4.7%, #000 115.05%); */
-  background: #fff;
+  background: var(--primary-light);
   border: var(--primary-black) solid 2px;
   border-radius: 9999px;
   transition: transform 0.4 ease;
@@ -146,7 +146,7 @@ function toggle() {
 }
 
 .toggle-indicator.checked {
-  background: #fff;
+  background: var(--primary-light);
   border: var(--primary-black) solid 1px;
   transform: translateX(24px) rotate(270deg);
 }

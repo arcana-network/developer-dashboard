@@ -267,7 +267,7 @@ watch(
 </script>
 
 <template>
-  <div class="bg-[#FFF] rounded-xl space-y-5">
+  <div class="bg-white rounded-xl space-y-5">
     <div>
       <div
         class="flex items-center justify-between border-b-2 border-[#363636] p-3.5"

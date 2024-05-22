@@ -188,13 +188,13 @@ const enableSave = computed(() => {
     <div class="h-full flex overflow-y-auto py-2">
       <div
         v-if="loader.show"
-        class="flex justify-center items-center m-auto h-[200px] w-[330px] border-[1px] border-[#363636] bg-[#fff] rounded-lg"
+        class="flex justify-center items-center m-auto h-[200px] w-[330px] border-[1px] border-[#363636] bg-white rounded-lg"
       >
         {{ loader.message }}
       </div>
       <div
         v-else
-        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-black p-4 bg-[#fff] m-auto"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-black p-4 bg-white m-auto"
       >
         <div class="space-y-7">
           <div class="space-y-2.5">

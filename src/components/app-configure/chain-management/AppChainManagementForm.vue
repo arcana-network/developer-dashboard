@@ -135,7 +135,7 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
   <VOverlay>
     <div class="h-full flex overflow-y-auto py-2">
       <div
-        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-black p-4 space-y-5 bg-[#FFF] m-auto"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-black p-4 space-y-5 bg-white m-auto"
       >
         <div
           v-if="showLoader"

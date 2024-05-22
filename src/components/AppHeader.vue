@@ -198,7 +198,7 @@ header {
   justify-content: space-between;
   padding: 1.5rem 2rem;
   visibility: visible;
-  background: #fff;
+  background: var(--primary-light);
   transition: transform 0.6s;
 }
 

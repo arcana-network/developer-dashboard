@@ -40,7 +40,7 @@ defineProps({
 }
 
 .card-button.active:not(:disabled) {
-  color: #fff;
+  color: var(--primary-light);
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
     inset -50px 49px 29px 22px rgb(28 28 28 / 84%);

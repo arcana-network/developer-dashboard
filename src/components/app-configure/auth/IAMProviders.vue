@@ -144,7 +144,7 @@ const areRequiredFieldsFilled = computed(() => {
 </script>
 
 <template>
-  <div class="bg-[#FFF] rounded-xl space-y-7">
+  <div class="bg-white rounded-xl space-y-7">
     <div>
       <h2
         class="text-sm uppercase font-bold p-3.5 border-b-[1px] border-liquidgrey"

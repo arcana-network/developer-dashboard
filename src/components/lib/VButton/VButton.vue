@@ -115,7 +115,7 @@ button.primary {
 }
 
 button.primary:disabled {
-  color: #fff;
+  color: var(--primary-light);
   cursor: not-allowed;
   background: #b7b9bd;
 }

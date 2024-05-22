@@ -218,13 +218,13 @@ onMounted(() => {
     <div class="h-full flex overflow-y-auto py-2">
       <div
         v-if="loader.show"
-        class="flex justify-center items-center m-auto h-[430px] w-[630px] border-[1px] border-[#363636] bg-[#FFF] rounded-lg"
+        class="flex justify-center items-center m-auto h-[430px] w-[630px] border-[1px] border-[#363636] bg-white rounded-lg"
       >
         {{ loader.message }}
       </div>
       <div
         v-else
-        class="flex flex-column border-[1px] border-[#363636] rounded-lg h-[430px] w-[630px] text-black p-4 space-y-5 bg-[#FFF] m-auto"
+        class="flex flex-column border-[1px] border-[#363636] rounded-lg h-[430px] w-[630px] text-black p-4 space-y-5 bg-white m-auto"
       >
         <div class="space-y-[10px]">
           <p class="text-sm">Add Smart Contracts</p>

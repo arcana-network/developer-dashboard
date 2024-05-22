@@ -110,13 +110,13 @@ function hideDeleteConfirm() {
     <div class="h-full flex overflow-y-auto py-2">
       <div
         v-if="loader.show"
-        class="flex justify-center items-center m-auto h-[330px] w-[630px] border-[1px] border-[#363636] bg-[#FFF] rounded-lg"
+        class="flex justify-center items-center m-auto h-[330px] w-[630px] border-[1px] border-[#363636] bg-white rounded-lg"
       >
         {{ loader.message }}
       </div>
       <div
         v-else
-        class="flex flex-column justify-center border-[1px] border-[#363636] rounded-lg min-h-[330px] max-h-[430px] w-[630px] text-black p-4 bg-[#FFF] m-auto overflow-hidden"
+        class="flex flex-column justify-center border-[1px] border-[#363636] rounded-lg min-h-[330px] max-h-[430px] w-[630px] text-black p-4 bg-white m-auto overflow-hidden"
       >
         <div
           v-if="showConfirmDelete.show"
@@ -192,7 +192,7 @@ function hideDeleteConfirm() {
                         <template #content>
                           <ul
                             ref="showRowOptions_menu"
-                            class="flex flex-col bg-[#FFF] text-black rounded-md border-[1px] p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
+                            class="flex flex-col bg-white text-black rounded-md border-[1px] p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
                           >
                             <li
                               v-for="option in rowOptions"

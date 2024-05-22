@@ -139,7 +139,7 @@ function isGaslessSupport(chainId: number) {
   <div v-if="areChainsEmpty" class="text-black">
     <p class="text-center p-3">No Chains Available</p>
   </div>
-  <div v-else class="bg-[#fff] rounded-md border-[1px] border-liquidgrey">
+  <div v-else class="bg-white rounded-md border-[1px] border-liquidgrey">
     <table
       class="table-fixed text-black block overflow-x-auto border-collapse w-full"
     >
@@ -221,7 +221,7 @@ function isGaslessSupport(chainId: number) {
                 <ul
                   ref="showRowOptions_menu"
                   open
-                  class="flex flex-col bg-[#FFF] text-black rounded-md p-2 space-y-1 relative"
+                  class="flex flex-col bg-white text-black rounded-md p-2 space-y-1 relative"
                 >
                   <li
                     v-for="option in getRowOptions(

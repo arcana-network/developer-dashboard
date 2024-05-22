@@ -18,7 +18,7 @@ function onCloseBanner() {
         be affected.
       </h5>
       <span class="banner-close" role="button" @click.stop="onCloseBanner">
-        <CloseIcon color="#FFFFFF" />
+        <CloseIcon color="var(--primary-light)" />
       </span>
     </div>
   </div>

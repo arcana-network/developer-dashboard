@@ -110,7 +110,7 @@ function onClickOfOption(option: number, id: number) {
               <template #content>
                 <ul
                   ref="showRowOptions_menu"
-                  class="flex flex-col bg-[#FFF] text-black rounded-md border-[1px] border-liquidgrey p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
+                  class="flex flex-col bg-white text-black rounded-md border-[1px] border-liquidgrey p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
                 >
                   <li
                     v-for="option in rowOptions"

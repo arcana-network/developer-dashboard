@@ -46,7 +46,7 @@ const areUnreadNotificationAvaiable = computed(() => {
   min-height: 18px;
   padding: 1px;
   font-size: 15px;
-  color: #fff;
+  color: var(--primary-light);
   background: var(--primary);
   border-radius: 50%;
 }

@@ -54,7 +54,7 @@ const enableSave = computed(() => {
           gas tank
         </p>
         <button
-          class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
+          class="bg-white text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
           @click="emits('close')"
         >
           Close
@@ -62,7 +62,7 @@ const enableSave = computed(() => {
       </div>
       <div
         v-else
-        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-[#FFF] m-auto"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-white m-auto"
       >
         <div class="space-y-[10px]">
           <p class="text-sm text-black">Add Gas Tank</p>

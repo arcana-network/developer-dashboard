@@ -19,7 +19,7 @@ const showEOAswitchWarning = ref(props.info.enabled)
   <VOverlay>
     <div class="h-full flex">
       <div
-        class="flex flex-col items-center space-y-5 p-5 m-auto h-[300px] w-[420px] border-[1px] border-[#363636] bg-[#FFF] rounded-lg"
+        class="flex flex-col items-center space-y-5 p-5 m-auto h-[300px] w-[420px] border-[1px] border-[#363636] bg-white rounded-lg"
       >
         <img
           src="@/assets/iconography/question-red.svg"
