@@ -149,7 +149,7 @@ watch(
   line-height: 1.5;
   color: var(--primary-black);
   cursor: pointer;
-  background: #fff;
+  background: var(--primary-light);
   border-radius: 10px;
 }
 
@@ -191,7 +191,7 @@ watch(
   line-height: 1.5;
   color: var(--primary-black);
   cursor: pointer;
-  background: #fff;
+  background: var(--primary-light);
   transition: all 0.2s;
 }
 
