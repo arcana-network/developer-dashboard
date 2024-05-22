@@ -108,7 +108,7 @@ async function resendOTP() {
 <template>
   <AppOverlay>
     <div
-      class="max-w-[360px] w-screen bg-overlay-background rounded-[10px] border-1 border-jet flex flex-col relative p-7 gap-4"
+      class="max-w-[360px] w-screen bg-white rounded-[10px] border-1 border-jet flex flex-col relative p-7 gap-4"
       role="dialog"
     >
       <button class="absolute right-4 top-4" @click="emit('dismiss')">
@@ -139,7 +139,7 @@ async function resendOTP() {
             pattern="\d*"
             maxlength="1"
             autocomplete="off"
-            class="outline-none border-none rounded-md p-2 bg-overlay-input placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center"
+            class="outline-none border-none rounded-md p-2 bg-liquid placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center"
             @input="void 0"
             @keydown="handleKeyDown($event, i - 1)"
             @paste.prevent="handlePaste"
