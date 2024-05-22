@@ -191,7 +191,7 @@ input {
   margin: 0.5rem 1rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: #000;
+  color: var(--primary-black);
   background: transparent;
   border: none;
   outline: none;
@@ -264,7 +264,7 @@ input[type='number'] {
     margin: 0.5rem 1rem;
     font-size: 11px;
     line-height: 1;
-    color: #000;
+    color: var(--primary-black);
     background: transparent;
     border: none;
     outline: none;

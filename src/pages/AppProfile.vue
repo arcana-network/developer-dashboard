@@ -233,7 +233,7 @@ function handleCancel() {
   <div>
     <AppHeader />
     <main :class="{ container: route.name === 'AppProfile' }">
-      <VStack class="heading" gap="1.5rem">
+      <VStack class="heading" gap="1rem">
         <img
           src="@/assets/iconography/back.svg"
           class="cursor-pointer"
@@ -457,6 +457,10 @@ main {
 
 .heading {
   margin-top: 2rem;
+}
+
+.heading img {
+  width: 2rem;
 }
 
 .personal-details {

@@ -5,7 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import DiscordIcon from '@/assets/discord-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
-import arrowIcon from '@/assets/iconography/arrow.png'
+import arrowIcon from '@/assets/iconography/arrow.svg'
 import brandingIcon from '@/assets/iconography/branding.svg'
 import ChainIcon from '@/assets/iconography/chain.svg'
 import CloseIcon from '@/assets/iconography/close.svg'
@@ -85,7 +85,7 @@ const ConfigureTabs = computed(() => {
         },
       ],
     },
-    { type: 'users', label: 'Users', icon: UserGroupIcon },
+    // { type: 'users', label: 'Users', icon: UserGroupIcon },
   ]
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
@@ -221,6 +221,60 @@ function ellipsisAppName(appName: string) {
   <aside class="configure-sidebar">
     <VCard class="configure-sidebar-card">
       <VStack direction="column" gap="1rem" class="configure-tabs flex-1">
+        <VStack class="apps-name__container relative">
+          <button
+            class="flex space-x-2 justify-between app-name__container cursor-pointer"
+            :title="appsStore.app(useAppId()).name"
+            @click="showAppsList = !showAppsList"
+          >
+            <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
+            <label
+              class="text-ellipsis text-black font-bold text-2xl overflow-hidden"
+              >{{ ellipsisAppName(appsStore.app(useAppId()).name) }}</label
+            >
+            <img
+              :src="arrowIcon"
+              alt="arrow-icon"
+              class="arrow-icon"
+              :class="{
+                'arrow-icon--active': showAppsList,
+              }"
+            />
+          </button>
+          <VCard v-if="showAppsList" class="apps-name__list-container absolute">
+            <button
+              class="apps-name__close-btn"
+              @click.stop="showAppsList = false"
+            >
+              <img :src="CloseIcon" alt="close" />
+            </button>
+            <VCardButton
+              v-for="app in apps"
+              :key="app.name"
+              class="apps-name__list-item"
+              :class="{ 'active-app': useAppId() === app.id }"
+              @click="onAppClick(app.id)"
+            >
+              <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
+              <span class="app-name text-ellipsis overflow-hidden">{{
+                app.name
+              }}</span>
+            </VCardButton>
+            <VSeperator class="app-full-bleed" />
+            <VCardButton
+              class="apps-name__list-item"
+              @click="router.push({ name: 'ManageApps' })"
+            >
+              <img
+                src="@/assets/iconography/manage.svg"
+                alt="manage apps"
+                class="app-icon"
+              />
+              <span class="app-name text-ellipsis">Manage Apps</span>
+            </VCardButton>
+          </VCard>
+        </VStack>
+        <VSeperator class="full-bleed" />
         <VCardButton
           v-for="tab in ConfigureTabs"
           :key="`configure-sidebar-tab-${tab.type}`"
@@ -304,7 +358,7 @@ function ellipsisAppName(appName: string) {
 }
 
 .configure-sidebar {
-  width: 12rem;
+  width: 15rem;
   height: 100%;
 }
 
@@ -376,10 +430,12 @@ function ellipsisAppName(appName: string) {
   width: 18px;
   height: 18px;
   margin-left: 4px;
+  opacity: 0.5;
   transition: ease 0.5s;
 }
 
 .arrow-icon--active {
+  opacity: 1;
   transition: ease 0.5s;
   transform: rotate(-180deg);
 }
@@ -417,7 +473,7 @@ function ellipsisAppName(appName: string) {
 }
 
 .apps-name__close-btn > img {
-  width: 10px;
+  width: 15px;
 }
 
 .apps-name__list-item {
@@ -444,11 +500,11 @@ function ellipsisAppName(appName: string) {
 }
 
 .active-app .app-name {
-  color: #000;
+  color: var(--primary-black);
 }
 
 .apps-name__list-item .app-name:hover {
-  color: #000;
+  color: var(--secondary);
 }
 
 .app-name__container {
@@ -466,16 +522,26 @@ function ellipsisAppName(appName: string) {
 }
 
 .active-tab .tab-label {
-  color: #000;
+  color: var(--primary-black);
 }
 
 .submenu-active .submenu-tab-label {
-  color: #000;
+  color: var(--primary-black);
 }
 
 .sidebar__option-icon {
   filter: brightness(0) saturate(100%) invert(71%) sepia(5%) saturate(24%)
     hue-rotate(340deg) brightness(85%) contrast(91%);
+}
+
+.sidebar__option-item:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
+}
+
+.sidebar__submenu-option:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
 }
 
 .sidebar__submenu-option-icon {

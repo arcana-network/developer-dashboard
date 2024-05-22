@@ -84,7 +84,7 @@ function onChainSelect(_, option) {
   <VOverlay>
     <div class="fixed inset-0 flex justify-center items-center">
       <div
-        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[560px] min-w-[200px] w-[70%] max-h-[100vh] overflow-y-auto"
+        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-[#FFF] max-w-[560px] min-w-[200px] w-[70%] max-h-[100vh] overflow-y-auto"
       >
         <div v-if="showLoader" class="h-full flex justify-center items-center">
           <p>Please wait...</p>
@@ -106,7 +106,7 @@ function onChainSelect(_, option) {
               <VStack direction="column" class="space-y-3">
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="app-name"
                     >Enter App Name</label
                   >
@@ -120,7 +120,7 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="default-chain"
                     >Chain Type*</label
                   >
@@ -132,7 +132,7 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="default-chain"
                     >Default Chain*</label
                   >
@@ -146,13 +146,13 @@ function onChainSelect(_, option) {
                     :disabled="!selectedChainType"
                     @change="onChainSelect"
                   />
-                  <!-- <p class="text-[#8D8D8D]">
+                  <!-- <p class="text-liquiddark">
                   *You can change the default chain later
                 </p> -->
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="default-chain"
                     >Wallet UI Mode*</label
                   >
@@ -161,7 +161,9 @@ function onChainSelect(_, option) {
                     :options="WalletUIModes"
                     display-field="label"
                   />
-                  <p class="text-[#8D8D8D]">*You cannot change UI mode later</p>
+                  <p class="text-liquiddark">
+                    *You cannot change UI mode later
+                  </p>
                 </VStack>
               </VStack>
               <VButton

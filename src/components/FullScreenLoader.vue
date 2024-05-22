@@ -22,8 +22,8 @@ defineProps({
         height: 100%;
       "
     >
-      <v-circular-progress color="var(--primary)" size="6em" />
-      <h4 style="margin-top: 1em">{{ message }}</h4>
+      <v-circular-progress color="#fff" size="6em" />
+      <h4 style="margin-top: 1em; color: #fff">{{ message }}</h4>
     </div>
   </v-overlay>
 </template>

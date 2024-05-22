@@ -6,6 +6,7 @@ import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import AppNotifications from '@/components/AppNotifications.vue'
 import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
@@ -293,6 +294,7 @@ watch(
 </script>
 
 <template>
+  <AppHeader />
   <VStack direction="row" class="app-details__container">
     <div class="app-details__sidebar mobile-remove">
       <ConfigureSidebar
@@ -303,7 +305,7 @@ watch(
       />
     </div>
     <VStack direction="column" class="app-details__content" gap="2rem">
-      <!-- <VDropdown
+      <VDropdown
         v-model="currentNetwork"
         :options="NetworkOptions"
         display-field="label"
@@ -312,7 +314,7 @@ watch(
         "
         class="app-details__network-dropdown"
         @change="(_, option) => onNetworkSwitch(option)"
-      /> -->
+      />
       <RouterView />
       <AppFooter class="footer-bleed" />
     </VStack>

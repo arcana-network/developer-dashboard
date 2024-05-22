@@ -33,14 +33,14 @@ function getNotificationsTime(timeStamp) {
         >
           {{ notification.data }}
         </p>
-        <p class="text-xs font-normal text-[#8d8d8d]">
+        <p class="text-xs font-normal text-liquiddark">
           {{ getNotificationsTime(notification.time) }}
         </p>
       </div>
       <div class="w-[10%] flex flex-col items-center justify-center">
         <span
           v-if="!notification.read"
-          class="w-2.5 h-2.5 bg-[#000] rounded-full"
+          class="w-2.5 h-2.5 bg-black rounded-full"
         ></span>
       </div>
     </li>

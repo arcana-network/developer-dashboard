@@ -119,7 +119,7 @@ function toggleNotifications() {
               >
                 <a
                   :href="helpItem.link"
-                  class="flex text-white no-underline"
+                  class="flex text-black no-underline font-normal"
                   style="gap: 0.75rem"
                   target="_blank"
                 >
@@ -131,7 +131,10 @@ function toggleNotifications() {
           </VCard>
         </div>
         <div ref="notification_menu" class="notification-container flex">
-          <NotificationIcon @click="toggleNotifications" />
+          <NotificationIcon
+            class="notification-icon"
+            @click="toggleNotifications"
+          />
           <AppNotifications
             v-if="showNotifications"
             @close="toggleNotifications"
@@ -140,7 +143,7 @@ function toggleNotifications() {
         <div id="profile_menu" ref="profile_menu" class="relative flex">
           <img
             src="@/assets/iconography/profile.svg"
-            class="cursor-pointer"
+            class="cursor-pointer profile-icon"
             @click.stop="toggleProfileMenu"
           />
           <VCard v-if="showProfileMenu" class="help-menu-items absolute">
@@ -155,7 +158,7 @@ function toggleNotifications() {
                   :to="{
                     name: `App${profileItem.label}`,
                   }"
-                  class="flex text-white no-underline"
+                  class="flex text-black no-underline font-normal help-menu-router"
                   style="gap: 0.75rem"
                   ><img :src="profileItem.icon" />
                   <span>{{ profileItem.label }} </span></RouterLink
@@ -163,7 +166,7 @@ function toggleNotifications() {
               </li>
               <li
                 class="cursor-pointer help-menu-item"
-                style="margin-top: 1.5rem"
+                style="margin-top: 0.5rem"
               >
                 <VButton
                   label="LOGOUT"
@@ -236,6 +239,10 @@ header {
   outline: none;
 }
 
+.help-button:hover {
+  color: var(--secondary);
+}
+
 .help-menu-items {
   top: calc(100% + 0.75rem);
   right: 0;
@@ -246,20 +253,42 @@ header {
   width: 200px;
   padding: 0;
   padding-top: 1.25rem;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
+  color: var(--primary-black);
+  border: #d9d9d9 1px solid;
 }
 
 .help-menu-items ul {
   padding: 0;
+  color: var(--primary-black);
 }
 
 .help-menu-item {
   width: 100%;
-  padding-inline: 1.25rem;
-  padding-bottom: 1.25rem;
-  color: var(--text-white);
+  padding-inline: 1rem;
+  padding-bottom: 1rem;
+  color: var(--primary-black);
   white-space: nowrap;
   list-style: none;
+}
+
+.help-menu-router:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
+}
+
+.help-menu-items a:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
+}
+
+.notification-icon:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
+}
+
+.profile-icon:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
 }
 
 @media only screen and (max-width: 767px) {

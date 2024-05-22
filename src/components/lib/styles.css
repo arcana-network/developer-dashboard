@@ -7,13 +7,15 @@
 @tailwind utilities;
 
 :root {
-  --primary: #13a3fd;
+  --primary: #5b93ff;
+  --secondary: #ff4e9f;
   --primary-black: #000;
   --primary-light: #fff;
   --primary-dark: #161616;
+  --primary-liquid: #dfecee;
   --text-white: #fff;
   --text-grey: #8d8d8d;
-  --color-green: #8fff00;
+  --color-green: #51cc56;
   --color-yellow: #ffc226;
   --color-orange: #ff6826;
   --color-red: #b43030;

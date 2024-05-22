@@ -136,6 +136,7 @@ function ellipsisAppName(appName: string) {
 
 <template>
   <div>
+    <AppHeader />
     <AppStatusBanner
       v-if="accountStatus !== 'active'"
       :status="accountStatus"
@@ -244,7 +245,12 @@ function ellipsisAppName(appName: string) {
             @click.stop="canCreateApp = true"
             @cancel="canCreateApp = false"
           >
-            <VStack direction="column" gap="1.25rem" align="center">
+            <VStack
+              class="add-app"
+              direction="column"
+              gap="1.25rem"
+              align="center"
+            >
               <img src="@/assets/iconography/plus-circle.svg" />
               <span class="text-lg font-normal">Create New App</span>
             </VStack>
@@ -473,6 +479,11 @@ main {
 .info-progress {
   width: 100%;
   height: 10px;
+}
+
+.add-app:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
 }
 
 .edit-icon {

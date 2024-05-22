@@ -227,19 +227,21 @@ async function updateForm() {
 </script>
 
 <template>
-  <div class="border-2 border-[#363636] bg-[#1F1F1F] rounded-xl space-y-5">
+  <div class="bg-[#FFF] rounded-xl space-y-5">
     <div>
-      <h2 class="text-sm uppercase font-bold p-3.5 border-b-2 border-[#363636]">
+      <h2
+        class="text-sm uppercase font-bold p-3.5 border-b-[1px] border-liquidgrey"
+      >
         Custom Provider
       </h2>
-      <p class="text-[#8D8D8D] text-sm font-normal p-3.5">
+      <p class="text-liquiddark text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
         care of issuing public and prviate keys to each user through our
         Decentralised Key Generation (DKG) mechanism and keep them secure.
         <a
           :href="LEARN_MORE_LINK"
           target="_blank"
-          class="no-underline uppercase text-white text-sm font-bold"
+          class="no-underline uppercase text-black text-sm font-bold"
           >Learn More</a
         >
       </p>
@@ -248,7 +250,9 @@ async function updateForm() {
       <div class="flex flex-col flex-1 space-y-5">
         <fieldset class="space-y-2">
           <div class="flex justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">ID Param</legend>
+            <legend class="text-liquiddark text-xs font-normal">
+              ID Param
+            </legend>
             <span class="text-xs font-normal">What is ID?</span>
           </div>
           <div class="flex items-baseline space-x-5">
@@ -276,7 +280,7 @@ async function updateForm() {
         </fieldset>
         <div class="flex flex-col space-y-2">
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">
+            <legend class="text-liquiddark text-xs font-normal">
               JWK Validation (Optional)
             </legend>
             <span class="text-xs font-normal">What are Validation fields?</span>
@@ -293,7 +297,7 @@ async function updateForm() {
                 name="validation"
                 :value="item.field"
                 :onInput="($event) => onFieldChange($event, idx)"
-                class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 flex-1">
@@ -303,20 +307,20 @@ async function updateForm() {
                 name="validation"
                 :value="item.value"
                 :onInput="($event) => onValueChange($event, idx)"
-                class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 w-7 h-7">
               <button
                 v-if="showDeleteButton(idx)"
-                class="text-white flex items-center w-7 h-7"
+                class="text-black flex items-center w-7 h-7"
                 @click="removeValidationField(idx)"
               >
                 <img :src="DeleteIcon" alt="Add Chain" class="w-7 h-7" />
               </button>
               <button
                 v-else-if="idx < 2"
-                class="text-white flex items-center w-7 h-7"
+                class="text-black flex items-center w-7 h-7"
                 @click="addValidationField"
               >
                 <img :src="PlusIcon" alt="Add Chain" class="w-7 h-7" />
@@ -328,7 +332,7 @@ async function updateForm() {
       <div class="flex-1 ml-10 space-y-2">
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">JWK URL</legend>
+            <legend class="text-liquiddark text-xs font-normal">JWK URL</legend>
             <span class="text-xs font-normal">What is JWK URL?</span>
           </div>
           <div class="w-full">
@@ -337,13 +341,13 @@ async function updateForm() {
               v-model="jwkUrl"
               type="text"
               name="validation"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">Issuer</legend>
+            <legend class="text-liquiddark text-xs font-normal">Issuer</legend>
           </div>
           <div class="w-full">
             <input
@@ -351,13 +355,15 @@ async function updateForm() {
               v-model="issuer"
               type="text"
               name="Issuer"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">Audience</legend>
+            <legend class="text-liquiddark text-xs font-normal">
+              Audience
+            </legend>
           </div>
           <div class="w-full">
             <input
@@ -365,7 +371,7 @@ async function updateForm() {
               v-model="audience"
               type="text"
               name="audience"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>

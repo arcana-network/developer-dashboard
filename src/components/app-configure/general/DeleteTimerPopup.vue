@@ -71,7 +71,7 @@ function handleProceedDeletion() {
         :percent="timerProgressPercentage"
         :border-width="5"
         :border-bg-width="5"
-        fill-color="#13A3FD"
+        fill-color="var(--primary)"
         empty-color="transparent"
         :size="200"
       />

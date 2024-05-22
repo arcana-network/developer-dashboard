@@ -290,7 +290,7 @@ async function fetchActiveUsers() {
         style="align-items: stretch"
       >
         <div class="flex justify-between items-center">
-          <h2>USERS</h2>
+          <h2 class="font-normal">USERS</h2>
           <div class="flex flex-wrap duration">
             <v-card-button
               label="Daily"
@@ -402,7 +402,7 @@ async function fetchActiveUsers() {
   height: 350px;
   padding: 20px;
   margin: 0 10px;
-  background-color: #000;
+  background-color: var(--primary-black);
   border-radius: 10px;
   border-radius: 8px;
 }

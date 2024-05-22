@@ -155,7 +155,7 @@ label {
 
 div.text-field {
   display: flex;
-  background: #dfecee;
+  background: var(--primary-liquid);
   border-radius: 25px;
 }
 

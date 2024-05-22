@@ -23,7 +23,7 @@ const docsLink = 'https://docs.arcana.network/howto/config_dapp.html'
     <a
       :href="docsLink"
       target="_blank"
-      class="flex flex-row uppercase no-underline text-[#000] text-[11px] md:text-[0.95rem] font-normal"
+      class="flex flex-row uppercase no-underline text-black text-[11px] md:text-[0.95rem] font-normal"
       >Learn More
       <img
         class="pl-2 h-[11px] md:h-[20px]"

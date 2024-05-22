@@ -9,6 +9,7 @@ import AppGaslessTankList from '@/components/app-configure/gasless/AppGaslessTan
 import AppGaslessWhitelist from '@/components/app-configure/gasless/AppGaslessWhitelist.vue'
 import AppGasTankDeposit from '@/components/app-configure/gasless/AppGasTankDeposit.vue'
 import AppGasTankForm from '@/components/app-configure/gasless/AppGasTankForm.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import { useToast } from '@/components/lib/VToast'
 import SearchBar from '@/components/SearchBar.vue'
 import {
@@ -178,7 +179,7 @@ async function toggleChainStatus(info: object) {
       <h1 class="font-title text-[32px] leading-[150%] font-[700]">
         Gas Tanks
       </h1>
-      <p class="font-body text-[14px] text-[#8D8D8D] leading-[150%]">
+      <p class="font-body text-[14px] text-liquiddark leading-[150%]">
         Gas tanks can be set up for every network chain that your app supports.
         Deposit crypto into these tanks to enable gasless transactions for users
         of your dApp. Withdraw crypto if you ever need to.
@@ -186,7 +187,7 @@ async function toggleChainStatus(info: object) {
     </div>
     <div class="flex flex-col space-y-5">
       <div class="flex items-baseline w-full justify-end space-x-5">
-        <button class="text-white space-x-1.5" @click="showForm = true">
+        <button class="text-black space-x-1.5" @click="showForm = true">
           <span>Add Gas Tank</span>
         </button>
         <SearchBar

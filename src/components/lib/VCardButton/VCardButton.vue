@@ -36,7 +36,7 @@ defineProps({
 }
 
 .card-button:not(:disabled):hover {
-  color: #000;
+  color: var(--secondary);
 }
 
 .card-button.active:not(:disabled) {

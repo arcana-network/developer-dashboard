@@ -218,41 +218,41 @@ onMounted(() => {
     <div class="h-full flex overflow-y-auto py-2">
       <div
         v-if="loader.show"
-        class="flex justify-center items-center m-auto h-[430px] w-[630px] border-[1px] border-[#363636] bg-[#1F1F1F] rounded-lg"
+        class="flex justify-center items-center m-auto h-[430px] w-[630px] border-[1px] border-[#363636] bg-[#FFF] rounded-lg"
       >
         {{ loader.message }}
       </div>
       <div
         v-else
-        class="flex flex-column border-[1px] border-[#363636] rounded-lg h-[430px] w-[630px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto"
+        class="flex flex-column border-[1px] border-[#363636] rounded-lg h-[430px] w-[630px] text-black p-4 space-y-5 bg-[#FFF] m-auto"
       >
         <div class="space-y-[10px]">
           <p class="text-sm">Add Smart Contracts</p>
-          <p class="text-sm text-[#8D8D8D] leading-4">
+          <p class="text-sm text-liquiddark leading-4">
             Specify the details of a contract to add it to the whitelist
           </p>
         </div>
         <div class="flex space-x-3 flex-1 overflow-hidden">
           <form class="w-1/2 space-y-3 flex flex-col">
             <div class="flex flex-col space-y-2">
-              <label for="network-name" class="text-xs text-[#8D8D8D]"
+              <label for="network-name" class="text-xs text-liquiddark"
                 >Contract Name</label
               >
               <input
                 v-model="contractName"
                 type="text"
-                class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none rounded-md"
+                class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none rounded-md"
                 name="network-name"
               />
             </div>
             <div class="flex flex-col space-y-2">
               <div class="flex justify-between items-baseline">
-                <label for="network-name" class="text-xs text-[#8D8D8D]"
+                <label for="network-name" class="text-xs text-liquiddark"
                   >Smart Contract Address</label
                 >
                 <button
                   v-if="contractAddress.length && props.formType === 'add'"
-                  class="text-xs underline"
+                  class="text-xs text-black underline"
                   @click.prevent="fetchAbi"
                 >
                   Fetch ABI
@@ -261,7 +261,7 @@ onMounted(() => {
               <input
                 v-model="contractAddress"
                 type="text"
-                class="text-sm bg-[#313131] p-[10px] w-full border-none outline-none rounded-md"
+                class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none rounded-md"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
                 }"
@@ -270,13 +270,13 @@ onMounted(() => {
               />
             </div>
             <div class="flex flex-col space-y-2 flex-1">
-              <label for="network-name" class="text-xs text-[#8D8D8D]"
+              <label for="network-name" class="text-xs text-liquiddark"
                 >Application Binary Interface (ABI)</label
               >
               <textarea
                 v-model="enteredAbi"
                 type="text"
-                class="text-sm bg-[#313131] p-[10px] w-full flex-1 border-none outline-none rounded-md"
+                class="text-sm bg-liquidlight p-[10px] w-full flex-1 border-none outline-none rounded-md"
                 name="network-name"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
@@ -289,10 +289,10 @@ onMounted(() => {
             </div>
           </form>
           <div class="w-1/2 flex flex-column space-y-2 overflow-hidden">
-            <span class="text-xs text-[#8D8D8D]"
+            <span class="text-xs text-liquiddark"
               >Functions to Sponsor Gas Fees</span
             >
-            <div class="flex-1 bg-black p-1 overflow-auto space-y-2">
+            <div class="flex-1 bg-liquidlight p-1 overflow-auto space-y-2">
               <div
                 v-for="(abiItem, itemIndex) in abi"
                 :key="abiItem.name"
@@ -309,14 +309,16 @@ onMounted(() => {
         </div>
         <div class="space-x-2.5 flex justify-end">
           <button
-            class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md"
+            class="border-[1.5px] bg-liquid hover:text-pink border-[#F7F7F7] w-[100px] p-2 rounded-3xl"
             @click.stop="emits('close')"
           >
             Cancel
           </button>
           <button
-            class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
-            :class="[!enableSave ? 'opacity-5' : 'opacity-100']"
+            class="bg-liquid text-black w-[100px] p-2 rounded-3xl transition-opacity duration-500"
+            :class="[
+              !enableSave ? 'opacity-40' : 'opacity-100 hover:text-pink',
+            ]"
             :disabled="!enableSave"
             @click.stop="save"
           >

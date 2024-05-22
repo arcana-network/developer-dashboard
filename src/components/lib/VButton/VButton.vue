@@ -111,7 +111,7 @@ a {
 
 button.primary {
   color: var(--text-white);
-  background: #000;
+  background: var(--primary-black);
 }
 
 button.primary:disabled {
@@ -121,17 +121,16 @@ button.primary:disabled {
 }
 
 button.primary:hover:not(:disabled) {
-  background-color: #ff4e9f;
+  background-color: var(--secondary);
 }
 
 button.secondary {
   padding: calc(0.625rem - 2px);
-  color: var(--text-white);
-  color: #000;
+  color: var(--primary-black);
 
   /* background: linear-gradient(#262626, #262626) padding-box,
     linear-gradient(to bottom, #0085ff, #29c8fa) border-box; */
-  background-color: #dfecee;
+  background-color: var(--primary-liquid);
   border: 2px solid transparent;
   border-radius: 25px;
 }
@@ -139,11 +138,11 @@ button.secondary {
 button.secondary:disabled {
   color: #808080;
   cursor: not-allowed;
-  background: #dfecee;
+  background: var(--primary-liquid);
 }
 
 button.secondary:hover:not(:disabled) {
-  color: #ff4e9f;
+  color: var(--secondary);
 }
 
 button.secondary:disabled::before {
@@ -157,7 +156,7 @@ a.link {
 }
 
 a:not([disabled='true']):hover {
-  color: #ff4e9f;
+  color: var(--secondary);
 }
 
 a:not([disabled='true']):active {

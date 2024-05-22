@@ -29,11 +29,11 @@ onMounted(() => {
       >
         <div class="space-y-2.5">
           <h3>Delete a Chain</h3>
-          <p v-if="isGasTankConfigured" class="text-[#8D8D8D] leading-4">
+          <p v-if="isGasTankConfigured" class="text-liquiddark leading-4">
             Warning: A Gastank is configured for this chain. Deleting this chain
             may disable the Gastank.
           </p>
-          <p v-else class="text-[#8D8D8D] leading-4">
+          <p v-else class="text-liquiddark leading-4">
             Please confirm the deletion of the chain by clicking ‘Delete’ below.
           </p>
         </div>

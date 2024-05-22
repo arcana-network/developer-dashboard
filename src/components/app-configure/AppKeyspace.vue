@@ -240,6 +240,7 @@ function handleCancel() {
 .keyspace-container {
   max-width: 296px;
   padding: 2rem;
+  background-color: var(--primary-black);
 }
 
 .card-title {
@@ -250,13 +251,14 @@ function handleCancel() {
 .card-description {
   font-size: 0.75rem;
   line-height: 1.5;
-  color: var(--text-grey);
+  color: var(--text-black);
 }
 
 .gradient-border-card {
   padding: 2px;
-  background: linear-gradient(90deg, #cc2b5e 0%, #753a88 100%);
+  background: var(--secondary);
   border-radius: 10px;
+  opacity: 100;
 }
 
 .disabled-card {

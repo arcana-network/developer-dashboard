@@ -136,32 +136,32 @@ function isGaslessSupport(chainId: number) {
 </script>
 
 <template>
-  <div v-if="areChainsEmpty" class="text-white">
+  <div v-if="areChainsEmpty" class="text-black">
     <p class="text-center p-3">No Chains Available</p>
   </div>
-  <div v-else class="rounded-md border-[1px] border-[#363636]">
+  <div v-else class="bg-[#fff] rounded-md border-[1px] border-liquidgrey">
     <table
-      class="table-fixed text-white block overflow-x-auto border-collapse w-full"
+      class="table-fixed text-black block overflow-x-auto border-collapse w-full"
     >
-      <thead class="border-b-[1px] border-b-[#363636]">
-        <tr class="text-[#8d8d8d]">
+      <thead class="border-b-[1px] border-b-liquidgrey">
+        <tr class="text-liquiddark">
           <!-- <th class="w-[10%]"><Button>A &#x2192; B</Button></th> -->
           <th class="w-[10%]"></th>
-          <th class="w-[15%]" @click="sortBy('name')">
+          <th class="w-[15%] hover:text-pink" @click="sortBy('name')">
             <Button>Name</Button>
           </th>
-          <th class="w-[10%]" @click="sortBy('chain_id')">
+          <th class="w-[10%] hover:text-pink" @click="sortBy('chain_id')">
             <Button>Chain ID</Button>
           </th>
-          <th class="w-[10%]" @click="sortBy('currency')">
+          <th class="w-[10%] hover:text-pink" @click="sortBy('currency')">
             <Button>Currency</Button>
           </th>
           <!-- <th class="w-[10%]">Compatibility</th> -->
-          <th class="w-[10%]" @click="sortBy('chain_type')">
+          <th class="w-[10%] hover:text-pink" @click="sortBy('chain_type')">
             <Button>Type</Button>
           </th>
-          <th>RPC URL</th>
-          <th class="w-[10%]" @click="sortBy('status')">
+          <th class="hover:text-pink">RPC URL</th>
+          <th class="w-[10%] hover:text-pink" @click="sortBy('status')">
             <Button>Enabled</Button>
           </th>
           <th class="w-[5%]"></th>
@@ -171,7 +171,7 @@ function isGaslessSupport(chainId: number) {
         <tr
           v-for="chain in sortedList"
           :key="chain.id"
-          class="hover:bg-[#363636]"
+          class="hover:bg-liquid hover:text-pink"
         >
           <td>
             <img
@@ -221,7 +221,7 @@ function isGaslessSupport(chainId: number) {
                 <ul
                   ref="showRowOptions_menu"
                   open
-                  class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 relative"
+                  class="flex flex-col bg-[#FFF] text-black rounded-md p-2 space-y-1 relative"
                 >
                   <li
                     v-for="option in getRowOptions(
@@ -230,7 +230,7 @@ function isGaslessSupport(chainId: number) {
                       rowOptions
                     )"
                     :key="option.value"
-                    class="p-1 rounded-[5px] hover:bg-[#363636] text-left cursor-pointer"
+                    class="p-1 rounded-[5px] hover:bg-liquidlight text-left cursor-pointer"
                     @click.stop="onClickOfOption(option.value, chain.id, chain)"
                   >
                     <button>
