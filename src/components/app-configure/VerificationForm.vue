@@ -14,7 +14,7 @@ import { useAppsStore, type AppId } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
 import { NetworkName } from '@/utils/constants'
 import { content, errors } from '@/utils/content'
-import { isValidEmail } from '@/utils/validation'
+import { useValidator } from '@/utils/validation'
 
 type VerificationFormProps = {
   address: string
@@ -27,6 +27,7 @@ const toast = useToast()
 const loaderStore = useLoaderStore()
 const error = ref('')
 const appsStore = useAppsStore()
+const validator = useValidator()
 
 const formData = reactive({
   companyName: '',
@@ -57,7 +58,7 @@ async function handleSubmit() {
   if (!formData.contactEmail.trim()) {
     return toast.error(errors.FORM.CONTACT_EMAIL)
   }
-  if (!isValidEmail(formData.contactEmail)) {
+  if (!validator.email(formData.contactEmail)) {
     return toast.error(errors.FORM.VALID_MAIL)
   }
   if (!formData.appUrl.trim()) {

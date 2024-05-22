@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, reactive } from 'vue'
 import { useRoute, useRouter, type RouteRecordName } from 'vue-router'
 
 import AppBanner from '@/components/AppBanner.vue'
@@ -8,6 +8,7 @@ import VButtonSecondary from '@/components/lib/VButtonSecondary/VButtonSecondary
 import VTextFieldSecondary from '@/components/lib/VTextFieldSecondary/VTextFieldSecondary.vue'
 import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
 import LoginFooter from '@/components/LoginFooter.vue'
+import OTPInput from '@/components/OTPInput.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import { useAppsStore } from '@/stores/apps.store'
@@ -16,7 +17,7 @@ import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { content } from '@/utils/content'
 import { generateLoginInfo } from '@/utils/signerUtils'
-import { isValidEmail } from '@/utils/validation'
+import { useValidator } from '@/utils/validation'
 
 const router = useRouter()
 const route = useRoute()
@@ -24,27 +25,65 @@ const appsStore = useAppsStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
+const validator = useValidator()
 const email = ref('')
-const hasValidEmail = computed(() => isValidEmail(email.value))
+const hasValidEmail = computed(() => validator.email(email.value))
 
 function capitalize(s: string) {
   return s[0].toUpperCase() + s.substring(1)
+}
+const emailErrors = reactive({
+  invalid: false,
+  required: false,
+})
+const isFirstSubmitted = ref(false)
+const showOTPInput = ref(false)
+
+function resetEmailErrors() {
+  emailErrors.invalid = false
+  emailErrors.required = false
+}
+
+const hasEmailErrors = computed(() => {
+  return emailErrors.invalid || emailErrors.required
+})
+
+function validate() {
+  resetEmailErrors()
+  if (!email.value.trim()) {
+    emailErrors.required = true
+  }
+  if (!validator.email(email.value)) {
+    emailErrors.invalid = true
+  }
 }
 
 async function launchLogin(type: string) {
   try {
     if (type === 'passwordless') {
-      if (!hasValidEmail.value) return
-      loaderStore.showLoader(content.APP.LOGIN.CLICK)
-      await arcanaAuth.loginWithLink(email.value)
+      if (!isFirstSubmitted.value) {
+        validate()
+        isFirstSubmitted.value = true
+      }
+      if (hasEmailErrors.value) return
+      showOTPInput.value = true
+      await loginWithOTP()
     } else {
       loaderStore.showLoader(`Signing with ${capitalize(type)}`)
       await arcanaAuth.loginWithSocial(type)
     }
     await fetchAndStoreDetails()
   } catch (e) {
-    console.error(e)
+    console.log(e)
     loaderStore.hideLoader()
+  }
+}
+
+async function loginWithOTP() {
+  try {
+    await arcanaAuth.loginWithOTP(email.value.trim().toLowerCase())
+  } catch (error) {
+    console.log('error', 'loginWithOTP', error)
   }
 }
 
@@ -156,7 +195,7 @@ onMounted(async () => {
               color="white"
             />
             <VButtonSecondary
-              label="Send Link"
+              label="Send OTP"
               class="w-full max-w-[20rem]"
               type="submit"
               :disabled="!hasValidEmail"
@@ -213,5 +252,12 @@ onMounted(async () => {
       />
     </main>
     <LoginFooter class="mobile-remove" />
+    <Transition name="fade" class="z-[1000]">
+      <OTPInput
+        v-if="showOTPInput"
+        @dismiss="showOTPInput = false"
+        @resend="loginWithOTP"
+      />
+    </Transition>
   </div>
 </template>

@@ -13,7 +13,7 @@ import { useLoaderStore } from '@/stores/loader.store'
 import { useAppId } from '@/use/getAppId'
 import { WalletUIModes, isProductionDashboard } from '@/utils/constants'
 import { content, errors } from '@/utils/content'
-import { isValidUrl } from '@/utils/validation'
+import { useValidator } from '@/utils/validation'
 
 const appsStore = useAppsStore()
 const appId = useAppId()
@@ -22,6 +22,7 @@ const toast = useToast()
 const app = appsStore.app(appId)
 const wallet = app.auth.wallet
 const isEdited = ref(false)
+const validator = useValidator()
 
 const appNetwork = isProductionDashboard
   ? app.network
@@ -66,7 +67,7 @@ function handleCancel() {
 }
 
 function isValidWebsiteDomain() {
-  return !walletWebsiteDomain.value || isValidUrl(walletWebsiteDomain.value)
+  return !walletWebsiteDomain.value || validator.url(walletWebsiteDomain.value)
 }
 
 function hasSameValuesInStore() {
