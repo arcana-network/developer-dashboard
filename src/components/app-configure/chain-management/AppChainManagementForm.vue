@@ -5,7 +5,7 @@ import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { getChainIDUsingRPCUrl } from '@/services/gateway.service'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import validateRPCandChainId from '@/utils/validateRPCandChainId'
-import { isValidUrl } from '@/utils/validation'
+import { isValidUrl, isValidWsUrl } from '@/utils/validation'
 
 const emits = defineEmits(['close', 'submit'])
 const TitleAction = ref('')
@@ -49,13 +49,13 @@ const enableSave = computed(() => {
     currency.length &&
     name.length &&
     (explorerURL.length ? isValidUrl(explorerURL.trim()) : true) &&
-    isValidUrl(rpcURL.trim())
+    (isValidUrl(rpcURL.trim()) || isValidWsUrl(rpcURL.trim()))
   )
 })
 
 watch(formData.value, (newValue) => {
   const { rpcURL } = newValue
-  const isValid = isValidUrl(rpcURL.trim())
+  const isValid = isValidUrl(rpcURL.trim()) || isValidWsUrl(rpcURL.trim())
   if (isValid) fetchChainIdUsingRPCUrl(rpcURL)
 })
 
@@ -116,12 +116,11 @@ const chainIDs = chainManagementStore.chainIDs
 async function fetchChainIdUsingRPCUrl(rpcURL: string) {
   try {
     showLoaderRPCValidation.value = true
-    const {
-      data: { result },
-    } = await getChainIDUsingRPCUrl(rpcURL)
-    formData.value.chainId = `${parseInt(result, 16)}`
+    const chainId = await getChainIDUsingRPCUrl(rpcURL)
+    formData.value.chainId = `${chainId}`
     showRpcError.value = false
   } catch (e) {
+    console.log('Error', e)
     showRpcError.value = true
     formData.value.chainId = '-'
   } finally {

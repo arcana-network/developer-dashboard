@@ -1,4 +1,5 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
+import { providers } from 'ethers'
 
 import store from '@/stores'
 import type {
@@ -18,6 +19,7 @@ import {
   type WalletUIMode,
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
+import { isValidWsUrl } from '@/utils/validation'
 
 const authStore = useAuthStore(store)
 const appsStore = useAppsStore(store)
@@ -584,8 +586,16 @@ function setDefaultChain(appId: number, data: any, network: Network) {
 }
 
 async function getChainIDUsingRPCUrl(rpcURL: string) {
-  const payload = { jsonrpc: '2.0', method: 'eth_chainId', params: [], id: 1 } // id - dummy value
-  return axios.post(rpcURL, payload)
+  const provider: providers.WebSocketProvider | providers.JsonRpcProvider =
+    isValidWsUrl(rpcURL)
+      ? new providers.WebSocketProvider(rpcURL)
+      : new providers.JsonRpcProvider(rpcURL)
+  const chainId = await provider.getNetwork().then((network) => network.chainId)
+  console.log('chainId', chainId)
+  if ((provider as providers.WebSocketProvider).destroy) {
+    await (provider as providers.WebSocketProvider).destroy()
+  }
+  return chainId
 }
 
 async function getGaslessSupportChains(network: Network) {
