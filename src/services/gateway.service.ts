@@ -590,8 +590,7 @@ async function getChainIDUsingRPCUrl(rpcURL: string) {
     isValidWsUrl(rpcURL)
       ? new providers.WebSocketProvider(rpcURL)
       : new providers.JsonRpcProvider(rpcURL)
-  const chainId = await provider.getNetwork().then((network) => network.chainId)
-  console.log('chainId', chainId)
+  const { chainId } = await provider.getNetwork()
   if ((provider as providers.WebSocketProvider).destroy) {
     await (provider as providers.WebSocketProvider).destroy()
   }
