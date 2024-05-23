@@ -12,6 +12,7 @@ import NotificationIcon from '@/components/icons/NotificationIcon.vue'
 import VButton from '@/components/lib/VButton/VButton.vue'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
+import VDropdownSecondary from '@/components/lib/VDropdownSecondary/VDropdownSecondary.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import MainnetAppCreatedPopup from '@/components/MainnetAppCreatedPopup.vue'
@@ -305,7 +306,7 @@ watch(
       />
     </div>
     <VStack direction="column" class="app-details__content" gap="2rem">
-      <VDropdown
+      <VDropdownSecondary
         v-model="currentNetwork"
         :options="NetworkOptions"
         display-field="label"

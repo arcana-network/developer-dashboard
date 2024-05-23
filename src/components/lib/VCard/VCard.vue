@@ -62,7 +62,7 @@ const classes = computed(() => {
 }
 
 .card.depressed {
-  background: transparent;
+  background: #efefef;
   border-radius: 10px;
 
   /* box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%); */

@@ -270,7 +270,7 @@ watch(
   <div class="bg-white rounded-xl space-y-5">
     <div>
       <div
-        class="flex items-center justify-between border-b-2 border-[#363636] p-3.5"
+        class="flex items-center justify-between border-b border-liquidgrey p-3.5"
       >
         <h2 class="text-sm uppercase font-bold">Custom OAuth</h2>
         <div v-if="fetchedData.name" class="flex items-center space-x-2">
@@ -313,7 +313,7 @@ watch(
                 name="idParam"
                 value="sub"
               />
-              <label for="sub">Sub</label>
+              <label class="text-black font-normal" for="sub">Sub</label>
             </div>
             <div class="space-x-2">
               <input
@@ -323,7 +323,7 @@ watch(
                 name="idParam"
                 value="email"
               />
-              <label for="email">Email</label>
+              <label class="text-black font-normal" for="email">Email</label>
             </div>
             <div class="space-x-2">
               <input
@@ -333,7 +333,7 @@ watch(
                 name="idParam"
                 value="custom"
               />
-              <label for="custom">Custom</label>
+              <label class="text-black font-normal" for="custom">Custom</label>
             </div>
           </div>
           <div>
@@ -342,7 +342,7 @@ watch(
               v-model="idParam"
               type="text"
               name="idParam"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-white bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </fieldset>
@@ -365,7 +365,7 @@ watch(
               v-model="jwkUrl"
               type="text"
               name="validation"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -382,7 +382,7 @@ watch(
               v-model="issuer"
               type="text"
               name="Issuer"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -399,7 +399,7 @@ watch(
               v-model="audience"
               type="text"
               name="audience"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>

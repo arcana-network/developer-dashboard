@@ -84,7 +84,7 @@ function onChainSelect(_, option) {
   <VOverlay>
     <div class="fixed inset-0 flex justify-center items-center">
       <div
-        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-white max-w-[560px] min-w-[200px] w-[70%] max-h-[100vh] overflow-y-auto"
+        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-white max-w-[560px] min-w-[200px] w-[70%] max-h-screen overflow-y-auto"
       >
         <div v-if="showLoader" class="h-full flex justify-center items-center">
           <p>Please wait...</p>
