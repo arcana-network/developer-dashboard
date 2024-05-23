@@ -5,7 +5,7 @@ import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import { getChainIDUsingRPCUrl } from '@/services/gateway.service'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import validateRPCandChainId from '@/utils/validateRPCandChainId'
-import { useValidator } from '@/utils/validation'
+import { isValidUrl } from '@/utils/validation'
 
 const emits = defineEmits(['close', 'submit'])
 const TitleAction = ref('')
@@ -14,7 +14,6 @@ const showRpcError = ref(false)
 const showChainIdMismatchError = ref(false)
 const showLoader = ref(false)
 const showLoaderRPCValidation = ref(false)
-const validator = useValidator()
 
 const props = defineProps({
   formAction: {
@@ -49,14 +48,14 @@ const enableSave = computed(() => {
     chainType.length &&
     currency.length &&
     name.length &&
-    (explorerURL.length ? validator.url(explorerURL.trim()) : true) &&
-    validator.url(rpcURL.trim())
+    (explorerURL.length ? isValidUrl(explorerURL.trim()) : true) &&
+    isValidUrl(rpcURL.trim())
   )
 })
 
 watch(formData.value, (newValue) => {
   const { rpcURL } = newValue
-  const isValid = validator.url(rpcURL.trim())
+  const isValid = isValidUrl(rpcURL.trim())
   if (isValid) fetchChainIdUsingRPCUrl(rpcURL)
 })
 
