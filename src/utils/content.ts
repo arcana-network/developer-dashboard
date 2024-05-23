@@ -2,11 +2,11 @@ const content = {
   GENERIC: {
     ABI: 'Fetching ABI...',
     CONNECTING: 'Connecting Wallet...',
-    SIGNING: 'Signing...',
+    SIGNING: 'Signing In...',
     TOGGLING: 'Toggling...',
     UPDATING: 'Updating Profile details...',
     UPDATED: 'Profile details updated successfully.',
-    COPY: 'Copied Successfully...',
+    COPY: 'Copied Successfully.',
   },
   SMART_CONTRACT: {
     CREATING: 'Creating Smart Contract',

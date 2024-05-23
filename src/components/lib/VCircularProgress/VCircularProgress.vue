@@ -18,7 +18,7 @@ const props = defineProps({
 
 const styles = computed(() => {
   return {
-    color: props.color || 'var(--primary)',
+    color: props.color || 'var(--primary-light)',
     width: props.size,
     height: props.size,
     fontSize: props.stroke,
@@ -38,6 +38,7 @@ progress {
   padding: 0.25em;
   overflow: hidden;
   font-size: 8px;
+  color: #fff;
   background-color: transparent;
   border: none;
   border-radius: 50%;
