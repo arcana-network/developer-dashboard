@@ -17,7 +17,7 @@ import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { content } from '@/utils/content'
 import { generateLoginInfo } from '@/utils/signerUtils'
-import { useValidator } from '@/utils/validation'
+import { isValidEmail } from '@/utils/validation'
 
 const router = useRouter()
 const route = useRoute()
@@ -25,9 +25,8 @@ const appsStore = useAppsStore()
 const authStore = useAuthStore()
 const loaderStore = useLoaderStore()
 const arcanaAuth = useArcanaAuth()
-const validator = useValidator()
 const email = ref('')
-const hasValidEmail = computed(() => validator.email(email.value))
+const hasValidEmail = computed(() => isValidEmail(email.value))
 
 function capitalize(s: string) {
   return s[0].toUpperCase() + s.substring(1)
@@ -53,7 +52,7 @@ function validate() {
   if (!email.value.trim()) {
     emailErrors.required = true
   }
-  if (!validator.email(email.value)) {
+  if (!isValidEmail(email.value)) {
     emailErrors.invalid = true
   }
 }
