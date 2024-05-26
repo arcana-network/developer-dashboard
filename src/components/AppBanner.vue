@@ -31,7 +31,7 @@ function onCloseBanner() {
   line-height: 1.5em;
   color: white;
   text-align: center;
-  background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
+  background: #fff;
 }
 
 .banner h4 {

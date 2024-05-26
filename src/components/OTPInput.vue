@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue'
 
+import VButton from '@/components/lib/VButton/VButton.vue'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
@@ -112,7 +113,7 @@ async function resendOTP() {
       role="dialog"
     >
       <button class="absolute right-4 top-4" @click="emit('dismiss')">
-        <img src="@/assets/close.svg" alt="Close" />
+        <img src="@/assets/iconography/close.svg" alt="Close" />
       </button>
       <div class="flex flex-col items-center justify-center gap-3 text-center">
         <h2 class="text-otp font-bold">Verification</h2>
@@ -158,17 +159,16 @@ async function resendOTP() {
               : 'The entered OTP is either invalid or already used.'
           }}</span
         >
-        <button
+        <VButton
           :disabled="!isValidOTP"
           :title="!isValidOTP ? 'Please enter a valid OTP' : ''"
-          class="bg-white text-black uppercase border-2 p-2.5 rounded-md font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Verify OTP
-        </button>
+          variant="secondary"
+          label="VERIFY OTP"
+        />
         <div class="flex items-center justify-center">
           <button
             v-if="resendCounter === 0"
-            class="text-sm font-bold"
+            class="text-sm font-normal"
             type="button"
             @click.stop="resendOTP"
           >
