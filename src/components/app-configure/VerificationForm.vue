@@ -247,7 +247,7 @@ textarea {
   margin: 0.875rem 1rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--text-white);
+  color: var(--text-black);
   resize: none;
   background: transparent;
   border: none;

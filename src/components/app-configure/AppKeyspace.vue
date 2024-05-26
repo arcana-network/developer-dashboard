@@ -137,7 +137,7 @@ function handleCancel() {
                     <span
                       v-if="app.status === 0"
                       class="card-description"
-                      style="color: #f7f7f7"
+                      style="color: #000"
                     >
                       *Recommended
                     </span>
@@ -146,7 +146,7 @@ function handleCancel() {
                         class="circle-indicator"
                         style="background: #ff6826"
                       ></div>
-                      <span class="card-description" style="color: #f7f7f7">
+                      <span class="card-description" style="color: #000">
                         In Review
                       </span>
                     </VStack>
@@ -155,7 +155,7 @@ function handleCancel() {
                         class="circle-indicator"
                         style="background: #8fff00"
                       ></div>
-                      <span class="card-description" style="color: #f7f7f7">
+                      <span class="card-description" style="color: #000">
                         Approved
                       </span>
                     </VStack>
@@ -164,7 +164,7 @@ function handleCancel() {
                         src="@/assets/iconography/rejected.svg"
                         style="width: 12px"
                       />
-                      <span class="card-description" style="color: #f7f7f7">
+                      <span class="card-description" style="color: #000">
                         Rejected
                       </span>
                     </VStack>
@@ -270,7 +270,8 @@ input[type='radio'] {
   display: grid;
   place-content: center;
   width: 20px;
-  background: #313131;
+  background: #fff;
+  border: #000 solid 2px;
   border-radius: 50%;
   box-shadow: none;
   transform: translateX(0);
@@ -281,7 +282,8 @@ input[type='radio']::before {
   width: 16px;
   height: 16px;
   content: '';
-  background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
+  background: #000;
+  border: #fff solid 2px;
   border-radius: 50%;
   transition: 120ms transform ease-in-out;
   transform: scale(0);
