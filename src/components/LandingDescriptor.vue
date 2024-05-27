@@ -168,21 +168,21 @@ onMounted(async () => {
     <p class="text-[0.75rem] text-liquiddark ml-[97px]">Social Login</p>
     <div class="flex flex-col items-center space-y-3">
       <button
-        class="bg-black hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
+        class="bg-[#1D2A31] hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
         @click.stop="launchLogin('google')"
       >
         <img src="@/assets/google-sso.svg" class="w-5" />
         <span class="text-sm font-normal text-white"> Google </span>
       </button>
       <button
-        class="bg-black hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
+        class="bg-[#1D2A31] hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
         @click.stop="launchLogin('twitter')"
       >
         <img src="@/assets/twitter-sso.svg" class="w-5" />
         <span class="text-sm font-normal text-white"> Twitter </span>
       </button>
       <button
-        class="bg-black hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
+        class="bg-[#1D2A31] hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
         @click.stop="launchLogin('github')"
       >
         <img src="@/assets/github-sso.svg" class="w-5" />
@@ -192,7 +192,7 @@ onMounted(async () => {
     <p class="text-[0.9rem] text-liquiddark text-center">Or</p>
     <p class="text-[0.75rem] text-liquiddark ml-[97px]">Email ID</p>
     <form
-      class="flex justify-center items-center w-[320px] h-10 ml-[90px] bg-black px-2.5 rounded-md focus:border-0"
+      class="flex justify-center items-center w-[320px] h-10 ml-[90px] bg-[#1D2A31] px-2.5 rounded-[12px] focus:border-0"
       @submit.prevent="launchLogin('passwordless')"
     >
       <input
