@@ -20,8 +20,13 @@ const emits = defineEmits([
 ])
 
 const chainManagementStore = useChainManagementStore()
-const { areChainsEmpty, filteredChains, gaslessChains, defaultOrderChains } =
-  toRefs(chainManagementStore)
+const {
+  areChainsEmpty,
+  filteredChains,
+  gaslessChains,
+  defaultOrderChains,
+  selectedChainType,
+} = toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const toast = useToast()
@@ -150,7 +155,11 @@ function isGaslessSupport(chainId: number) {
           <th class="w-[15%]" @click="sortBy('name')">
             <Button>Name</Button>
           </th>
-          <th class="w-[10%]" @click="sortBy('chain_id')">
+          <th
+            v-if="selectedChainType !== 'near'"
+            class="w-[10%]"
+            @click="sortBy('chain_id')"
+          >
             <Button>Chain ID</Button>
           </th>
           <th class="w-[10%]" @click="sortBy('currency')">
@@ -198,7 +207,7 @@ function isGaslessSupport(chainId: number) {
               >
             </div>
           </td>
-          <td>{{ chain.chain_id }}</td>
+          <td v-if="selectedChainType !== 'near'">{{ chain.chain_id }}</td>
           <td>{{ chain.currency }}</td>
           <!-- <td>{{ chain.compatibility }}</td> -->
           <td>{{ chain.chain_type }}</td>

@@ -538,6 +538,7 @@ function getAllChains(network: Network) {
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/EVM/`),
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/solana/`),
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/multiversx/`),
+    getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/near/`),
   ])
 }
 
