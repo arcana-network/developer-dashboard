@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs, computed, onMounted } from 'vue'
+import { ref, toRefs, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 import ChainFallbackLogo from '@/assets/chain-fallback-logo.png'
