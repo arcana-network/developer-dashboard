@@ -257,13 +257,11 @@ onMounted(async () => {
         class="md:hidden absolute bottom-0 -z-10 mx-auto mt-24"
       />
     </main>
-    <Transition name="fade" class="z-[1000]">
-      <OTPInput
-        v-if="showOTPInput"
-        @dismiss="showOTPInput = false"
-        @resend="loginWithOTP"
-        @success="fetchAndStoreDetails"
-      />
-    </Transition>
+    <OTPInput
+      v-if="showOTPInput"
+      @dismiss="showOTPInput = false"
+      @resend="loginWithOTP"
+      @success="fetchAndStoreDetails"
+    />
   </div>
 </template>

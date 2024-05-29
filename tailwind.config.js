@@ -30,9 +30,9 @@ const config = {
         overlay: 99999,
         overlayTop: 100000,
       },
-      spacing: {
-        hd: '720px',
+      maxWidth: {
         sd: '360px',
+        hd: '720px',
       },
     },
   },

@@ -109,7 +109,7 @@ async function resendOTP() {
 <template>
   <AppOverlay>
     <div
-      class="max-w-sm w-screen bg-white rounded-lg border border-jet flex flex-col relative p-7 gap-4"
+      class="max-w-sd w-screen bg-white rounded-lg border border-jet flex flex-col relative p-7 gap-4"
       role="dialog"
     >
       <button class="absolute right-4 top-4" @click="emit('dismiss')">
