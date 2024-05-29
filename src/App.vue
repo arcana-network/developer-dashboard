@@ -42,7 +42,7 @@ onBeforeMount(async () => {
     <router-view
       v-if="isAuthLoaded"
       v-slot="{ Component }"
-      style="min-height: 100vh"
+      class="min-h-screen"
     >
       <transition name="fade" mode="out-in">
         <component :is="Component" />

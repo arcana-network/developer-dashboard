@@ -109,20 +109,20 @@ async function resendOTP() {
 <template>
   <AppOverlay>
     <div
-      class="max-w-[360px] w-screen bg-white rounded-[10px] border-1 border-jet flex flex-col relative p-7 gap-4"
+      class="max-w-sd w-screen bg-white rounded-lg border border-jet flex flex-col relative p-7 gap-4"
       role="dialog"
     >
       <button class="absolute right-4 top-4" @click="emit('dismiss')">
         <img src="@/assets/iconography/close.svg" alt="Close" />
       </button>
       <div class="flex flex-col items-center justify-center gap-3 text-center">
-        <h2 class="text-otp font-bold">Verification</h2>
+        <h2 class="text-rem2 font-bold">Verification</h2>
         <span class="text-sm text-secondary-400"
           >Please enter the OTP that was sent to your email address</span
         >
       </div>
       <form
-        class="relative isolate flex w-full flex-col gap-5"
+        class="relative isolate flex w-full flex-col gap-4"
         @submit.prevent="submitOTP"
       >
         <div
