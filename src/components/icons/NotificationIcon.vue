@@ -27,7 +27,7 @@ const areUnreadNotificationAvaiable = computed(() => {
       <span class="notification-bubble__ripple"></span>
     </div>
     <img
-      src="@/assets/iconography/notification.svg"
+      :src="NotificationIcon"
       class="cursor-pointer notification-icon"
       @click.stop="emits('click')"
     />
