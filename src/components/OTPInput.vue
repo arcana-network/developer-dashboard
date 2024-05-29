@@ -140,7 +140,7 @@ async function resendOTP() {
             pattern="\d*"
             maxlength="1"
             autocomplete="off"
-            class="outline-none border-none rounded-md p-2 bg-liquid placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center"
+            class="outline-none border-none rounded-md p-2 bg-liquid placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center overflow-x-scroll"
             @input="void 0"
             @keydown="handleKeyDown($event, i - 1)"
             @paste.prevent="handlePaste"
