@@ -31,6 +31,7 @@ const config = {
         overlayTop: 100000,
       },
       maxWidth: {
+        xd: '320px',
         sd: '360px',
         hd: '720px',
       },
