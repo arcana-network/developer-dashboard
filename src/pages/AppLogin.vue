@@ -3,7 +3,6 @@ import { onMounted, ref, computed, reactive } from 'vue'
 import { useRoute, useRouter, type RouteRecordName } from 'vue-router'
 
 import AppBanner from '@/components/AppBanner.vue'
-import LandingDescriptor from '@/components/LandingDescriptor.vue'
 import LoginHeader from '@/components/LoginHeader.vue'
 import OTPInput from '@/components/OTPInput.vue'
 import { loginUser } from '@/services/gateway.service'
@@ -57,18 +56,20 @@ function validate() {
 async function launchLogin(type: string) {
   try {
     if (type === 'passwordless') {
+      loaderStore.showLoader('Sending OTP...')
       if (!isFirstSubmitted.value) {
         validate()
         isFirstSubmitted.value = true
       }
       if (hasEmailErrors.value) return
-      showOTPInput.value = true
       await loginWithOTP()
+      showOTPInput.value = true
+      loaderStore.hideLoader()
     } else {
       loaderStore.showLoader(`Signing with ${capitalize(type)}`)
       await arcanaAuth.loginWithSocial(type)
+      await fetchAndStoreDetails()
     }
-    await fetchAndStoreDetails()
   } catch (e) {
     console.log(e)
     loaderStore.hideLoader()
@@ -153,7 +154,6 @@ onMounted(async () => {
   }
 })
 </script>
-
 <template>
   <div class="flex flex-col bg-liquidlight">
     <AppBanner />
@@ -162,7 +162,77 @@ onMounted(async () => {
       class="relative z-10 isolate flex max-md:flex-col max-md:gap-8 h-full flex-1"
     >
       <div class="w-full max-md:mt-10 px-4 flex items-center justify-center">
-        <LandingDescriptor />
+        <div class="w-3/4 gap-4 flex flex-col justify-center items-center">
+          <h1 class="text-rem2 max-w-xs text-black tracking-tight text-center">
+            Welcome to the Developer Dashboard
+          </h1>
+          <p class="text-[0.85rem] text-liquiddark font-light text-center">
+            Sign-in using any of these methods to get started
+          </p>
+          <div class="flex flex-col gap-3 flex-grow-0">
+            <p class="text-[0.75rem] text-liquiddark ml-3">Social Login</p>
+            <div class="flex flex-col items-center gap-3">
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('google')"
+              >
+                <img src="@/assets/google-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Google </span>
+              </button>
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('github')"
+              >
+                <img src="@/assets/github-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Github </span>
+              </button>
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('twitch')"
+              >
+                <img src="@/assets/twitch-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Twitch </span>
+              </button>
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('discord')"
+              >
+                <img src="@/assets/discord-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Discord </span>
+              </button>
+            </div>
+          </div>
+          <p class="text-[0.9rem] text-liquiddark text-center">Or</p>
+          <form
+            class="flex flex-col gap-2"
+            @submit.prevent="launchLogin('passwordless')"
+          >
+            <label
+              for="login-email"
+              class="text-[0.75rem] font-normal text-liquiddark ml-3"
+              >Email ID</label
+            >
+            <div
+              class="flex justify-center items-center w-[320px] h-10 bg-[#1D2A31] px-2.5 rounded-[12px] focus:border-0"
+            >
+              <input
+                id="login-email"
+                v-model.trim="email"
+                type="email"
+                class="flex-1 bg-transparent input text-white border-0 focus:outline-none focus:border-transparent"
+              />
+              <button
+                class="flex items-center justify-center"
+                :disabled="!hasValidEmail"
+              >
+                <img
+                  src="../assets/iconography/arrow-right-white.svg"
+                  alt="arrow"
+                />
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
       <div class="w-full p-6">
         <div
@@ -187,5 +257,13 @@ onMounted(async () => {
         class="md:hidden absolute bottom-0 -z-10 mx-auto mt-24"
       />
     </main>
+    <Transition name="fade" class="z-[1000]">
+      <OTPInput
+        v-if="showOTPInput"
+        @dismiss="showOTPInput = false"
+        @resend="loginWithOTP"
+        @success="fetchAndStoreDetails"
+      />
+    </Transition>
   </div>
 </template>
