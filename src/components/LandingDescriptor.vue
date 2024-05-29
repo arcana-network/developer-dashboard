@@ -54,18 +54,20 @@ function validate() {
 async function launchLogin(type: string) {
   try {
     if (type === 'passwordless') {
+      loaderStore.showLoader('Sending OTP...')
       if (!isFirstSubmitted.value) {
         validate()
         isFirstSubmitted.value = true
       }
       if (hasEmailErrors.value) return
-      showOTPInput.value = true
       await loginWithOTP()
+      showOTPInput.value = true
+      loaderStore.hideLoader()
     } else {
       loaderStore.showLoader(`Signing with ${capitalize(type)}`)
       await arcanaAuth.loginWithSocial(type)
+      await fetchAndStoreDetails()
     }
-    await fetchAndStoreDetails()
   } catch (e) {
     console.log(e)
     loaderStore.hideLoader()
@@ -152,60 +154,72 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div
-    class="w-[70%] ml-[100px] mt-[50px] space-y-4 flex flex-col justify-center"
-  >
-    <h1
-      style="margin-top: 1vh"
-      class="text-[32px] text-black tracking-tight text-center"
-    >
-      Welcome to the <br />
-      Developer Dashboard
+  <div class="w-3/4 gap-4 flex flex-col justify-center items-center">
+    <h1 class="text-rem2 max-w-xs text-black tracking-tight text-center">
+      Welcome to the Developer Dashboard
     </h1>
     <p class="text-[0.85rem] text-liquiddark font-light text-center">
       Sign-in using any of these methods to get started
     </p>
-    <p class="text-[0.75rem] text-liquiddark ml-[97px]">Social Login</p>
-    <div class="flex flex-col items-center space-y-3">
-      <button
-        class="bg-[#1D2A31] hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
-        @click.stop="launchLogin('google')"
-      >
-        <img src="@/assets/google-sso.svg" class="w-5" />
-        <span class="text-sm font-normal text-white"> Google </span>
-      </button>
-      <button
-        class="bg-[#1D2A31] hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
-        @click.stop="launchLogin('twitter')"
-      >
-        <img src="@/assets/twitter-sso.svg" class="w-5" />
-        <span class="text-sm font-normal text-white"> Twitter </span>
-      </button>
-      <button
-        class="bg-[#1D2A31] hover:bg-pink flex w-[320px] rounded-3xl h-10 justify-center items-center space-x-2"
-        @click.stop="launchLogin('github')"
-      >
-        <img src="@/assets/github-sso.svg" class="w-5" />
-        <span class="text-sm font-normal text-white"> Github </span>
-      </button>
+    <div class="flex flex-col gap-3 flex-grow-0">
+      <p class="text-[0.75rem] text-liquiddark ml-3">Social Login</p>
+      <div class="flex flex-col items-center gap-3">
+        <button
+          class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+          @click.stop="launchLogin('google')"
+        >
+          <img src="@/assets/google-sso.svg" class="w-5" />
+          <span class="text-sm font-normal text-white"> Google </span>
+        </button>
+        <button
+          class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+          @click.stop="launchLogin('github')"
+        >
+          <img src="@/assets/github-sso.svg" class="w-5" />
+          <span class="text-sm font-normal text-white"> Github </span>
+        </button>
+        <button
+          class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+          @click.stop="launchLogin('twitch')"
+        >
+          <img src="@/assets/twitter-sso.svg" class="w-5" />
+          <span class="text-sm font-normal text-white"> Twitch </span>
+        </button>
+        <button
+          class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+          @click.stop="launchLogin('discord')"
+        >
+          <img src="@/assets/twitter-sso.svg" class="w-5" />
+          <span class="text-sm font-normal text-white"> Discord </span>
+        </button>
+      </div>
     </div>
     <p class="text-[0.9rem] text-liquiddark text-center">Or</p>
-    <p class="text-[0.75rem] text-liquiddark ml-[97px]">Email ID</p>
     <form
-      class="flex justify-center items-center w-[320px] h-10 ml-[90px] bg-[#1D2A31] px-2.5 rounded-[12px] focus:border-0"
+      class="flex flex-col gap-2"
       @submit.prevent="launchLogin('passwordless')"
     >
-      <input
-        v-model.trim="email"
-        type="email"
-        class="flex-1 bg-transparent input text-white border-0 focus:outline-none focus:border-transparent"
-      />
-      <button
-        class="flex items-center justify-center"
-        :disabled="!hasValidEmail"
+      <label
+        for="login-email"
+        class="text-[0.75rem] font-normal text-liquiddark ml-3"
+        >Email ID</label
       >
-        <img src="../assets/iconography/arrow-right-white.svg" alt="arrow" />
-      </button>
+      <div
+        class="flex justify-center items-center w-[320px] h-10 bg-[#1D2A31] px-2.5 rounded-[12px] focus:border-0"
+      >
+        <input
+          id="login-email"
+          v-model.trim="email"
+          type="email"
+          class="flex-1 bg-transparent input text-white border-0 focus:outline-none focus:border-transparent"
+        />
+        <button
+          class="flex items-center justify-center"
+          :disabled="!hasValidEmail"
+        >
+          <img src="../assets/iconography/arrow-right-white.svg" alt="arrow" />
+        </button>
+      </div>
     </form>
   </div>
   <Transition name="fade" class="z-[1000]">
@@ -213,6 +227,7 @@ onMounted(async () => {
       v-if="showOTPInput"
       @dismiss="showOTPInput = false"
       @resend="loginWithOTP"
+      @success="fetchAndStoreDetails"
     />
   </Transition>
 </template>

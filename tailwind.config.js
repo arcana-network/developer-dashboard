@@ -7,9 +7,12 @@ const config = {
         pink: '#ff4e9f',
         liquid: '#dfecee',
         liquidlight: '#f7f7f7',
-        liquidgrey: '#D9D9D9',
-        liquiddark: '#8d8d8d',
-        liquidaqua: '#5B93FF',
+        liquidgrey: '#d9d9d9',
+        liquiddark: {
+          DEFAULT: '#8d8d8d',
+          100: '#1d2a31',
+        },
+        liquidaqua: '#5b93ff',
         overlay: {
           background: '#1e1f1e',
           input: '#313030',
@@ -20,12 +23,16 @@ const config = {
         'xar-sm': '20px',
       },
       fontSize: {
-        otp: '2rem',
+        rem2: '2rem',
       },
       zIndex: {
         surface: 0,
         overlay: 99999,
         overlayTop: 100000,
+      },
+      spacing: {
+        hd: '720px',
+        sd: '360px',
       },
     },
   },
