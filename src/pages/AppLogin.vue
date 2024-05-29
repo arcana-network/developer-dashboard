@@ -213,7 +213,7 @@ onMounted(async () => {
               >Email ID</label
             >
             <div
-              class="flex justify-center items-center w-xd h-10 bg-liquiddark-100 px-2.5 rounded-xl focus:border-0"
+              class="flex justify-center items-center w-80 h-10 bg-liquiddark-100 px-2.5 rounded-xl focus:border-0"
             >
               <input
                 id="login-email"
