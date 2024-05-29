@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { onBeforeMount, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, RouterView } from 'vue-router'
 
 import FullScreenLoader from '@/components/FullScreenLoader.vue'
 import VToast from '@/components/lib/VToast/VToast.vue'
@@ -39,15 +39,11 @@ onBeforeMount(async () => {
 
 <template>
   <div class="root">
-    <router-view
-      v-if="isAuthLoaded"
-      v-slot="{ Component }"
-      class="min-h-screen"
-    >
-      <transition name="fade" mode="out-in">
-        <component :is="Component" />
-      </transition>
-    </router-view>
+    <RouterView v-if="isAuthLoaded" v-slot="{ Component }" class="min-h-screen">
+      <Transition name="fade" mode="out-in">
+        <Component :is="Component" />
+      </Transition>
+    </RouterView>
     <FullScreenLoader
       v-if="loaderStore.isLoading || !isAuthLoaded"
       :message="loaderStore.message"
