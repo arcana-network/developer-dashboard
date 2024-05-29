@@ -15,7 +15,7 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { chainTypes } from '@/utils/chainTypes'
 import { WalletUIModes } from '@/utils/constants'
-import { errors } from '@/utils/content'
+import { content, errors } from '@/utils/content'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
@@ -59,6 +59,7 @@ async function handleCreateApp() {
     createTransactionSigner(app.address, 'testnet')
     router.push({ name: 'AppDetails', params: { appId: app.ID } })
     emit('close')
+    toast.success(content.APP.APP_DETAILS.SUCCESS)
   } catch (e) {
     console.error(e)
     toast.error(errors.APP.APP_DETAILS.ERROR_CREATING)

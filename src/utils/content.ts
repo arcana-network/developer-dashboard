@@ -52,6 +52,7 @@ const content = {
     APP_DETAILS: {
       FETCH_CONFIG: 'Fetching app config...',
       CREATING: 'Creating app...',
+      SUCCESS: 'App created successfully.',
     },
     LOGIN: {
       CLICK: 'Click on the login link sent to your email address',
