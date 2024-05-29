@@ -1,17 +1,11 @@
 <script lang="ts" setup>
 import { onBeforeMount, ref, watch, onMounted, type Ref, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter, useRoute, RouterView } from 'vue-router'
 
-import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import ConfigureMobileMenu from '@/components/app-configure/ConfigureMobileMenu.vue'
 import ConfigureSidebar from '@/components/app-configure/ConfigureSidebar.vue'
 import AppFooter from '@/components/AppFooter.vue'
 import AppHeader from '@/components/AppHeader.vue'
-import AppNotifications from '@/components/AppNotifications.vue'
-import NotificationIcon from '@/components/icons/NotificationIcon.vue'
-import VButton from '@/components/lib/VButton/VButton.vue'
-import VCard from '@/components/lib/VCard/VCard.vue'
-import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VDropdownSecondary from '@/components/lib/VDropdownSecondary/VDropdownSecondary.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -30,8 +24,6 @@ import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 import { useClickOutside } from '@/use/clickOutside'
 import {
-  HelpItems,
-  ProfileItems,
   type Network,
   regions,
   RegionMapping,
@@ -295,53 +287,55 @@ watch(
 </script>
 
 <template>
-  <AppHeader />
-  <VStack direction="row" class="app-details__container">
-    <div class="app-details__sidebar mobile-remove">
-      <ConfigureSidebar
-        :current-tab="currentTab"
-        :current-network="currentNetwork.value"
-        @switch-tab="switchTab"
-        @switch-app="switchApp"
+  <div class="flex flex-col">
+    <AppHeader />
+    <VStack direction="row" class="app-details__container">
+      <div class="app-details__sidebar mobile-remove">
+        <ConfigureSidebar
+          :current-tab="currentTab"
+          :current-network="currentNetwork.value"
+          @switch-tab="switchTab"
+          @switch-app="switchApp"
+        />
+      </div>
+      <VStack direction="column" class="app-details__content" gap="2rem">
+        <VDropdownSecondary
+          v-model="currentNetwork"
+          :options="NetworkOptions"
+          display-field="label"
+          :disabled="
+            selectedApp.chain_type === 'multiversx' && isProductionDashboard
+          "
+          class="app-details__network-dropdown"
+          @change="(_, option) => onNetworkSwitch(option)"
+        />
+        <RouterView />
+        <AppFooter class="footer-bleed" />
+      </VStack>
+      <SwitchToMainnetConfirmation
+        v-if="showMainnetConfirmation"
+        @cancel="onNetworkSwitchCancel"
+        @proceed="handleCreateMainnetApp"
       />
-    </div>
-    <VStack direction="column" class="app-details__content" gap="2rem">
-      <VDropdownSecondary
-        v-model="currentNetwork"
-        :options="NetworkOptions"
-        display-field="label"
-        :disabled="
-          selectedApp.chain_type === 'multiversx' && isProductionDashboard
-        "
-        class="app-details__network-dropdown"
-        @change="(_, option) => onNetworkSwitch(option)"
+      <MainnetAppCreatedPopup
+        v-if="showMainnetSuccessPopup && createdMainnetAppId"
+        :app-id="createdMainnetAppId"
+        @close="showMainnetSuccessPopup = false"
       />
-      <RouterView />
-      <AppFooter class="footer-bleed" />
+      <ConfigureMobileMenu
+        ref="mobile_menu"
+        :show-mobile-menu="showMobileMenu"
+        @close="showMobileMenu = false"
+      >
+        <ConfigureSidebar
+          :current-tab="currentTab"
+          :current-network="currentNetwork.value"
+          @switch-tab="switchTab"
+          @switch-app="switchApp"
+        />
+      </ConfigureMobileMenu>
     </VStack>
-    <SwitchToMainnetConfirmation
-      v-if="showMainnetConfirmation"
-      @cancel="onNetworkSwitchCancel"
-      @proceed="handleCreateMainnetApp"
-    />
-    <MainnetAppCreatedPopup
-      v-if="showMainnetSuccessPopup && createdMainnetAppId"
-      :app-id="createdMainnetAppId"
-      @close="showMainnetSuccessPopup = false"
-    />
-    <ConfigureMobileMenu
-      ref="mobile_menu"
-      :show-mobile-menu="showMobileMenu"
-      @close="showMobileMenu = false"
-    >
-      <ConfigureSidebar
-        :current-tab="currentTab"
-        :current-network="currentNetwork.value"
-        @switch-tab="switchTab"
-        @switch-app="switchApp"
-      />
-    </ConfigureMobileMenu>
-  </VStack>
+  </div>
 </template>
 
 <style scoped>

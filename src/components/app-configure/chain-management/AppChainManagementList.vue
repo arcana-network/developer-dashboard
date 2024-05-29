@@ -150,28 +150,28 @@ function isGaslessSupport(chainId: number) {
     >
       <thead class="border-b-[1px] border-b-liquidgrey">
         <tr class="text-liquiddark">
-          <!-- <th class="w-[10%]"><Button>A &#x2192; B</Button></th> -->
+          <!-- <th class="w-[10%]"><button>A &#x2192; B</button></th> -->
           <th class="w-[10%]"></th>
           <th class="w-[15%] hover:text-pink" @click="sortBy('name')">
-            <Button>Name</Button>
+            <button>Name</button>
           </th>
           <th
             v-if="selectedChainType !== 'near'"
             class="w-[10%] hover:text-pink"
             @click="sortBy('chain_id')"
           >
-            <Button>Chain ID</Button>
+            <button>Chain ID</button>
           </th>
           <th class="w-[10%] hover:text-pink" @click="sortBy('currency')">
-            <Button>Currency</Button>
+            <button>Currency</button>
           </th>
           <!-- <th class="w-[10%]">Compatibility</th> -->
           <th class="w-[10%] hover:text-pink" @click="sortBy('chain_type')">
-            <Button>Type</Button>
+            <button>Type</button>
           </th>
           <th class="hover:text-pink">RPC URL</th>
           <th class="w-[10%] hover:text-pink" @click="sortBy('status')">
-            <Button>Enabled</Button>
+            <button>Enabled</button>
           </th>
           <th class="w-[5%]"></th>
         </tr>

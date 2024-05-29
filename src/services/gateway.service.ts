@@ -370,7 +370,7 @@ function fetchMau(
   appAddress: string,
   network: Network
 ): Promise<AxiosResponse<ActiveUsersChartData[]>> {
-  const api = `/get-mau/?app=${appAddress}`
+  const api = `get-mau/?app=${appAddress}`
   return getGatewayInstance(network).get(`${getEnvApi()}/${api}`)
 }
 
