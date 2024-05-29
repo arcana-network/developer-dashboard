@@ -242,7 +242,7 @@ async function fetchActiveUsers() {
       {
         label: 'No of active users',
         data: values,
-        borderColor: 'white',
+        borderColor: 'black',
         borderWidth: 4,
         lineTension: 0.2,
       },
@@ -358,7 +358,7 @@ async function fetchActiveUsers() {
 <style>
 .carousel__prev,
 .carousel__next {
-  background-color: white;
+  background-color: var(--primary-liquid);
   border-radius: 10px;
 }
 
@@ -402,7 +402,7 @@ async function fetchActiveUsers() {
   height: 350px;
   padding: 20px;
   margin: 0 10px;
-  background-color: var(--primary-black);
+  background-color: var(--primary-white);
   border-radius: 10px;
   border-radius: 8px;
 }
