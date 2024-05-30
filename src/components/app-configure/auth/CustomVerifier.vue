@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import DeleteIcon from '@/assets/iconography/delete-icon.svg'
 import PlusIcon from '@/assets/iconography/plus-icon-cricle-white.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
+import VRadioSecondary from '@/components/lib/VRadioSecondary/VRadioSecondary.vue'
 import { useToast } from '@/components/lib/VToast'
 import {
   createCustomVerifer,
@@ -306,7 +307,7 @@ watch(
           </legend>
           <div class="flex items-baseline space-x-5">
             <div class="space-x-2">
-              <input
+              <VRadioSecondary
                 id="sub"
                 v-model="selectedIdParam"
                 type="radio"
@@ -316,7 +317,7 @@ watch(
               <label class="text-black font-normal" for="sub">Sub</label>
             </div>
             <div class="space-x-2">
-              <input
+              <VRadioSecondary
                 id="email"
                 v-model="selectedIdParam"
                 type="radio"
@@ -326,7 +327,7 @@ watch(
               <label class="text-black font-normal" for="email">Email</label>
             </div>
             <div class="space-x-2">
-              <input
+              <VRadioSecondary
                 id="custom"
                 v-model="selectedIdParam"
                 type="radio"

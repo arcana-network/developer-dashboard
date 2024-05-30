@@ -459,7 +459,7 @@ function ellipsisAppName(appName: string) {
   flex-direction: column;
   gap: 1.25rem;
   padding: 1.25rem;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
+  border: 1px solid var(--primary-liquid-border);
 }
 
 .apps-name__close-btn {

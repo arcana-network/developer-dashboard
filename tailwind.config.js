@@ -3,6 +3,10 @@ const config = {
   content: ['./src/**/*.{vue,js,ts,jsx,tsx,css}'],
   theme: {
     extend: {
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+        nohemi: ['Nohemi', 'sans-serif'],
+      },
       colors: {
         pink: '#ff4e9f',
         liquid: '#dfecee',

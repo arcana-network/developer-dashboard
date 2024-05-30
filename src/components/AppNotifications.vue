@@ -76,6 +76,7 @@ function onClickofItem(notification) {
   right: -10px;
   width: 380px;
   max-height: 380px;
+  border: #d9d9d9 1px solid;
 }
 
 @media only screen and (max-width: 767px) {
