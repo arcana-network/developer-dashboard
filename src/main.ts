@@ -12,7 +12,6 @@ import constants from '@/utils/constants'
 
 import 'vue3-circle-progress/dist/circle-progress.css'
 import '@/components/lib/styles.css'
-import '@/assets/fonts/nohemi.css'
 
 const sentryConfig = constants.sentry
 
