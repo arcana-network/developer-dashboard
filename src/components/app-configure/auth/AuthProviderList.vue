@@ -59,7 +59,7 @@ function areRequiredFieldsFilled(verifier: string) {
       <button
         class="border-2 bg-[#1F1F1F] cursor-pointer w-14 h-14 rounded-full flex items-center justify-center"
         :class="{
-          'border-white': isSelected(provider.verifier),
+          'border-pink': isSelected(provider.verifier),
           grayscale: !areRequiredFieldsFilled(provider.verifier),
         }"
         @click.prevent="selectProvider(provider.verifier)"

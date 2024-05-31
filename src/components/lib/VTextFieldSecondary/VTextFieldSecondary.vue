@@ -187,7 +187,7 @@ div.text-field {
 
 input {
   width: 100%;
-  margin: 1rem;
+  margin: 0.8rem;
   font-size: 1rem;
   line-height: 1.5;
   color: var(--primary-black);

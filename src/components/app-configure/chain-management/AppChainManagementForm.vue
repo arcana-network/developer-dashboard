@@ -143,7 +143,7 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
         </div>
         <div v-else class="space-y-5">
           <div class="space-y-[10px]">
-            <p class="text-sm">{{ TitleAction }} a Custom Chain</p>
+            <p class="text-lg">{{ TitleAction }} a Custom Chain</p>
             <p class="text-sm text-liquiddark leading-4">
               {{ `${TitleAction}ed` }} custom chains will be automatically added
               to your user’s wallets.
@@ -267,7 +267,7 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
                 >
               </div>
             </div>
-            <div class="space-x-2.5 flex justify-end">
+            <div class="space-x-4 flex justify-end">
               <button
                 class="bg-liquid border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md hover:text-pink"
                 @click="emits('close')"

@@ -154,6 +154,7 @@ watch(
 }
 
 .custom-select__trigger .placeholder {
+  padding: 0.75rem 2rem;
   color: #393939;
 }
 
