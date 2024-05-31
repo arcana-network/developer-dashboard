@@ -74,31 +74,26 @@
 
 body {
   line-height: 1.5;
-
-  /* color: var(--text-white); */
   color: #000;
-
-  /* background-color: var(--dark-theme-bg); */
   background-color: #efefef;
 }
 
 h1 {
   font-family: Nohemi, sans-serif;
   font-size: 2.25rem;
-  font-weight: 400;
-  letter-spacing: 3px;
+  letter-spacing: -2%;
 }
 
 h2 {
   font-family: Nohemi, sans-serif;
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 h3 {
   font-family: Nohemi, sans-serif;
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 h4 {

@@ -161,9 +161,7 @@ async function setSelectedChainTypeCurve($event: string) {
 <template>
   <div class="space-y-10 relative">
     <div class="space-y-[15px]">
-      <h1 class="font-title text-[32px] leading-[150%] font-[700]">
-        Chain Management
-      </h1>
+      <h1>Chain Management</h1>
       <p class="font-body text-[14px] text-liquiddark leading-[150%]">
         Allow your users to use any of the chains that your application will
         support. Choose from the available chains or add custom chains that will
@@ -172,14 +170,15 @@ async function setSelectedChainTypeCurve($event: string) {
     </div>
     <div class="flex flex-col space-y-5">
       <div class="flex w-full justify-between gap-5 items-center">
-        <div class="flex gap-2 items-center">
+        <!-- <div class="flex gap-2 items-center">
           <span class="text-liquiddark text-xs">Chain Type</span>
           <ChainTypeSelection
             :selected-chain-type-curve="selectedChainTypeCurve"
             disabled
             @update:selected-chain-type-curve="setSelectedChainTypeCurve"
           />
-        </div>
+          <span>${selectedChainTypeCurve}</span>
+        </div> -->
         <div class="flex items-center flex-grow justify-end space-x-5">
           <button
             v-if="

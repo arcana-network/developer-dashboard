@@ -69,10 +69,8 @@ function handleProceedDeletion() {
     >
       <Vue3CircleProgress
         :percent="timerProgressPercentage"
-        :border-width="5"
-        :border-bg-width="5"
-        fill-color="var(--primary)"
-        empty-color="transparent"
+        fill-color="var(--secondary)"
+        empty-color="var(--primary-liquid)"
         :size="200"
       />
       <div
@@ -100,19 +98,10 @@ function handleProceedDeletion() {
 
 <style scoped>
 .outer-clock {
-  box-shadow: inset 0 -13px 33px -10px rgb(255 255 255 / 15%),
-    inset 0 10px 53px 72px #090909;
+  background: #000;
 }
 
 .inner-clock {
-  background: linear-gradient(
-    45.51deg,
-    #000 -78.45%,
-    rgb(31 31 31 / 29%) 88.21%
-  );
-  box-shadow: 5px 5px 10px rgb(0 0 0 / 18%),
-    10px 10px 17px -4px rgb(10 10 10 / 50%),
-    -8px -8px 20px -2px rgb(255 255 255 / 6%),
-    inset 5px 5px 30px 8px rgb(32 32 32 / 6%);
+  background: #fff;
 }
 </style>

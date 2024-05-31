@@ -17,7 +17,7 @@ import VSwitch from '@/components/lib/VSwitch/VSwitch.vue'
     <div
       class="divide-y-[1px] divide-[#363636] border-[1px] border-[#363636] rounded-md w-3/5 max-[1550px]:w-full"
     >
-      <h2 class="text-sm uppercase p-3.5">Accounts Management</h2>
+      <h2 class="text-sm p-3.5">Accounts Management</h2>
       <div class="p-3.5 space-y-7">
         <p class="text-liquiddark text-sm">
           Arcana Wallets provide your users two kinds of addresses -- the

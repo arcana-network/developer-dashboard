@@ -144,13 +144,13 @@ function ellipsisAppName(appName: string) {
     <main>
       <VStack direction="column" gap="2rem" class="container">
         <VStack gap="2rem">
-          <h1 class="tracking-tighter">Manage Apps</h1>
+          <h1 class="tracking-h1">Manage Apps</h1>
         </VStack>
         <VStack gap="1.25rem" md-direction="column" sm-direction="column">
           <VCard class="info-card">
             <VStack direction="column" gap="1.5rem" class="flex-grow">
               <VStack gap="1rem" align="center">
-                <span class="info-title">Monthly Active Users</span>
+                <h2 class="info-title">Monthly Active Users</h2>
                 <VTooltip
                   v-if="hasDeleteApps"
                   title="If there is a discrepancy in aggregate billing please check billing section for further details as you may have deleted apps."
@@ -227,7 +227,7 @@ function ellipsisAppName(appName: string) {
           </VCard>
           <VCard class="info-card">
             <VStack direction="column" gap="1.5rem" class="flex-grow">
-              <span class="info-title">Estimated Cost</span>
+              <h2 class="info-title">Estimated Cost</h2>
               <VSeperator class="info-separator" />
               <VStack gap="1rem" class="info-margin">
                 <span class="info-detail">Due:</span>
@@ -252,7 +252,7 @@ function ellipsisAppName(appName: string) {
               align="center"
             >
               <img src="@/assets/iconography/plus-circle.svg" />
-              <span class="text-lg font-normal">Create New App</span>
+              <h3 class="text-lg font-thin">Create New App</h3>
             </VStack>
           </VCard>
           <VCard
@@ -293,7 +293,7 @@ function ellipsisAppName(appName: string) {
                 />
                 <span
                   v-else
-                  class="text-base font-normal app-name text-center text-ellipsis overflow-hidden"
+                  class="font-nohemi text-base font-thin app-name text-center text-ellipsis overflow-hidden"
                   :title="app.name"
                   style="max-width: calc(100% - 1rem)"
                 >
@@ -307,7 +307,7 @@ function ellipsisAppName(appName: string) {
                   @click.stop="app.editState = true"
                 />
               </VStack>
-              <VCard variant="depressed" gap="6px" class="stats-card">
+              <VCard variant="popup" gap="6px" class="stats-card">
                 <VStack direction="column" align="center" gap="0.25rem">
                   <span class="stats-title"
                     >{{ NetworkName.testnet }} Users</span
@@ -398,7 +398,7 @@ main {
 .app-action-button {
   width: 100%;
   min-width: unset !important;
-  text-transform: uppercase;
+  font-size: 16px;
 }
 
 .stats-card {
@@ -412,13 +412,14 @@ main {
 }
 
 .stats-title {
-  font-size: 0.75rem;
-  font-weight: 400;
+  font-size: 0.9rem;
+  font-weight: 200;
   line-height: 1.5;
+  color: var(--text-grey);
 }
 
 .stats-number {
-  font-size: 1.125rem;
+  font-size: 1.5rem;
   font-weight: 400;
   line-height: 1.5;
 }
@@ -435,11 +436,8 @@ main {
 .info-title {
   margin-top: 2rem;
   margin-left: 2rem;
-  font-size: 1.25rem;
-  font-weight: 400;
   line-height: 1.5;
   color: black;
-  text-transform: uppercase;
 }
 
 .info-separator {

@@ -150,7 +150,7 @@ label {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5em;
-  color: var(--text-grey);
+  color: var(--text-black);
 }
 
 div.text-field {
@@ -203,7 +203,7 @@ input {
 input::placeholder {
   font-size: 1rem;
   line-height: 1.5;
-  color: #393939;
+  color: var(--text-grey);
 }
 
 .form-group[data-disabled='true'],

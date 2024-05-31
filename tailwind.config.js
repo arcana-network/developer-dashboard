@@ -10,7 +10,10 @@ const config = {
       colors: {
         pink: '#ff4e9f',
         liquid: '#dfecee',
-        liquidlight: '#f7f7f7',
+        liquidlight: {
+          DEFAULT: '#f7f7f7',
+          100: '#efefef',
+        },
         liquidgrey: '#d9d9d9',
         liquiddark: {
           DEFAULT: '#8d8d8d',
@@ -37,6 +40,9 @@ const config = {
       maxWidth: {
         sd: '360px',
         hd: '720px',
+      },
+      letterSpacing: {
+        h1: '-2%',
       },
     },
   },

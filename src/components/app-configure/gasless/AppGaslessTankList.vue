@@ -103,7 +103,7 @@ function onClickOfOption(option: number, id: number) {
           <td>
             <PopperJs placement="left-start" :arrow="true">
               <button
-                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-white rounded-[5px]"
+                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-black rounded-[5px]"
               >
                 <img :src="MoreIcon" alt="more" />
               </button>

@@ -176,9 +176,7 @@ async function toggleChainStatus(info: object) {
 <template>
   <div class="space-y-10 relative">
     <div class="space-y-[15px]">
-      <h1 class="font-title text-[32px] leading-[150%] font-[700]">
-        Gas Tanks
-      </h1>
+      <h1>Gas Tanks</h1>
       <p class="font-body text-[14px] text-liquiddark leading-[150%]">
         Gas tanks can be set up for every network chain that your app supports.
         Deposit crypto into these tanks to enable gasless transactions for users

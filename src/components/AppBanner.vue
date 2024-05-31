@@ -38,7 +38,6 @@ function onCloseBanner() {
   display: inline-block;
   font-size: 1.125rem;
   font-weight: 600;
-  text-transform: uppercase;
 }
 
 .banner h5 {

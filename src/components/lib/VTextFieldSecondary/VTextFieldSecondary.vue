@@ -149,14 +149,14 @@ label {
   margin-left: 0.5rem;
   font-size: 0.8rem;
   font-weight: 400;
-  line-height: 1rem;
+  line-height: 1.5rem;
   color: var(--text-grey);
 }
 
 div.text-field {
   display: flex;
   background: #ededec;
-  border-radius: 25px;
+  border-radius: 10px;
 }
 
 .text-field.focused {
@@ -187,8 +187,7 @@ div.text-field {
 
 input {
   width: 100%;
-  padding: 0;
-  margin: 0.5rem 1rem;
+  margin: 1rem;
   font-size: 1rem;
   line-height: 1.5;
   color: var(--primary-black);

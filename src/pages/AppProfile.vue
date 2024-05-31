@@ -7,7 +7,7 @@ import ConfigureActionButtons from '@/components/app-configure/ConfigureActionBu
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import AppHeader from '@/components/AppHeader.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import VTextFieldSecondary from '@/components/lib/VTextFieldSecondary/VTextFieldSecondary.vue'
 import { useToast } from '@/components/lib/VToast'
 import {
   fetchProfile,
@@ -239,17 +239,17 @@ function handleCancel() {
           class="cursor-pointer"
           @click.stop="router.back()"
         />
-        <h1>PROFILE</h1>
+        <h1>Profile</h1>
       </VStack>
       <section class="personal-details">
         <SettingCard>
-          <template #title>USER ACCOUNT</template>
+          <template #title>User Account</template>
           <div
             class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
           >
             <div class="flex flex-col flex-1 space-y-2">
               <label for="light-horizontal-logo">Name</label>
-              <VTextField
+              <VTextFieldSecondary
                 v-model.trim="name"
                 class="app-name-input"
                 disabled
@@ -258,7 +258,7 @@ function handleCancel() {
             </div>
             <div class="flex flex-col flex-1 space-y-2">
               <label for="light-horizontal-logo">Account Identifier</label>
-              <VTextField
+              <VTextFieldSecondary
                 v-model.trim="email"
                 class="app-name-input"
                 disabled
@@ -270,14 +270,14 @@ function handleCancel() {
       </section>
       <section style="margin-top: 3em">
         <SettingCard>
-          <template #title>ORGANISATION</template>
+          <template #title>Organisation</template>
           <form @submit.prevent="onUpdateOrganization">
             <div
               class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
             >
               <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Name</label>
-                <VTextField
+                <VTextFieldSecondary
                   v-model.trim="organisationDetails.name"
                   class="app-name-input"
                   no-message
@@ -285,7 +285,7 @@ function handleCancel() {
               </div>
               <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Country</label>
-                <VTextField
+                <VTextFieldSecondary
                   v-model.trim="organisationDetails.country"
                   class="app-name-input"
                   no-message
@@ -293,7 +293,7 @@ function handleCancel() {
               </div>
               <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Organization Size</label>
-                <VTextField
+                <VTextFieldSecondary
                   v-model.trim="organisationDetails.size"
                   class="app-name-input"
                   type="number"
@@ -316,7 +316,7 @@ function handleCancel() {
       </section>
       <section id="billing-details" style="margin-top: 3em">
         <SettingCard>
-          <template #title>BILLING ADDRESS DETAILS</template>
+          <template #title>Billing Address Details</template>
           <form @submit.prevent="updateBillingDetails">
             <VStack
               v-if="false"
@@ -325,7 +325,7 @@ function handleCancel() {
             >
               <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Billing Name</label>
-                <VTextField
+                <VTextFieldSecondary
                   v-model.trim="invoiceDetails.name"
                   class="app-name-input"
                   :icon="CloseIcon"
@@ -335,7 +335,7 @@ function handleCancel() {
               </div>
               <div class="flex column flex-1 space-y-2">
                 <label for="light-horizontal-logo">Billing Address</label>
-                <VTextField
+                <VTextFieldSecondary
                   v-model.trim="invoiceDetails.address"
                   class="app-name-input"
                   :icon="CloseIcon"
@@ -351,7 +351,7 @@ function handleCancel() {
               >
                 <div class="flex flex-col flex-1 space-y-2">
                   <label for="billing-address-line-1">Address Line 1</label>
-                  <VTextField
+                  <VTextFieldSecondary
                     id="billing-address-line-1"
                     v-model.trim="billingDetails.addressLine1"
                     class="app-name-input"
@@ -362,7 +362,7 @@ function handleCancel() {
                   <label for="billing-address-line-2"
                     >Address Line 2 (Optional)</label
                   >
-                  <VTextField
+                  <VTextFieldSecondary
                     id="billing-address-line-2"
                     v-model.trim="billingDetails.addressLine2"
                     class="app-name-input"
@@ -375,7 +375,7 @@ function handleCancel() {
               >
                 <div class="flex column flex-1 space-y-2">
                   <label for="billing-city">City</label>
-                  <VTextField
+                  <VTextFieldSecondary
                     id="billing-city"
                     v-model.trim="billingDetails.city"
                     no-message
@@ -383,7 +383,7 @@ function handleCancel() {
                 </div>
                 <div class="flex column flex-1 space-y-2">
                   <label for="billing-state">State</label>
-                  <VTextField
+                  <VTextFieldSecondary
                     id="billing-state"
                     v-model.trim="billingDetails.state"
                     no-message
@@ -391,7 +391,7 @@ function handleCancel() {
                 </div>
                 <div class="flex column flex-1 space-y-2">
                   <label for="billing-zipcode">Zip Code</label>
-                  <VTextField
+                  <VTextFieldSecondary
                     id="billing-zipcode"
                     v-model.trim="billingDetails.zipCode"
                     type="number"
@@ -400,7 +400,7 @@ function handleCancel() {
                 </div>
                 <div class="flex column flex-1 space-y-2">
                   <label for="billing-country">Country</label>
-                  <VTextField
+                  <VTextFieldSecondary
                     id="billing-country"
                     v-model.trim="billingDetails.country"
                   />

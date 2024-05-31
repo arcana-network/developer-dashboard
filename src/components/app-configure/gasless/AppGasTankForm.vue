@@ -65,8 +65,8 @@ const enableSave = computed(() => {
         class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-white m-auto"
       >
         <div class="space-y-[10px]">
-          <p class="text-sm text-black">Add Gas Tank</p>
-          <p class="text-sm text-black leading-4">
+          <p class="text-lg text-black">Add Gas Tank</p>
+          <p class="text-sm text-liquiddark leading-4">
             Please provide the following details to setup a gas tank:
           </p>
         </div>
@@ -76,7 +76,7 @@ const enableSave = computed(() => {
             <input
               v-model.trim="formData.name"
               type="text"
-              class="text-sm bg-liquidlight text-black p-[10px] w-full border-none outline-none rounded-xl"
+              class="text-sm bg-liquidlight-100 text-black p-[10px] w-full border-none outline-none rounded-xl"
               name="network-name"
             />
           </div>

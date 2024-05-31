@@ -64,7 +64,7 @@ function handleCancel() {
 <template>
   <section name="app-branding">
     <SettingCard class="app-branding-card">
-      <template #title>Keyspace Type</template>
+      <template #title><h1>Keyspace Type</h1></template>
       <template #description>
         <div>
           Choose between app-specific (default, highly secure) or global
@@ -88,7 +88,7 @@ function handleCancel() {
           class="keyspace-card keyspace-container"
           @click.stop="selectedKeyspace = 'app-specific'"
         >
-          <VStack gap="1.25rem" align="start">
+          <VStack direction="column" gap="1.25rem" align="start">
             <input
               id="app-specific"
               type="radio"
@@ -100,7 +100,7 @@ function handleCancel() {
               <span class="card-title">App Specific</span>
               <span class="card-description"
                 >Users will be assigned
-                <span class="bolder">a wallet address</span> that is unique to
+                <span class="bolder">a Wallet Address</span> that is unique to
                 your app. Since the user's keys are specific to your app, they
                 are not exposed to any malicious apps or transaction
                 requests.</span
@@ -122,7 +122,7 @@ function handleCancel() {
               variant="depressed"
               class="keyspace-card-global keyspace-container"
             >
-              <VStack gap="1.25rem" align="start">
+              <VStack gap="1.25rem" align="start" direction="column">
                 <input
                   id="global"
                   type="radio"
@@ -249,6 +249,7 @@ function handleCancel() {
 }
 
 .card-description {
+  width: 100%;
   font-size: 0.75rem;
   line-height: 1.5;
   color: var(--text-black);

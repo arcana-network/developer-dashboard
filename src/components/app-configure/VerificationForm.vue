@@ -226,9 +226,9 @@ label {
   margin-bottom: 0.5rem;
   margin-left: 0.25rem;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.5em;
-  color: var(--text-grey);
+  color: var(--text-black);
 }
 
 div.text-field {
@@ -260,7 +260,7 @@ textarea {
 textarea::placeholder {
   font-size: 1rem;
   line-height: 1.5;
-  color: #393939;
+  color: var(--text-grey);
 }
 
 .verification-title {
