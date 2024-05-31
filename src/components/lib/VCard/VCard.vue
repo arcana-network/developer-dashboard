@@ -58,7 +58,7 @@ const classes = computed(() => {
 }
 
 .card.elevated {
-  /* box-shadow: 4px 5px 4px rgb(0 0 0 / 25%); */
+  /* box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%); */
 }
 
 .card.depressed {
@@ -69,13 +69,6 @@ const classes = computed(() => {
 }
 
 .card.popup {
-  background: radial-gradient(
-    134.5% 939.99% at -23.59% -12.9%,
-    #151515 0%,
-    rgb(27 27 27 / 100%) 31.41%,
-    rgb(32 32 32 / 100%) 100%
-  );
-
-  /* box-shadow: 4px 5px 4px rgb(0 0 0 / 25%); */
+  background-color: transparent;
 }
 </style>

@@ -8,7 +8,7 @@ import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import VTextFieldSecondary from '@/components/lib/VTextFieldSecondary/VTextFieldSecondary.vue'
 import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
@@ -111,7 +111,7 @@ function onChainSelect(_, option) {
                     for="app-name"
                     >Enter App Name</label
                   >
-                  <VTextField
+                  <VTextFieldSecondary
                     id="app-name"
                     v-model.trim="appName"
                     :message-type="hasAppNameError ? 'error' : ''"
@@ -135,7 +135,7 @@ function onChainSelect(_, option) {
                   <label
                     class="text-lg font-normal text-liquiddark"
                     for="default-chain"
-                    >Default Chain*</label
+                    >Default Chain</label
                   >
                   <VDropdown
                     :options="
@@ -163,7 +163,7 @@ function onChainSelect(_, option) {
                     display-field="label"
                   />
                   <p class="text-liquiddark">
-                    *You cannot change UI mode later
+                    *You cannot change these properties later.
                   </p>
                 </VStack>
               </VStack>
