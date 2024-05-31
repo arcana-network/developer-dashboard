@@ -146,11 +146,9 @@ const areRequiredFieldsFilled = computed(() => {
 <template>
   <div class="bg-white rounded-xl space-y-7">
     <div>
-      <h2
-        class="text-sm uppercase font-bold p-3.5 border-b-[1px] border-liquidgrey"
-      >
+      <h3 class="p-7 border-b-[1px] border-liquidgrey">
         Identity Access Managers
-      </h2>
+      </h3>
       <p class="text-liquiddark text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
         care of issuing public and prviate keys to each user through our

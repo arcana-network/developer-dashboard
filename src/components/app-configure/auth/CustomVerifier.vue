@@ -3,7 +3,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import DeleteIcon from '@/assets/iconography/delete-icon.svg'
-import PlusIcon from '@/assets/iconography/plus-icon-cricle-white.svg'
+import PlusIcon from '@/assets/iconography/plus-circle.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import VRadioSecondary from '@/components/lib/VRadioSecondary/VRadioSecondary.vue'
 import { useToast } from '@/components/lib/VToast'
@@ -271,9 +271,9 @@ watch(
   <div class="bg-white rounded-xl space-y-5">
     <div>
       <div
-        class="flex items-center justify-between border-b border-liquidgrey p-3.5"
+        class="flex items-center justify-between border-b border-liquidgrey p-7"
       >
-        <h2 class="text-sm uppercase font-bold">Custom OAuth</h2>
+        <h3>Custom OAuth</h3>
         <div v-if="fetchedData.name" class="flex items-center space-x-2">
           <span class="text-sm uppercase font-bold">Custom Provider ID</span>
           <div class="bg-[#313131] py-1 px-2 rounded flex space-x-4">
@@ -306,7 +306,7 @@ watch(
             User Identifier String
           </legend>
           <div class="flex items-baseline space-x-5">
-            <div class="space-x-2">
+            <div class="flex flex-row -space-x-2">
               <VRadioSecondary
                 id="sub"
                 v-model="selectedIdParam"
@@ -314,9 +314,11 @@ watch(
                 name="idParam"
                 value="sub"
               />
-              <label class="text-black font-normal" for="sub">Sub</label>
+              <label class="text-black font-normal text-left" for="sub"
+                >Sub</label
+              >
             </div>
-            <div class="space-x-2">
+            <div class="flex flex-row -space-x-2">
               <VRadioSecondary
                 id="email"
                 v-model="selectedIdParam"
@@ -326,7 +328,7 @@ watch(
               />
               <label class="text-black font-normal" for="email">Email</label>
             </div>
-            <div class="space-x-2">
+            <div class="flex flex-row -space-x-2">
               <VRadioSecondary
                 id="custom"
                 v-model="selectedIdParam"
@@ -356,8 +358,8 @@ watch(
             <a
               :href="WHATS_JWKS_URL_LINK"
               target="_blank"
-              class="text-xs no-underline text-white font-normal"
-              >What is JWKS Endpoint?</a
+              class="text-xs no-underline text-black font-normal"
+              >What is a JWKS Endpoint?</a
             >
           </div>
           <div class="w-full">
@@ -405,7 +407,7 @@ watch(
           </div>
         </div>
       </div>
-      <div class="flex flex-col flex-1 space-y-5 ml-10">
+      <div class="flex flex-col flex-1 space-y-5 ml-10 align-bottom">
         <div class="flex flex-col space-y-2">
           <div class="flex w-full justify-between">
             <legend class="text-liquiddark text-xs font-normal">
@@ -414,7 +416,7 @@ watch(
             <a
               :href="WHATS_JWK_VALIDATION_LINK"
               target="_blank"
-              class="text-xs no-underline text-white font-normal"
+              class="text-xs no-underline text-black font-normal"
               >What are Validation fields?</a
             >
           </div>
