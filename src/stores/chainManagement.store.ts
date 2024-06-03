@@ -84,12 +84,17 @@ const useChainManagementStore = defineStore('chain-management', {
       }
     },
     async getAllAppChains(network: Network) {
-      const [evm, solana, multiversx, near] = await getAllChains(network)
+      const [
+        evm,
+        solana,
+        multiversx,
+        // near
+      ] = await getAllChains(network)
       this.allChains = [
         ...evm.data.chains,
         ...solana.data.chains,
         ...multiversx.data.chains,
-        ...near.data.chains,
+        // ...near.data.chains,
       ]
     },
     async getGaslessChains(network: Network) {
