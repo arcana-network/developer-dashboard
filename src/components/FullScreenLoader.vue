@@ -12,11 +12,18 @@ defineProps({
 
 <template>
   <v-overlay>
-    <div class="flex flex-col items-center justify-center w-full h-full">
-      <v-circular-progress size="6" />
-      <h4 class="mt-4 text-white">
-        {{ message }}
-      </h4>
+    <div
+      style="
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+      "
+    >
+      <v-circular-progress color="var(--primary)" size="6em" />
+      <h4 style="margin-top: 1em">{{ message }}</h4>
     </div>
   </v-overlay>
 </template>

@@ -110,13 +110,13 @@ function hideDeleteConfirm() {
     <div class="h-full flex overflow-y-auto py-2">
       <div
         v-if="loader.show"
-        class="flex justify-center items-center m-auto h-[330px] w-[630px] border-[1px] border-[#363636] bg-white rounded-lg"
+        class="flex justify-center items-center m-auto h-[330px] w-[630px] border-[1px] border-[#363636] bg-[#1F1F1F] rounded-lg"
       >
         {{ loader.message }}
       </div>
       <div
         v-else
-        class="flex flex-column justify-center border-[1px] border-[#363636] rounded-lg min-h-[330px] max-h-[430px] w-[630px] text-black p-4 bg-white m-auto overflow-hidden"
+        class="flex flex-column justify-center border-[1px] border-[#363636] rounded-lg min-h-[330px] max-h-[430px] w-[630px] text-white p-4 bg-[#1F1F1F] m-auto overflow-hidden"
       >
         <div
           v-if="showConfirmDelete.show"
@@ -143,7 +143,7 @@ function hideDeleteConfirm() {
         <div v-else class="space-y-5">
           <div class="space-y-[10px]">
             <p class="text-sm">Whitelist Smart Contracts</p>
-            <p class="text-sm text-liquiddark leading-4">
+            <p class="text-sm text-[#8D8D8D] leading-4">
               The following is a list of contracts that are whitelisted for the
               sponsorship of gas fees.
             </p>
@@ -155,14 +155,14 @@ function hideDeleteConfirm() {
               Add Contract
             </button>
             <div
-              class="rounded-md border-[1px] border-liquidgrey w-full overflow-auto"
+              class="rounded-md border-[1px] border-[#363636] w-full overflow-auto"
             >
               <table
                 v-if="whitelists.length"
-                class="table-fixed text-black block overflow-x-auto border-collapse w-full"
+                class="table-fixed text-white block overflow-x-auto border-collapse w-full"
               >
-                <thead class="border-b-[1px] border-b-liquidgrey">
-                  <tr class="text-liquiddark text-xs">
+                <thead class="border-b-[1px] border-b-[#363636]">
+                  <tr class="text-[#8d8d8d] text-xs">
                     <th class="w-[25%]">Contract Name</th>
                     <th class="w-[25%]">Functions Enabled</th>
                     <th class="w-[40%]">Date Added</th>
@@ -173,7 +173,7 @@ function hideDeleteConfirm() {
                   <tr
                     v-for="(list, index) in whitelists"
                     :key="list.name"
-                    class="hover:bg-liquidlight"
+                    class="hover:bg-[#363636]"
                   >
                     <td>{{ list.name }}</td>
                     <td>{{ list.whitelisted_methods }}</td>
@@ -192,12 +192,12 @@ function hideDeleteConfirm() {
                         <template #content>
                           <ul
                             ref="showRowOptions_menu"
-                            class="flex flex-col bg-white text-black rounded-md border-[1px] p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
+                            class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
                           >
                             <li
                               v-for="option in rowOptions"
                               :key="option.value"
-                              class="p-1 rounded-[5px] hover:bg-liquidlight text-left"
+                              class="p-1 rounded-[5px] hover:bg-[#363636] text-left"
                               @click.stop="
                                 () => onClickOfOption(option.value, index)
                               "
@@ -218,7 +218,7 @@ function hideDeleteConfirm() {
                   class="table-fixed text-white block overflow-x-auto border-collapse w-full"
                 >
                   <thead class="border-b-[1px] border-b-[#363636]">
-                    <tr class="text-liquiddark text-xs">
+                    <tr class="text-[#8d8d8d] text-xs">
                       <th class="w-[25%]">Contract Name</th>
                       <th class="w-[25%]">Functions Enabled</th>
                       <th class="w-[40%]">Date Added</th>
@@ -227,7 +227,7 @@ function hideDeleteConfirm() {
                   </thead>
                 </table>
                 <div class="flex-1 flex justify-center items-center">
-                  <p class="text-liquiddark">
+                  <p class="text-[#8D8D8D]">
                     Begin by adding a Contract for which you'd like to Sponsor
                     the Gas Fees
                   </p>
@@ -237,7 +237,7 @@ function hideDeleteConfirm() {
           </div>
           <div class="space-x-2.5 flex justify-end">
             <button
-              class="border-[1.5px] w-[100px] p-2 rounded-3xl hover:text-pink bg-liquid"
+              class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md"
               @click.stop="emits('cancel')"
             >
               Cancel

@@ -6,8 +6,8 @@ import { api, isProductionDashboard } from '@/utils/constants'
 const authStore = useAuthStore()
 
 function getRequiredChainId(network: Network): {
-  id: 137 | 421614
-  hex: '0x89' | '0x66eee'
+  id: 137 | 80001
+  hex: '0x89' | '0x13881'
 } {
   if (isProductionDashboard && network === 'mainnet') {
     return {
@@ -16,8 +16,8 @@ function getRequiredChainId(network: Network): {
     }
   }
   return {
-    id: 421614,
-    hex: '0x66eee',
+    id: 80001,
+    hex: '0x13881',
   }
 }
 
@@ -34,15 +34,15 @@ const ChainDetails = {
     blockExplorerUrls: ['https://polygonscan.com/'],
   },
   '0x13881': {
-    chainId: '0x66eee',
-    chainName: 'Arbitrum Sepolia Testnet',
+    chainId: '0x13881',
+    chainName: 'Polygon Mumbai Testnet',
     nativeCurrency: {
-      name: 'Ethereum',
-      symbol: 'ETH',
+      name: 'MATIC',
+      symbol: 'MATIC',
       decimals: 18,
     },
-    rpcUrls: ['https://rpc.ankr.com/arbitrum_sepolia'],
-    blockExplorerUrls: ['https://sepolia.arbiscan.io/'],
+    rpcUrls: ['https://rpc.ankr.com/polygon_mumbai'],
+    blockExplorerUrls: ['https://mumbai.polygonscan.com/'],
   },
 }
 

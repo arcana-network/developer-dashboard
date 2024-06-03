@@ -108,11 +108,12 @@ function toggle() {
   display: inline-block;
   width: 100%;
   height: 100%;
-
-  /* background: linear-gradient(143.36deg, #c6c6c6 -4.7%, #000 115.05%); */
-  background: var(--primary-light);
-  border: var(--primary-black) solid 2px;
+  background: linear-gradient(143.36deg, #c6c6c6 -4.7%, #000 115.05%);
   border-radius: 9999px;
+  box-shadow: inset -2px -2px 4px rgb(80 80 80 / 10%),
+    inset 5px 5px 5px rgb(0 0 0 / 21%),
+    inset -10px -26px 33px -28px rgb(255 255 255 / 10%),
+    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
   transition: transform 0.4 ease;
 }
 
@@ -122,8 +123,7 @@ function toggle() {
   left: 0;
   width: 20px;
   height: 20px;
-  background: var(--primary-black);
-  border: var(--primary-black) solid 1px;
+  background: #8d8d8d;
   border-radius: 9999px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   transition: transform 0.4s ease, background 0.4s ease-in-out;
@@ -141,13 +141,11 @@ function toggle() {
 }
 
 .toggle-background.checked {
-  background: var(--primary-black);
   transform: matrix(-1, 0, 0, 1, 0, 0);
 }
 
 .toggle-indicator.checked {
-  background: var(--primary-light);
-  border: var(--primary-black) solid 1px;
+  background: #568df0;
   transform: translateX(24px) rotate(270deg);
 }
 

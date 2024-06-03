@@ -242,7 +242,7 @@ async function fetchActiveUsers() {
       {
         label: 'No of active users',
         data: values,
-        borderColor: 'black',
+        borderColor: 'white',
         borderWidth: 4,
         lineTension: 0.2,
       },
@@ -263,7 +263,7 @@ async function fetchActiveUsers() {
           sm-direction="column"
           class="flex-grow flex-wrap justify-between"
         >
-          <h1>Dashboard</h1>
+          <h1 class="heading">DASHBOARD</h1>
           <VStack
             gap="1rem"
             class="flex justify-content-center items-center flex-wrap"
@@ -290,7 +290,7 @@ async function fetchActiveUsers() {
         style="align-items: stretch"
       >
         <div class="flex justify-between items-center">
-          <h2 class="font-normal">Users</h2>
+          <h2>USERS</h2>
           <div class="flex flex-wrap duration">
             <v-card-button
               label="Daily"
@@ -324,7 +324,7 @@ async function fetchActiveUsers() {
         style="align-items: stretch"
       >
         <VStack justify="space-between" align="center" class="flex-grow">
-          <h2>Tutorials</h2>
+          <h2>TUTORIALS</h2>
         </VStack>
         <VSeperator class="full-bleed-separator" />
         <Carousel
@@ -358,7 +358,7 @@ async function fetchActiveUsers() {
 <style>
 .carousel__prev,
 .carousel__next {
-  background-color: var(--primary-liquid);
+  background-color: white;
   border-radius: 10px;
 }
 
@@ -402,7 +402,7 @@ async function fetchActiveUsers() {
   height: 350px;
   padding: 20px;
   margin: 0 10px;
-  background-color: var(--primary-white);
+  background-color: #000;
   border-radius: 10px;
   border-radius: 8px;
 }
@@ -421,6 +421,7 @@ async function fetchActiveUsers() {
 
 .tutorial__link {
   font-size: 14px;
+  text-transform: uppercase;
 }
 
 .tutorial__title {

@@ -185,7 +185,7 @@ async function handleFileRemove(
           </div>
         </VStack>
         <VStack direction="column" gap="0.5rem" class="w-full">
-          <h4>Dark Mode</h4>
+          <h4 class="uppercase font-bold">Dark Mode</h4>
           <div
             class="flex space-x-4 max-[1200px]:flex-col max-[1200px]:space-x-0 max-[1200px]:space-y-4 w-full"
           >

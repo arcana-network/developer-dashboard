@@ -111,7 +111,7 @@ a {
 
 button.primary {
   color: var(--text-white);
-  background: var(--primary-black);
+  background: #000;
 }
 
 button.primary:disabled {
@@ -186,7 +186,7 @@ progress {
     font-weight: 400;
     line-height: 1.5;
     text-align: center;
-    background: var(--primary-black);
+    background: #000;
     border: none;
     border-radius: 25px;
   }
