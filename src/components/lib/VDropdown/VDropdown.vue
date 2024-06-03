@@ -147,15 +147,14 @@ watch(
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--text-white);
+  color: var(--primary-black);
   cursor: pointer;
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  background: #efefef;
   border-radius: 10px;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
 }
 
 .custom-select__trigger .placeholder {
+  padding: 0.75rem 2rem;
   color: #393939;
 }
 
@@ -191,56 +190,56 @@ watch(
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--text-grey);
+  color: var(--primary-black);
   cursor: pointer;
-  background: linear-gradient(143.36deg, #0f0f0f -4.7%, #000 115.05%);
+  background: #efefef;
   transition: all 0.2s;
 }
 
 .custom-option:hover {
-  color: var(--text-white);
+  color: var(--secondary);
 }
 
 .custom-option.selected {
-  color: var(--text-white);
+  color: var(--secondary);
 }
 
 .arrow {
   position: relative;
   right: -1rem;
-  width: 1rem;
-  height: 1rem;
+  width: 0.5rem;
+  height: 0.5rem;
 }
 
 .arrow::before,
 .arrow::after {
   position: absolute;
   bottom: 0;
-  width: 0.15rem;
+  width: 0.1rem;
   height: 100%;
   content: '';
   transition: all 0.5s;
 }
 
 .arrow::before {
-  left: -5px;
-  background-color: #13a3fd;
+  left: -2px;
+  background-color: var(--primary-black);
   transform: rotate(-45deg);
 }
 
 .arrow::after {
-  left: 5px;
-  background-color: #13a3fd;
+  left: 2px;
+  background-color: var(--primary-black);
   transform: rotate(45deg);
 }
 
 .open .arrow::before {
-  left: -5px;
+  left: -2px;
   transform: rotate(45deg);
 }
 
 .open .arrow::after {
-  left: 5px;
+  left: 2px;
   transform: rotate(-45deg);
 }
 

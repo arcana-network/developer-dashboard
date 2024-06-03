@@ -148,15 +148,15 @@ label {
   margin-bottom: 0.5rem;
   margin-left: 0.5rem;
   font-size: 0.8rem;
-  font-weight: 500;
-  line-height: 1rem;
+  font-weight: 400;
+  line-height: 1.5rem;
   color: var(--text-grey);
 }
 
 div.text-field {
   display: flex;
   background: #ededec;
-  border-radius: 25px;
+  border-radius: 10px;
 }
 
 .text-field.focused {
@@ -187,11 +187,10 @@ div.text-field {
 
 input {
   width: 100%;
-  padding: 0;
-  margin: 0.5rem 1rem;
+  margin: 0.8rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: #000;
+  color: var(--primary-black);
   background: transparent;
   border: none;
   outline: none;
@@ -225,7 +224,7 @@ div.text-field.icon input {
 input.strong {
   margin: 5px 20px;
   font-size: 1.4em;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.65em;
 }
 
@@ -253,7 +252,7 @@ input[type='number'] {
     margin-bottom: 0.1rem;
     margin-left: 0.7rem;
     font-size: 8px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1rem;
     color: var(--text-grey);
   }
@@ -264,7 +263,7 @@ input[type='number'] {
     margin: 0.5rem 1rem;
     font-size: 11px;
     line-height: 1;
-    color: #000;
+    color: var(--primary-black);
     background: transparent;
     border: none;
     outline: none;

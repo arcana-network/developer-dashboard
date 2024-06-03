@@ -3,8 +3,9 @@ import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
 import DeleteIcon from '@/assets/iconography/delete-icon.svg'
-import PlusIcon from '@/assets/iconography/plus-icon-cricle-white.svg'
+import PlusIcon from '@/assets/iconography/plus-circle.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
+import VRadioSecondary from '@/components/lib/VRadioSecondary/VRadioSecondary.vue'
 import { useToast } from '@/components/lib/VToast'
 import {
   createCustomVerifer,
@@ -267,12 +268,12 @@ watch(
 </script>
 
 <template>
-  <div class="border-2 border-[#363636] bg-[#1F1F1F] rounded-xl space-y-5">
+  <div class="bg-white rounded-xl space-y-5">
     <div>
       <div
-        class="flex items-center justify-between border-b-2 border-[#363636] p-3.5"
+        class="flex items-center justify-between border-b border-liquidgrey p-7"
       >
-        <h2 class="text-sm uppercase font-bold">Custom OAuth</h2>
+        <h3>Custom OAuth</h3>
         <div v-if="fetchedData.name" class="flex items-center space-x-2">
           <span class="text-sm uppercase font-bold">Custom Provider ID</span>
           <div class="bg-[#313131] py-1 px-2 rounded flex space-x-4">
@@ -293,7 +294,7 @@ watch(
         <a
           :href="LEARN_MORE_LINK"
           target="_blank"
-          class="no-underline uppercase text-white text-sm font-bold"
+          class="no-underline uppercase text-black text-sm font-bold"
           >Learn More</a
         >
       </p>
@@ -305,35 +306,37 @@ watch(
             User Identifier String
           </legend>
           <div class="flex items-baseline space-x-5">
-            <div class="space-x-2">
-              <input
+            <div class="flex flex-row -space-x-2">
+              <VRadioSecondary
                 id="sub"
                 v-model="selectedIdParam"
                 type="radio"
                 name="idParam"
                 value="sub"
               />
-              <label for="sub">Sub</label>
+              <label class="text-black font-normal text-left" for="sub"
+                >Sub</label
+              >
             </div>
-            <div class="space-x-2">
-              <input
+            <div class="flex flex-row -space-x-2">
+              <VRadioSecondary
                 id="email"
                 v-model="selectedIdParam"
                 type="radio"
                 name="idParam"
                 value="email"
               />
-              <label for="email">Email</label>
+              <label class="text-black font-normal" for="email">Email</label>
             </div>
-            <div class="space-x-2">
-              <input
+            <div class="flex flex-row -space-x-2">
+              <VRadioSecondary
                 id="custom"
                 v-model="selectedIdParam"
                 type="radio"
                 name="idParam"
                 value="custom"
               />
-              <label for="custom">Custom</label>
+              <label class="text-black font-normal" for="custom">Custom</label>
             </div>
           </div>
           <div>
@@ -342,7 +345,7 @@ watch(
               v-model="idParam"
               type="text"
               name="idParam"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-white bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </fieldset>
@@ -355,8 +358,8 @@ watch(
             <a
               :href="WHATS_JWKS_URL_LINK"
               target="_blank"
-              class="text-xs no-underline text-white font-normal"
-              >What is JWKS Endpoint?</a
+              class="text-xs no-underline text-black font-normal"
+              >What is a JWKS Endpoint?</a
             >
           </div>
           <div class="w-full">
@@ -365,7 +368,7 @@ watch(
               v-model="jwkUrl"
               type="text"
               name="validation"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -382,7 +385,7 @@ watch(
               v-model="issuer"
               type="text"
               name="Issuer"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -399,21 +402,21 @@ watch(
               v-model="audience"
               type="text"
               name="audience"
-              class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
       </div>
-      <div class="flex flex-col flex-1 space-y-5 ml-10">
+      <div class="flex flex-col flex-1 space-y-5 ml-10 align-bottom">
         <div class="flex flex-col space-y-2">
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">
+            <legend class="text-liquiddark text-xs font-normal">
               JWK Validation (Optional)
             </legend>
             <a
               :href="WHATS_JWK_VALIDATION_LINK"
               target="_blank"
-              class="text-xs no-underline text-white font-normal"
+              class="text-xs no-underline text-black font-normal"
               >What are Validation fields?</a
             >
           </div>
@@ -429,7 +432,7 @@ watch(
                 name="validation"
                 :value="item.field"
                 :onInput="($event) => onFieldChange($event, idx)"
-                class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 flex-1">
@@ -439,20 +442,20 @@ watch(
                 name="validation"
                 :value="item.value"
                 :onInput="($event) => onValueChange($event, idx)"
-                class="text-white bg-[#313131] p-2 rounded-md outline-none w-full"
+                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 w-7 h-7">
               <button
                 v-if="showDeleteButton(idx)"
-                class="text-white flex items-center w-7 h-7"
+                class="text-black flex items-center w-7 h-7"
                 @click="removeValidationField(idx)"
               >
                 <img :src="DeleteIcon" alt="Add Chain" class="w-7 h-7" />
               </button>
               <button
                 v-else-if="idx < 2"
-                class="text-white flex items-center w-7 h-7"
+                class="text-black flex items-center w-7 h-7"
                 @click="addValidationField"
               >
                 <img :src="PlusIcon" alt="Add Chain" class="w-7 h-7" />

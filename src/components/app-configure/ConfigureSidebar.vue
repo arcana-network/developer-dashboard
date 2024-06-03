@@ -5,7 +5,7 @@ import { useRouter, useRoute } from 'vue-router'
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
 import DiscordIcon from '@/assets/discord-white.svg'
 import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
-import arrowIcon from '@/assets/iconography/arrow.png'
+import arrowIcon from '@/assets/iconography/arrow.svg'
 import brandingIcon from '@/assets/iconography/branding.svg'
 import ChainIcon from '@/assets/iconography/chain.svg'
 import CloseIcon from '@/assets/iconography/close.svg'
@@ -13,6 +13,7 @@ import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import GasStationIcon from '@/assets/iconography/gas-station.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
+import UserGroupIcon from '@/assets/iconography/user-group.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
 import TelegramIcon from '@/assets/telegram-white.svg'
@@ -36,24 +37,6 @@ const router = useRouter()
 const route = useRoute()
 const emit = defineEmits(['switch-tab', 'switch-app'])
 const apps: Ref<AppConfig[]> = ref([])
-
-const socialLinks = [
-  {
-    href: 'https://twitter.com/arcananetwork',
-    image: TwitterIcon,
-    alt: 'Twitter',
-  },
-  {
-    href: 'https://t.me/ArcanaNetwork',
-    image: TelegramIcon,
-    alt: 'Telegram',
-  },
-  {
-    href: 'https://discord.gg/6g7fQvEpdy',
-    image: DiscordIcon,
-    alt: 'Discord',
-  },
-]
 
 type ConfigureProps = {
   currentTab?: ConfigureTabType
@@ -102,6 +85,7 @@ const ConfigureTabs = computed(() => {
         },
       ],
     },
+    // { type: 'users', label: 'Users', icon: UserGroupIcon },
   ]
   const configurePageIndex = configureTabsCopy.findIndex(
     (tab) => tab.type === 'configure'
@@ -236,9 +220,6 @@ function ellipsisAppName(appName: string) {
 <template>
   <aside class="configure-sidebar">
     <VCard class="configure-sidebar-card">
-      <button class="logo" @click.stop="onLogoClick">
-        <img :src="ArcanaLogo" alt="Arcana Logo" />
-      </button>
       <VStack direction="column" gap="1rem" class="configure-tabs flex-1">
         <VStack class="apps-name__container relative">
           <button
@@ -247,9 +228,10 @@ function ellipsisAppName(appName: string) {
             @click="showAppsList = !showAppsList"
           >
             <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
-            <label class="text-ellipsis font-bold text-2xl overflow-hidden">{{
-              ellipsisAppName(appsStore.app(useAppId()).name)
-            }}</label>
+            <label
+              class="text-ellipsis text-black font-bold text-2xl overflow-hidden"
+              >{{ ellipsisAppName(appsStore.app(useAppId()).name) }}</label
+            >
             <img
               :src="arrowIcon"
               alt="arrow-icon"
@@ -343,20 +325,6 @@ function ellipsisAppName(appName: string) {
           </div>
         </VCardButton>
       </VStack>
-      <VStack gap="1.5rem" align="center" class="social-links">
-        <a
-          v-for="socialLink in socialLinks"
-          :key="socialLink.alt"
-          :href="socialLink.href"
-          target="_blank"
-        >
-          <img
-            :src="socialLink.image"
-            :alt="socialLink.alt"
-            class="social-icon"
-          />
-        </a>
-      </VStack>
     </VCard>
   </aside>
 </template>
@@ -390,7 +358,7 @@ function ellipsisAppName(appName: string) {
 }
 
 .configure-sidebar {
-  width: 16rem;
+  width: 15rem;
   height: 100%;
 }
 
@@ -417,7 +385,6 @@ function ellipsisAppName(appName: string) {
 }
 
 .configure-tabs {
-  margin-top: 4rem;
   margin-bottom: 2rem;
 }
 
@@ -463,10 +430,12 @@ function ellipsisAppName(appName: string) {
   width: 18px;
   height: 18px;
   margin-left: 4px;
+  opacity: 0.5;
   transition: ease 0.5s;
 }
 
 .arrow-icon--active {
+  opacity: 1;
   transition: ease 0.5s;
   transform: rotate(-180deg);
 }
@@ -490,7 +459,7 @@ function ellipsisAppName(appName: string) {
   flex-direction: column;
   gap: 1.25rem;
   padding: 1.25rem;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
+  border: 1px solid var(--primary-liquid-border);
 }
 
 .apps-name__close-btn {
@@ -504,7 +473,7 @@ function ellipsisAppName(appName: string) {
 }
 
 .apps-name__close-btn > img {
-  width: 10px;
+  width: 15px;
 }
 
 .apps-name__list-item {
@@ -526,16 +495,16 @@ function ellipsisAppName(appName: string) {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--text-white);
+  color: #989898;
   text-align: left;
 }
 
 .active-app .app-name {
-  color: var(--primary);
+  color: var(--primary-black);
 }
 
 .apps-name__list-item .app-name:hover {
-  color: var(--primary);
+  color: var(--secondary);
 }
 
 .app-name__container {
@@ -553,21 +522,41 @@ function ellipsisAppName(appName: string) {
 }
 
 .active-tab .tab-label {
-  color: var(--primary);
+  color: var(--primary-black);
 }
 
 .submenu-active .submenu-tab-label {
-  color: var(--primary);
+  color: var(--primary-black);
+}
+
+.sidebar__option-icon {
+  filter: brightness(0) saturate(100%) invert(71%) sepia(5%) saturate(24%)
+    hue-rotate(340deg) brightness(85%) contrast(91%);
+}
+
+.sidebar__option-item:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
+}
+
+.sidebar__submenu-option:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
+}
+
+.sidebar__submenu-option-icon {
+  filter: brightness(0) saturate(100%) invert(71%) sepia(5%) saturate(24%)
+    hue-rotate(340deg) brightness(85%) contrast(91%);
 }
 
 .active-tab .sidebar__option-icon {
-  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
-    brightness(105%) contrast(103%);
+  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7494%)
+    hue-rotate(212deg) brightness(89%) contrast(100%);
 }
 
 .submenu-active .sidebar__submenu-option-icon {
-  filter: invert(49%) sepia(18%) saturate(6308%) hue-rotate(183deg)
-    brightness(105%) contrast(103%);
+  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7494%)
+    hue-rotate(212deg) brightness(89%) contrast(100%);
 }
 
 .social-icon {

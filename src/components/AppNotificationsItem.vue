@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import moment from 'moment'
 
-defineProps({
-  notifications: {
-    type: Array,
-    required: true,
-  },
-})
+defineProps<{
+  notifications?: any[] | null
+}>()
 
 const emits = defineEmits(['onClickofItem'])
 
@@ -19,7 +16,7 @@ function getNotificationsTime(timeStamp) {
 </script>
 
 <template>
-  <ul v-if="notifications.length" class="w-full p-0 m-0">
+  <ul v-if="notifications?.length" class="w-full p-0 m-0">
     <li
       v-for="notification in notifications"
       :key="notification.data"
@@ -33,19 +30,19 @@ function getNotificationsTime(timeStamp) {
         >
           {{ notification.data }}
         </p>
-        <p class="text-xs font-normal text-[#8d8d8d]">
+        <p class="text-xs font-normal text-liquiddark">
           {{ getNotificationsTime(notification.time) }}
         </p>
       </div>
       <div class="w-[10%] flex flex-col items-center justify-center">
         <span
           v-if="!notification.read"
-          class="w-2.5 h-2.5 bg-[#13a3fd] rounded-full"
+          class="w-2.5 h-2.5 bg-black rounded-full"
         ></span>
       </div>
     </li>
   </ul>
   <div v-else class="p-2.5">
-    <p class="w-full text-center">No Notifications</p>
+    <p class="w-full text-center text-black">No Notifications</p>
   </div>
 </template>

@@ -58,13 +58,13 @@ function onClickOfOption(option: number, id: number) {
 </script>
 
 <template>
-  <div class="rounded-md border-[1px] border-[#363636]">
+  <div class="rounded-md border-[1px] bg-white border-liquidgrey">
     <table
       v-if="gastankList.length"
-      class="table-fixed text-white block overflow-x-auto border-collapse"
+      class="table-fixed text-black block overflow-x-auto border-collapse"
     >
-      <thead class="border-b-[1px] border-b-[#363636]">
-        <tr class="text-[#8d8d8d]">
+      <thead class="border-b-[1px] border-b-liquidgrey">
+        <tr class="text-liquiddark">
           <th class="w-[5%]"></th>
           <th class="w-[20%]">Name</th>
           <th class="w-[20%]">Network</th>
@@ -79,7 +79,7 @@ function onClickOfOption(option: number, id: number) {
         <tr
           v-for="tank in filteredGastankList"
           :key="tank.name"
-          class="hover:bg-[#363636]"
+          class="hover:bg-liquid"
         >
           <td>
             <img
@@ -103,19 +103,19 @@ function onClickOfOption(option: number, id: number) {
           <td>
             <PopperJs placement="left-start" :arrow="true">
               <button
-                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-[#262626] rounded-[5px]"
+                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-black rounded-[5px]"
               >
                 <img :src="MoreIcon" alt="more" />
               </button>
               <template #content>
                 <ul
                   ref="showRowOptions_menu"
-                  class="flex flex-col bg-[#1F1F1F] text-[#FFFFFF] rounded-md border-[1px] border-[#363636] p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
+                  class="flex flex-col bg-white text-black rounded-md border-[1px] border-liquidgrey p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
                 >
                   <li
                     v-for="option in rowOptions"
                     :key="option.value"
-                    class="p-1 rounded-[5px] hover:bg-[#363636] text-left cursor-pointer"
+                    class="p-1 rounded-[5px] hover:bg-liquidlight text-left cursor-pointer"
                     @click.stop="() => onClickOfOption(option.value, tank.id)"
                   >
                     <button>
@@ -133,8 +133,8 @@ function onClickOfOption(option: number, id: number) {
       <table
         class="table-fixed text-white block overflow-x-auto border-collapse w-full"
       >
-        <thead class="border-b-[1px] border-b-[#363636]">
-          <tr class="text-[#8d8d8d]">
+        <thead class="border-b-[1px] border-b-liquidgrey">
+          <tr class="text-liquiddark">
             <th class="w-[14%]">Name</th>
             <th class="w-[14%]">Balance</th>
             <th class="w-[14%]">Deposit Address</th>
@@ -146,7 +146,7 @@ function onClickOfOption(option: number, id: number) {
         </thead>
       </table>
       <div class="flex-1 flex justify-center items-center">
-        <p class="text-[#8D8D8D]">Begin by Adding a Gas Tank</p>
+        <p class="text-liquiddark">Begin by Adding a Gas Tank</p>
       </div>
     </div>
   </div>

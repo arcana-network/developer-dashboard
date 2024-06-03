@@ -64,7 +64,7 @@ function handleCancel() {
 <template>
   <section name="app-branding">
     <SettingCard class="app-branding-card">
-      <template #title>Keyspace Type</template>
+      <template #title><h1>Keyspace Type</h1></template>
       <template #description>
         <div>
           Choose between app-specific (default, highly secure) or global
@@ -88,7 +88,7 @@ function handleCancel() {
           class="keyspace-card keyspace-container"
           @click.stop="selectedKeyspace = 'app-specific'"
         >
-          <VStack gap="1.25rem" align="start">
+          <VStack direction="column" gap="1.25rem" align="start">
             <input
               id="app-specific"
               type="radio"
@@ -100,7 +100,7 @@ function handleCancel() {
               <span class="card-title">App Specific</span>
               <span class="card-description"
                 >Users will be assigned
-                <span class="bolder">a wallet address</span> that is unique to
+                <span class="bolder">a Wallet Address</span> that is unique to
                 your app. Since the user's keys are specific to your app, they
                 are not exposed to any malicious apps or transaction
                 requests.</span
@@ -122,7 +122,7 @@ function handleCancel() {
               variant="depressed"
               class="keyspace-card-global keyspace-container"
             >
-              <VStack gap="1.25rem" align="start">
+              <VStack gap="1.25rem" align="start" direction="column">
                 <input
                   id="global"
                   type="radio"
@@ -137,7 +137,7 @@ function handleCancel() {
                     <span
                       v-if="app.status === 0"
                       class="card-description"
-                      style="color: #f7f7f7"
+                      style="color: #000"
                     >
                       *Recommended
                     </span>
@@ -146,7 +146,7 @@ function handleCancel() {
                         class="circle-indicator"
                         style="background: #ff6826"
                       ></div>
-                      <span class="card-description" style="color: #f7f7f7">
+                      <span class="card-description" style="color: #000">
                         In Review
                       </span>
                     </VStack>
@@ -155,7 +155,7 @@ function handleCancel() {
                         class="circle-indicator"
                         style="background: #8fff00"
                       ></div>
-                      <span class="card-description" style="color: #f7f7f7">
+                      <span class="card-description" style="color: #000">
                         Approved
                       </span>
                     </VStack>
@@ -164,7 +164,7 @@ function handleCancel() {
                         src="@/assets/iconography/rejected.svg"
                         style="width: 12px"
                       />
-                      <span class="card-description" style="color: #f7f7f7">
+                      <span class="card-description" style="color: #000">
                         Rejected
                       </span>
                     </VStack>
@@ -240,6 +240,7 @@ function handleCancel() {
 .keyspace-container {
   max-width: 296px;
   padding: 2rem;
+  background-color: var(--primary-black);
 }
 
 .card-title {
@@ -248,15 +249,17 @@ function handleCancel() {
 }
 
 .card-description {
+  width: 100%;
   font-size: 0.75rem;
   line-height: 1.5;
-  color: var(--text-grey);
+  color: var(--text-black);
 }
 
 .gradient-border-card {
   padding: 2px;
-  background: linear-gradient(90deg, #cc2b5e 0%, #753a88 100%);
+  background: var(--secondary);
   border-radius: 10px;
+  opacity: 100;
 }
 
 .disabled-card {
@@ -268,7 +271,8 @@ input[type='radio'] {
   display: grid;
   place-content: center;
   width: 20px;
-  background: #313131;
+  background: #fff;
+  border: #000 solid 2px;
   border-radius: 50%;
   box-shadow: none;
   transform: translateX(0);
@@ -279,7 +283,8 @@ input[type='radio']::before {
   width: 16px;
   height: 16px;
   content: '';
-  background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
+  background: #000;
+  border: #fff solid 2px;
   border-radius: 50%;
   transition: 120ms transform ease-in-out;
   transform: scale(0);

@@ -1,13 +1,10 @@
 <script lang="ts" setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, reactive } from 'vue'
 import { useRoute, useRouter, type RouteRecordName } from 'vue-router'
 
 import AppBanner from '@/components/AppBanner.vue'
-import LandingDescriptor from '@/components/LandingDescriptor.vue'
-import VButtonSecondary from '@/components/lib/VButtonSecondary/VButtonSecondary.vue'
-import VTextFieldSecondary from '@/components/lib/VTextFieldSecondary/VTextFieldSecondary.vue'
-import VTooltip from '@/components/lib/VTooltip/VTooltip.vue'
-import LoginFooter from '@/components/LoginFooter.vue'
+import LoginHeader from '@/components/LoginHeader.vue'
+import OTPInput from '@/components/OTPInput.vue'
 import { loginUser } from '@/services/gateway.service'
 import { addUserToMailchimp } from '@/services/mailchimp.service'
 import { useAppsStore } from '@/stores/apps.store'
@@ -30,21 +27,60 @@ const hasValidEmail = computed(() => isValidEmail(email.value))
 function capitalize(s: string) {
   return s[0].toUpperCase() + s.substring(1)
 }
+const emailErrors = reactive({
+  invalid: false,
+  required: false,
+})
+const isFirstSubmitted = ref(false)
+const showOTPInput = ref(false)
+
+function resetEmailErrors() {
+  emailErrors.invalid = false
+  emailErrors.required = false
+}
+
+const hasEmailErrors = computed(() => {
+  return emailErrors.invalid || emailErrors.required
+})
+
+function validate() {
+  resetEmailErrors()
+  if (!email.value.trim()) {
+    emailErrors.required = true
+  }
+  if (!isValidEmail(email.value)) {
+    emailErrors.invalid = true
+  }
+}
 
 async function launchLogin(type: string) {
   try {
     if (type === 'passwordless') {
-      if (!hasValidEmail.value) return
-      loaderStore.showLoader(content.APP.LOGIN.CLICK)
-      await arcanaAuth.loginWithLink(email.value)
+      loaderStore.showLoader('Sending OTP...')
+      if (!isFirstSubmitted.value) {
+        validate()
+        isFirstSubmitted.value = true
+      }
+      if (hasEmailErrors.value) return
+      await loginWithOTP()
+      showOTPInput.value = true
+      loaderStore.hideLoader()
     } else {
       loaderStore.showLoader(`Signing with ${capitalize(type)}`)
       await arcanaAuth.loginWithSocial(type)
+      await fetchAndStoreDetails()
     }
-    await fetchAndStoreDetails()
   } catch (e) {
-    console.error(e)
+    console.log(e)
     loaderStore.hideLoader()
+  }
+}
+
+async function loginWithOTP() {
+  try {
+    await arcanaAuth.loginWithOTP(email.value.trim().toLowerCase())
+  } catch (error) {
+    console.log('error', 'loginWithOTP', error)
   }
 }
 
@@ -118,100 +154,114 @@ onMounted(async () => {
   }
 })
 </script>
-
 <template>
-  <div class="flex flex-col bg-[#f7f7f7]">
+  <div class="flex flex-col bg-liquidlight">
     <AppBanner />
-    <main class="flex flex-col md:flex-row">
-      <LandingDescriptor />
-      <section
-        class="z-[10] lg:z-[0] grid place-items-center px-2 md:px-0 w-full md:mt-[140px]"
-      >
-        <div
-          class="max-w-[700px] md:space-y-9 p-2 py-[4vh] md:py-[10vh] lg:my-0 bg-white rounded-[25px] w-fit lg:w-[700px] h-[300px] md:h-[500px]"
-        >
-          <div
-            class="p-2 space-y-2 md:space-y-4 text-center flex flex-col items-center justify-center"
-          >
-            <h1
-              class="text-[24px] md:text-[32px] font-bold leading-7 tracking-tight md:tracking-normal text-black"
-            >
-              Welcome to Developer Dashboard
-            </h1>
-            <h5
-              class="font-light text-[12px] md:text-[1rem] text-black text-left md:text-center"
-            >
-              We’ll email you a login link for a password-free sign in.
-            </h5>
+    <LoginHeader />
+    <main
+      class="relative z-10 isolate flex max-md:flex-col max-md:gap-8 h-full flex-1"
+    >
+      <div class="w-full max-md:mt-10 px-4 flex items-center justify-center">
+        <div class="w-3/4 gap-4 flex flex-col justify-center items-center">
+          <h1 class="text-rem2 max-w-xs text-black tracking-tight text-center">
+            Welcome to the Developer Dashboard
+          </h1>
+          <p class="text-[0.85rem] text-liquiddark font-light text-center">
+            Sign-in using any of these methods to get started
+          </p>
+          <div class="flex flex-col gap-3 flex-grow-0">
+            <p class="text-[0.75rem] text-liquiddark ml-3">Social Login</p>
+            <div class="flex flex-col items-center gap-3">
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('google')"
+              >
+                <img src="@/assets/google-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Google </span>
+              </button>
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('github')"
+              >
+                <img src="@/assets/github-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Github </span>
+              </button>
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('twitch')"
+              >
+                <img src="@/assets/twitch-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Twitch </span>
+              </button>
+              <button
+                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                @click.stop="launchLogin('discord')"
+              >
+                <img src="@/assets/discord-sso.svg" class="w-5" />
+                <span class="text-sm font-normal text-white"> Discord </span>
+              </button>
+            </div>
           </div>
+          <p class="text-[0.9rem] text-liquiddark text-center">Or</p>
           <form
-            class="flex column items-center -space-y-4"
+            class="flex flex-col gap-2"
             @submit.prevent="launchLogin('passwordless')"
           >
-            <VTextFieldSecondary
-              v-model.trim="email"
-              label="Email"
-              placeholder="someone@gmail.com"
-              class="w-full max-w-[20rem]"
-              color="white"
-            />
-            <VButtonSecondary
-              label="Send Link"
-              class="w-full max-w-[20rem]"
-              type="submit"
-              :disabled="!hasValidEmail"
-            />
+            <label
+              for="login-email"
+              class="text-[0.75rem] font-normal text-liquiddark ml-3"
+              >Email ID</label
+            >
+            <div
+              class="flex justify-center items-center w-80 h-10 bg-liquiddark-100 px-2.5 rounded-xl focus:border-0"
+            >
+              <input
+                id="login-email"
+                v-model.trim="email"
+                type="email"
+                class="flex-1 bg-transparent input text-white border-0 focus:outline-none focus:border-transparent"
+              />
+              <button
+                class="flex items-center justify-center"
+                :disabled="!hasValidEmail"
+              >
+                <img
+                  src="../assets/iconography/arrow-right-white.svg"
+                  alt="arrow"
+                />
+              </button>
+            </div>
           </form>
-          <section
-            class="flex justify-center flex-wrap space-y-1 md:space-y-0 mt-5 md:mt-0"
-          >
-            <div class="flex items-center">
-              <span class="font-light text-[#8f8e8f] text-[11px] md:text-[14px]"
-                >Or sign in with
-              </span>
-            </div>
-            <div class="flex flex-wrap">
-              <VTooltip title="Sign in with Google">
-                <img
-                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
-                  src="@/assets/google-sso.svg"
-                  @click.stop="launchLogin('google')"
-                />
-              </VTooltip>
-              <VTooltip title="Sign in with Github">
-                <img
-                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
-                  src="@/assets/github-sso-light.svg"
-                  @click.stop="launchLogin('github')"
-                />
-              </VTooltip>
-              <VTooltip title="Sign in with Twitch">
-                <img
-                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
-                  src="@/assets/twitch-sso.svg"
-                  @click.stop="launchLogin('twitch')"
-                />
-              </VTooltip>
-              <VTooltip title="Sign in with Discord">
-                <img
-                  class="inline-block w-[25px] ml-4 cursor-pointer hover:opacity-80 transition-opacity duration-300"
-                  src="@/assets/discord-sso.svg"
-                  @click.stop="launchLogin('discord')"
-                />
-              </VTooltip>
-            </div>
-          </section>
         </div>
-      </section>
+      </div>
+      <div class="w-full p-6">
+        <div
+          class="max-w-hd flex flex-col gap-3 px-8 pt-8 bg-white rounded-3xl w-full h-full"
+        >
+          <h2 class="text-rem2 text-black tracking-tight font-normal text-left">
+            Boost your dApp's UX
+          </h2>
+          <p class="text-sm text-liquiddark font-light text-left">
+            Configure Auth, Wallet, Gasless and other technologies on the
+            dashboard and integrate it in your app in no time.
+          </p>
+          <img src="@/assets/landing.png" class="mt-4 w-full" />
+        </div>
+      </div>
       <img
         src="@/assets/login-bg.png"
-        class="mobile-remove tablet-remove absolute z-[2] bottom-0 block mx-auto mt-24 md:h-[55vh]"
+        class="max-md:hidden absolute -z-10 bottom-0 right-0 mx-auto mt-24"
       />
       <img
         src="@/assets/mobile-login-bg.png"
-        class="laptop-hide absolute bottom-0 block mx-auto mt-24"
+        class="md:hidden absolute bottom-0 -z-10 mx-auto mt-24"
       />
     </main>
-    <LoginFooter class="mobile-remove" />
+    <OTPInput
+      v-if="showOTPInput"
+      @dismiss="showOTPInput = false"
+      @resend="loginWithOTP"
+      @success="fetchAndStoreDetails"
+    />
   </div>
 </template>

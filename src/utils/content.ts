@@ -2,11 +2,11 @@ const content = {
   GENERIC: {
     ABI: 'Fetching ABI...',
     CONNECTING: 'Connecting Wallet...',
-    SIGNING: 'Signing...',
+    SIGNING: 'Signing In...',
     TOGGLING: 'Toggling...',
     UPDATING: 'Updating Profile details...',
     UPDATED: 'Profile details updated successfully.',
-    COPY: 'Copied Successfully...',
+    COPY: 'Copied Successfully.',
   },
   SMART_CONTRACT: {
     CREATING: 'Creating Smart Contract',
@@ -52,6 +52,7 @@ const content = {
     APP_DETAILS: {
       FETCH_CONFIG: 'Fetching app config...',
       CREATING: 'Creating app...',
+      SUCCESS: 'App created successfully.',
     },
     LOGIN: {
       CLICK: 'Click on the login link sent to your email address',

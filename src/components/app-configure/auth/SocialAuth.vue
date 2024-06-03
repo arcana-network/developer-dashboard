@@ -332,7 +332,7 @@ function showSteamNote() {
   width: 40px;
   height: 40px;
   padding: 3px;
-  border: 2px solid #13a3fd;
+  border: 2px solid var(--primary);
   border-radius: 50%;
 }
 

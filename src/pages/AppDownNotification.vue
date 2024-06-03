@@ -14,7 +14,7 @@
         style="
           padding: 0 1em;
           font-weight: 700;
-          color: #13a3fd;
+          color: var(--primary-black);
           text-align: center;
           letter-spacing: unset;
         "

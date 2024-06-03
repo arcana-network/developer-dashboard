@@ -99,49 +99,47 @@ a {
   min-width: 9em;
   padding: 0.625rem;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 400;
   line-height: 1.5;
   text-align: center;
   cursor: pointer;
   background: none;
   border: none;
-  border-radius: 10px;
+  border-radius: 25px;
   transition: opacity 0.3s;
 }
 
 button.primary {
   color: var(--text-white);
-  background: linear-gradient(to bottom, #0085ff, #29c8fa);
+  background: var(--primary-black);
 }
 
 button.primary:disabled {
-  color: var(--text-grey);
+  color: var(--primary-light);
   cursor: not-allowed;
-  background: linear-gradient(180deg, #4e4e4e -4.5%, #3d3d3d 100.1%);
+  background: #b7b9bd;
 }
 
 button.primary:hover:not(:disabled) {
-  opacity: 0.8;
+  background-color: var(--secondary);
 }
 
 button.secondary {
   padding: calc(0.625rem - 2px);
-  color: var(--text-white);
-  background: linear-gradient(#262626, #262626) padding-box,
-    linear-gradient(to bottom, #0085ff, #29c8fa) border-box;
+  color: var(--primary-black);
+  background-color: var(--primary-liquid);
   border: 2px solid transparent;
-  border-radius: 10px;
+  border-radius: 25px;
 }
 
 button.secondary:disabled {
   color: #808080;
   cursor: not-allowed;
-  background: linear-gradient(#262626, #262626) padding-box,
-    linear-gradient(180deg, #4e4e4e 0%, #3d3d3d 100%) border-box;
+  background: var(--primary-liquid);
 }
 
 button.secondary:hover:not(:disabled) {
-  color: #28c6fa;
+  color: var(--secondary);
 }
 
 button.secondary:disabled::before {
@@ -155,7 +153,7 @@ a.link {
 }
 
 a:not([disabled='true']):hover {
-  color: #00519c;
+  color: var(--secondary);
 }
 
 a:not([disabled='true']):active {
@@ -183,12 +181,12 @@ progress {
     min-width: 8rem;
     padding: 0.6rem 0.8rem;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 400;
     line-height: 1.5;
     text-align: center;
     background: none;
     border: none;
-    border-radius: 10px;
+    border-radius: 25px;
   }
 }
 </style>
