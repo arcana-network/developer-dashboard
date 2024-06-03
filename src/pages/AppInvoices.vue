@@ -97,17 +97,17 @@ onBeforeMount(async () => {
   <div>
     <app-header />
     <main class="pb-10 container">
-      <VStack class="heading" gap="1.5rem">
+      <VStack class="heading" gap="1rem">
         <img
           src="@/assets/iconography/back.svg"
           class="cursor-pointer"
           @click.stop="router.back()"
         />
-        <h1>INVOICES</h1>
+        <h1>Invoices</h1>
       </VStack>
       <section class="personal-details">
         <SettingCard>
-          <template #title>ESTIMATED CHARGES</template>
+          <template #title>Estimated Charges</template>
           <VStack direction="column" gap="1.5rem">
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Amount Due:</span>
@@ -120,7 +120,7 @@ onBeforeMount(async () => {
             <VStack wrap justify="space-between" gap="1rem">
               <span class="charge-details">Payment Method:</span>
               <VStack gap="0.625rem" class="relative">
-                <span class="charge-details uppercase">{{ selectedCard }}</span>
+                <span class="charge-details">{{ selectedCard }}</span>
               </VStack>
             </VStack>
           </VStack>
@@ -198,6 +198,10 @@ onBeforeMount(async () => {
 <style scoped>
 .heading {
   margin-top: 2rem;
+}
+
+.heading img {
+  width: 2rem;
 }
 
 .personal-details {

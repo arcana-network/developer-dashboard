@@ -45,8 +45,8 @@ const areUnreadNotificationAvaiable = computed(() => {
   min-width: 18px;
   min-height: 18px;
   padding: 1px;
-  font-size: 10px;
-  color: #fff;
+  font-size: 15px;
+  color: var(--primary-light);
   background: var(--primary);
   border-radius: 50%;
 }
@@ -66,7 +66,7 @@ const areUnreadNotificationAvaiable = computed(() => {
 }
 
 .notification-icon {
-  width: 18px;
+  width: 22px;
 }
 
 @keyframes ripple {

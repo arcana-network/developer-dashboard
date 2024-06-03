@@ -8,14 +8,14 @@ import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import VOverlay from '@/components/lib/VOverlay/VOverlay.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import VTextFieldSecondary from '@/components/lib/VTextFieldSecondary/VTextFieldSecondary.vue'
 import { useToast } from '@/components/lib/VToast'
 import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { chainTypes } from '@/utils/chainTypes'
 import { WalletUIModes } from '@/utils/constants'
-import { errors } from '@/utils/content'
+import { content, errors } from '@/utils/content'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
 
@@ -59,6 +59,7 @@ async function handleCreateApp() {
     createTransactionSigner(app.address, 'testnet')
     router.push({ name: 'AppDetails', params: { appId: app.ID } })
     emit('close')
+    toast.success(content.APP.APP_DETAILS.SUCCESS)
   } catch (e) {
     console.error(e)
     toast.error(errors.APP.APP_DETAILS.ERROR_CREATING)
@@ -84,7 +85,7 @@ function onChainSelect(_, option) {
   <VOverlay>
     <div class="fixed inset-0 flex justify-center items-center">
       <div
-        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-[#262626] max-w-[560px] min-w-[200px] w-[70%] max-h-[100vh] overflow-y-auto"
+        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-white max-w-[560px] min-w-[200px] w-[70%] max-h-screen overflow-y-auto"
       >
         <div v-if="showLoader" class="h-full flex justify-center items-center">
           <p>Please wait...</p>
@@ -106,11 +107,11 @@ function onChainSelect(_, option) {
               <VStack direction="column" class="space-y-3">
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="app-name"
                     >Enter App Name</label
                   >
-                  <VTextField
+                  <VTextFieldSecondary
                     id="app-name"
                     v-model.trim="appName"
                     :message-type="hasAppNameError ? 'error' : ''"
@@ -120,7 +121,7 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="default-chain"
                     >Chain Type*</label
                   >
@@ -132,9 +133,9 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="default-chain"
-                    >Default Chain*</label
+                    >Default Chain</label
                   >
                   <VDropdown
                     :options="
@@ -146,13 +147,13 @@ function onChainSelect(_, option) {
                     :disabled="!selectedChainType"
                     @change="onChainSelect"
                   />
-                  <!-- <p class="text-[#8D8D8D]">
+                  <!-- <p class="text-liquiddark">
                   *You can change the default chain later
                 </p> -->
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-[#8d8d8d]"
+                    class="text-lg font-normal text-liquiddark"
                     for="default-chain"
                     >Wallet UI Mode*</label
                   >
@@ -161,7 +162,9 @@ function onChainSelect(_, option) {
                     :options="WalletUIModes"
                     display-field="label"
                   />
-                  <p class="text-[#8D8D8D]">*You cannot change UI mode later</p>
+                  <p class="text-liquiddark">
+                    *You cannot change these properties later.
+                  </p>
                 </VStack>
               </VStack>
               <VButton

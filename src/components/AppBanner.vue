@@ -18,7 +18,7 @@ function onCloseBanner() {
         be affected.
       </h5>
       <span class="banner-close" role="button" @click.stop="onCloseBanner">
-        <CloseIcon color="#FFFFFF" />
+        <CloseIcon color="var(--primary-light)" />
       </span>
     </div>
   </div>
@@ -31,14 +31,13 @@ function onCloseBanner() {
   line-height: 1.5em;
   color: white;
   text-align: center;
-  background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
+  background: #fff;
 }
 
 .banner h4 {
   display: inline-block;
   font-size: 1.125rem;
   font-weight: 600;
-  text-transform: uppercase;
 }
 
 .banner h5 {
