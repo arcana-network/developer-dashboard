@@ -56,6 +56,7 @@ function handleCta() {
   font-size: 0.625rem;
   font-weight: 600;
   color: var(--color-black);
+  text-transform: uppercase;
   cursor: pointer;
   background-color: var(--color-white);
   border: none;

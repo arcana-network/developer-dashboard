@@ -1,13 +1,45 @@
-import { AuthProvider, type EthereumProvider } from '@arcana/auth'
+import { AuthProvider } from '@arcana/auth'
+
+import { getConfig } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAuthStore } from '@/stores/auth.store'
 
 const ARCANA_APP_ADDRESS = import.meta.env.VITE_ARCANA_APP_ADDRESS
+const ARCANA_AUTH_NETWORK = import.meta.env.VITE_ARCANA_AUTH_NETWORK
+const POLYGON_MAINNET = '0x89'
+const POLYGON_MUMBAI_TESTNET = '0x13881'
 
 let authInstance: AuthProvider
+let network: 'testnet' | 'mainnet' | any
+
+if (ARCANA_AUTH_NETWORK === 'mainnet') {
+  network = {
+    authUrl: 'https://auth.arcana.network',
+    gatewayUrl: 'https://gateway.arcana.network',
+    walletUrl: 'https://wallet.arcana.network',
+  }
+} else {
+  network = ARCANA_AUTH_NETWORK
+}
 
 function useArcanaAuth() {
+  const authStore = useAuthStore()
+  const appsStore = useAppsStore()
+
   async function init() {
     if (!authInstance) {
-      authInstance = new AuthProvider(ARCANA_APP_ADDRESS)
+      authInstance = new AuthProvider(ARCANA_APP_ADDRESS, {
+        network,
+        debug: true,
+        alwaysVisible: true,
+        chainConfig: {
+          chainId:
+            ARCANA_AUTH_NETWORK === 'mainnet'
+              ? POLYGON_MAINNET
+              : POLYGON_MUMBAI_TESTNET,
+          rpcUrl: getConfig().rpcUrl,
+        },
+      })
       await authInstance.init()
     }
   }
@@ -16,28 +48,16 @@ function useArcanaAuth() {
     return await authInstance.isLoggedIn()
   }
 
-  function getAuthInstance() {
-    return authInstance
-  }
-
   async function loginWithSocial(type: string) {
     if (!(await isLoggedIn())) {
       return await authInstance.loginWithSocial(type)
     }
   }
 
-  async function loginWithOTP(email: string) {
-    const loginState = await authInstance.loginWithOTPStart(email)
-    try {
-      await loginState.begin()
-    } catch (e) {
-      console.log(e)
+  async function loginWithLink(email: string) {
+    if (!(await isLoggedIn())) {
+      await authInstance.loginWithLink(email)
     }
-    return loginState.isCompleteRequired
-  }
-
-  async function verifyLoginWithOTP(otp: string) {
-    await authInstance.loginWithOTPComplete(otp)
   }
 
   async function fetchUserDetails() {
@@ -45,11 +65,9 @@ function useArcanaAuth() {
   }
 
   async function logout() {
-    try {
-      await authInstance.logout()
-    } catch (e) {
-      console.log('Could not logout', e)
-    }
+    await authInstance.logout()
+    appsStore.$reset()
+    authStore.$reset()
   }
 
   async function getPublicKey(email: string) {
@@ -57,20 +75,18 @@ function useArcanaAuth() {
   }
 
   function getProvider() {
-    return authInstance.provider as unknown as EthereumProvider
+    return authInstance.provider
   }
 
   return {
     init,
     isLoggedIn,
-    loginWithOTP,
-    verifyLoginWithOTP,
     loginWithSocial,
+    loginWithLink,
     logout,
     fetchUserDetails,
     getPublicKey,
     getProvider,
-    getAuthInstance,
   }
 }
 

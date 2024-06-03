@@ -96,7 +96,7 @@ function onProceed() {
   justify-content: center;
   max-width: 600px;
   padding: 2rem;
-  background-color: #fff;
+  background-color: #262626;
   border-radius: 10px;
 }
 
@@ -107,7 +107,7 @@ function onProceed() {
 
 .switch-chain__message {
   font-size: 15px;
-  color: #000;
+  color: var(--text-white);
   text-align: center;
 }
 

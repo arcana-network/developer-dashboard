@@ -7,17 +7,12 @@
 @tailwind utilities;
 
 :root {
-  --primary: #5b93ff;
-  --secondary: #ff4e9f;
-  --primary-black: #000;
+  --primary: #13a3fd;
   --primary-light: #fff;
   --primary-dark: #161616;
-  --primary-liquid: #dfecee;
-  --primary-liquid-border: #d9d9d9;
   --text-white: #fff;
   --text-grey: #8d8d8d;
-  --text-black: #000;
-  --color-green: #51cc56;
+  --color-green: #8fff00;
   --color-yellow: #ffc226;
   --color-orange: #ff6826;
   --color-red: #b43030;
@@ -56,44 +51,26 @@
   background: #404040;
 }
 
-@font-face {
-  font-family: Nohemi;
-  font-style: normal;
-  font-weight: 700;
-  src: url('/src/assets/fonts/nohemi/Nohemi-Bold.woff2') format('woff2');
-  font-display: block;
-}
-
-@font-face {
-  font-family: Nohemi;
-  font-style: normal;
-  font-weight: 500;
-  src: url('/src/assets/fonts/nohemi/Nohemi-Medium.woff2') format('woff2');
-  font-display: block;
-}
-
 body {
   line-height: 1.5;
-  color: #000;
-  background-color: #efefef;
+  color: var(--text-white);
+  background-color: var(--dark-theme-bg);
 }
 
 h1 {
-  font-family: Nohemi, sans-serif;
   font-size: 2.25rem;
-  letter-spacing: -2%;
+  font-weight: 900;
+  letter-spacing: 3px;
 }
 
 h2 {
-  font-family: Nohemi, sans-serif;
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 h3 {
-  font-family: Nohemi, sans-serif;
   font-size: 1.25rem;
-  font-weight: 400;
+  font-weight: 700;
 }
 
 h4 {

@@ -2,7 +2,6 @@ import { toASCII } from 'punycode'
 
 const urlRegexPattern = {
   protocol: 'https?://',
-  wsProtocol: 'wss?://',
   localhost: 'localhost',
   ipv4: /(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.){3}((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))/,
   port: /(?::\d{2,5})/,
@@ -14,9 +13,6 @@ const urlRegexPattern = {
 const { protocol, localhost, ipv4, port, domain, path } = urlRegexPattern
 const URLRegex = new RegExp(
   `^(${protocol})((${localhost})|(${ipv4.source})|(${domain.source}))(${port.source})?(${path.source})?$`
-)
-const WSRegex = new RegExp(
-  `^(${urlRegexPattern.wsProtocol})((${urlRegexPattern.localhost})|(${urlRegexPattern.ipv4.source})|(${urlRegexPattern.domain.source}))(${urlRegexPattern.port.source})?(${urlRegexPattern.path.source})?$`
 )
 
 function isValidEmail(email: string) {
@@ -46,8 +42,4 @@ function isValidUrl(url: string) {
   return URLRegex.test(url)
 }
 
-function isValidWsUrl(url: string) {
-  return WSRegex.test(url)
-}
-
-export { isValidEmail, isValidUrl, isValidWsUrl }
+export { isValidEmail, isValidUrl }

@@ -19,9 +19,9 @@ const keyspace = app.keyspace
 
 <template>
   <main>
-    <VStack direction="column" gap="1rem">
+    <VStack direction="column" gap="2rem">
       <RedirectURI />
-      <div class="relative space-y-4">
+      <div class="relative space-y-2">
         <div
           v-if="keyspace === GLOBAL_KEYSPACE"
           class="absolute bg-[#1F1F1F] opacity-90 w-full h-full flex justify-center items-center z-[999]"

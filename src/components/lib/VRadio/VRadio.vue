@@ -45,9 +45,9 @@ input[type='radio'] {
   place-content: center;
   width: 20px;
   height: 20px;
-  background: #fff;
-  border: #000 1px solid;
+  background: #161616;
   border-radius: 50%;
+  box-shadow: inset 5px 5px 10px #121212;
   transform: translateX(0);
   appearance: none;
 }
@@ -56,8 +56,7 @@ input[type='radio']::before {
   width: 16px;
   height: 16px;
   content: '';
-  background: #000;
-  border: #fff 1px solid;
+  background: linear-gradient(180deg, #0085ff -4.5%, #29c8fa 100.1%);
   border-radius: 50%;
   transition: 120ms transform ease-in-out;
   transform: scale(0);
@@ -69,6 +68,5 @@ input[type='radio']:checked::before {
 
 label {
   font-size: 1rem;
-  color: black;
 }
 </style>

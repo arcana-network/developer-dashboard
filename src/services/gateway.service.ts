@@ -1,5 +1,4 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from 'axios'
-import { providers } from 'ethers'
 
 import store from '@/stores'
 import type {
@@ -19,7 +18,6 @@ import {
   type WalletUIMode,
 } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
-import { isValidWsUrl } from '@/utils/validation'
 
 const authStore = useAuthStore(store)
 const appsStore = useAppsStore(store)
@@ -370,7 +368,7 @@ function fetchMau(
   appAddress: string,
   network: Network
 ): Promise<AxiosResponse<ActiveUsersChartData[]>> {
-  const api = `get-mau/?app=${appAddress}`
+  const api = `/get-mau/?app=${appAddress}`
   return getGatewayInstance(network).get(`${getEnvApi()}/${api}`)
 }
 
@@ -538,7 +536,6 @@ function getAllChains(network: Network) {
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/EVM/`),
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/solana/`),
     getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/multiversx/`),
-    getGatewayInstance(network).get(`${getEnvApi('v2')}/chain/near/`),
   ])
 }
 
@@ -587,15 +584,8 @@ function setDefaultChain(appId: number, data: any, network: Network) {
 }
 
 async function getChainIDUsingRPCUrl(rpcURL: string) {
-  const provider: providers.WebSocketProvider | providers.JsonRpcProvider =
-    isValidWsUrl(rpcURL)
-      ? new providers.WebSocketProvider(rpcURL)
-      : new providers.JsonRpcProvider(rpcURL)
-  const { chainId } = await provider.getNetwork()
-  if ((provider as providers.WebSocketProvider).destroy) {
-    await (provider as providers.WebSocketProvider).destroy()
-  }
-  return chainId
+  const payload = { jsonrpc: '2.0', method: 'eth_chainId', params: [], id: 1 } // id - dummy value
+  return axios.post(rpcURL, payload)
 }
 
 async function getGaslessSupportChains(network: Network) {

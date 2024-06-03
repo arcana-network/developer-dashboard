@@ -25,15 +25,15 @@ onMounted(() => {
   <VOverlay>
     <div class="h-full flex justify-center items-center">
       <div
-        class="w-[330px] h-44 bg-[#1F1F1F] p-4 rounded-[10px] text-white space-y-10"
+        class="w-[330px] h-44 bg-[#1F1F1F] p-4 rounded-[10px] text-[#FFFFFF] space-y-10"
       >
         <div class="space-y-2.5">
           <h3>Delete a Chain</h3>
-          <p v-if="isGasTankConfigured" class="text-liquiddark leading-4">
+          <p v-if="isGasTankConfigured" class="text-[#8D8D8D] leading-4">
             Warning: A Gastank is configured for this chain. Deleting this chain
             may disable the Gastank.
           </p>
-          <p v-else class="text-liquiddark leading-4">
+          <p v-else class="text-[#8D8D8D] leading-4">
             Please confirm the deletion of the chain by clicking ‘Delete’ below.
           </p>
         </div>
@@ -45,7 +45,7 @@ onMounted(() => {
             Cancel
           </button>
           <button
-            class="bg-white text-black w-[100px] p-2 rounded-md"
+            class="bg-[#FFFFFF] text-black w-[100px] p-2 rounded-md"
             @click.stop="emits('delete')"
           >
             Delete
