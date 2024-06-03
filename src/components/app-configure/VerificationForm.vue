@@ -226,17 +226,15 @@ label {
   margin-bottom: 0.5rem;
   margin-left: 0.25rem;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 1.5em;
-  color: var(--text-grey);
+  color: var(--text-black);
 }
 
 div.text-field {
   display: flex;
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  background: var(--primary-liquid);
   border-radius: 10px;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
 }
 
 .text-field.focused {
@@ -249,7 +247,7 @@ textarea {
   margin: 0.875rem 1rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--text-white);
+  color: var(--text-black);
   resize: none;
   background: transparent;
   border: none;
@@ -262,7 +260,7 @@ textarea {
 textarea::placeholder {
   font-size: 1rem;
   line-height: 1.5;
-  color: #393939;
+  color: var(--text-grey);
 }
 
 .verification-title {

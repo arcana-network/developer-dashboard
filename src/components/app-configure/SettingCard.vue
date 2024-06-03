@@ -12,9 +12,9 @@ const slot = useSlots()
   <VCard variant="elevated" class="settings-card">
     <VStack direction="column" gap="2rem" class="flex-1">
       <VStack align="center" justify="space-between">
-        <h3 class="uppercase">
+        <h2>
           <slot name="title" />
-        </h3>
+        </h2>
         <slot name="controls" />
       </VStack>
       <VSeperator class="settings-card-separator" />

@@ -5,7 +5,7 @@ import CloseIcon from '@/assets/iconography/close.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import SettingCard from '@/components/app-configure/SettingCard.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import VTextField from '@/components/lib/VTextField/VTextField.vue'
+import VTextFieldSecondary from '@/components/lib/VTextFieldSecondary/VTextFieldSecondary.vue'
 import { useToast } from '@/components/lib/VToast'
 import { updateApp } from '@/services/gateway.service'
 import { useAppsStore, type Theme } from '@/stores/apps.store'
@@ -113,7 +113,7 @@ async function handleSave() {
             <div class="space-x-5 flex">
               <div class="flex flex-col space-y-3">
                 <span>Domain URL</span>
-                <VTextField
+                <VTextFieldSecondary
                   v-model.trim="walletWebsiteDomain"
                   class="web-wallet-input"
                   :icon="walletWebsiteDomain ? CloseIcon : ''"
@@ -129,7 +129,7 @@ async function handleSave() {
               </div>
               <div class="flex flex-col space-y-3">
                 <span>Wallet UI Mode</span>
-                <VTextField
+                <VTextFieldSecondary
                   :model-value="chosenWalletUIMode"
                   :disabled="true"
                   input-style="color:#393939"

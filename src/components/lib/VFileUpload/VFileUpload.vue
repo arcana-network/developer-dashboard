@@ -54,7 +54,7 @@ onBeforeUnmount(() => {
   <VCard
     v-if="props.value"
     variant="depressed"
-    class="rounded-[10px] p-4 space-x-1"
+    class="rounded-[10px] p-4 space-x-1 bg-black"
   >
     <p
       class="text-lg font-normal text-ellipsis overflow-hidden h-auto flex-1"
@@ -71,7 +71,7 @@ onBeforeUnmount(() => {
   <VCard
     v-else
     variant="depressed"
-    class="w-full cursor-pointer p-4 justify-between"
+    class="w-full cursor-pointer p-4 justify-between bg-black"
     @click.stop="handleUploadClick"
   >
     <span class="text-lg font-normal text-ellipsis h-7">

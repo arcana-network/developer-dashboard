@@ -263,7 +263,7 @@ function convertToBytes(value: number) {
               padding: 3px;
               font-size: 1.5em;
               font-weight: 600;
-              color: #13a3fd;
+              color: var(--primary);
               cursor: pointer;
             "
             class="body-1"
@@ -434,7 +434,7 @@ tbody tr {
 }
 
 tbody tr:hover {
-  color: #13a3fd;
+  color: var(--primary);
   background: #171717;
   box-shadow: 0 4px 4px rgb(0 0 0 / 25%), 0 4px 15px rgb(1 1 1 / 30%),
     inset 8px 6px 12px -2px #212121;

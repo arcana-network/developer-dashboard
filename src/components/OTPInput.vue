@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { computed, defineAsyncComponent, ref } from 'vue'
 
+import VButton from '@/components/lib/VButton/VButton.vue'
 import { useLoaderStore } from '@/stores/loader.store'
 import useArcanaAuth from '@/use/arcanaAuth'
 
@@ -108,20 +109,20 @@ async function resendOTP() {
 <template>
   <AppOverlay>
     <div
-      class="max-w-[360px] w-screen bg-overlay-background rounded-[10px] border-1 border-jet flex flex-col relative p-7 gap-4"
+      class="max-w-sd w-screen bg-white rounded-lg border border-jet flex flex-col relative p-7 gap-4"
       role="dialog"
     >
       <button class="absolute right-4 top-4" @click="emit('dismiss')">
-        <img src="@/assets/close.svg" alt="Close" />
+        <img src="@/assets/iconography/close.svg" alt="Close" />
       </button>
       <div class="flex flex-col items-center justify-center gap-3 text-center">
-        <h2 class="text-otp font-bold">Verification</h2>
+        <h2 class="text-rem2 font-bold">Verification</h2>
         <span class="text-sm text-secondary-400"
           >Please enter the OTP that was sent to your email address</span
         >
       </div>
       <form
-        class="relative isolate flex w-full flex-col gap-5"
+        class="relative isolate flex w-full flex-col gap-4"
         @submit.prevent="submitOTP"
       >
         <div
@@ -139,7 +140,7 @@ async function resendOTP() {
             pattern="\d*"
             maxlength="1"
             autocomplete="off"
-            class="outline-none border-none rounded-md p-2 bg-overlay-input placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center"
+            class="outline-none border-none rounded-md p-2 bg-liquid placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center overflow-x-scroll"
             @input="void 0"
             @keydown="handleKeyDown($event, i - 1)"
             @paste.prevent="handlePaste"
@@ -158,17 +159,16 @@ async function resendOTP() {
               : 'The entered OTP is either invalid or already used.'
           }}</span
         >
-        <button
+        <VButton
           :disabled="!isValidOTP"
           :title="!isValidOTP ? 'Please enter a valid OTP' : ''"
-          class="bg-white text-black uppercase border-2 p-2.5 rounded-md font-bold disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Verify OTP
-        </button>
+          variant="secondary"
+          label="VERIFY OTP"
+        />
         <div class="flex items-center justify-center">
           <button
             v-if="resendCounter === 0"
-            class="text-sm font-bold"
+            class="text-sm font-normal"
             type="button"
             @click.stop="resendOTP"
           >

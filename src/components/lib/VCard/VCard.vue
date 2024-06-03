@@ -52,28 +52,23 @@ const classes = computed(() => {
 <style scoped>
 .card {
   display: flex;
-  color: var(--text-white);
-  background: #262626;
+  color: var(--text-black);
+  background: var(--primary-light);
   border-radius: 10px;
 }
 
 .card.elevated {
-  box-shadow: 4px 5px 4px rgb(0 0 0 / 25%);
+  /* box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%); */
 }
 
 .card.depressed {
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
+  background: #efefef;
   border-radius: 10px;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%);
+
+  /* box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%); */
 }
 
 .card.popup {
-  background: radial-gradient(
-    134.5% 939.99% at -23.59% -12.9%,
-    #151515 0%,
-    rgb(27 27 27 / 100%) 31.41%,
-    rgb(32 32 32 / 100%) 100%
-  );
-  box-shadow: 4px 5px 4px rgb(0 0 0 / 25%);
+  background-color: transparent;
 }
 </style>

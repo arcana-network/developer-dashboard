@@ -70,7 +70,7 @@ function handleMainnetKeySpace() {
   margin-bottom: 64px;
   font-size: 20px;
   line-height: 1.5;
-  color: var(--text-white);
+  color: var(--text-black);
   text-align: center;
 }
 </style>

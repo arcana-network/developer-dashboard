@@ -27,14 +27,14 @@ async function copyRedirectUri() {
 <template>
   <section name="redirect-uri">
     <VCard variant="elevated" class="redirect-uri-info__container">
-      <VStack gap="2rem" direction="column" class="redirect-uri-info__stack">
+      <VStack gap="1rem" direction="column" class="redirect-uri-info__stack">
         <VStack
           justify="space-between"
           align="center"
           class="flex-wrap justify-between"
           gap="1rem"
         >
-          <h3 class="uppercase">Redirect URI</h3>
+          <h3>Redirect URI</h3>
           <VCard variant="depressed" class="redirect-uri-card">
             <VStack
               align="center"
@@ -55,7 +55,7 @@ async function copyRedirectUri() {
           </VCard>
         </VStack>
         <VSeperator class="full-bleed" />
-        <p class="text-lg font-normal redirect-uri-info__description">
+        <p class="text-sm font-normal redirect-uri-info__description">
           Arcana automatically generates this URL for every registered app. Use
           this value to setup the callbacks in the developer console for each
           social provider that you want to support in your app.
