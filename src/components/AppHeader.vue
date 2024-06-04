@@ -281,11 +281,6 @@ header {
     hue-rotate(304deg) brightness(100%) contrast(103%);
 }
 
-.notification-icon:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
 .profile-icon:hover {
   filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
     hue-rotate(304deg) brightness(100%) contrast(103%);

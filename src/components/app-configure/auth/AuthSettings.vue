@@ -27,7 +27,7 @@ const keyspace = app.keyspace
           class="absolute bg-[#1F1F1F] opacity-90 w-full h-full flex justify-center items-center z-[999]"
         >
           <div
-            class="bg-gray-950 w-1/2 h-72 flex justify-center items-center text-2xl text-center rounded-lg p-8"
+            class="bg-white w-1/2 h-72 flex justify-center items-center text-2xl text-center rounded-lg p-8"
           >
             <p>Login providers are disabled as you have chosen Global keys</p>
           </div>
