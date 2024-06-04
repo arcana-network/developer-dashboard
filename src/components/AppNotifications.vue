@@ -36,7 +36,7 @@ function onClickofItem(notification) {
 </script>
 
 <template>
-  <VCard class="absolute z-[999] flex flex-col p-4 | notification__container">
+  <VCard class="absolute z-[999] flex flex-col p-2 | notification__container">
     <div
       class="flex items-center justify-between w-full h-[50px] border-b-[1px] border-b-[#8d8d8d33]"
     >
@@ -57,7 +57,7 @@ function onClickofItem(notification) {
         </button>
       </div>
     </div>
-    <div class="flex-1 py-5 px-0 overflow-auto">
+    <div class="flex-1 py-2 px-0 overflow-auto">
       <AppNotificationsItem
         :notifications="notifications"
         @onClickofItem="onClickofItem"

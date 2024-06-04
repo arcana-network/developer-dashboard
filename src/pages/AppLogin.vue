@@ -162,7 +162,9 @@ onMounted(async () => {
       class="relative z-10 isolate flex max-md:flex-col max-md:gap-8 h-full flex-1"
     >
       <div class="w-full max-md:mt-10 px-4 flex items-center justify-center">
-        <div class="w-3/4 gap-4 flex flex-col justify-center items-center">
+        <div
+          class="w-full md:w-3/5 gap-4 py-10 flex flex-col justify-center items-center rounded-xl bg-white"
+        >
           <h1 class="text-rem2 max-w-xs text-black tracking-tight text-center">
             Welcome to the Developer Dashboard
           </h1>
@@ -234,28 +236,16 @@ onMounted(async () => {
           </form>
         </div>
       </div>
-      <div class="w-full p-6">
-        <div
-          class="max-w-hd flex flex-col gap-3 px-8 pt-8 bg-white rounded-3xl w-full h-full"
-        >
-          <h2 class="text-rem2 text-black tracking-tight font-normal text-left">
-            Boost your dApp's UX
-          </h2>
-          <p class="text-sm text-liquiddark font-light text-left">
-            Configure Auth, Wallet, Gasless and other technologies on the
-            dashboard and integrate it in your app in no time.
-          </p>
-          <img src="@/assets/landing.png" class="mt-4 w-full" />
-        </div>
+      <div class="w-full">
+        <img
+          src="@/assets/login-bg.png"
+          class="max-md:hidden absolute -z-10 bottom-0 right-0 mx-auto mt-24"
+        />
+        <img
+          src="@/assets/mobile-login-bg.png"
+          class="md:hidden md:absolute bottom-0 -z-10 mx-auto mt-24"
+        />
       </div>
-      <img
-        src="@/assets/login-bg.png"
-        class="max-md:hidden absolute -z-10 bottom-0 right-0 mx-auto mt-24"
-      />
-      <img
-        src="@/assets/mobile-login-bg.png"
-        class="md:hidden absolute bottom-0 -z-10 mx-auto mt-24"
-      />
     </main>
     <OTPInput
       v-if="showOTPInput"
