@@ -303,9 +303,7 @@ watch(
           v-model="currentNetwork"
           :options="NetworkOptions"
           display-field="label"
-          :disabled="
-            selectedApp.chain_type === 'multiversx' && isProductionDashboard
-          "
+          :disabled="selectedApp.chain_type === 'near' && isProductionDashboard"
           class="app-details__network-dropdown"
           @change="(_, option) => onNetworkSwitch(option)"
         />
