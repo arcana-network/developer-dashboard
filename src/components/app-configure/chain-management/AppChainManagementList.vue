@@ -230,7 +230,7 @@ function isGaslessSupport(chainId: number) {
                 <ul
                   ref="showRowOptions_menu"
                   open
-                  class="flex flex-col bg-white text-black rounded-md p-2 space-y-1 relative"
+                  class="flex flex-col bg-liquidlight text-black rounded-md p-2 space-y-1 relative"
                 >
                   <li
                     v-for="option in getRowOptions(
@@ -239,7 +239,7 @@ function isGaslessSupport(chainId: number) {
                       rowOptions
                     )"
                     :key="option.value"
-                    class="p-1 rounded-[5px] hover:bg-liquidlight text-left cursor-pointer"
+                    class="p-1 rounded-[5px] hover:text-pink text-left cursor-pointer"
                     @click.stop="onClickOfOption(option.value, chain.id, chain)"
                   >
                     <button>
