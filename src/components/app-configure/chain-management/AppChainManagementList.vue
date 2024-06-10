@@ -146,7 +146,7 @@ function isGaslessSupport(chainId: number) {
   </div>
   <div v-else class="bg-white rounded-md border-[1px] border-liquidgrey">
     <table
-      class="table-fixed text-black block overflow-x-auto border-collapse w-full"
+      class="table-fixed text-black md:max-lg:block overflow-x-auto border-collapse w-full"
     >
       <thead class="border-b-[1px] border-b-liquidgrey">
         <tr class="text-liquiddark">
