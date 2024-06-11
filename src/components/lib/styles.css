@@ -38,18 +38,20 @@
 }
 
 *::-webkit-scrollbar-track {
-  background: transparent;
+  background: var(--primary-liquid-border);
+
+  /* background: #fff; */
   border-radius: 10px;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: #fff;
+  background: #8d8d8d;
   border-radius: 10px;
   outline: none;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background: #8d8d8d;
+  background: var(--secondary);
 }
 
 *::-webkit-scrollbar-thumb:active {
