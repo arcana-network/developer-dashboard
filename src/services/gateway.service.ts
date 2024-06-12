@@ -407,7 +407,7 @@ function getThemeLogo(
   orientation: 'horizontal' | 'vertical',
   network: Network
 ) {
-  const url = `${api.gateway[network]}${getEnvApi('v2')}/app/${appId}/logo/`
+  const url = `${api.gateway[network]}${getEnvApi('v2')}/app/${appId}/logo`
   return {
     mode,
     orientation,

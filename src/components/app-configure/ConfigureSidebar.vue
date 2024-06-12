@@ -102,7 +102,7 @@ const ConfigureTabs = computed(() => {
     })
   }
 
-  if (app.chain_type?.toLowerCase() !== 'solana') {
+  if (app.chain_type?.toLowerCase() === 'evm' || !app.chain_type) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       label: 'Gasless',
       type: 'gasless',
