@@ -12,6 +12,7 @@ import CloseIcon from '@/assets/iconography/close.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import GasStationIcon from '@/assets/iconography/gas-station.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
+import sessionIcon from '@/assets/iconography/session.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
 import UserGroupIcon from '@/assets/iconography/user-group.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
@@ -82,6 +83,11 @@ const ConfigureTabs = computed(() => {
           type: 'arcanaWallet',
           label: 'Arcana Wallet',
           icon: walletIcon,
+        },
+        {
+          type: 'sessionManagement',
+          label: 'Login Session Management',
+          icon: sessionIcon,
         },
       ],
     },

@@ -73,6 +73,8 @@ type App = {
   status: 0 | 1 | 2 | 3
   keyspace: 'app-specific' | 'global'
   wallet_mode: WalletUIMode
+  session_persisted: boolean
+  session_max_age: number
 }
 
 type AppState = {
