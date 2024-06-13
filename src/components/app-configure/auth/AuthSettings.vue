@@ -34,7 +34,7 @@ const keyspace = app.keyspace
         </div>
         <SocialAuthProvider />
         <IAMProviders />
-        <CustomVerifier v-if="app.network === 'testnet'" />
+        <CustomVerifier />
       </div>
     </VStack>
   </main>
