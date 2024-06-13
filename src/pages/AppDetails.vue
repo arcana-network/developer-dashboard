@@ -210,13 +210,13 @@ async function handleCreateMainnetApp({
     }
     const updatedMainnetApp = (
       await updateApp(mainnetApp?.ID, updatedMainnetAppConfig, 'mainnet')
-    ).data.app
+    )?.data.app
     mainnetAppConfig['global_id'] = updatedMainnetApp.global_id
     await appsStore.fetchAndStoreAppConfig(mainnetApp?.ID, 'mainnet')
 
     const updatedTestnetApp = (
       await updateApp(testnetApp.id, { global_id: mainnetApp?.ID }, 'testnet')
-    ).data.app
+    )?.data.app
     testnetApp.global_id = updatedTestnetApp.global_id
     await appsStore.fetchAndStoreAppConfig(updatedTestnetApp?.ID, 'testnet')
 
@@ -303,7 +303,9 @@ watch(
           v-model="currentNetwork"
           :options="NetworkOptions"
           display-field="label"
-          :disabled="selectedApp.chain_type === 'near' && isProductionDashboard"
+          :disabled="
+            selectedApp.chain_type === 'random' && isProductionDashboard
+          "
           class="app-details__network-dropdown"
           @change="(_, option) => onNetworkSwitch(option)"
         />
