@@ -48,7 +48,11 @@ async function handleSave() {
 async function handleMinuteSave() {
   try {
     loaderStore.showLoader(content.SESSION.SAVING)
-    await updateApp(app.id, { session_max_age: sessionAge.value }, app.network)
+    await updateApp(
+      app.id,
+      { session_max_age: Number(sessionAge.value) },
+      app.network
+    )
     app.session_max_age = sessionAge.value
     preSessionAge.value = sessionAge.value
     toast.success(content.SESSION.SUCCESS)
@@ -160,7 +164,8 @@ function clearSessionAge() {
     </template>
     <span>Minutes</span>
     <VTextFieldSecondary
-      v-model.trim="sessionAge"
+      v-model="sessionAge"
+      type="number"
       class="web-wallet-input"
       :icon="sessionAge ? CloseIcon : ''"
       clickable-icon
