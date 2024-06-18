@@ -45,7 +45,7 @@ header {
   justify-content: space-between;
   padding: 1.5rem 2rem;
   visibility: visible;
-  background: var(--primary-light);
+  background: white;
   transition: transform 0.6s;
 }
 

@@ -217,7 +217,7 @@ function ellipsisAppName(appName: string) {
                   <VStack gap="0.5rem" align="center">
                     <div
                       class="legend-dot"
-                      style="background-color: var(--primary)"
+                      style="background-color: var(--color-blue)"
                     ></div>
                     <span class="info-detail-name">Paid users</span>
                   </VStack>

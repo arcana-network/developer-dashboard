@@ -240,7 +240,7 @@ function handleCancel() {
 .keyspace-container {
   max-width: 296px;
   padding: 2rem;
-  background-color: var(--primary-black);
+  background-color: black;
 }
 
 .card-title {
@@ -257,7 +257,7 @@ function handleCancel() {
 
 .gradient-border-card {
   padding: 2px;
-  background: var(--secondary);
+  background: var(--primary);
   border-radius: 10px;
   opacity: 100;
 }

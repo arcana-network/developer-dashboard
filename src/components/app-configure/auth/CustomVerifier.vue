@@ -278,7 +278,7 @@ watch(
             <span class="text-sm">{{ fetchedData.name }}</span>
             <button @click.stop="copyCustomProviderId(fetchedData.name)">
               <img
-                src="@/assets/iconography/copy-white.svg"
+                src="@/assets/iconography/copy.svg"
                 class="cursor-pointer w-4"
               />
             </button>

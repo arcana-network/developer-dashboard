@@ -53,7 +53,7 @@ const classes = computed(() => {
 .card {
   display: flex;
   color: var(--text-black);
-  background: var(--primary-light);
+  background: white;
   border-radius: 10px;
 }
 

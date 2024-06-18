@@ -374,7 +374,7 @@ watch(
 
 .help-button {
   padding: 0;
-  color: var(--primary);
+  color: var(--color-blue);
   cursor: pointer;
   background: transparent;
   border: none;

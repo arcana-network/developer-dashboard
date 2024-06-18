@@ -160,7 +160,7 @@ div.text-field {
 }
 
 .text-field.focused {
-  outline: 1px solid var(--primary);
+  outline: 1px solid var(--color-blue);
 }
 
 .message {
@@ -190,7 +190,7 @@ input {
   margin: 0.8rem;
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--primary-black);
+  color: black;
   background: transparent;
   border: none;
   outline: none;
@@ -263,7 +263,7 @@ input[type='number'] {
     margin: 0.5rem 1rem;
     font-size: 11px;
     line-height: 1;
-    color: var(--primary-black);
+    color: black;
     background: transparent;
     border: none;
     outline: none;
