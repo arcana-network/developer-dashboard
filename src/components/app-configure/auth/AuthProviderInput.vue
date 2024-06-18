@@ -46,7 +46,7 @@ function handleInput2(event: Event) {
         >
       </div>
       <input
-        class="flex-1 text-black bg-liquidlight p-2 rounded-md outline-none"
+        class="flex-1 text-black bg-primary p-2 rounded-md outline-none"
         :placeholder="authProvider.inputLabels.label1"
         :value="
           socialAuthStore.authCredentialsInput[authType][authProvider.verifier]
@@ -69,7 +69,7 @@ function handleInput2(event: Event) {
         >
       </div>
       <input
-        class="flex-1 text-black bg-liquidlight p-2 rounded-md outline-none"
+        class="flex-1 text-black bg-primary p-2 rounded-md outline-none"
         :placeholder="authProvider.inputLabels.label2"
         :value="
           socialAuthStore.authCredentialsInput[authType][authProvider.verifier]

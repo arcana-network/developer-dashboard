@@ -270,13 +270,11 @@ watch(
 <template>
   <div class="bg-white rounded-xl space-y-5">
     <div>
-      <div
-        class="flex items-center justify-between border-b border-liquidgrey p-7"
-      >
+      <div class="flex items-center justify-between border-b border-border p-7">
         <h3>Custom OAuth</h3>
         <div v-if="fetchedData.name" class="flex items-center space-x-2">
           <span class="text-sm uppercase font-bold">Custom Provider ID</span>
-          <div class="bg-[#313131] py-1 px-2 rounded flex space-x-4">
+          <div class="bg-primary py-1 px-2 rounded flex space-x-4">
             <span class="text-sm">{{ fetchedData.name }}</span>
             <button @click.stop="copyCustomProviderId(fetchedData.name)">
               <img
@@ -287,7 +285,7 @@ watch(
           </div>
         </div>
       </div>
-      <p class="text-[#8D8D8D] text-sm font-normal p-3.5">
+      <p class="text-secondary text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
         care of issuing public and private keys to each user through our
         De-centralized Key Generation (DKG) mechanism and keep them secure.
@@ -302,7 +300,7 @@ watch(
     <div class="p-3.5 flex">
       <div class="flex-1 space-y-2">
         <fieldset class="space-y-2">
-          <legend class="text-[#8D8D8D] text-xs font-normal">
+          <legend class="text-secondary text-xs font-normal">
             User Identifier String
           </legend>
           <div class="flex items-baseline space-x-5">
@@ -345,13 +343,13 @@ watch(
               v-model="idParam"
               type="text"
               name="idParam"
-              class="text-white bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black bg-primary p-2 rounded-md outline-none w-full"
             />
           </div>
         </fieldset>
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">
+            <legend class="text-secondary text-xs font-normal">
               <span>JWKS URL</span>
               <span class="text-red-800 text-lg">*</span>
             </legend>
@@ -368,13 +366,13 @@ watch(
               v-model="jwkUrl"
               type="text"
               name="validation"
-              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black bg-primary p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">
+            <legend class="text-secondary text-xs font-normal">
               <span>Issuer</span>
               <span class="text-red-800 text-lg">*</span>
             </legend>
@@ -385,13 +383,13 @@ watch(
               v-model="issuer"
               type="text"
               name="Issuer"
-              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black bg-primary p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
         <div>
           <div class="flex w-full justify-between">
-            <legend class="text-[#8D8D8D] text-xs font-normal">
+            <legend class="text-secondary text-xs font-normal">
               <span>Audience</span>
               <span class="text-red-800 text-lg">*</span>
             </legend>
@@ -402,7 +400,7 @@ watch(
               v-model="audience"
               type="text"
               name="audience"
-              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black bg-primary p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -410,7 +408,7 @@ watch(
       <div class="flex flex-col flex-1 space-y-5 ml-10 align-bottom">
         <div class="flex flex-col space-y-2">
           <div class="flex w-full justify-between">
-            <legend class="text-liquiddark text-xs font-normal">
+            <legend class="text-secondary text-xs font-normal">
               JWK Validation (Optional)
             </legend>
             <a
@@ -432,7 +430,7 @@ watch(
                 name="validation"
                 :value="item.field"
                 :onInput="($event) => onFieldChange($event, idx)"
-                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+                class="text-black bg-primary p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 flex-1">
@@ -442,7 +440,7 @@ watch(
                 name="validation"
                 :value="item.value"
                 :onInput="($event) => onValueChange($event, idx)"
-                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+                class="text-black bg-primary p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 w-7 h-7">

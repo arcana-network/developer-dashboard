@@ -27,7 +27,7 @@ const showEOAswitchWarning = ref(props.info.enabled)
           class="w-10 h-10"
         />
         <p>Confirm Switch</p>
-        <div class="text-liquiddark text-sm text-center space-y-2">
+        <div class="text-secondary text-sm text-center space-y-2">
           <p v-if="showEOAswitchWarning">
             Disabling Smart Accounts will lead to your users using Externally
             Owned Accounts as the default. Your users will continue to have

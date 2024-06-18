@@ -32,7 +32,7 @@ const steps = [
   <div class="space-y-10">
     <div class="space-y-3.5">
       <h1>Gasless Transactions</h1>
-      <p class="text-liquiddark">
+      <p class="text-secondary">
         Use this interface to setup gas tanks that will sponsor the gas fees for
         transactions performed by users of your dApp. You may also sponsor all
         transactions or only specific functions within your app's contracts by
@@ -57,7 +57,7 @@ const steps = [
               : '',
           ]"
         >
-          <span class="text-liquiddark text-sm ml-[10px]">
+          <span class="text-secondary text-sm ml-[10px]">
             {{ step.indexLabel }}
           </span>
         </div>

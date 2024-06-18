@@ -144,14 +144,14 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
         <div v-else class="space-y-5">
           <div class="space-y-[10px]">
             <p class="text-lg">{{ TitleAction }} a Custom Chain</p>
-            <p class="text-sm text-liquiddark leading-4">
+            <p class="text-sm text-secondary leading-4">
               {{ `${TitleAction}ed` }} custom chains will be automatically added
               to your user’s wallets.
             </p>
           </div>
           <form class="space-y-5">
             <div class="flex flex-col space-y-2">
-              <label for="network-name" class="text-xs text-liquiddark"
+              <label for="network-name" class="text-xs text-secondary"
                 >Network Name*</label
               >
               <p v-if="formData.built_in" class="text-sm">
@@ -161,18 +161,18 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
                 v-else
                 v-model.trim="formData.name"
                 type="text"
-                class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none"
+                class="text-sm bg-primary p-[10px] w-full border-none outline-none"
                 name="network-name"
               />
             </div>
             <div class="flex flex-col space-y-2">
               <div class="flex items-center space-x-5">
-                <label for="rpc-url" class="text-xs text-liquiddark"
+                <label for="rpc-url" class="text-xs text-secondary"
                   >RPC URL*</label
                 >
                 <p
                   v-if="showLoaderRPCValidation"
-                  class="text-xs text-liquiddark"
+                  class="text-xs text-secondary"
                 >
                   Validating RPC URL...
                 </p>
@@ -180,7 +180,7 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
               <input
                 v-model.trim="formData.rpcURL"
                 type="text"
-                class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none"
+                class="text-sm bg-primary p-[10px] w-full border-none outline-none"
                 name="rpc-url"
               />
               <p v-if="showRpcError" class="text-xs text-red-700">
@@ -189,14 +189,12 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
             </div>
             <div class="flex space-x-2">
               <div class="flex flex-col space-y-2 w-1/2">
-                <label for="chain-id" class="text-xs text-liquiddark"
+                <label for="chain-id" class="text-xs text-secondary"
                   >Chain ID*</label
                 >
                 <p
                   class="text-sm w-full h-full border-none outline-none"
-                  :class="[
-                    formData.built_in ? 'p-0' : 'p-[10px] bg-liquidlight',
-                  ]"
+                  :class="[formData.built_in ? 'p-0' : 'p-[10px] bg-primary']"
                 >
                   {{ formData.chainId }}
                 </p>
@@ -211,7 +209,7 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
                 </p>
               </div>
               <div class="flex flex-col space-y-2 w-1/2">
-                <label for="currency" class="text-xs text-liquiddark"
+                <label for="currency" class="text-xs text-secondary"
                   >Currency*</label
                 >
                 <p v-if="formData.built_in" class="text-sm">
@@ -221,13 +219,13 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
                   v-else
                   v-model.trim="formData.currency"
                   type="text"
-                  class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none"
+                  class="text-sm bg-primary p-[10px] w-full border-none outline-none"
                   name="currency"
                 />
               </div>
             </div>
             <div class="flex flex-col space-y-2">
-              <label for="explorer" class="text-xs text-liquiddark"
+              <label for="explorer" class="text-xs text-secondary"
                 >Explorer</label
               >
               <p v-if="formData.built_in" class="text-sm">
@@ -237,12 +235,12 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
                 v-else
                 v-model.trim="formData.explorerURL"
                 type="text"
-                class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none"
+                class="text-sm bg-primary p-[10px] w-full border-none outline-none"
                 name="explorer"
               />
             </div>
             <div class="space-y-2">
-              <legend class="text-xs text-liquiddark">Chain Type*</legend>
+              <legend class="text-xs text-secondary">Chain Type*</legend>
               <p v-if="formData.built_in" class="text-sm">
                 {{ formData.chainType }}
               </p>
@@ -269,13 +267,13 @@ async function fetchChainIdUsingRPCUrl(rpcURL: string) {
             </div>
             <div class="space-x-4 flex justify-end">
               <button
-                class="bg-liquid border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md hover:text-pink"
+                class="bg-firefly border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-md hover:text-rose"
                 @click="emits('close')"
               >
                 Cancel
               </button>
               <button
-                class="bg-liquid text-black w-[100px] hover:text-pink p-2 rounded-md transition-opacity duration-500 opacity-100 disabled:opacity-30 disabled:text-black"
+                class="bg-firefly text-black w-[100px] hover:text-rose p-2 rounded-md transition-opacity duration-500 opacity-100 disabled:opacity-30 disabled:text-black"
                 :disabled="
                   !enableSave ||
                   chainIDs.find((chain) => chain === formData.chainId)

@@ -20,7 +20,7 @@ function getNotificationsTime(timeStamp) {
     <li
       v-for="notification in notifications"
       :key="notification.data"
-      class="cursor-pointer flex flex-wrap justify-between w-full pb-3 mb-5 list-none relative last:pb-0 last:mb-0 last:border-none border-b-[#8d8d8d33] border-b-[1px]"
+      class="cursor-pointer flex flex-wrap justify-between w-full pb-3 mb-5 list-none relative last:pb-0 last:mb-0 last:border-none border-b-secondary border-b-[1px]"
       @click="emits('onClickofItem', notification)"
     >
       <div class="flex-1">
@@ -30,7 +30,7 @@ function getNotificationsTime(timeStamp) {
         >
           {{ notification.data }}
         </p>
-        <p class="text-xs font-normal text-liquiddark">
+        <p class="text-xs font-normal text-secondary">
           {{ getNotificationsTime(notification.time) }}
         </p>
       </div>
