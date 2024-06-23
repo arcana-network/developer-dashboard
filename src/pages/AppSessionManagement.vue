@@ -87,7 +87,7 @@ function clearSessionAge() {
       </p>
     </div>
   </div>
-  <SettingCard class="app-branding-card">
+  <SettingCard>
     <template #title><h2>Session Cookie Mode*</h2></template>
     <template #description>
       <div>
@@ -103,7 +103,10 @@ function clearSessionAge() {
       </div>
     </template>
     <div class="flex flex-row gap-10">
-      <VCard variant="depressed" class="keyspace-card keyspace-container">
+      <VCard
+        variant="depressed"
+        class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+      >
         <VStack direction="row" gap="1.25rem" align="start">
           <input
             id="true"
@@ -113,15 +116,18 @@ function clearSessionAge() {
             @change="selectedSession = true"
           />
           <VStack direction="column" gap="10px">
-            <span class="card-title">Persistent Session</span>
-            <span class="card-description"
+            <span class="text-base font-medium">Persistent Session</span>
+            <span class="w-full text-sm text-liquiddark"
               >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam ut
               fermentum, bibendum lectus phasellus ligula morbi.</span
             >
           </VStack>
         </VStack>
       </VCard>
-      <VCard variant="depressed" class="keyspace-card keyspace-container">
+      <VCard
+        variant="depressed"
+        class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+      >
         <VStack direction="row" gap="1.25rem" align="start">
           <input
             id="false"
@@ -131,8 +137,8 @@ function clearSessionAge() {
             @change="selectedSession = false"
           />
           <VStack direction="column" gap="10px">
-            <span class="card-title">Non-Persistent Session</span>
-            <span class="card-description"
+            <span class="text-base font-medium">Non-Persistent Session</span>
+            <span class="w-full text-sm text-liquiddark"
               >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam ut
               fermentum, bibendum lectus phasellus ligula morbi.</span
             >
@@ -147,7 +153,7 @@ function clearSessionAge() {
       @save="handleSave"
     />
   </SettingCard>
-  <SettingCard class="app-branding-card">
+  <SettingCard>
     <template #title><h2>Require Log In After*</h2></template>
     <template #description>
       <div>
@@ -166,7 +172,7 @@ function clearSessionAge() {
     <VTextFieldSecondary
       v-model="sessionAge"
       type="number"
-      class="web-wallet-input"
+      class="max-w-sm"
       :icon="sessionAge ? CloseIcon : ''"
       clickable-icon
       placeholder="Enter Minutes"
@@ -183,50 +189,6 @@ function clearSessionAge() {
 </template>
 
 <style scoped>
-.keyspace-card {
-  width: 100%;
-  max-width: 360px;
-  height: 30vh;
-  cursor: pointer;
-}
-
-.circle-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.keyspace-container {
-  max-width: 350px;
-  padding: 2rem;
-  background-color: var(--color-white);
-  border-radius: 5px;
-}
-
-.card-title {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.card-description {
-  width: 100%;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: var(--text-grey);
-}
-
-.gradient-border-card {
-  padding: 2px;
-  background: var(--secondary);
-  border-radius: 10px;
-  opacity: 100;
-}
-
-.disabled-card {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
 input[type='radio'] {
   display: grid;
   place-content: center;
@@ -252,13 +214,5 @@ input[type='radio']::before {
 
 input[type='radio']:checked::before {
   transform: scale(1);
-}
-
-.bolder {
-  font-weight: bolder;
-}
-
-.web-wallet-input {
-  max-width: 24rem;
 }
 </style>
