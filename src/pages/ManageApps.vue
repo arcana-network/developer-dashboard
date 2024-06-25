@@ -142,7 +142,7 @@ function ellipsisAppName(appName: string) {
       :status="accountStatus"
     />
     <main>
-      <VStack direction="column" gap="2rem" class="container">
+      <VStack direction="column" gap="2rem" class="w-auto max-w-full mx-8">
         <VStack gap="2rem">
           <h1 class="tracking-h1">Manage Apps</h1>
         </VStack>
@@ -293,7 +293,7 @@ function ellipsisAppName(appName: string) {
                 />
                 <span
                   v-else
-                  class="font-nohemi text-base font-thin app-name text-center text-ellipsis overflow-hidden"
+                  class="font-nohemi text-baseColor-100 font-thin app-name text-center text-ellipsis overflow-hidden"
                   :title="app.name"
                   style="max-width: calc(100% - 1rem)"
                 >
@@ -369,12 +369,6 @@ function ellipsisAppName(appName: string) {
 <style scoped>
 main {
   padding-block: 1rem 4rem;
-}
-
-.container {
-  width: auto;
-  max-width: 100%;
-  margin: 0 2rem;
 }
 
 .app-container {

@@ -16,7 +16,7 @@ const config = {
           DEFAULT: '#8d8d8d',
           100: '#1D2A31',
         },
-        base: {
+        baseColor: {
           DEFAULT: '#EFEFEF',
           50: '#F7F7F7',
           100: '#13171A',
@@ -99,6 +99,11 @@ const config = {
       },
       maxWidth: {
         sd: '360px',
+        hd: '720px',
+      },
+      maxHeight: {
+        sd: '360px',
+        ms: '430px',
         hd: '720px',
       },
       letterSpacing: {

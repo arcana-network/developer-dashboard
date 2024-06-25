@@ -289,7 +289,7 @@ watch(
 <template>
   <div class="flex flex-col">
     <AppHeader />
-    <VStack direction="row" class="app-details__container">
+    <VStack direction="row" class="flex w-full h-screen m-0 overflow-hidden">
       <div class="app-details__sidebar mobile-remove">
         <ConfigureSidebar
           :current-tab="currentTab"
@@ -298,7 +298,11 @@ watch(
           @switch-app="switchApp"
         />
       </div>
-      <VStack direction="column" class="app-details__content" gap="2rem">
+      <VStack
+        direction="column"
+        class="box-border flex flex-1 h-full p-8 pb-0 overflow-y-auto overflow-x-hidden"
+        gap="2rem"
+      >
         <VDropdownSecondary
           v-model="currentNetwork"
           :options="NetworkOptions"
@@ -339,31 +343,8 @@ watch(
 </template>
 
 <style scoped>
-.app-details__container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  margin: 0;
-  overflow: hidden;
-}
-
-.app-details__content {
-  box-sizing: border-box;
-  flex: 1;
-  height: 100%;
-  padding: 2rem;
-  padding-bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
 .footer-bleed {
   margin-inline: -2rem;
-}
-
-.help-button__container {
-  gap: 1rem;
-  margin-bottom: 2rem;
 }
 
 @media only screen and (max-width: 1023px) {
