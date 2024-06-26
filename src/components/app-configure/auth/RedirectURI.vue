@@ -34,7 +34,7 @@ async function copyRedirectUri() {
           class="flex-wrap justify-between"
           gap="1rem"
         >
-          <h3>Redirect URI</h3>
+          <h3 class="pl-2.5">Redirect URI</h3>
           <VCard variant="depressed" class="redirect-uri-card">
             <VStack
               align="center"
@@ -82,7 +82,7 @@ async function copyRedirectUri() {
 }
 
 .redirect-uri-info__container {
-  padding: 2rem 1.5rem;
+  padding: 1rem;
 }
 
 .redirect-uri-info__stack {

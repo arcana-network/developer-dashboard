@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import DeleteIcon from '@/assets/iconography/delete-icon.svg'
+import DeleteIcon from '@/assets/iconography/delete.svg'
 import PlusIcon from '@/assets/iconography/plus-circle.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import VRadioSecondary from '@/components/lib/VRadioSecondary/VRadioSecondary.vue'
@@ -345,7 +345,7 @@ watch(
               v-model="idParam"
               type="text"
               name="idParam"
-              class="text-white bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
             />
           </div>
         </fieldset>
