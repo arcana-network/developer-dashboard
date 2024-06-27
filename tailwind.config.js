@@ -20,6 +20,7 @@ const config = {
           100: '#1d2a31',
         },
         liquidaqua: '#5b93ff',
+        liquidred: '#FF5555',
         overlay: {
           background: '#1e1f1e',
           input: '#313030',

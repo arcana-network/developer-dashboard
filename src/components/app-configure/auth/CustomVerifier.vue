@@ -353,7 +353,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
               <span>JWKS URL</span>
-              <span class="text-red-800 text-lg">*</span>
+              <span class="text-liquidred text-lg">*</span>
             </legend>
             <a
               :href="WHATS_JWKS_URL_LINK"
@@ -376,7 +376,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
               <span>Issuer</span>
-              <span class="text-red-800 text-lg">*</span>
+              <span class="text-liquidred text-lg">*</span>
             </legend>
           </div>
           <div class="w-full">
@@ -393,7 +393,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
               <span>Audience</span>
-              <span class="text-red-800 text-lg">*</span>
+              <span class="text-liquidred text-lg">*</span>
             </legend>
           </div>
           <div class="w-full">

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { onBeforeMount, ref, type Ref } from 'vue'
+import { onBeforeMount, ref, type Ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
@@ -49,6 +49,15 @@ const paidMausUsed = ref(0)
 const freeMausWidth = ref(100)
 const paidMausWidth = ref(0)
 const toast = useToast()
+
+const hoveredCards: { [key: number]: boolean } = reactive({})
+
+const setHover = (appId: AppId, state: boolean) => {
+  hoveredCards[appId] = state
+}
+const isHovered = (appId: AppId) => {
+  return !!hoveredCards[appId]
+}
 
 function goToDashboard(appId: AppId, network: Network) {
   let paramAppId = appId
@@ -279,7 +288,12 @@ function ellipsisAppName(appName: string) {
                 />
               </button>
               <img :src="getImageUrl(app.id)" class="app-logo" />
-              <VStack gap="0.5rem" style="max-width: 100%">
+              <VStack
+                gap="0.5rem"
+                style="max-width: 100%"
+                @mouseenter="setHover(app.id, true)"
+                @mouseleave="setHover(app.id, false)"
+              >
                 <VTextField
                   v-if="app.editState"
                   v-model="app.name"
@@ -295,12 +309,11 @@ function ellipsisAppName(appName: string) {
                   v-else
                   class="font-nohemi text-base font-thin app-name text-center text-ellipsis overflow-hidden"
                   :title="app.name"
-                  style="max-width: calc(100% - 1rem)"
                 >
                   {{ ellipsisAppName(app.name) }}
                 </span>
                 <img
-                  v-if="!app.editState"
+                  v-if="!app.editState && isHovered(app.id)"
                   src="@/assets/iconography/pencil.svg"
                   class="edit-icon"
                   title="Edit app name"
@@ -501,5 +514,15 @@ main {
 .delete-icon-img {
   width: 22px;
   height: 22px;
+  opacity: 0;
+}
+
+.delete-icon-btn:hover {
+  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
+    hue-rotate(304deg) brightness(100%) contrast(103%);
+}
+
+.app-container:hover .delete-icon-img {
+  opacity: 1;
 }
 </style>
