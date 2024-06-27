@@ -187,6 +187,7 @@ div.text-field {
 
 input {
   width: 100%;
+  padding: 0 1.25rem;
   margin: 0.8rem;
   font-size: 1rem;
   line-height: 1.5;
