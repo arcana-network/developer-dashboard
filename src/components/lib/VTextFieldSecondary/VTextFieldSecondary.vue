@@ -208,6 +208,7 @@ input::placeholder {
 .form-group[data-disabled='true'],
 input:disabled {
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 input:-webkit-autofill {

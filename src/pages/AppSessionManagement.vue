@@ -80,10 +80,14 @@ function clearSessionAge() {
   <div class="space-y-10 relative">
     <div class="space-y-[15px]">
       <h1>Login Session Management</h1>
-      <p class="font-body text-[14px] text-liquiddark leading-[150%]">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Lectus magna
-        fringilla urna porttitor rhoncus dolor purus non.
+      <p class="font-body text-[16px] text-liquiddark leading-[150%]">
+        Manage user authentication and session security.
+        <a
+          href="https://docs.arcana.network/concepts/session_type/"
+          target="_blank"
+        >
+          Learn More
+        </a>
       </p>
     </div>
   </div>
@@ -91,11 +95,10 @@ function clearSessionAge() {
     <template #title><h2>Session Cookie Mode*</h2></template>
     <template #description>
       <div>
-        Provide your users the convenience of using magic links delivered to
-        their email addresses that they can click on to authenticate themselves
-        instead of using passwords.
+        Arcana uses cookies to keep an authenticated session active even if the
+        browser is closed. All cookies are cleared when a user logs out.
         <a
-          href="https://docs.dev.arcana.network/concepts/sharedkeys.html"
+          href="https://docs.arcana.network/concepts/session_type/#persistent-session"
           target="_blank"
         >
           Learn More
@@ -103,27 +106,36 @@ function clearSessionAge() {
       </div>
     </template>
     <div class="flex flex-row gap-10">
-      <VCard
-        variant="depressed"
-        class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+      <div
+        :class="{
+          'disabled-card gradient-border-card': app.keyspace === 'global',
+        }"
       >
-        <VStack direction="row" gap="1.25rem" align="start">
-          <input
-            id="true"
-            type="radio"
-            value="true"
-            :checked="selectedSession === true"
-            @change="selectedSession = true"
-          />
-          <VStack direction="column" gap="10px">
-            <span class="text-base font-medium">Persistent Session</span>
-            <span class="w-full text-sm text-liquiddark"
-              >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam ut
-              fermentum, bibendum lectus phasellus ligula morbi.</span
-            >
+        <VCard
+          variant="depressed"
+          class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+        >
+          <VStack direction="row" gap="1.25rem" align="start">
+            <input
+              id="true"
+              type="radio"
+              value="true"
+              :checked="selectedSession === true"
+              :disabled="app.keyspace === 'global'"
+              @change="selectedSession = true"
+            />
+            <VStack direction="column" gap="10px">
+              <span class="text-base font-medium">Persistent Session</span>
+              <span class="w-full text-sm text-liquiddark"
+                >The authenticated session remains valid within a specified time
+                period, so users don't need to log in again after closing and
+                reopening the browser.</span
+              >
+            </VStack>
           </VStack>
-        </VStack>
-      </VCard>
+        </VCard>
+      </div>
+
       <VCard
         variant="depressed"
         class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
@@ -138,9 +150,10 @@ function clearSessionAge() {
           />
           <VStack direction="column" gap="10px">
             <span class="text-base font-medium">Non-Persistent Session</span>
-            <span class="w-full text-sm text-liquiddark"
-              >Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam ut
-              fermentum, bibendum lectus phasellus ligula morbi.</span
+            <span class="w-full text-sm text-liquiddark">
+              If the browser is closed, the authenticated session is
+              invalidated. Users must log in again to continue using the
+              app.</span
             >
           </VStack>
         </VStack>
@@ -157,15 +170,8 @@ function clearSessionAge() {
     <template #title><h2>Require Log In After*</h2></template>
     <template #description>
       <div>
-        Provide your users the convenience of using magic links delivered to
-        their email addresses that they can click on to authenticate themselves
-        instead of using passwords.
-        <a
-          href="https://docs.dev.arcana.network/concepts/sharedkeys.html"
-          target="_blank"
-        >
-          Learn More
-        </a>
+        Specify the session duration in minutes after the browser is closed.
+        Users will be automatically logged out when this time period expires.
       </div>
     </template>
     <span>Minutes</span>
@@ -173,12 +179,17 @@ function clearSessionAge() {
       v-model="sessionAge"
       type="number"
       class="max-w-sm"
+      :class="{
+        'disabled-text': preSelectedSession === false,
+      }"
       :icon="sessionAge ? CloseIcon : ''"
       clickable-icon
       placeholder="Enter Minutes"
+      :disabled="!preSelectedSession"
       @icon-clicked="clearSessionAge()"
       @blur="isEdited = true"
     />
+
     <ConfigureActionButtons
       :save-disabled="sessionAge === preSessionAge"
       :cancel-disabled="sessionAge === preSessionAge"
@@ -189,6 +200,18 @@ function clearSessionAge() {
 </template>
 
 <style scoped>
+.gradient-border-card {
+  padding: 2px;
+  background: var(--primary-dark);
+  border-radius: 10px;
+  opacity: 100;
+}
+
+.disabled-card {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
 input[type='radio'] {
   display: grid;
   place-content: center;
