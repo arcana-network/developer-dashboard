@@ -139,9 +139,9 @@ function onChainSelect(_, option) {
                   >
                   <VDropdown
                     :options="
-                      chainManagementStore.chainTypeSpecificChains(
-                        selectedChainType.type
-                      )
+                      chainManagementStore
+                        .chainTypeSpecificChains(selectedChainType.type)
+                        .sort((a, b) => a.name.localeCompare(b.name))
                     "
                     display-field="name"
                     :disabled="!selectedChainType"

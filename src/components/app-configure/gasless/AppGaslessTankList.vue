@@ -130,9 +130,7 @@ function onClickOfOption(option: number, id: number) {
       </tbody>
     </table>
     <div v-else class="h-40 flex flex-col">
-      <table
-        class="table-fixed text-white block overflow-x-auto border-collapse w-full"
-      >
+      <table class="table-fixed text-white overflow-x-auto border-collapse">
         <thead class="border-b-[1px] border-b-liquidgrey">
           <tr class="text-liquiddark">
             <th class="w-[14%]">Name</th>
