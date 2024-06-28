@@ -1,8 +1,6 @@
 <script lang="ts" setup>
 import { ref, onBeforeUnmount, onMounted, watch, computed } from 'vue'
 
-import arrowIcon from '@/assets/iconography/arrow.svg'
-
 const props = defineProps({
   options: {
     type: Array,
@@ -105,7 +103,7 @@ watch(
       </span>
       <span v-else class="placeholder">{{ placeholder }}</span>
       <img
-        :src="arrowIcon"
+        src="@/assets/iconography/arrow.svg"
         alt="arrow-icon"
         class="arrow-icon"
         :class="{
