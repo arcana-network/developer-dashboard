@@ -151,7 +151,7 @@ function isGaslessSupport(chainId: number) {
       <thead class="border-b-[1px] border-b-system-grey">
         <tr class="text-secondary">
           <!-- <th class="w-[10%]"><button>A &#x2192; B</button></th> -->
-          <th class="w-[10%]"></th>
+          <th class="w-[5%]"></th>
           <th class="w-[15%] hover:text-rose" @click="sortBy('name')">
             <button>Name</button>
           </th>
@@ -165,7 +165,9 @@ function isGaslessSupport(chainId: number) {
           <th class="w-[10%] hover:text-rose" @click="sortBy('currency')">
             <button>Currency</button>
           </th>
-          <!-- <th class="w-[10%]">Compatibility</th> -->
+          <th v-if="selectedChainType === 'multiversx'" class="w-[10%]">
+            Shard Value
+          </th>
           <th class="w-[10%] hover:text-rose" @click="sortBy('chain_type')">
             <button>Type</button>
           </th>
@@ -207,9 +209,11 @@ function isGaslessSupport(chainId: number) {
               >
             </div>
           </td>
-          <td v-if="selectedChainType !== 'near'">{{ chain.chain_id }}</td>
+          <td v-if="selectedChainType !== 'near'">
+            {{ chain.chain_id }}
+          </td>
           <td>{{ chain.currency }}</td>
-          <!-- <td>{{ chain.compatibility }}</td> -->
+          <td v-if="selectedChainType === 'multiversx'">Shard 1</td>
           <td>{{ chain.chain_type }}</td>
           <td class="text-ellipsis">{{ chain.rpc_url }}</td>
           <td>

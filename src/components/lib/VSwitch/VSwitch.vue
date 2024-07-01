@@ -122,8 +122,9 @@ function toggle() {
   left: 0;
   width: 20px;
   height: 20px;
-  background: black;
-  border: black solid 1px;
+
+  /* background: black; */
+  border: black solid 2px;
   border-radius: 9999px;
   box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
   transition: transform 0.4s ease, background 0.4s ease-in-out;
