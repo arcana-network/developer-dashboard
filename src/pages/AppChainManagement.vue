@@ -166,7 +166,7 @@ async function setSelectedChainTypeCurve($event: string) {
   <div class="space-y-10 relative">
     <div class="space-y-[15px]">
       <h1>Chain Management</h1>
-      <p class="font-body text-[14px] text-liquiddark leading-[150%]">
+      <p class="font-body text-[14px] text-secondary leading-[150%]">
         Allow your users to use any of the chains that your application will
         support. Choose from the available chains or add custom chains that will
         be automatically added to your user’s wallets.
@@ -175,15 +175,15 @@ async function setSelectedChainTypeCurve($event: string) {
     <div class="flex flex-col space-y-5">
       <div class="flex w-full justify-between gap-5 items-center">
         <div class="flex gap-2 items-center">
-          <span class="text-liquiddark text-xs">Chain Type</span>
+          <span class="text-secondary text-xs">Chain Type</span>
           <span
             v-if="
               chainManagementStore.selectedChainType?.toLowerCase() === 'evm'
             "
-            class="text-liquiddark text-md"
+            class="text-secondary text-md"
             >{{ chainManagementStore.selectedChainType?.toUpperCase() }}</span
           >
-          <span v-else class="text-liquiddark text-md">{{
+          <span v-else class="text-secondary text-md">{{
             capitalizeFirstLetter(chainManagementStore.selectedChainType)
           }}</span>
         </div>
@@ -192,7 +192,7 @@ async function setSelectedChainTypeCurve($event: string) {
             v-if="
               chainManagementStore.selectedChainType?.toLowerCase() === 'evm'
             "
-            class="text-black flex items-center space-x-1.5 hover:text-pink"
+            class="text-black flex items-center space-x-1.5 hover:text-rose"
             @click="openForm('add')"
           >
             <span>Add Chain</span>

@@ -500,11 +500,11 @@ function ellipsisAppName(appName: string) {
 }
 
 .active-app .app-name {
-  color: var(--primary-black);
+  color: black;
 }
 
 .apps-name__list-item .app-name:hover {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 .app-name__container {
@@ -522,11 +522,11 @@ function ellipsisAppName(appName: string) {
 }
 
 .active-tab .tab-label {
-  color: var(--primary-black);
+  color: black;
 }
 
 .submenu-active .submenu-tab-label {
-  color: var(--primary-black);
+  color: black;
 }
 
 .sidebar__option-icon {

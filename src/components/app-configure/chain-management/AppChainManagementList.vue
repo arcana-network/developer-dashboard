@@ -144,33 +144,35 @@ function isGaslessSupport(chainId: number) {
   <div v-if="areChainsEmpty" class="text-black">
     <p class="text-center p-3">No Chains Available</p>
   </div>
-  <div v-else class="bg-white rounded-md border-[1px] border-liquidgrey">
+  <div v-else class="bg-white rounded-md border-[1px] border-system-grey">
     <table
       class="table-fixed text-black md:max-lg:block overflow-x-auto border-collapse w-full"
     >
-      <thead class="border-b-[1px] border-b-liquidgrey">
-        <tr class="text-liquiddark">
+      <thead class="border-b-[1px] border-b-system-grey">
+        <tr class="text-secondary">
           <!-- <th class="w-[10%]"><button>A &#x2192; B</button></th> -->
-          <th class="w-[10%]"></th>
-          <th class="w-[15%] hover:text-pink" @click="sortBy('name')">
+          <th class="w-[5%]"></th>
+          <th class="w-[15%] hover:text-rose" @click="sortBy('name')">
             <button>Name</button>
           </th>
           <th
             v-if="selectedChainType !== 'near'"
-            class="w-[10%] hover:text-pink"
+            class="w-[10%] hover:text-rose"
             @click="sortBy('chain_id')"
           >
             <button>Chain ID</button>
           </th>
-          <th class="w-[10%] hover:text-pink" @click="sortBy('currency')">
+          <th class="w-[10%] hover:text-rose" @click="sortBy('currency')">
             <button>Currency</button>
           </th>
-          <!-- <th class="w-[10%]">Compatibility</th> -->
-          <th class="w-[10%] hover:text-pink" @click="sortBy('chain_type')">
+          <th v-if="selectedChainType === 'multiversx'" class="w-[10%]">
+            Shard Value
+          </th>
+          <th class="w-[10%] hover:text-rose" @click="sortBy('chain_type')">
             <button>Type</button>
           </th>
-          <th class="hover:text-pink">RPC URL</th>
-          <th class="w-[10%] hover:text-pink" @click="sortBy('status')">
+          <th class="hover:text-rose">RPC URL</th>
+          <th class="w-[10%] hover:text-rose" @click="sortBy('status')">
             <button>Enabled</button>
           </th>
           <th class="w-[5%]"></th>
@@ -180,7 +182,7 @@ function isGaslessSupport(chainId: number) {
         <tr
           v-for="chain in sortedList"
           :key="chain.id"
-          class="hover:bg-liquid hover:text-pink"
+          class="hover:bg-firefly hover:text-rose"
         >
           <td>
             <img
@@ -207,9 +209,11 @@ function isGaslessSupport(chainId: number) {
               >
             </div>
           </td>
-          <td v-if="selectedChainType !== 'near'">{{ chain.chain_id }}</td>
+          <td v-if="selectedChainType !== 'near'">
+            {{ chain.chain_id }}
+          </td>
           <td>{{ chain.currency }}</td>
-          <!-- <td>{{ chain.compatibility }}</td> -->
+          <td v-if="selectedChainType === 'multiversx'">Shard 1</td>
           <td>{{ chain.chain_type }}</td>
           <td class="text-ellipsis">{{ chain.rpc_url }}</td>
           <td>
@@ -230,7 +234,7 @@ function isGaslessSupport(chainId: number) {
                 <ul
                   ref="showRowOptions_menu"
                   open
-                  class="flex flex-col bg-liquidlight text-black rounded-md p-2 space-y-1 relative"
+                  class="flex flex-col bg-primary text-black rounded-md p-2 space-y-1 relative"
                 >
                   <li
                     v-for="option in getRowOptions(
@@ -239,7 +243,7 @@ function isGaslessSupport(chainId: number) {
                       rowOptions
                     )"
                     :key="option.value"
-                    class="p-1 rounded-[5px] hover:text-pink text-left cursor-pointer"
+                    class="p-1 rounded-[5px] hover:text-rose text-left cursor-pointer"
                     @click.stop="onClickOfOption(option.value, chain.id, chain)"
                   >
                     <button>

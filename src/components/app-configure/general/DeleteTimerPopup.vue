@@ -69,7 +69,7 @@ function handleProceedDeletion() {
     >
       <Vue3CircleProgress
         :percent="timerProgressPercentage"
-        fill-color="var(--secondary)"
+        fill-color="var(--primary)"
         empty-color="var(--primary-liquid)"
         :size="200"
       />

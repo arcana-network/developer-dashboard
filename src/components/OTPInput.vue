@@ -117,7 +117,7 @@ async function resendOTP() {
       </button>
       <div class="flex flex-col items-center justify-center gap-3 text-center">
         <h2 class="text-rem2 font-bold">Verification</h2>
-        <span class="text-sm text-secondary-400"
+        <span class="text-sm text-secondary"
           >Please enter the OTP that was sent to your email address</span
         >
       </div>
@@ -140,7 +140,7 @@ async function resendOTP() {
             pattern="\d*"
             maxlength="1"
             autocomplete="off"
-            class="outline-none border-none rounded-md p-2 bg-liquid placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center overflow-x-scroll"
+            class="outline-none border-none rounded-md p-2 bg-firefly placeholder:text-whitemist-400 flex flex-grow justify-center items-center text-center overflow-x-scroll"
             @input="void 0"
             @keydown="handleKeyDown($event, i - 1)"
             @paste.prevent="handlePaste"

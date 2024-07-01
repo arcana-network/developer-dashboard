@@ -111,22 +111,22 @@ a {
 
 button.primary {
   color: var(--text-white);
-  background: var(--primary-black);
+  background: black;
 }
 
 button.primary:disabled {
-  color: var(--primary-light);
+  color: white;
   cursor: not-allowed;
   background: #b7b9bd;
 }
 
 button.primary:hover:not(:disabled) {
-  background-color: var(--secondary);
+  background-color: var(--primary);
 }
 
 button.secondary {
   padding: calc(0.625rem - 2px);
-  color: var(--primary-black);
+  color: black;
   background-color: var(--primary-liquid);
   border: 2px solid transparent;
   border-radius: 25px;
@@ -139,7 +139,7 @@ button.secondary:disabled {
 }
 
 button.secondary:hover:not(:disabled) {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 button.secondary:disabled::before {
@@ -149,11 +149,11 @@ button.secondary:disabled::before {
 a.link {
   min-width: 0;
   padding: 0;
-  color: var(--primary);
+  color: var(--color-blue);
 }
 
 a:not([disabled='true']):hover {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 a:not([disabled='true']):active {

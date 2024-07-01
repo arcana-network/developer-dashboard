@@ -107,7 +107,7 @@ function onChainSelect(_, option) {
               <VStack direction="column" class="space-y-3">
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-secondary"
                     for="app-name"
                     >Enter App Name</label
                   >
@@ -121,7 +121,7 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-secondary"
                     for="default-chain"
                     >Chain Type*</label
                   >
@@ -133,7 +133,7 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-secondary"
                     for="default-chain"
                     >Default Chain</label
                   >
@@ -147,13 +147,13 @@ function onChainSelect(_, option) {
                     :disabled="!selectedChainType"
                     @change="onChainSelect"
                   />
-                  <!-- <p class="text-liquiddark">
+                  <!-- <p class="text-secondary">
                   *You can change the default chain later
                 </p> -->
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-secondary"
                     for="default-chain"
                     >Wallet UI Mode*</label
                   >
@@ -162,7 +162,7 @@ function onChainSelect(_, option) {
                     :options="WalletUIModes"
                     display-field="label"
                   />
-                  <p class="text-liquiddark">
+                  <p class="text-secondary">
                     *You cannot change these properties later.
                   </p>
                 </VStack>

@@ -18,7 +18,7 @@ const props = defineProps({
 
 const styles = computed(() => {
   return {
-    color: props.color || 'var(--primary-light)',
+    color: props.color || '#fff',
     width: props.size,
     height: props.size,
     fontSize: props.stroke,

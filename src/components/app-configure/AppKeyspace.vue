@@ -240,7 +240,7 @@ function handleCancel() {
 .keyspace-container {
   max-width: 296px;
   padding: 2rem;
-  background-color: var(--primary-black);
+  background-color: black;
 }
 
 .card-title {

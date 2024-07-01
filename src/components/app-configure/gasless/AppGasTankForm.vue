@@ -66,7 +66,7 @@ const enableSave = computed(() => {
       >
         <div class="space-y-[10px]">
           <p class="text-lg text-black">Add Gas Tank</p>
-          <p class="text-sm text-liquiddark leading-4">
+          <p class="text-sm text-secondary leading-4">
             Please provide the following details to setup a gas tank:
           </p>
         </div>
@@ -76,7 +76,7 @@ const enableSave = computed(() => {
             <input
               v-model.trim="formData.name"
               type="text"
-              class="text-sm bg-liquidlight-100 text-black p-[10px] w-full border-none outline-none rounded-xl"
+              class="text-sm bg-base text-black p-[10px] w-full border-none outline-none rounded-xl"
               name="network-name"
             />
           </div>
@@ -93,7 +93,7 @@ const enableSave = computed(() => {
           <div class="space-x-2.5 flex justify-end">
             <button
               type="button"
-              class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-3xl bg-black hover:bg-pink"
+              class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-3xl bg-black hover:bg-rose"
               @click.stop="emits('close')"
             >
               Cancel
@@ -103,7 +103,7 @@ const enableSave = computed(() => {
               class="bg-black text-white w-[100px] p-2 rounded-3xl transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[
-                !enableSave ? 'opacity-20' : 'opacity-100 hover:bg-pink ',
+                !enableSave ? 'opacity-20' : 'opacity-100 hover:bg-rose ',
               ]"
             >
               Save

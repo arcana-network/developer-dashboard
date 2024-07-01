@@ -97,41 +97,43 @@ onBeforeMount(async () => {
   <div>
     <app-header />
     <main class="pb-10 container">
-      <VStack class="heading" gap="1rem">
+      <VStack class="mt-3.5 lg:mt-8" gap="1rem">
         <img
           src="@/assets/iconography/back.svg"
-          class="cursor-pointer"
+          class="cursor-pointer w-8"
           @click.stop="router.back()"
         />
         <h1>Invoices</h1>
       </VStack>
-      <section class="personal-details">
+      <section class="mt-12">
         <SettingCard>
           <template #title>Estimated Charges</template>
           <VStack direction="column" gap="1.5rem">
             <VStack wrap justify="space-between" gap="1rem">
-              <span class="charge-details">Amount Due:</span>
-              <span class="charge-details amount">${{ totalBill }}</span>
+              <span class="text-lg font-bold">Amount Due:</span>
+              <span class="text-lg font-bold text-system-orange"
+                >${{ totalBill }}</span
+              >
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
-              <span class="charge-details">Due Date:</span>
-              <span class="charge-details">{{ getDueDate() }}</span>
+              <span class="text-lg font-bold">Due Date:</span>
+              <span class="text-lg font-bold">{{ getDueDate() }}</span>
             </VStack>
             <VStack wrap justify="space-between" gap="1rem">
-              <span class="charge-details">Payment Method:</span>
+              <span class="text-lg font-bold">Payment Method:</span>
               <VStack gap="0.625rem" class="relative">
-                <span class="charge-details">{{ selectedCard }}</span>
+                <span class="text-lg font-bold">{{ selectedCard }}</span>
               </VStack>
             </VStack>
           </VStack>
         </SettingCard>
       </section>
-      <section style="margin-top: 1.25rem; margin-bottom: 3rem">
+      <section class="mt-5 mb-12">
         <VStack direction="column" gap="1.25rem">
           <VCard
             v-for="invoice in invoices"
             :key="invoice.period"
-            class="invoice-card"
+            class="h-16 pb-8 overflow-hidden"
             :class="{
               expanded: expandInvoice === invoice.period,
             }"
@@ -143,10 +145,10 @@ onBeforeMount(async () => {
                 :class="[expandInvoice ? 'py-8' : 'py-4']"
                 @click.stop="handleExpand(invoice)"
               >
-                <span class="invoice-title">{{ invoice.period }}</span>
+                <span class="text-xl font-bold">{{ invoice.period }}</span>
                 <VStack gap="1.5rem" align="center">
                   <span
-                    class="invoice-title"
+                    class="text-xl font-bold"
                     :class="{
                       amount: expandInvoice === invoice.period,
                     }"
@@ -156,7 +158,7 @@ onBeforeMount(async () => {
                     :href="invoice.url"
                     download
                     target="_blank"
-                    style="display: flex"
+                    class="flex"
                     @click.stop="(e) => e.preventDefault()"
                   >
                     <img src="@/assets/iconography/download.svg" />
@@ -164,15 +166,11 @@ onBeforeMount(async () => {
                 </VStack>
               </VStack>
               <VSeperator v-if="expandInvoice" class="separator-bleed" />
-              <VCard variant="depressed" class="invoice-statement-card">
+              <VCard variant="depressed" class="p-8 mt-8 mx-8">
                 <VStack direction="column" gap="1.5rem" class="flex-grow">
                   <VStack gap="2rem">
-                    <span class="invoice-statement charge-details"
-                      >App Name</span
-                    >
-                    <span class="invoice-statement charge-details"
-                      >Billable MAU</span
-                    >
+                    <span class="w-1/2 text-lg font-bold">App Name</span>
+                    <span class="w-1/2 text-lg font-bold">Billable MAU</span>
                   </VStack>
                   <VSeperator class="separator-bleed" />
                   <VStack direction="column" gap="2rem" class="flex-grow">
@@ -181,8 +179,8 @@ onBeforeMount(async () => {
                       :key="app.appName + app.usage"
                       gap="2rem"
                     >
-                      <span class="invoice-value">{{ app.appName }}</span>
-                      <span class="invoice-value">{{ app.usage }}</span>
+                      <span class="w-1/2 text-base">{{ app.appName }}</span>
+                      <span class="w-1/2 text-base">{{ app.usage }}</span>
                     </VStack>
                   </VStack>
                 </VStack>
@@ -196,29 +194,6 @@ onBeforeMount(async () => {
 </template>
 
 <style scoped>
-.heading {
-  margin-top: 2rem;
-}
-
-.heading img {
-  width: 2rem;
-}
-
-.personal-details {
-  margin-top: 3rem;
-}
-
-.invoice-card {
-  height: 4rem;
-  padding-bottom: 2rem;
-  overflow: hidden;
-}
-
-.invoice-statement-card {
-  padding: 2rem;
-  margin: 2rem 2rem 0;
-}
-
 .invoice-card.expanded {
   height: 100%;
 }
@@ -226,42 +201,5 @@ onBeforeMount(async () => {
 .separator-bleed {
   width: calc(100% + 4rem);
   margin-inline: -2rem;
-}
-
-label {
-  color: var(--text-grey);
-}
-
-.invoice-statement,
-.invoice-value {
-  width: 50%;
-}
-
-.invoice-value {
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.charge-details {
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.invoice-title {
-  font-size: 1.25rem;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.amount {
-  color: var(--color-orange);
-}
-
-@media only screen and (max-width: 1023px) {
-  .heading {
-    margin-top: 0.9em;
-    font-size: 1.8em;
-  }
 }
 </style>

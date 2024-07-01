@@ -6,7 +6,7 @@ const emits = defineEmits(['search'])
 
 <template>
   <div
-    class="flex space-x-3 bg-liquidlight items-center w-[200px] p-2 rounded-md border border-black"
+    class="flex space-x-3 bg-primary items-center w-[200px] p-2 rounded-md border border-black"
   >
     <img :src="SearchIcon" alt="search" class="h-[18px] w-[18px]" />
     <input

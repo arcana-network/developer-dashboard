@@ -496,7 +496,7 @@ label {
 }
 
 .stripe-focused {
-  outline: 1px solid var(--primary);
+  outline: 1px solid var(--color-blue);
 }
 
 .billing-details {

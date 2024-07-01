@@ -198,7 +198,7 @@ header {
   justify-content: space-between;
   padding: 1.5rem 2rem;
   visibility: visible;
-  background: var(--primary-light);
+  background: white;
   transition: transform 0.6s;
 }
 
@@ -232,7 +232,7 @@ header {
 }
 
 .help-button {
-  color: var(--primary-black);
+  color: black;
   cursor: pointer;
   background: transparent;
   border: none;
@@ -240,7 +240,7 @@ header {
 }
 
 .help-button:hover {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 .help-menu-items {
@@ -253,20 +253,20 @@ header {
   width: 200px;
   padding: 0;
   padding-top: 1.25rem;
-  color: var(--primary-black);
+  color: black;
   border: #d9d9d9 1px solid;
 }
 
 .help-menu-items ul {
   padding: 0;
-  color: var(--primary-black);
+  color: black;
 }
 
 .help-menu-item {
   width: 100%;
   padding-inline: 1rem;
   padding-bottom: 1rem;
-  color: var(--primary-black);
+  color: black;
   white-space: nowrap;
   list-style: none;
 }

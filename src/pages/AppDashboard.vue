@@ -256,7 +256,7 @@ async function fetchActiveUsers() {
 
 <template>
   <div :key="appId">
-    <main style="margin-bottom: 2rem">
+    <main class="mb-8">
       <section class="flex dashboard-heading flex-wrap">
         <VStack
           justify="space-between"
@@ -268,9 +268,7 @@ async function fetchActiveUsers() {
             gap="1rem"
             class="flex justify-content-center items-center flex-wrap"
           >
-            <span style="color: var(--text-grey)" class="text-lg font-normal">
-              Client ID:
-            </span>
+            <span class="text-secondary text-lg font-normal"> Client ID: </span>
             <VTextField
               v-model="appAddress"
               class="text-ellipsis"
@@ -285,9 +283,8 @@ async function fetchActiveUsers() {
         </VStack>
       </section>
       <v-card
-        class="column usage-container"
+        class="flex flex-col usage-container items-stretch"
         variant="elevated"
-        style="align-items: stretch"
       >
         <div class="flex justify-between items-center">
           <h2 class="font-normal">Users</h2>
@@ -308,27 +305,29 @@ async function fetchActiveUsers() {
         </div>
         <v-seperator class="full-bleed-separator" />
         <section class="flex column">
-          <div v-show="showNoDataChart" class="users-count-empty-state">
-            <p>No Data</p>
+          <div
+            v-show="showNoDataChart"
+            class="flex items-center justify-center font-semibold"
+          >
+            <p class="text-secondary">No Data</p>
           </div>
           <canvas
             v-show="!showNoDataChart"
             id="users-count-chart"
-            class="users-count-chart"
+            class="max-h-ms"
           ></canvas>
         </section>
       </v-card>
       <v-card
-        class="column usage-container"
+        class="flex flex-col items-stretch usage-container"
         variant="elevated"
-        style="align-items: stretch"
       >
         <VStack justify="space-between" align="center" class="flex-grow">
           <h2>Tutorials</h2>
         </VStack>
         <VSeperator class="full-bleed-separator" />
         <Carousel
-          class="tutorials__container"
+          class="mt-2.5"
           :breakpoints="carouselBreakpointSettings"
           :wrap-around="true"
         >
@@ -372,24 +371,8 @@ async function fetchActiveUsers() {
 </style>
 
 <style scoped>
-.users-count-chart {
-  max-height: 430px;
-}
-
 .users-count-empty-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   margin-block: 1rem;
-  font-weight: 600;
-}
-
-.users-count-empty-state p {
-  color: var(--text-grey);
-}
-
-.tutorials__container {
-  margin-top: 10px;
 }
 
 .tutorial__card {
