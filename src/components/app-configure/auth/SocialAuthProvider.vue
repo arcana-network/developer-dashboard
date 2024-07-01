@@ -167,8 +167,8 @@ socialAuthStore.$subscribe((mutation) => {
 <template>
   <div class="bg-white rounded-xl space-y-7">
     <div>
-      <h3 class="p-7 border-b-[1px] border-liquidgrey">Social Auth</h3>
-      <p class="text-liquiddark text-sm font-normal p-3.5">
+      <h3 class="p-7 border-b-[1px] border-system-grey">Social Auth</h3>
+      <p class="text-secondary text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
         care of issuing public and prviate keys to each user through our
         Decentralised Key Generation (DKG) mechanism and keep them secure.
@@ -179,7 +179,7 @@ socialAuthStore.$subscribe((mutation) => {
           >Learn More</a
         >
       </p>
-      <p class="text-liquidaqua text-sm font-normal px-3.5 animate-pulse">
+      <p class="text-system-blue text-sm font-normal px-3.5 animate-pulse">
         {{ selectedAuthProvider.note }}
       </p>
     </div>

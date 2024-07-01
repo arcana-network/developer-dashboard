@@ -111,7 +111,7 @@ a {
 
 button.primary {
   color: var(--text-white);
-  background: var(--primary-black);
+  background: black;
 }
 
 button.primary:disabled {
@@ -151,7 +151,7 @@ button.secondary:disabled::before {
 a.link {
   min-width: 0;
   padding: 0;
-  color: var(--primary);
+  color: var(--color-blue);
 }
 
 a:not([disabled='true']):hover {
@@ -186,7 +186,7 @@ progress {
     font-weight: 400;
     line-height: 1.5;
     text-align: center;
-    background: var(--primary-black);
+    background: black;
     border: none;
     border-radius: 25px;
   }

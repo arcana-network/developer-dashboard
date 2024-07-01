@@ -238,7 +238,7 @@ div.text-field {
 }
 
 .text-field.focused {
-  outline: 1px solid var(--primary);
+  outline: 1px solid var(--color-blue);
 }
 
 textarea {
@@ -281,7 +281,7 @@ textarea::placeholder {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--primary);
+  color: var(--color-blue);
   text-decoration: none;
 }
 

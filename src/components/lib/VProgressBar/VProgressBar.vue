@@ -39,7 +39,7 @@ progress,
 progress::-webkit-progress-bar,
 .progress {
   height: 100%;
-  color: var(--primary);
+  color: var(--color-blue);
   background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
   border-radius: 100px;
   box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%);
@@ -53,13 +53,13 @@ progress::-webkit-progress-bar,
 
 progress::-webkit-progress-value,
 .progress > span {
-  background: var(--primary);
+  background: var(--color-blue);
   border-radius: 999px;
   transition: width 0.4s;
 }
 
 progress::-moz-progress-bar {
-  background-color: var(--primary);
+  background-color: var(--color-blue);
   border-radius: 999px;
   transition: width 0.4s;
 }

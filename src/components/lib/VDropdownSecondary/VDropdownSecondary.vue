@@ -154,9 +154,9 @@ watch(
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--primary-black);
+  color: black;
   cursor: pointer;
-  background: var(--primary-light);
+  background: white;
   border-radius: 10px;
 }
 
@@ -196,18 +196,18 @@ watch(
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: var(--primary-black);
+  color: black;
   cursor: pointer;
-  background: var(--primary-light);
+  background: white;
   transition: all 0.2s;
 }
 
 .custom-option:hover {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 .custom-option.selected {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 .arrow-icon {

@@ -55,8 +55,8 @@ const areUnreadNotificationAvaiable = computed(() => {
   min-height: 18px;
   padding: 1px;
   font-size: 10px;
-  color: var(--primary-light);
-  background: var(--primary);
+  color: white;
+  background: var(--color-blue);
   border-radius: 50%;
 }
 
@@ -69,7 +69,7 @@ const areUnreadNotificationAvaiable = computed(() => {
   width: 16px;
   height: 16px;
   background: white;
-  background: var(--primary);
+  background: var(--color-blue);
   border-radius: 50%;
   animation: ripple 1s cubic-bezier(0.65, 0, 0.34, 1) 0s infinite;
 }
@@ -79,11 +79,11 @@ const areUnreadNotificationAvaiable = computed(() => {
 }
 
 .notification:hover svg {
-  color: var(--secondary);
+  color: var(--primary);
 }
 
 .notification:hover div {
-  background: var(--secondary);
+  background: var(--primary);
 }
 
 @keyframes ripple {
