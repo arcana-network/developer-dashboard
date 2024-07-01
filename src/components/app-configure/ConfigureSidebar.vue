@@ -423,7 +423,7 @@ function ellipsisAppName(appName: string) {
   display: flex;
   flex-direction: row;
   gap: 12px;
-  align-items: center;
+  align-items: start;
 }
 
 .arrow-icon {

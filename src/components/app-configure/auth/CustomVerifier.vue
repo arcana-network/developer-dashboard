@@ -2,7 +2,7 @@
 import { onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import DeleteIcon from '@/assets/iconography/delete-icon.svg'
+import DeleteIcon from '@/assets/iconography/delete.svg'
 import PlusIcon from '@/assets/iconography/plus-circle.svg'
 import ConfigureActionButtons from '@/components/app-configure/ConfigureActionButtons.vue'
 import VRadioSecondary from '@/components/lib/VRadioSecondary/VRadioSecondary.vue'
@@ -351,7 +351,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-secondary text-xs font-normal">
               <span>JWKS URL</span>
-              <span class="text-red-800 text-lg">*</span>
+              <span class="text-liquidred text-lg">*</span>
             </legend>
             <a
               :href="WHATS_JWKS_URL_LINK"
@@ -374,7 +374,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-secondary text-xs font-normal">
               <span>Issuer</span>
-              <span class="text-red-800 text-lg">*</span>
+              <span class="text-liquidred text-lg">*</span>
             </legend>
           </div>
           <div class="w-full">
@@ -391,7 +391,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-secondary text-xs font-normal">
               <span>Audience</span>
-              <span class="text-red-800 text-lg">*</span>
+              <span class="text-liquidred text-lg">*</span>
             </legend>
           </div>
           <div class="w-full">

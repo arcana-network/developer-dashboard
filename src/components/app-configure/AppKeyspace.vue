@@ -257,7 +257,7 @@ function handleCancel() {
 
 .gradient-border-card {
   padding: 2px;
-  background: var(--primary);
+  background: var(--primary-dark);
   border-radius: 10px;
   opacity: 100;
 }
