@@ -114,6 +114,7 @@ function clearSessionAge() {
         <VCard
           variant="depressed"
           class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+          @click.stop="selectedSession = true"
         >
           <VStack direction="row" gap="1.25rem" align="start">
             <input
@@ -139,6 +140,7 @@ function clearSessionAge() {
       <VCard
         variant="depressed"
         class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+        @click.stop="selectedSession = false"
       >
         <VStack direction="row" gap="1.25rem" align="start">
           <input
@@ -180,12 +182,12 @@ function clearSessionAge() {
       type="number"
       class="max-w-sm"
       :class="{
-        'disabled-text': preSelectedSession === false,
+        'disabled-text': selectedSession === false,
       }"
       :icon="sessionAge ? CloseIcon : ''"
       clickable-icon
       placeholder="Enter Minutes"
-      :disabled="!preSelectedSession"
+      :disabled="!selectedSession"
       @icon-clicked="clearSessionAge()"
       @blur="isEdited = true"
     />
