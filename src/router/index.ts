@@ -28,6 +28,7 @@ const AppChainManagement = () => import('@/pages/AppChainManagement.vue')
 const AppGasless = () => import('@/pages/AppGasless.vue')
 const AppGasTanks = () => import('@/pages/AppGasTanks.vue')
 const AppGaslessAddress = () => import('@/pages/AppGaslessAddress.vue')
+const AppSessionManagement = () => import('@/pages/AppSessionManagement.vue')
 
 function toBoolean(val: string | boolean | number): boolean {
   if (typeof val === 'string') {
@@ -120,6 +121,14 @@ const routes: RouteRecordRaw[] = [
         name: 'Gasless',
         path: 'configure/gasless',
         component: AppGasTanks,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        name: 'Login Session Management',
+        path: 'configure/login-session',
+        component: AppSessionManagement,
         meta: {
           requiresAuth: true,
         },

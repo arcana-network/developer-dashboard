@@ -211,11 +211,21 @@ input:disabled {
   cursor: not-allowed;
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  box-shadow: 0 0 0 1000px #181818 inset;
-  -webkit-text-fill-color: var(--text-white);
+input:-webkit-autofill {
+  color: black !important;
+  background: transparent !important;
+}
+
+/* Firefox */
+input:-moz-autofill {
+  color: black !important;
+  background: transparent !important;
+}
+
+/* Microsoft Edge */
+input:-ms-autofill {
+  color: black !important;
+  background: transparent !important;
 }
 
 div.text-field.icon input {

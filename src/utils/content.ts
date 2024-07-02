@@ -19,6 +19,10 @@ const content = {
     SAVING: 'Saving keyspace preference...',
     SUCCESS: 'Keyspace preference saved successfully.',
   },
+  SESSION: {
+    SAVING: 'Saving session preference...',
+    SUCCESS: 'Session preference saved successfully.',
+  },
   VERIFICATION: {
     FORM_SUBMIT: 'Submitting the form for verification...',
     FORM_SUCCESS: 'Form submitted successfully.',
@@ -113,6 +117,8 @@ const errors = {
     'Login providers are disabled as you have chosen Global keys',
   KEYSPACE_ERROR:
     'Error occurred while saving keyspace. Try again or contact support!',
+  SESSION_ERROR:
+    'Error occurred while saving session preference. Try again or contact support!',
   FORM: {
     SUBMIT:
       'Error occurred while submitting the form. Try again or contact support!',
