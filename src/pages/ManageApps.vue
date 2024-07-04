@@ -96,8 +96,17 @@ function getImageUrl(appId: AppId) {
 }
 
 onBeforeMount(async () => {
-  accountStatus.value = (await getAccountStatus()).data
-  const authOverview = (await getAuthOverview('mainnet')).data
+  const [accountStatusData, authOverviewData, _, __, ___, ____] =
+    await Promise.all([
+      getAccountStatus(),
+      getAuthOverview('mainnet'),
+      appsStore.fetchAndStoreAllApps('testnet'),
+      appsStore.fetchAndStoreAllApps('mainnet'),
+      appsStore.fetchNotifications(),
+      chainManagementStore.getAllAppChains('testnet'),
+    ])
+  accountStatus.value = accountStatusData.data
+  const authOverview = authOverviewData.data
 
   const mausUsed = authOverview.mau
   estimatedCost.value = authOverview.bill
@@ -114,10 +123,6 @@ onBeforeMount(async () => {
     freeMausUsed.value = mausUsed
     percentageFreeMaus.value = (mausUsed / allowedFreeMaus) * 100
   }
-  await appsStore.fetchAndStoreAllApps('testnet')
-  await appsStore.fetchAndStoreAllApps('mainnet')
-  await appsStore.fetchNotifications()
-  await chainManagementStore.getAllAppChains('testnet')
 })
 
 appsStore.$subscribe(() => {
@@ -127,8 +132,10 @@ appsStore.$subscribe(() => {
 async function handleAppNameSave(app: AppData) {
   if (app.name.trim().length) {
     app.editState = false
-    await updateApp(app.global_id, { name: app.name }, 'mainnet')
-    await updateApp(app.id, { name: app.name }, 'testnet')
+    await Promise.all([
+      updateApp(app.global_id, { name: app.name }, 'mainnet'),
+      updateApp(app.id, { name: app.name }, 'testnet'),
+    ])
     toast.success('App name saved')
   } else {
     toast.error('App name is required')

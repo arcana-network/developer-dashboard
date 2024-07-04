@@ -88,8 +88,6 @@ async function fetchAndStoreDetails() {
   try {
     loaderStore.showLoader(content.APP.LOGIN.FETCHING)
     await fetchAndStoreUserInfo()
-    await appsStore.fetchAndStoreAllApps('testnet')
-    await appsStore.fetchAndStoreAllApps('mainnet')
   } catch (e) {
     console.error({ e })
   } finally {
