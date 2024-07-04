@@ -25,6 +25,7 @@ import {
 } from '@/services/gateway.service'
 import { useAppsStore, type AppConfig, type AppId } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
+import { useLoaderStore } from '@/stores/loader.store'
 import type { Network } from '@/utils/constants'
 import { NetworkName } from '@/utils/constants'
 
@@ -49,6 +50,7 @@ const paidMausUsed = ref(0)
 const freeMausWidth = ref(100)
 const paidMausWidth = ref(0)
 const toast = useToast()
+const loader = useLoaderStore()
 
 const hoveredCards: { [key: number]: boolean } = reactive({})
 
@@ -96,6 +98,9 @@ function getImageUrl(appId: AppId) {
 }
 
 onBeforeMount(async () => {
+  if (appsStore.appIds.length === 0) {
+    loader.showLoader('Loading apps...')
+  }
   const [accountStatusData, authOverviewData, _, __, ___, ____] =
     await Promise.all([
       getAccountStatus(),
@@ -105,6 +110,7 @@ onBeforeMount(async () => {
       appsStore.fetchNotifications(),
       chainManagementStore.getAllAppChains('testnet'),
     ])
+  loader.hideLoader()
   accountStatus.value = accountStatusData.data
   const authOverview = authOverviewData.data
 
