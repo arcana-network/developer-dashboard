@@ -150,6 +150,10 @@ async function toggleChainStatus(chainData: object) {
   }
 }
 
+function capitalizeFirstLetter(string: string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+}
+
 async function setSelectedChainTypeCurve($event: string) {
   const appId = Number(route.params.appId)
   const app = appStore.app(appId)
@@ -170,15 +174,19 @@ async function setSelectedChainTypeCurve($event: string) {
     </div>
     <div class="flex flex-col space-y-5">
       <div class="flex w-full justify-between gap-5 items-center">
-        <!-- <div class="flex gap-2 items-center">
+        <div class="flex gap-2 items-center">
           <span class="text-liquiddark text-xs">Chain Type</span>
-          <ChainTypeSelection
-            :selected-chain-type-curve="selectedChainTypeCurve"
-            disabled
-            @update:selected-chain-type-curve="setSelectedChainTypeCurve"
-          />
-          <span>${selectedChainTypeCurve}</span>
-        </div> -->
+          <span
+            v-if="
+              chainManagementStore.selectedChainType?.toLowerCase() === 'evm'
+            "
+            class="text-liquiddark text-md"
+            >{{ chainManagementStore.selectedChainType?.toUpperCase() }}</span
+          >
+          <span v-else class="text-liquiddark text-md">{{
+            capitalizeFirstLetter(chainManagementStore.selectedChainType)
+          }}</span>
+        </div>
         <div class="flex items-center flex-grow justify-end space-x-5">
           <button
             v-if="

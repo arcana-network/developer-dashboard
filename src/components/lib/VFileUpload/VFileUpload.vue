@@ -74,7 +74,9 @@ onBeforeUnmount(() => {
     class="w-full cursor-pointer p-4 justify-between bg-black"
     @click.stop="handleUploadClick"
   >
-    <span class="text-lg font-normal text-ellipsis h-7">
+    <span
+      class="text-lg text-overlay-textplaceholder font-normal text-ellipsis h-7"
+    >
       {{ props.placeholder }}
     </span>
     <img v-if="!props.isLoading" src="@/assets/iconography/upload.svg" />

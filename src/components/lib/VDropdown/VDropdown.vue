@@ -102,7 +102,14 @@ watch(
         </span>
       </span>
       <span v-else class="placeholder">{{ placeholder }}</span>
-      <div class="arrow"></div>
+      <img
+        src="@/assets/iconography/arrow.svg"
+        alt="arrow-icon"
+        class="arrow-icon"
+        :class="{
+          'arrow-icon--active': isOpen,
+        }"
+      />
     </div>
     <div class="custom-options" role="listbox" tabindex="-1">
       <span
@@ -204,43 +211,18 @@ watch(
   color: var(--secondary);
 }
 
-.arrow {
-  position: relative;
-  right: -1rem;
-  width: 0.5rem;
-  height: 0.5rem;
+.arrow-icon {
+  width: 18px;
+  height: 18px;
+  margin-left: 4px;
+  opacity: 0.5;
+  transition: ease 0.5s;
 }
 
-.arrow::before,
-.arrow::after {
-  position: absolute;
-  bottom: 0;
-  width: 0.1rem;
-  height: 100%;
-  content: '';
-  transition: all 0.5s;
-}
-
-.arrow::before {
-  left: -2px;
-  background-color: var(--primary-black);
-  transform: rotate(-45deg);
-}
-
-.arrow::after {
-  left: 2px;
-  background-color: var(--primary-black);
-  transform: rotate(45deg);
-}
-
-.open .arrow::before {
-  left: -2px;
-  transform: rotate(45deg);
-}
-
-.open .arrow::after {
-  left: 2px;
-  transform: rotate(-45deg);
+.arrow-icon--active {
+  opacity: 1;
+  transition: ease 0.5s;
+  transform: rotate(-180deg);
 }
 
 .custom-select.disabled .custom-select__trigger {
@@ -248,7 +230,7 @@ watch(
 }
 
 .custom-select.disabled .custom-select-value,
-.custom-select.disabled .arrow {
+.custom-select.disabled .arrow-icon {
   opacity: 0.4;
 }
 </style>

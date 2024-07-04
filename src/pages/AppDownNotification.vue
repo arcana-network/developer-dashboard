@@ -7,14 +7,14 @@
         justify-content: center;
         width: 100%;
         height: 100%;
-        color: var(--text-white);
+        color: var(--text-black);
       "
     >
       <h1
         style="
           padding: 0 1em;
           font-weight: 700;
-          color: var(--primary-black);
+          color: var(--text-black);
           text-align: center;
           letter-spacing: unset;
         "

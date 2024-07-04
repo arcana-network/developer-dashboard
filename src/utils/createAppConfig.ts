@@ -63,5 +63,7 @@ export function createAppConfig(
     wallet_mode: app.wallet_mode,
     chain_type: app.chain_type,
     chain: app.chain,
+    session_persisted: app.session_persisted,
+    session_max_age: app.session_max_age,
   }
 }

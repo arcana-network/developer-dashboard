@@ -64,6 +64,8 @@ type AppConfig = {
   global: boolean
   wallet_mode: WalletUIMode
   chain_type: string
+  session_persisted: boolean
+  session_max_age: number
 }
 
 const gatewayInstance = {
@@ -213,6 +215,8 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     wallet_domain: wallet.websiteDomain,
     wallet_type,
     global: app.keyspace === 'global',
+    session_persisted: app.session_persisted,
+    session_max_age: app.session_max_age,
     status: app.status,
     wallet_mode: app.wallet_mode,
     chain_type: app.chain_type,

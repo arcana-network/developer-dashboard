@@ -187,6 +187,7 @@ div.text-field {
 
 input {
   width: 100%;
+  padding: 0 1.25rem;
   margin: 0.8rem;
   font-size: 1rem;
   line-height: 1.5;
@@ -208,13 +209,24 @@ input::placeholder {
 .form-group[data-disabled='true'],
 input:disabled {
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus {
-  box-shadow: 0 0 0 1000px #181818 inset;
-  -webkit-text-fill-color: var(--text-black);
+input:-webkit-autofill {
+  color: black !important;
+  background: transparent !important;
+}
+
+/* Firefox */
+input:-moz-autofill {
+  color: black !important;
+  background: transparent !important;
+}
+
+/* Microsoft Edge */
+input:-ms-autofill {
+  color: black !important;
+  background: transparent !important;
 }
 
 div.text-field.icon input {

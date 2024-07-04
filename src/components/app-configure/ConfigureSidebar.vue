@@ -3,8 +3,6 @@ import { ref, onMounted, watch, computed, type Ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 
 import AppFallbackLogo from '@/assets/dapp-fallback.svg'
-import DiscordIcon from '@/assets/discord-white.svg'
-import ArcanaLogo from '@/assets/iconography/arcana-dark-vertical.svg'
 import arrowIcon from '@/assets/iconography/arrow.svg'
 import brandingIcon from '@/assets/iconography/branding.svg'
 import ChainIcon from '@/assets/iconography/chain.svg'
@@ -12,12 +10,10 @@ import CloseIcon from '@/assets/iconography/close.svg'
 import dashboardIcon from '@/assets/iconography/dashboard.svg'
 import GasStationIcon from '@/assets/iconography/gas-station.svg'
 import KeyspaceIcon from '@/assets/iconography/keyspace.svg'
+import sessionIcon from '@/assets/iconography/session.svg'
 import settingsIcon from '@/assets/iconography/settings.svg'
-import UserGroupIcon from '@/assets/iconography/user-group.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
-import TelegramIcon from '@/assets/telegram-white.svg'
-import TwitterIcon from '@/assets/twitter-white.svg'
 import VCard from '@/components/lib/VCard/VCard.vue'
 import VCardButton from '@/components/lib/VCardButton/VCardButton.vue'
 import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
@@ -26,6 +22,7 @@ import { useAppsStore, type AppId, type AppConfig } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import {
   WalletUIModes,
+  isProductionDashboard,
   type ConfigureTab,
   type ConfigureTabType,
 } from '@/utils/constants'
@@ -47,12 +44,6 @@ const props = withDefaults(defineProps<ConfigureProps>(), {
   currentTab: 'Dashboard',
   currentNetwork: 'testnet',
 })
-
-const GASLESS_TAB = {
-  type: 'gasLess',
-  label: 'Gasless',
-  icon: GasStationIcon,
-}
 
 const ConfigureTabs = computed(() => {
   const configureTabsCopy = [
@@ -93,6 +84,14 @@ const ConfigureTabs = computed(() => {
 
   const appId = useAppId()
   const app = appsStore.app(appId)
+
+  if (isProductionDashboard && app.network !== 'mainnet') {
+    configureTabsCopy[configurePageIndex]?.subMenu?.push({
+      type: 'sessionManagement',
+      label: 'Login Session Management',
+      icon: sessionIcon,
+    })
+  }
 
   if (app.wallet_mode === WalletUIModes[1].value) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
@@ -423,7 +422,7 @@ function ellipsisAppName(appName: string) {
   display: flex;
   flex-direction: row;
   gap: 12px;
-  align-items: center;
+  align-items: start;
 }
 
 .arrow-icon {
