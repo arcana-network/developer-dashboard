@@ -154,13 +154,13 @@ const useAppsStore = defineStore('apps', {
       }
     },
     async fetchAndStoreAllApps(network: Network) {
-      if (network === 'testnet') this.appIds = []
       const apps = (await fetchAllApps(network)).data || []
       apps.sort(
         (app1, app2) =>
           Date.parse(app2.created_at) - Date.parse(app1.created_at)
       )
       const appConfigPromises: Promise<void>[] = []
+      if (network === 'testnet') this.appIds = []
       apps.forEach((app) => {
         const appInfo = {
           id: app.id,
