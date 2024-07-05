@@ -111,9 +111,6 @@ function handleCancel() {
         <div v-if="chosenWalletUIMode !== CUSTOM_UI" class="relative">
           <div
             class="keyspace-card"
-            :class="{
-              'disabled-card gradient-border-card': app.status !== 2,
-            }"
             @click.stop="
               app.status === 2 ? (selectedKeyspace = 'global') : void 0
             "
@@ -128,7 +125,6 @@ function handleCancel() {
                   type="radio"
                   :checked="selectedKeyspace === 'global'"
                   value="global"
-                  :disabled="app.status !== 2"
                   @change="selectedKeyspace = 'global'"
                 />
                 <VStack direction="column" gap="10px">
@@ -141,33 +137,6 @@ function handleCancel() {
                     >
                       *Recommended
                     </span>
-                    <VStack v-if="app.status === 1" align="center" gap="4px">
-                      <div
-                        class="circle-indicator"
-                        style="background: #ff6826"
-                      ></div>
-                      <span class="card-description" style="color: #000">
-                        In Review
-                      </span>
-                    </VStack>
-                    <VStack v-if="app.status === 2" align="center" gap="4px">
-                      <div
-                        class="circle-indicator"
-                        style="background: #8fff00"
-                      ></div>
-                      <span class="card-description" style="color: #000">
-                        Approved
-                      </span>
-                    </VStack>
-                    <VStack v-if="app.status === 3" align="center" gap="4px">
-                      <img
-                        src="@/assets/iconography/rejected.svg"
-                        style="width: 12px"
-                      />
-                      <span class="card-description" style="color: #000">
-                        Rejected
-                      </span>
-                    </VStack>
                   </VStack>
                   <span class="card-description"
                     >Users will be assigned
@@ -187,18 +156,6 @@ function handleCancel() {
                 </VStack>
               </VStack>
             </VCard>
-          </div>
-          <div
-            v-if="app.status === 0"
-            class="absolute"
-            style="right: 2rem; bottom: 2rem"
-          >
-            <VStack class="justify-end" style="margin-top: 2rem">
-              <VButton
-                label="VERIFY"
-                @click.stop="showVerificationForm = true"
-              ></VButton>
-            </VStack>
           </div>
         </div>
       </VStack>
