@@ -9,6 +9,8 @@ import {
   getAllChains,
   getGaslessSupportChains,
   fetchApp,
+  getChainSettings,
+  editChainSettings,
 } from '@/services/gateway.service'
 import type { Network } from '@/utils/constants'
 
@@ -17,6 +19,7 @@ const useChainManagementStore = defineStore('chain-management', {
     appChains: [] as any[],
     allChains: [] as any[],
     gaslessChains: {} as any,
+    chainSettings: {} as any,
     chainSearchText: '',
     selectedChainType: 'evm',
   }),
@@ -95,6 +98,15 @@ const useChainManagementStore = defineStore('chain-management', {
     async getGaslessChains(network: Network) {
       const chains = (await getGaslessSupportChains(network)).data
       this.gaslessChains = chains
+    },
+    async getChainSettings(appId: number, network: Network) {
+      const chainSetting = (await getChainSettings(appId, network)).data
+      this.chainSettings = chainSetting
+      return chainSetting
+    },
+    async editChainSettings(appId: number, data: any, network: Network) {
+      const payload = { shards: data.shards }
+      await editChainSettings(appId, payload, network)
     },
     async addAppChain(appId: number, chainData: any, network: Network) {
       const payload = {

@@ -14,7 +14,7 @@ import { createApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useChainManagementStore } from '@/stores/chainManagement.store'
 import { chainTypes } from '@/utils/chainTypes'
-import { WalletUIModes } from '@/utils/constants'
+import { WalletUIModes, ShardValues } from '@/utils/constants'
 import { content, errors } from '@/utils/content'
 import { createAppConfig } from '@/utils/createAppConfig'
 import { createTransactionSigner } from '@/utils/signerUtils'
@@ -25,6 +25,7 @@ const appsStore = useAppsStore()
 const appName = ref('')
 const selectedChainId: Ref<number | null> = ref(null)
 const selectedChainType = ref(chainTypes[0])
+const selectedShard = ref(ShardValues[0])
 const hasAppNameError = ref(false)
 const chainManagementStore = useChainManagementStore()
 const showLoader = ref(false)
@@ -42,6 +43,12 @@ function getPayloadForCreateApp() {
   }
 }
 
+function getPayloadForShard() {
+  return {
+    shards: selectedShard.value.value,
+  }
+}
+
 function getChain(chainId: number) {
   return chainManagementStore.allChains.find(
     (item) => item.chain_id === chainId
@@ -56,6 +63,14 @@ async function handleCreateApp() {
       data: { app },
     } = await createApp(getPayloadForCreateApp(), 'testnet')
     appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
+    chainManagementStore.editChainSettings(
+      app.ID,
+      getPayloadForShard(),
+      'testnet'
+    )
+    console.log('Check')
+    console.log(selectedShard.value)
+    console.log(chainManagementStore.chainSettings)
     createTransactionSigner(app.address, 'testnet')
     router.push({ name: 'AppDetails', params: { appId: app.ID } })
     emit('close')
@@ -123,12 +138,27 @@ function onChainSelect(_, option) {
                   <label
                     class="text-lg font-normal text-liquiddark"
                     for="default-chain"
-                    >Chain Type*</label
+                    >Chain Type<span class="text-liquidred">*</span></label
                   >
                   <VDropdown
                     v-model="selectedChainType"
                     :options="chainTypes"
                     display-field="name"
+                  />
+                </VStack>
+                <VStack
+                  v-if="selectedChainType.name === 'MultiversX'"
+                  direction="column"
+                >
+                  <label
+                    class="text-lg font-normal text-liquiddark"
+                    for="default-chain"
+                    >Shard Value<span class="text-liquidred">*</span></label
+                  >
+                  <VDropdown
+                    v-model="selectedShard"
+                    :options="ShardValues"
+                    display-field="label"
                   />
                 </VStack>
                 <VStack direction="column">
@@ -155,7 +185,7 @@ function onChainSelect(_, option) {
                   <label
                     class="text-lg font-normal text-liquiddark"
                     for="default-chain"
-                    >Wallet UI Mode*</label
+                    >Wallet UI Mode<span class="text-liquidred">*</span></label
                   >
                   <VDropdown
                     v-model="selectedWalletUIMode"
@@ -163,7 +193,8 @@ function onChainSelect(_, option) {
                     display-field="label"
                   />
                   <p class="text-liquiddark">
-                    *You cannot change these properties later.
+                    <span class="text-liquidred">*</span>You cannot change these
+                    properties later.
                   </p>
                 </VStack>
               </VStack>

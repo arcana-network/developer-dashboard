@@ -26,13 +26,14 @@ const {
   gaslessChains,
   defaultOrderChains,
   selectedChainType,
+  chainSettings,
 } = toRefs(chainManagementStore)
 const showRowOptionsOf = ref(null)
 const showRowOptions_menu = ref(null)
 const toast = useToast()
 const route = useRoute()
 const appStore = useAppsStore()
-const appId = route.params.appId
+const appId = Number(route.params.appId)
 const app = appStore.app(Number(appId))
 
 const rowOptions = [
@@ -89,6 +90,8 @@ const sortedList = computed(() => {
     }
   })
 })
+
+const chainSettingData = chainManagementStore.getChainSettings(appId, 'testnet')
 
 const sortBy = (column: null) => {
   if (sortOrder.value.column === column) {
@@ -150,8 +153,7 @@ function isGaslessSupport(chainId: number) {
     >
       <thead class="border-b-[1px] border-b-liquidgrey">
         <tr class="text-liquiddark">
-          <!-- <th class="w-[10%]"><button>A &#x2192; B</button></th> -->
-          <th class="w-[10%]"></th>
+          <th class="w-[5%]"></th>
           <th class="w-[15%] hover:text-pink" @click="sortBy('name')">
             <button>Name</button>
           </th>
@@ -165,7 +167,9 @@ function isGaslessSupport(chainId: number) {
           <th class="w-[10%] hover:text-pink" @click="sortBy('currency')">
             <button>Currency</button>
           </th>
-          <!-- <th class="w-[10%]">Compatibility</th> -->
+          <th v-if="selectedChainType === 'multiversx'" class="w-[10%]">
+            Shards
+          </th>
           <th class="w-[10%] hover:text-pink" @click="sortBy('chain_type')">
             <button>Type</button>
           </th>
@@ -209,7 +213,9 @@ function isGaslessSupport(chainId: number) {
           </td>
           <td v-if="selectedChainType !== 'near'">{{ chain.chain_id }}</td>
           <td>{{ chain.currency }}</td>
-          <!-- <td>{{ chain.compatibility }}</td> -->
+          <td v-if="selectedChainType === 'multiversx'">
+            {{ chainSettings.shards }}
+          </td>
           <td>{{ chain.chain_type }}</td>
           <td class="text-ellipsis">{{ chain.rpc_url }}</td>
           <td>

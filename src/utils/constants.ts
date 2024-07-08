@@ -407,6 +407,11 @@ const WalletUIModes = [
   { value: 1, label: 'Arcana UI' },
 ]
 
+const ShardValues = [
+  { value: 1, label: '1 Shard' },
+  { value: 2, label: '2 Shard' },
+]
+
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')
 
 const HelpItems = [
@@ -474,6 +479,7 @@ export {
   IAM_Providers,
   EMPTY_STRING,
   GLOBAL_KEYSPACE,
+  ShardValues,
 }
 
 export type {
