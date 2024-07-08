@@ -63,14 +63,14 @@ async function handleCreateApp() {
       data: { app },
     } = await createApp(getPayloadForCreateApp(), 'testnet')
     appsStore.addApp(app.ID, createAppConfig(app, 'testnet'), 'testnet')
-    chainManagementStore.editChainSettings(
-      app.ID,
-      getPayloadForShard(),
-      'testnet'
-    )
-    console.log('Check')
-    console.log(selectedShard.value)
-    console.log(chainManagementStore.chainSettings)
+    if (selectedChainType.value.name === 'MultiversX') {
+      chainManagementStore.editChainSettings(
+        app.ID,
+        getPayloadForShard(),
+        'testnet'
+      )
+    }
+
     createTransactionSigner(app.address, 'testnet')
     router.push({ name: 'AppDetails', params: { appId: app.ID } })
     emit('close')

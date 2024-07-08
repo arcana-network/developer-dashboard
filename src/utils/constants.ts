@@ -408,6 +408,7 @@ const WalletUIModes = [
 ]
 
 const ShardValues = [
+  { value: 0, label: '0 Shard' },
   { value: 1, label: '1 Shard' },
   { value: 2, label: '2 Shard' },
 ]
