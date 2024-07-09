@@ -314,7 +314,7 @@ function handleCancel() {
           </form>
         </SettingCard>
       </section>
-      <section id="billing-details" style="margin-top: 3em">
+      <!-- <section id="billing-details" style="margin-top: 3em">
         <SettingCard>
           <template #title>Billing Address Details</template>
           <form @submit.prevent="updateBillingDetails">
@@ -414,7 +414,7 @@ function handleCancel() {
             />
           </form>
         </SettingCard>
-      </section>
+      </section> -->
     </main>
   </div>
 </template>
