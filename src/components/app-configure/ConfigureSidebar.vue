@@ -85,7 +85,10 @@ const ConfigureTabs = computed(() => {
   const appId = useAppId()
   const app = appsStore.app(appId)
 
-  if (isProductionDashboard && app.network !== 'mainnet') {
+  if (
+    !isProductionDashboard ||
+    (isProductionDashboard && app.network !== 'mainnet')
+  ) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
       type: 'sessionManagement',
       label: 'Login Session Management',
