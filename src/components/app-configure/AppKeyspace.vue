@@ -109,97 +109,41 @@ function handleCancel() {
           </VStack>
         </VCard>
         <div v-if="chosenWalletUIMode !== CUSTOM_UI" class="relative">
-          <div
-            class="keyspace-card"
-            :class="{
-              'disabled-card gradient-border-card': app.status !== 2,
-            }"
-            @click.stop="
-              app.status === 2 ? (selectedKeyspace = 'global') : void 0
-            "
+          <VCard
+            variant="depressed"
+            class="keyspace-card-global keyspace-container"
+            @click.stop="selectedKeyspace = 'global'"
           >
-            <VCard
-              variant="depressed"
-              class="keyspace-card-global keyspace-container"
-            >
-              <VStack gap="1.25rem" align="start" direction="column">
-                <input
-                  id="global"
-                  type="radio"
-                  :checked="selectedKeyspace === 'global'"
-                  value="global"
-                  :disabled="app.status !== 2"
-                  @change="selectedKeyspace = 'global'"
-                />
-                <VStack direction="column" gap="10px">
-                  <VStack justify="space-between">
-                    <span class="card-title">Global</span>
-                    <span
-                      v-if="app.status === 0"
-                      class="card-description"
-                      style="color: #000"
-                    >
-                      *Recommended
-                    </span>
-                    <VStack v-if="app.status === 1" align="center" gap="4px">
-                      <div
-                        class="circle-indicator"
-                        style="background: #ff6826"
-                      ></div>
-                      <span class="card-description" style="color: #000">
-                        In Review
-                      </span>
-                    </VStack>
-                    <VStack v-if="app.status === 2" align="center" gap="4px">
-                      <div
-                        class="circle-indicator"
-                        style="background: #8fff00"
-                      ></div>
-                      <span class="card-description" style="color: #000">
-                        Approved
-                      </span>
-                    </VStack>
-                    <VStack v-if="app.status === 3" align="center" gap="4px">
-                      <img
-                        src="@/assets/iconography/rejected.svg"
-                        style="width: 12px"
-                      />
-                      <span class="card-description" style="color: #000">
-                        Rejected
-                      </span>
-                    </VStack>
-                  </VStack>
-                  <span class="card-description"
-                    >Users will be assigned
-                    <span class="bolder">the same wallet address</span>
-                    across all apps with Arcana Auth. This improves user
-                    experience but users have to ensure they do not sign
-                    malicious transactions on a fraudulent app. Arcana mitigates
-                    this risk with an app review and validation process before
-                    approving the global keys feature for an app.</span
-                  >
-                  <VStack
-                    class="justify-end"
-                    style="margin-top: 2rem; visibility: hidden"
-                  >
-                    <VButton label="VERIFY" disabled></VButton>
-                  </VStack>
+            <VStack gap="1.25rem" align="start" direction="column">
+              <input
+                id="global"
+                type="radio"
+                :checked="selectedKeyspace === 'global'"
+                value="global"
+                @change="selectedKeyspace = 'global'"
+              />
+              <VStack direction="column" gap="10px">
+                <VStack justify="space-between">
+                  <span class="card-title">Global</span>
+                </VStack>
+                <span class="card-description"
+                  >Users will be assigned
+                  <span class="bolder">the same wallet address</span>
+                  across all apps with Arcana Auth. This improves user
+                  experience but users have to ensure they do not sign malicious
+                  transactions on a fraudulent app. Arcana mitigates this risk
+                  with an app review and validation process before approving the
+                  global keys feature for an app.</span
+                >
+                <VStack
+                  class="justify-end"
+                  style="margin-top: 2rem; visibility: hidden"
+                >
+                  <VButton label="VERIFY" disabled></VButton>
                 </VStack>
               </VStack>
-            </VCard>
-          </div>
-          <div
-            v-if="app.status === 0"
-            class="absolute"
-            style="right: 2rem; bottom: 2rem"
-          >
-            <VStack class="justify-end" style="margin-top: 2rem">
-              <VButton
-                label="VERIFY"
-                @click.stop="showVerificationForm = true"
-              ></VButton>
             </VStack>
-          </div>
+          </VCard>
         </div>
       </VStack>
       <ConfigureActionButtons
