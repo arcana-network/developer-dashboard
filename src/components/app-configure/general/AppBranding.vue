@@ -78,7 +78,7 @@ async function handleFileChange(
     toast.success('Logo uploaded successfully')
     const logoUrl = `${api.gateway[app.network]}${getEnvApi(
       'v2'
-    )}/app/${appId}/logo?type=${mode}&orientation=${orientation}`
+    )}/app/${appId}/logo/?type=${mode}&orientation=${orientation}`
     themeLogos[mode][orientation].logo = logoUrl
     currentApp.logos[mode][orientation] = logoUrl
     appsStore.updateApp(appId, currentApp, currentApp.network)
