@@ -92,19 +92,11 @@ function clearSessionAge() {
     </div>
   </div>
   <SettingCard>
-    <template #title><h2>Session Cookie Mode*</h2></template>
-    <template #description>
-      <div>
-        Arcana uses cookies to keep an authenticated session active even if the
-        browser is closed. All cookies are cleared when a user logs out.
-        <a
-          href="https://docs.arcana.network/concepts/session_type/#persistent-session"
-          target="_blank"
-        >
-          Learn More
-        </a>
-      </div>
-    </template>
+    <template #title
+      ><h2>
+        Session Cookie Mode <span class="text-liquidred">*</span>
+      </h2></template
+    >
     <div class="flex flex-row gap-10">
       <div
         :class="{
