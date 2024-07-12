@@ -408,9 +408,10 @@ const WalletUIModes = [
 ]
 
 const ShardValues = [
-  { value: 0, label: '0 Shard' },
-  { value: 1, label: '1 Shard' },
-  { value: 2, label: '2 Shard' },
+  { value: 'none', label: 'None' },
+  { value: '0', label: 'Shard 0' },
+  { value: '1', label: 'Shard 1' },
+  { value: '2', label: 'Shard 2' },
 ]
 
 const MAX_DATA_TRANSFER_BYTES = bytes('10 TB')

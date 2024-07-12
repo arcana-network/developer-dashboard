@@ -101,6 +101,9 @@ const useChainManagementStore = defineStore('chain-management', {
     },
     async getChainSettings(appId: number, network: Network) {
       const chainSetting = (await getChainSettings(appId, network)).data
+      if (chainSetting.shards === 'none') {
+        chainSetting.shards = '-'
+      }
       this.chainSettings = chainSetting
       return chainSetting
     },
