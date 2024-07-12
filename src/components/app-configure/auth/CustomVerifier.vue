@@ -14,7 +14,7 @@ import {
 } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useLoaderStore } from '@/stores/loader.store'
-import { DOCS_URL } from '@/utils/constants'
+import { DOCS_URL, GLOBAL_KEYSPACE } from '@/utils/constants'
 import { content, errors } from '@/utils/content'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -29,6 +29,8 @@ const route = useRoute()
 const appId = route.params.appId
 const app = appStore.app(Number(appId))
 const selectedIdParam = ref('sub')
+
+const keyspace = app.keyspace
 
 const validationFields = ref([
   {
@@ -58,6 +60,7 @@ const fetchedData = ref({
 onMounted(fetchAndSetData)
 
 async function fetchAndSetData() {
+  if (keyspace === GLOBAL_KEYSPACE) return
   const data = await getCustomProvider()
   const fields =
     Object.values(data.params).length > 0
