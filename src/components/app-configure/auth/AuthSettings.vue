@@ -3,7 +3,7 @@ import { useRoute } from 'vue-router'
 
 import CustomVerifier from '@/components/app-configure/auth/CustomVerifier.vue'
 import IAMProviders from '@/components/app-configure/auth/IAMProviders.vue'
-import RedirectURI from '@/components/app-configure/auth/RedirectURI.vue'
+import PasskeysProviders from '@/components/app-configure/auth/PasskeysProviders.vue'
 import SocialAuthProvider from '@/components/app-configure/auth/SocialAuthProvider.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
@@ -20,7 +20,6 @@ const keyspace = app.keyspace
 <template>
   <main>
     <VStack direction="column" gap="1rem">
-      <RedirectURI />
       <div class="relative space-y-4">
         <div
           v-if="keyspace === GLOBAL_KEYSPACE"
@@ -35,6 +34,7 @@ const keyspace = app.keyspace
         <SocialAuthProvider />
         <IAMProviders />
         <CustomVerifier />
+        <PasskeysProviders />
       </div>
     </VStack>
   </main>

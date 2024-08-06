@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
+import { set } from 'vue-gtag'
 
 import { updateApp, deleteCred } from '@/services/gateway.service'
 import type {
@@ -12,12 +13,16 @@ import type {
   Network,
 } from '@/utils/constants'
 
-type AuthType = 'iam' | 'social'
+type AuthType = 'iam' | 'social' | 'passkey'
 type SocialAuthState = Array<SocialAuthOption>
 type IAMAuthProviders = Array<SocialAuthOption>
+type PasskeyAuthState = Array<SocialAuthOption>
 type SocialAuthCredentialsInput = {
   [authType in AuthType]: {
-    [verifier in SocialAuthVerifier]: { clientId: string; clientSecret: string }
+    [verifier in SocialAuthVerifier]: {
+      clientId: string
+      clientSecret: string
+    }
   }
 }
 
@@ -25,6 +30,7 @@ type State = {
   socialAuthProviders: SocialAuthState
   iamAuthProviders: IAMAuthProviders
   authCredentialsInput: SocialAuthCredentialsInput | unknown
+  passkeyAuthProviders: PasskeyAuthState
 }
 
 const useSocialAuthStore = defineStore('socialAuth', {
@@ -32,6 +38,7 @@ const useSocialAuthStore = defineStore('socialAuth', {
     socialAuthProviders: [],
     iamAuthProviders: [],
     authCredentialsInput: {},
+    passkeyAuthProviders: [],
   }),
   getters: {
     SocialAuthProviders(): SocialAuthState {
@@ -39,6 +46,9 @@ const useSocialAuthStore = defineStore('socialAuth', {
     },
     IAMAuthProviders(): IAMAuthProviders {
       return this.iamAuthProviders
+    },
+    PasskeyAuthProviders(): PasskeyAuthState {
+      return this.passkeyAuthProviders
     },
   },
   actions: {
@@ -49,6 +59,9 @@ const useSocialAuthStore = defineStore('socialAuth', {
         this.authCredentialsInput.social[authProvider.verifier] = {
           clientId: authProvider.clientId,
           clientSecret: authProvider.clientSecret,
+          privateKey: authProvider.privateKey,
+          teamId: authProvider.teamId,
+          keyId: authProvider.keyId,
         }
       })
     },
@@ -59,6 +72,17 @@ const useSocialAuthStore = defineStore('socialAuth', {
         this.authCredentialsInput.iam[authProvider.verifier] = {
           clientId: authProvider.clientId,
           clientSecret: authProvider.clientSecret,
+        }
+      })
+    },
+    setPasskeyAuthProviders(passkeyAuthProviders: PasskeyAuthState) {
+      this.passkeyAuthProviders = passkeyAuthProviders
+      this.authCredentialsInput['passkey'] = {}
+      passkeyAuthProviders.forEach((authProvider) => {
+        this.authCredentialsInput.passkey[authProvider.verifier] = {
+          clientId: authProvider.clientId,
+          clientSecret: authProvider.clientSecret,
+          provider: authProvider.provider,
         }
       })
     },
@@ -75,6 +99,40 @@ const useSocialAuthStore = defineStore('socialAuth', {
       clientSecret: string
     ) {
       this.authCredentialsInput[type][verifier].clientSecret = clientSecret
+    },
+    setProvider(
+      type: AuthType,
+      verifier: SocialAuthVerifier,
+      provider: string
+    ) {
+      this.authCredentialsInput[type][verifier].provider = provider
+    },
+    setTeamId(type: AuthType, verifier: SocialAuthVerifier, teamId: string) {
+      this.authCredentialsInput[type][verifier].teamId = teamId
+      this.setAppleClientSecret(type, verifier)
+    },
+    setKeyId(type: AuthType, verifier: SocialAuthVerifier, keyId: string) {
+      this.authCredentialsInput[type][verifier].keyId = keyId
+      this.setAppleClientSecret(type, verifier)
+    },
+    setPrivateKey(
+      type: AuthType,
+      verifier: SocialAuthVerifier,
+      privateKey: string
+    ) {
+      this.authCredentialsInput[type][verifier].privateKey = privateKey
+      this.setAppleClientSecret(type, verifier)
+    },
+    setAppleClientSecret(type: AuthType, verifier: SocialAuthVerifier) {
+      if (verifier === 'apple') {
+        const appleClientSecret = [
+          this.authCredentialsInput[type][verifier].teamId,
+          this.authCredentialsInput[type][verifier].keyId,
+          this.authCredentialsInput[type][verifier].privateKey,
+        ].join(':')
+        this.authCredentialsInput[type][verifier].clientSecret =
+          JSON.stringify(appleClientSecret)
+      }
     },
     async updateSocialAuthProviders(
       appId: number,
@@ -108,6 +166,7 @@ const useSocialAuthStore = defineStore('socialAuth', {
 
       auth.social = [...payload, ...newCreds]
       const authToRemove = auth.social.filter((input) => input.clientId === '')
+
       await updateApp(appId, { auth }, network)
       await this.deleteSocialAuthProviders(appId, authToRemove, network)
     },

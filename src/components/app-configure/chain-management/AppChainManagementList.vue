@@ -237,7 +237,7 @@ function isGaslessSupport(chainId: number) {
               @update:model-value="() => onChainToggle(chain)"
             />
           </td>
-          <td>
+          <td class="last:text-right">
             <PopperJs placement="left-start" :arrow="true">
               <button
                 class="flex justify-center items-center w-7 h-7 bg-[#262626] rounded-[5px]"
