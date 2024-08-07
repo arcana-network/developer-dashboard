@@ -7,6 +7,7 @@ const selectedFontPairing = ref('Nohemi + Inter')
 const selectedFontSize = ref(14)
 const selectedFontColor = ref('#1D2A31')
 const selectedRadius = ref('M')
+const showPreviewOf = ref('wallet')
 
 const accentColors = [
   '#1862E8',
@@ -230,61 +231,165 @@ const cancelConfiguration = () => {
     </div>
 
     <!-- Preview Panel -->
-    <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px]">
+    <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px] flex flex-col">
       <h1 class="text-xl font-bold mb-4">Preview</h1>
-      <div
-        class="p-4 rounded border"
-        :style="{
-          backgroundColor:
-            selectedTheme === 'black-haze' ? '#1D2A31' : '#FFFFFF',
-          color: selectedTheme === 'black-haze' ? '#FFFFFF' : '#000000',
-        }"
-      >
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center space-x-2">
-            <span class="text-2xl">xyz company</span>
+
+      <!-- Wallet UI -->
+      <div class="flex flex-col flex-1 gap-3">
+        <div class="flex-1 flex justify-center">
+          <div
+            v-if="showPreviewOf === 'wallet'"
+            class="p-4 rounded border"
+            :style="{
+              backgroundColor:
+                selectedTheme === 'black-haze' ? '#1D2A31' : '#FFFFFF',
+              color: selectedTheme === 'black-haze' ? '#FFFFFF' : '#000000',
+            }"
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center space-x-2">
+                <span class="text-2xl">xyz company</span>
+              </div>
+              <div>
+                <button
+                  class="px-2 py-1 rounded"
+                  :style="{ backgroundColor: selectedColor }"
+                >
+                  Icon
+                </button>
+              </div>
+            </div>
+            <div class="mb-4">
+              <div class="flex items-center justify-between mb-2">
+                <span>Total Balance:</span>
+                <span class="text-2xl font-bold">552156560.642827 ETH</span>
+              </div>
+              <div class="flex space-x-2">
+                <button
+                  class="flex-1 px-4 py-2 rounded"
+                  :style="{ backgroundColor: selectedColor }"
+                >
+                  SEND
+                </button>
+                <button
+                  class="flex-1 px-4 py-2 rounded"
+                  :style="{ backgroundColor: selectedColor }"
+                >
+                  BUY
+                </button>
+              </div>
+            </div>
+            <div>
+              <h2 class="font-semibold mb-2">Assets</h2>
+              <div class="flex items-center justify-between mb-2">
+                <span>XAR</span>
+                <span>0 ETH</span>
+              </div>
+              <div class="flex items-center justify-between">
+                <span>Ethereum</span>
+                <span>552156560.642827 ETH</span>
+              </div>
+            </div>
           </div>
-          <div>
-            <button
-              class="px-2 py-1 rounded"
-              :style="{ backgroundColor: selectedColor }"
-            >
-              Icon
-            </button>
+
+          <!-- Login Modal -->
+          <div
+            v-if="showPreviewOf === 'login'"
+            class="flex items-center justify-center"
+          >
+            <div class="bg-white p-8 rounded shadow-lg relative w-96">
+              <div class="text-center">
+                <img
+                  src="https://via.placeholder.com/50"
+                  alt="Logo"
+                  class="mx-auto mb-4"
+                />
+                <h2 class="text-2xl font-semibold mb-2">Welcome</h2>
+                <p class="mb-4">
+                  We’ll email you a login link for a password-free sign in.
+                </p>
+                <input
+                  v-model="email"
+                  type="email"
+                  placeholder="Email"
+                  class="w-full px-4 py-2 border rounded mb-4"
+                />
+                <button
+                  class="w-full px-4 py-2 text-white rounded"
+                  :style="{ backgroundColor: selectedColor }"
+                >
+                  Get Link
+                </button>
+                <p class="mt-4">or continue with</p>
+                <div class="flex justify-center space-x-4 mt-2">
+                  <button class="bg-gray-200 p-2 rounded-full">
+                    <img src="https://via.placeholder.com/20" alt="Google" />
+                  </button>
+                  <button class="bg-gray-200 p-2 rounded-full">
+                    <img src="https://via.placeholder.com/20" alt="Facebook" />
+                  </button>
+                  <button class="bg-gray-200 p-2 rounded-full">
+                    <img src="https://via.placeholder.com/20" alt="Twitter" />
+                  </button>
+                  <button class="bg-gray-200 p-2 rounded-full">
+                    <img src="https://via.placeholder.com/20" alt="Reddit" />
+                  </button>
+                </div>
+                <p class="mt-4">
+                  Powered by <span class="font-semibold">arcana</span>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="mb-4">
-          <div class="flex items-center justify-between mb-2">
-            <span>Total Balance:</span>
-            <span class="text-2xl font-bold">552156560.642827 ETH</span>
-          </div>
-          <div class="flex space-x-2">
-            <button
-              class="flex-1 px-4 py-2 rounded"
-              :style="{ backgroundColor: selectedColor }"
+        <div class="flex items-center justify-center">
+          <div class="flex bg-[#EFEFEF] rounded-full p-1 cursor-pointer w-64">
+            <div
+              :class="{
+                'bg-[#1D2A31] text-[#F7F7F7]': showPreviewOf === 'wallet',
+                'text-[#989898]': showPreviewOf !== 'wallet',
+              }"
+              class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center"
+              @click="showPreviewOf = 'wallet'"
             >
-              SEND
-            </button>
-            <button
-              class="flex-1 px-4 py-2 rounded"
-              :style="{ backgroundColor: selectedColor }"
+              Wallet
+            </div>
+            <div
+              :class="{
+                'bg-[#1D2A31] text-[#F7F7F7]': showPreviewOf === 'login',
+                'text-[#989898]': showPreviewOf !== 'login',
+              }"
+              class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center"
+              @click="showPreviewOf = 'login'"
             >
-              BUY
-            </button>
-          </div>
-        </div>
-        <div>
-          <h2 class="font-semibold mb-2">Assets</h2>
-          <div class="flex items-center justify-between mb-2">
-            <span>XAR</span>
-            <span>0 ETH</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span>Ethereum</span>
-            <span>552156560.642827 ETH</span>
+              Login Modal
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style>
+.slide-enter-active,
+.slide-leave-active {
+  transition: transform 0.3s;
+}
+
+.slide-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-enter-to {
+  transform: translateX(0%);
+}
+
+.slide-leave-from {
+  transform: translateX(0%);
+}
+
+.slide-leave-to {
+  transform: translateX(-100%);
+}
+</style>
