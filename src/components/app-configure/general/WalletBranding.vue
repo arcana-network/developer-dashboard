@@ -8,6 +8,7 @@ const selectedFontSize = ref(14)
 const selectedFontColor = ref('#1D2A31')
 const selectedRadius = ref('M')
 const showPreviewOf = ref('wallet')
+const showColorPicker = ref(false)
 
 const accentColors = [
   '#1862E8',
@@ -103,6 +104,20 @@ const cancelConfiguration = () => {
             class="w-8 h-8 rounded-full cursor-pointer"
             @click="selectedColor = color"
           ></div>
+          <div class="relative flex items-center space-x-4">
+            <button
+              class="flex items-center justify-center w-10 h-10 text-white bg-blue-500 rounded-full hover:bg-blue-700"
+              @click="showColorPicker = !showColorPicker"
+            >
+              +
+            </button>
+            <input
+              v-if="showColorPicker"
+              v-model="selectedColor"
+              type="color"
+              class="absolute left-0 w-16 h-16 p-0 mt-12 border-none outline-none"
+            />
+          </div>
         </div>
       </div>
 
@@ -213,20 +228,21 @@ const cancelConfiguration = () => {
         </div>
       </div>
 
-      <!-- Save / Cancel -->
-      <div class="flex space-x-4 mt-4">
-        <button
-          class="px-4 py-2 bg-blue-500 text-white rounded"
-          @click="saveConfiguration"
-        >
-          Save
-        </button>
-        <button
-          class="px-4 py-2 bg-gray-500 text-white rounded"
-          @click="cancelConfiguration"
-        >
-          Cancel
-        </button>
+      <div class="flex justify-end">
+        <div class="flex items-center justify-center w-52 gap-3">
+          <div
+            class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#DFECEE] text-[#1D2A31] cursor-pointer"
+            @click="cancelConfiguration"
+          >
+            Cancel
+          </div>
+          <div
+            class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#1D2A31] text-[#F7F7F7] cursor-pointer"
+            @click="saveConfiguration"
+          >
+            Save
+          </div>
+        </div>
       </div>
     </div>
 
