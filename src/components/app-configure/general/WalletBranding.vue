@@ -8,7 +8,6 @@ const selectedFontSize = ref(14)
 const selectedFontColor = ref('#1D2A31')
 const selectedRadius = ref('M')
 const showPreviewOf = ref('wallet')
-const showColorPicker = ref(false)
 
 const accentColors = [
   '#1862E8',
@@ -57,6 +56,25 @@ const cancelConfiguration = () => {
 
 const clickLogoUpload = (id) => {
   document.getElementById(id).click()
+}
+
+const onColorPickerClick = () => {
+  document.getElementById('color-picker').click()
+}
+
+const getRadius = (radius) => {
+  switch (radius) {
+    case 'S':
+      return '4px'
+    case 'M':
+      return '8px'
+    case 'L':
+      return '12px'
+    case 'XL':
+      return '16px'
+    default:
+      return '0px'
+  }
 }
 </script>
 
@@ -116,19 +134,22 @@ const clickLogoUpload = (id) => {
               v-for="color in accentColors"
               :key="color"
               :style="{ backgroundColor: color }"
-              class="w-8 h-8 rounded-full cursor-pointer"
+              class="w-8 h-8 rounded-full cursor-pointer border-[1px] border-[#DCDCDC]"
               @click="selectedColor = color"
             ></div>
-            <div class="relative flex items-center space-x-4">
+            <div
+              class="relative flex items-center space-x-4 border-1 border-red-700"
+            >
               <button
-                class="flex items-center justify-center w-10 h-10 text-white bg-blue-500 rounded-full hover:bg-blue-700"
-                @click="showColorPicker = !showColorPicker"
+                class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
+                @click="onColorPickerClick"
               >
-                +
+                <img src="@/assets/iconography/plus.svg" alt="add" />
               </button>
               <input
-                v-if="showColorPicker"
+                id="color-picker"
                 v-model="selectedColor"
+                hidden
                 type="color"
                 class="absolute left-0 w-16 h-16 p-0 mt-12 border-none outline-none"
               />
@@ -235,7 +256,7 @@ const clickLogoUpload = (id) => {
               v-for="radius in radii"
               :key="radius"
               :class="radiusClass(radius)"
-              class="cursor-pointer p-2 w-10 h-10 text-center rounded-full font-normal text-lg border bg-[#EFEFEF]"
+              class="cursor-pointer p-2 w-10 h-10 text-center rounded-full font-normal text-lg border bg-[#EFEFEF] flex items-center justify-center"
               @click="selectedRadius = radius"
             >
               {{ radius }}
@@ -337,7 +358,9 @@ const clickLogoUpload = (id) => {
             :style="{
               backgroundColor:
                 selectedTheme === 'black-haze' ? '#1D2A31' : '#FFFFFF',
-              color: selectedTheme === 'black-haze' ? '#FFFFFF' : '#000000',
+              color: selectedFontColor,
+              fontSize: `${selectedFontSize}px`,
+              borderRadius: `${getRadius(selectedRadius)}`,
             }"
           >
             <div class="flex items-center justify-between mb-4">
@@ -391,7 +414,16 @@ const clickLogoUpload = (id) => {
             v-if="showPreviewOf === 'login'"
             class="flex items-center justify-center"
           >
-            <div class="bg-white p-8 rounded shadow-lg relative w-96">
+            <div
+              class="bg-white p-8 rounded shadow-lg relative w-96"
+              :style="{
+                backgroundColor:
+                  selectedTheme === 'black-haze' ? '#1D2A31' : '#FFFFFF',
+                color: selectedFontColor,
+                fontSize: `${selectedFontSize}px`,
+                borderRadius: `${getRadius(selectedRadius)}`,
+              }"
+            >
               <div class="text-center">
                 <img
                   src="https://via.placeholder.com/50"

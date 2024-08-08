@@ -7,7 +7,6 @@ import WalletBranding from '@/components/app-configure/general/WalletBranding.vu
 const activeTab = ref('wallet')
 
 function isActiveTab(tab) {
-  console.log(tab, activeTab.value === tab, 'activeTab.value === tab')
   return activeTab.value === tab
 }
 </script>
