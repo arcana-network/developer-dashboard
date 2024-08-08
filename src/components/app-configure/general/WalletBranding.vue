@@ -22,7 +22,9 @@ const accentColors = [
   '#FFFFFF',
   '#000000',
 ]
-const radii = ['S', 'M', 'L', 'XL']
+const radii = ['-', 'S', 'M', 'L', 'XL']
+const fontColors = ['#1D2A31', '#464646', '#151515']
+const fonts = ['Nohemi + Inter', 'Syne + Onest', 'Nunito + PT Sans']
 
 const themeClass = (theme) =>
   theme === selectedTheme.value
@@ -34,7 +36,7 @@ const fontSizeClass = (size) =>
 
 const radiusClass = (radius) =>
   radius === selectedRadius.value
-    ? 'border-2 border-blue-500'
+    ? 'border-2 border-[#FF4E9F]'
     : 'border-2 border-transparent'
 
 const updateLogo = (type, event) => {
@@ -52,195 +54,269 @@ const cancelConfiguration = () => {
   console.log('Cancelling configuration...')
   // Cancel configuration logic here
 }
+
+const clickLogoUpload = (id) => {
+  document.getElementById(id).click()
+}
 </script>
 
 <template>
   <div class="flex gap-3">
     <!-- Configuration Panel -->
     <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px]">
-      <h1 class="text-[22px] font-nohemi font-normal mb-4 text-[#1D2A31]">
+      <h1 class="text-[22px] font-nohemi font-light mb-4 text-[#1D2A31]">
         Configuration
       </h1>
 
-      <!-- Theme -->
-      <div>
-        <h2 class="font-medium font-inter text-lg mb-2">Theme</h2>
-        <div class="flex space-x-4 mb-4">
-          <div
-            class="cursor-pointer flex flex-col gap-2"
-            @click="selectedTheme = 'black-haze'"
+      <div class="flex flex-col gap-2 p-2">
+        <!-- Theme -->
+        <div class="flex flex-col gap-2">
+          <h2
+            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
           >
-            <img
-              src="@/assets/black-haze-icon.svg"
-              alt="black-haze-icon"
-              :class="themeClass('black-haze')"
-              class="p-1 rounded-2xl"
-            />
-            <span class="font-normal text-sm">Black Haze</span>
-          </div>
-          <div
-            class="cursor-pointer flex flex-col gap-2"
-            @click="selectedTheme = 'white-mist'"
-          >
-            <img
-              src="@/assets/white-mist-icon.svg"
-              alt="black-haze-icon"
-              :class="themeClass('white-mist')"
-              class="p-1 rounded-2xl"
-            />
-            <span class="font-normal text-sm">White Mist</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Accent Color -->
-      <div>
-        <h2 class="font-medium font-inter text-lg mb-2">Accent Color</h2>
-        <div class="flex space-x-2 mb-4">
-          <div
-            v-for="color in accentColors"
-            :key="color"
-            :style="{ backgroundColor: color }"
-            class="w-8 h-8 rounded-full cursor-pointer"
-            @click="selectedColor = color"
-          ></div>
-          <div class="relative flex items-center space-x-4">
-            <button
-              class="flex items-center justify-center w-10 h-10 text-white bg-blue-500 rounded-full hover:bg-blue-700"
-              @click="showColorPicker = !showColorPicker"
+            Theme
+          </h2>
+          <div class="flex space-x-4 mb-4 gap-6">
+            <div
+              class="cursor-pointer flex flex-col gap-2"
+              @click="selectedTheme = 'black-haze'"
             >
-              +
-            </button>
-            <input
-              v-if="showColorPicker"
-              v-model="selectedColor"
-              type="color"
-              class="absolute left-0 w-16 h-16 p-0 mt-12 border-none outline-none"
-            />
-          </div>
-        </div>
-      </div>
-
-      <!-- Fonts -->
-      <div>
-        <h2 class="font-medium font-inter text-lg mb-2">Fonts</h2>
-        <div class="flex justify-between">
-          <div class="mb-2">
-            <label
-              for="font-pairing"
-              class="block mb-1 font-normal text-sm text-[#1D2A31]"
-              >Font pairing</label
+              <img
+                src="@/assets/black-haze-icon.svg"
+                alt="black-haze-icon"
+                :class="themeClass('black-haze')"
+                class="p-1 rounded-2xl"
+              />
+              <span class="font-normal text-sm">Black Haze</span>
+            </div>
+            <div
+              class="cursor-pointer flex flex-col gap-2"
+              @click="selectedTheme = 'white-mist'"
             >
-            <select
-              id="font-pairing"
-              v-model="selectedFontPairing"
-              class="p-2 border rounded"
-            >
-              <option value="Nohemi + Inter">Nohemi + Inter</option>
-              <!-- Add more font pairings here -->
-            </select>
-          </div>
-          <div class="mb-4">
-            <label
-              for="font-size"
-              class="block mb-1 font-normal text-sm text-[#1D2A31]"
-              >Size</label
-            >
-            <div class="flex space-x-4 items-baseline">
-              <span
-                :class="fontSizeClass(14)"
-                class="text-sm cursor-pointer"
-                @click="selectedFontSize = 14"
-                >AA</span
-              >
-              <span
-                :class="fontSizeClass(18)"
-                class="text-lg cursor-pointer"
-                @click="selectedFontSize = 18"
-                >AA</span
-              >
-              <span
-                :class="fontSizeClass(24)"
-                class="text-2xl cursor-pointer"
-                @click="selectedFontSize = 24"
-                >AA</span
-              >
+              <img
+                src="@/assets/white-mist-icon.svg"
+                alt="black-haze-icon"
+                :class="themeClass('white-mist')"
+                class="p-1 rounded-2xl"
+              />
+              <span class="font-normal text-sm">White Mist</span>
             </div>
           </div>
-          <div class="mb-4">
-            <select
-              id="font-color"
-              v-model="selectedFontColor"
-              class="p-2 border rounded"
-            >
-              <option value="#1D2A31">#1D2A31</option>
-            </select>
+        </div>
+
+        <!-- Accent Color -->
+        <div class="flex flex-col gap-2">
+          <h2
+            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
+          >
+            Accent Color
+          </h2>
+          <div class="flex space-x-2 mb-4">
+            <div
+              v-for="color in accentColors"
+              :key="color"
+              :style="{ backgroundColor: color }"
+              class="w-8 h-8 rounded-full cursor-pointer"
+              @click="selectedColor = color"
+            ></div>
+            <div class="relative flex items-center space-x-4">
+              <button
+                class="flex items-center justify-center w-10 h-10 text-white bg-blue-500 rounded-full hover:bg-blue-700"
+                @click="showColorPicker = !showColorPicker"
+              >
+                +
+              </button>
+              <input
+                v-if="showColorPicker"
+                v-model="selectedColor"
+                type="color"
+                class="absolute left-0 w-16 h-16 p-0 mt-12 border-none outline-none"
+              />
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Radius -->
-      <div>
-        <h2 class="font-medium font-inter text-lg mb-2">Radius</h2>
-        <div class="flex space-x-2 mb-4">
-          <div
-            v-for="radius in radii"
-            :key="radius"
-            :class="radiusClass(radius)"
-            class="cursor-pointer p-2 w-10 h-10 text-center rounded-full border bg-[#DCDCDC]"
-            @click="selectedRadius = radius"
+        <!-- Fonts -->
+        <div class="flex flex-col gap-2">
+          <h2
+            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
           >
-            {{ radius }}
+            Fonts
+          </h2>
+          <div class="flex justify-between">
+            <div class="mb-2">
+              <label
+                for="font-pairing"
+                class="block mb-1 font-normal text-sm text-[#1D2A31]"
+                >Font pairing</label
+              >
+
+              <div class="relative inline-block w-44 h-14">
+                <select
+                  v-model="selectedFontPairing"
+                  class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
+                >
+                  <option v-for="font in fonts" :key="font" :value="font">
+                    {{ font }}
+                  </option>
+                </select>
+                <img
+                  src="@/assets/iconography/arrow-down.svg"
+                  alt="select"
+                  class="h-5 w-5 absolute top-3 right-2"
+                />
+              </div>
+            </div>
+            <div class="mb-4 flex flex-col gap-2">
+              <label
+                for="font-size"
+                class="block mb-1 font-normal text-sm text-[#1D2A31]"
+                >Size</label
+              >
+              <div class="flex space-x-4 items-baseline">
+                <span
+                  :class="fontSizeClass(14)"
+                  class="text-sm cursor-pointer"
+                  @click="selectedFontSize = 14"
+                  >AA</span
+                >
+                <span
+                  :class="fontSizeClass(18)"
+                  class="text-lg cursor-pointer"
+                  @click="selectedFontSize = 18"
+                  >AA</span
+                >
+                <span
+                  :class="fontSizeClass(24)"
+                  class="text-2xl cursor-pointer"
+                  @click="selectedFontSize = 24"
+                  >AA</span
+                >
+              </div>
+            </div>
+            <div class="mb-4">
+              <label
+                for="font-color"
+                class="block mb-1 font-normal text-sm text-[#1D2A31]"
+                >Color</label
+              >
+              <div class="relative inline-block w-32 h-14">
+                <select
+                  v-model="selectedFontColor"
+                  class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
+                >
+                  <option
+                    v-for="color in fontColors"
+                    :key="color"
+                    :value="color"
+                  >
+                    {{ color }}
+                  </option>
+                </select>
+                <img
+                  src="@/assets/iconography/arrow-down.svg"
+                  alt="select"
+                  class="h-5 w-5 absolute top-3 right-2"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Update Logos -->
-      <div>
-        <h2 class="font-medium font-inter text-lg mb-2">Update Logos</h2>
-        <div class="flex gap-3">
-          <div class="mb-2">
-            <label
-              for="logo"
-              class="block mb-1 font-normal text-sm text-[#1D2A31]"
-              >Logo</label
+        <!-- Radius -->
+        <div class="flex flex-col gap-2">
+          <h2
+            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
+          >
+            Radius
+          </h2>
+          <div class="flex space-x-2 mb-4 gap-8">
+            <div
+              v-for="radius in radii"
+              :key="radius"
+              :class="radiusClass(radius)"
+              class="cursor-pointer p-2 w-10 h-10 text-center rounded-full font-normal text-lg border bg-[#EFEFEF]"
+              @click="selectedRadius = radius"
             >
-            <input
-              id="logo"
-              type="file"
-              class="w-full p-2 border rounded"
-              @change="updateLogo('logo', $event)"
-            />
-          </div>
-          <div>
-            <label
-              for="logo-mark"
-              class="block mb-1 font-normal text-sm text-[#1D2A31]"
-              >Logo Mark</label
-            >
-            <input
-              id="logo-mark"
-              type="file"
-              class="w-full p-2 border rounded"
-              @change="updateLogo('logoMark', $event)"
-            />
+              {{ radius }}
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="flex justify-end">
-        <div class="flex items-center justify-center w-52 gap-3">
-          <div
-            class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#DFECEE] text-[#1D2A31] cursor-pointer"
-            @click="cancelConfiguration"
+        <!-- Update Logos -->
+        <div class="flex flex-col gap-2">
+          <h2
+            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
           >
-            Cancel
+            Update Logos
+          </h2>
+          <div class="flex gap-8">
+            <div class="mb-2">
+              <label
+                for="logo"
+                class="block mb-1 font-normal text-sm text-[#1D2A31]"
+                >Logo</label
+              >
+              <input
+                id="logo"
+                type="file"
+                hidden
+                class="w-full p-2 border rounded"
+                @change="updateLogo('logo', $event)"
+              />
+              <button
+                class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
+                @click="clickLogoUpload('logo')"
+              >
+                <img
+                  src="@/assets/iconography/upload.svg"
+                  alt="plus"
+                  class="w-4 h-4"
+                />
+                <span>Upload Logo</span>
+              </button>
+            </div>
+            <div>
+              <label
+                for="logo-mark"
+                class="block mb-1 font-normal text-sm text-[#1D2A31]"
+                >Logo Mark</label
+              >
+              <input
+                id="logo-mark"
+                type="file"
+                hidden
+                class="w-full p-2 border rounded"
+                @change="updateLogo('logoMark', $event)"
+              />
+              <button
+                class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-14 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
+                @click="clickLogoUpload('logo-mark')"
+              >
+                <img
+                  src="@/assets/iconography/upload.svg"
+                  alt="plus"
+                  class="w-4 h-4"
+                />
+              </button>
+            </div>
           </div>
-          <div
-            class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#1D2A31] text-[#F7F7F7] cursor-pointer"
-            @click="saveConfiguration"
-          >
-            Save
+        </div>
+
+        <div class="flex justify-end">
+          <div class="flex items-center justify-center w-52 gap-3">
+            <div
+              class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#DFECEE] text-[#1D2A31] cursor-pointer"
+              @click="cancelConfiguration"
+            >
+              Cancel
+            </div>
+            <div
+              class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#1D2A31] text-[#F7F7F7] cursor-pointer"
+              @click="saveConfiguration"
+            >
+              Save
+            </div>
           </div>
         </div>
       </div>
@@ -248,7 +324,9 @@ const cancelConfiguration = () => {
 
     <!-- Preview Panel -->
     <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px] flex flex-col">
-      <h1 class="text-xl font-bold mb-4">Preview</h1>
+      <h1 class="text-[22px] font-nohemi font-light mb-4 text-[#1D2A31]">
+        Preview
+      </h1>
 
       <!-- Wallet UI -->
       <div class="flex flex-col flex-1 gap-3">
@@ -386,26 +464,3 @@ const cancelConfiguration = () => {
     </div>
   </div>
 </template>
-
-<style>
-.slide-enter-active,
-.slide-leave-active {
-  transition: transform 0.3s;
-}
-
-.slide-enter-from {
-  transform: translateX(100%);
-}
-
-.slide-enter-to {
-  transform: translateX(0%);
-}
-
-.slide-leave-from {
-  transform: translateX(0%);
-}
-
-.slide-leave-to {
-  transform: translateX(-100%);
-}
-</style>
