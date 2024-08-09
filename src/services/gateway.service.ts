@@ -601,6 +601,19 @@ function setDefaultChain(appId: number, data: any, network: Network) {
   )
 }
 
+function editChainSettings(appId: number, data: any, network: Network) {
+  return getGatewayInstance(network).post(
+    `${getEnvApi()}/chain-settings/${appId}/`,
+    data
+  )
+}
+
+function getChainSettings(appId: number, network: Network) {
+  return getGatewayInstance(network).get(
+    `${getEnvApi()}/chain-settings/${appId}/`
+  )
+}
+
 async function getChainIDUsingRPCUrl(rpcURL: string) {
   const provider: providers.WebSocketProvider | providers.JsonRpcProvider =
     isValidWsUrl(rpcURL)
@@ -814,6 +827,8 @@ export {
   createCustomVerifer,
   fetchCustomVerifier,
   updateCustomVerifier,
+  editChainSettings,
+  getChainSettings,
   type AppConfig,
   type AppConfigCred,
   type AppConfigThemeLogo,
