@@ -198,21 +198,21 @@ const getRadius = (radius) => {
               >
               <div class="flex space-x-4 items-baseline">
                 <span
-                  :class="fontSizeClass(14)"
+                  :class="fontSizeClass(10)"
                   class="text-sm cursor-pointer"
-                  @click="selectedFontSize = 14"
+                  @click="selectedFontSize = 10"
                   >AA</span
                 >
                 <span
-                  :class="fontSizeClass(18)"
+                  :class="fontSizeClass(12)"
                   class="text-lg cursor-pointer"
-                  @click="selectedFontSize = 18"
+                  @click="selectedFontSize = 12"
                   >AA</span
                 >
                 <span
-                  :class="fontSizeClass(24)"
+                  :class="fontSizeClass(14)"
                   class="text-2xl cursor-pointer"
-                  @click="selectedFontSize = 24"
+                  @click="selectedFontSize = 14"
                   >AA</span
                 >
               </div>
