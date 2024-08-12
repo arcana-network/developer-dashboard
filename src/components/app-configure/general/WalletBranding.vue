@@ -33,7 +33,7 @@ import { api } from '@/utils/constants'
 import getEnvApi from '@/utils/get-env-api'
 
 const selectedTheme = ref('black-haze')
-const selectedColor = ref('#1D2A31')
+const selectedColor = ref('#1862E8')
 const selectedFontPairing = ref('Nohemi + Inter')
 const selectedFontSize = ref(14)
 const selectedFontColor = ref('#F7F7F7')
