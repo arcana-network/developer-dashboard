@@ -1,5 +1,29 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, watchEffect } from 'vue'
+
+import facebookIcon from '@/assets/facebook-sso.svg'
+import googleIcon from '@/assets/google-sso.svg'
+import buyIconDark from '@/assets/iconography/wallet-ui/dark/buy-icon.svg'
+import nftsIconDark from '@/assets/iconography/wallet-ui/dark/nfts-icon.svg'
+import notificationsIconDark from '@/assets/iconography/wallet-ui/dark/notifications-icon.svg'
+import plusIconDark from '@/assets/iconography/wallet-ui/dark/plus.svg'
+import profileIconDark from '@/assets/iconography/wallet-ui/dark/profile-icon.svg'
+import qrCodeIconDark from '@/assets/iconography/wallet-ui/dark/qr-code.svg'
+import sellIconDark from '@/assets/iconography/wallet-ui/dark/sell.svg'
+import sendIconDark from '@/assets/iconography/wallet-ui/dark/send-icon.svg'
+import tokensIconDark from '@/assets/iconography/wallet-ui/dark/tokens-icon-selected.svg'
+import buyIconLight from '@/assets/iconography/wallet-ui/light/buy-icon.svg'
+import nftsIconLight from '@/assets/iconography/wallet-ui/light/nfts-icon.svg'
+import notificationsIconLight from '@/assets/iconography/wallet-ui/light/notifications-icon.svg'
+import plusIconLight from '@/assets/iconography/wallet-ui/light/plus.svg'
+import profileIconLight from '@/assets/iconography/wallet-ui/light/profile-icon.svg'
+import qrCodeIconLight from '@/assets/iconography/wallet-ui/light/qr-code.svg'
+import sellIconLight from '@/assets/iconography/wallet-ui/light/sell.svg'
+import sendIconLight from '@/assets/iconography/wallet-ui/light/send-icon.svg'
+import tokensIconLight from '@/assets/iconography/wallet-ui/light/tokens-icon-selected.svg'
+import redditIcon from '@/assets/reddit-sso.svg'
+import twitchIcon from '@/assets/twitch-sso.svg'
+import twitterIcon from '@/assets/twitter-sso.svg'
 
 const selectedTheme = ref('black-haze')
 const selectedColor = ref('#1D2A31')
@@ -8,6 +32,51 @@ const selectedFontSize = ref(14)
 const selectedFontColor = ref('#F7F7F7')
 const selectedRadius = ref('M')
 const showPreviewOf = ref('wallet')
+
+const primaryFontClass = ref('nohemi')
+const secondaryFontClass = ref('inter')
+
+const footerIcons = {
+  'black-haze': {
+    tokens: tokensIconDark,
+    nft: nftsIconDark,
+    profile: profileIconDark,
+    activity: notificationsIconDark,
+  },
+  'white-mist': {
+    tokens: tokensIconLight,
+    nft: nftsIconLight,
+    profile: profileIconLight,
+    activity: notificationsIconLight,
+  },
+}
+
+const buttonIcons = {
+  'black-haze': {
+    send: sendIconDark,
+    buy: buyIconDark,
+    sell: buyIconDark,
+  },
+  'white-mist': {
+    send: sendIconLight,
+    buy: buyIconLight,
+    sell: sellIconLight,
+  },
+}
+
+const addIcon = {
+  'black-haze': plusIconDark,
+  'white-mist': plusIconLight,
+}
+
+const qrCodeIcon = {
+  'black-haze': qrCodeIconDark,
+  'white-mist': qrCodeIconLight,
+}
+
+const socialIcon = [redditIcon, twitterIcon, googleIcon, twitchIcon]
+
+const buttons = ['Send', 'Buy', 'Sell']
 
 const accentColors = [
   '#1862E8',
@@ -78,6 +147,12 @@ const getRadius = (radius) => {
       return '0px'
   }
 }
+
+watchEffect(() => {
+  const [primaryFont, secondaryFont] = selectedFontPairing.value.split(' + ')
+  primaryFontClass.value = primaryFont.toLowerCase()
+  secondaryFontClass.value = secondaryFont.toLowerCase()
+})
 </script>
 
 <template>
@@ -351,18 +426,19 @@ const getRadius = (radius) => {
         Preview
       </h1>
 
-      <!-- Wallet UI -->
       <div class="flex flex-col flex-1 gap-3">
         <div class="flex-1 flex justify-center items-center">
+          <!-- Wallet UI -->
           <div
             v-if="showPreviewOf === 'wallet'"
-            class="rounded border flex flex-col justify-between w-[372px] h-[560px]"
+            class="rounded border flex flex-col justify-between w-[372px] h-[570px]"
             :style="{
               backgroundColor:
                 selectedTheme === 'black-haze' ? '#13171A' : '#EFEFEF',
               color: selectedFontColor,
               fontSize: `${selectedFontSize}px`,
               borderRadius: `${getRadius(selectedRadius)}`,
+              fontFamily: secondaryFontClass,
             }"
           >
             <div class="p-4 flex flex-col justify-between flex-1">
@@ -372,17 +448,16 @@ const getRadius = (radius) => {
               <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-2">
                   <img src="@/assets/placeholder-logo.svg" alt="logo" />
-                  <span class="text-base font-nohemi font-normal"
+                  <span
+                    class="text-base font-normal"
+                    :style="{ fontFamily: primaryFontClass }"
                     >xyz company</span
                   >
                 </div>
                 <div class="flex items-center gap-2">
                   <img src="@/assets/eth_logo.svg" alt="eth-logo" />
 
-                  <img
-                    src="@/assets/iconography/qr-code-icon.svg"
-                    alt="qr-code"
-                  />
+                  <img :src="qrCodeIcon[selectedTheme]" alt="qr-code" />
                 </div>
               </div>
               <div
@@ -392,33 +467,50 @@ const getRadius = (radius) => {
                     selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
                 }"
               >
-                <div class="flex gap-1">
-                  <img src="@/assets/chain_logo_placeholder.svg" alt="chain" />
-                  <span>0xdw...9dg5</span>
+                <div class="flex gap-1 items-center">
+                  <img
+                    src="@/assets/iconography/wallet-ui/fallback-logo.png"
+                    alt="chain"
+                    class="w-6 h-6"
+                  />
+                  <span
+                    :style="{ fontFamily: primaryFontClass }"
+                    class="text-sm font-normal"
+                    >0xdw...9dg5</span
+                  >
                 </div>
                 <div class="flex flex-col mb-2">
                   <span class="text-xs">Total Balance:</span>
-                  <span class="text-2xl font-normal">552156560.642827 ETH</span>
+                  <span
+                    class="text-2xl font-normal"
+                    :style="{ fontFamily: primaryFontClass }"
+                    >552156560.642827 ETH</span
+                  >
                 </div>
                 <div class="flex space-x-2">
                   <button
-                    class="flex-1 px-4 py-2 rounded-full h-12 bg-[#DFECEE]"
+                    v-for="button in buttons"
+                    :key="button"
+                    class="flex-1 flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border-[1.5px]"
+                    :style="{
+                      borderColor:
+                        selectedTheme === 'black-haze' ? '#F7F7F7' : '#1D2A31',
+                    }"
                   >
-                    SEND
-                  </button>
-                  <button
-                    class="flex-1 px-4 py-2 rounded-full h-12 bg-[#DFECEE]"
-                  >
-                    BUY
+                    <img
+                      :src="buttonIcons[selectedTheme][button.toLowerCase()]"
+                      alt=""
+                    />
+                    {{ button }}
                   </button>
                 </div>
               </div>
               <div>
                 <h2
-                  class="font-light font-nohemi mb-2 flex justify-between items-baseline"
+                  class="font-light mb-2 flex justify-between items-baseline"
+                  :style="{ fontFamily: primaryFontClass }"
                 >
                   <span class="text-base">Assets</span>
-                  <span class="text-xs font-thin">Sort by Value</span>
                 </h2>
                 <div
                   class="h-28 flex flex-col rounded-xl"
@@ -429,21 +521,40 @@ const getRadius = (radius) => {
                 >
                   <div class="flex-1 p-4">
                     <div class="flex items-center justify-between mb-2">
-                      <span>XAR</span>
+                      <div class="flex gap-2 items-center">
+                        <img
+                          src="@/assets/iconography/wallet-ui/fallback-logo.png"
+                          alt="chain"
+                          class="w-5 h-5"
+                        />
+                        <span>XAR</span>
+                      </div>
                       <span>0 ETH</span>
                     </div>
                     <div class="flex items-center justify-between">
-                      <span>Ethereum</span>
+                      <div class="flex gap-2 items-center">
+                        <img
+                          src="@/assets/eth_logo.svg"
+                          alt="chain"
+                          class="w-5 h-5"
+                        />
+                        <span>Ethereum</span>
+                      </div>
                       <span>552156560.642827 ETH</span>
                     </div>
                   </div>
                   <div
-                    class="flex justify-center items-center h-8 rounded-b-xl"
+                    class="flex justify-center items-center h-8 rounded-b-xl gap-2"
                     :style="{
                       backgroundColor: selectedColor,
                     }"
                   >
-                    <span>New</span>
+                    <img
+                      :src="addIcon[selectedTheme]"
+                      alt="new"
+                      class="w-3 h-3"
+                    />
+                    <span class="text-xs">New</span>
                   </div>
                 </div>
               </div>
@@ -466,12 +577,23 @@ const getRadius = (radius) => {
               :style="{
                 backgroundColor:
                   selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
-                borderRadius: `0 ${getRadius(selectedRadius)}`,
+                borderRadius: `0 0 ${getRadius(selectedRadius)} ${getRadius(
+                  selectedRadius
+                )}`,
               }"
             >
-              <div class="w-[270px] flex justify-between items-center">
-                <div v-for="menu in navMenu" :key="menu">
-                  <span class="font-inter text-xs font-light">{{ menu }}</span>
+              <div class="w-[290px] flex justify-between items-center">
+                <div
+                  v-for="menu in navMenu"
+                  :key="menu"
+                  class="flex flex-col items-center gap-2"
+                >
+                  <img
+                    :src="footerIcons[selectedTheme][menu.toLowerCase()]"
+                    :alt="menu"
+                    class="w-6 h-6"
+                  />
+                  <span class="text-xs font-light">{{ menu }}</span>
                 </div>
               </div>
             </div>
@@ -490,15 +612,21 @@ const getRadius = (radius) => {
                 color: selectedFontColor,
                 fontSize: `${selectedFontSize}px`,
                 borderRadius: `${getRadius(selectedRadius)}`,
+                fontFamily: secondaryFontClass,
               }"
             >
               <div class="text-center">
                 <img
-                  src="https://via.placeholder.com/50"
-                  alt="Logo"
+                  src="@/assets/placeholder-logo.svg"
+                  alt="logo"
                   class="mx-auto mb-4"
                 />
-                <h2 class="text-2xl font-semibold mb-2">Welcome</h2>
+                <h2
+                  class="text-2xl font-semibold mb-2"
+                  :style="{ fontFamily: primaryFontClass }"
+                >
+                  Welcome
+                </h2>
                 <p class="mb-4">
                   We’ll email you a login link for a password-free sign in.
                 </p>
@@ -515,23 +643,34 @@ const getRadius = (radius) => {
                   Get Link
                 </button>
                 <p class="mt-4">or continue with</p>
-                <div class="flex justify-center space-x-4 mt-2">
-                  <button class="bg-gray-200 p-2 rounded-full">
-                    <img src="https://via.placeholder.com/20" alt="Google" />
-                  </button>
-                  <button class="bg-gray-200 p-2 rounded-full">
-                    <img src="https://via.placeholder.com/20" alt="Facebook" />
-                  </button>
-                  <button class="bg-gray-200 p-2 rounded-full">
-                    <img src="https://via.placeholder.com/20" alt="Twitter" />
-                  </button>
-                  <button class="bg-gray-200 p-2 rounded-full">
-                    <img src="https://via.placeholder.com/20" alt="Reddit" />
+                <div
+                  class="flex justify-center space-x-4 mt-2"
+                  :style="{
+                    borderColor:
+                      selectedTheme === 'black-haze' ? '#F7F7F7' : '#1D2A31',
+                  }"
+                >
+                  <button
+                    v-for="icon in socialIcon"
+                    :key="icon"
+                    class="p-2 border-[1px] rounded-full"
+                  >
+                    <img :src="icon" alt="" class="w-8 h-8" />
                   </button>
                 </div>
-                <p class="mt-4">
-                  Powered by <span class="font-semibold">arcana</span>
-                </p>
+                <div class="flex flex-row items-center justify-center mt-4">
+                  <a
+                    class="text-xs font-light no-underline"
+                    :style="{ color: selectedFontColor }"
+                  >
+                    Powered By
+                  </a>
+                  <img
+                    src="@/assets/arcana-logo.webp"
+                    alt="Arcana Logo"
+                    class="ml-1 h-3 align-middle"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -564,3 +703,37 @@ const getRadius = (radius) => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&family=Onest:wght@100..900&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400..800&display=swap');
+
+.pt-sans {
+  font-family: 'PT Sans', sans-serif;
+  font-style: normal;
+}
+
+.nunito {
+  font-family: 'Nunito Sans', sans-serif;
+  font-style: normal;
+}
+
+.onest {
+  font-family: Onest, sans-serif;
+  font-style: normal;
+}
+
+.syne {
+  font-family: Syne, sans-serif;
+  font-style: normal;
+}
+
+.inter {
+  font-family: Inter, sans-serif;
+  font-style: normal;
+}
+
+.nohemi {
+  font-family: Nohemi, sans-serif;
+  font-style: normal;
+}
+</style>
