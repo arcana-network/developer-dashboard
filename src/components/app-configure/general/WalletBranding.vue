@@ -5,7 +5,7 @@ const selectedTheme = ref('black-haze')
 const selectedColor = ref('#1D2A31')
 const selectedFontPairing = ref('Nohemi + Inter')
 const selectedFontSize = ref(14)
-const selectedFontColor = ref('#1D2A31')
+const selectedFontColor = ref('#F7F7F7')
 const selectedRadius = ref('M')
 const showPreviewOf = ref('wallet')
 
@@ -22,8 +22,10 @@ const accentColors = [
   '#000000',
 ]
 const radii = ['-', 'S', 'M', 'L', 'XL']
-const fontColors = ['#1D2A31', '#464646', '#151515']
+const fontColors = ['#F7F7F7', '#1D2A31']
 const fonts = ['Nohemi + Inter', 'Syne + Onest', 'Nunito + PT Sans']
+
+const navMenu = ['Tokens', 'NFT', 'Profile', 'Activity']
 
 const themeClass = (theme) =>
   theme === selectedTheme.value
@@ -351,60 +353,126 @@ const getRadius = (radius) => {
 
       <!-- Wallet UI -->
       <div class="flex flex-col flex-1 gap-3">
-        <div class="flex-1 flex justify-center">
+        <div class="flex-1 flex justify-center items-center">
           <div
             v-if="showPreviewOf === 'wallet'"
-            class="p-4 rounded border"
+            class="rounded border flex flex-col justify-between w-[372px] h-[560px]"
             :style="{
               backgroundColor:
-                selectedTheme === 'black-haze' ? '#1D2A31' : '#FFFFFF',
+                selectedTheme === 'black-haze' ? '#13171A' : '#EFEFEF',
               color: selectedFontColor,
               fontSize: `${selectedFontSize}px`,
               borderRadius: `${getRadius(selectedRadius)}`,
             }"
           >
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center space-x-2">
-                <span class="text-2xl">xyz company</span>
+            <div class="p-4 flex flex-col justify-between flex-1">
+              <div class="flex justify-center">
+                <img src="@/assets/arrow-shrink.svg" alt="shrink" />
+              </div>
+              <div class="flex justify-between items-center mb-4">
+                <div class="flex items-center gap-2">
+                  <img src="@/assets/placeholder-logo.svg" alt="logo" />
+                  <span class="text-base font-nohemi font-normal"
+                    >xyz company</span
+                  >
+                </div>
+                <div class="flex items-center gap-2">
+                  <img src="@/assets/eth_logo.svg" alt="eth-logo" />
+
+                  <img
+                    src="@/assets/iconography/qr-code-icon.svg"
+                    alt="qr-code"
+                  />
+                </div>
+              </div>
+              <div
+                class="mb-4 h-48 p-4 rounded-xl flex flex-col justify-between"
+                :style="{
+                  backgroundColor:
+                    selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
+                }"
+              >
+                <div class="flex gap-1">
+                  <img src="@/assets/chain_logo_placeholder.svg" alt="chain" />
+                  <span>0xdw...9dg5</span>
+                </div>
+                <div class="flex flex-col mb-2">
+                  <span class="text-xs">Total Balance:</span>
+                  <span class="text-2xl font-normal">552156560.642827 ETH</span>
+                </div>
+                <div class="flex space-x-2">
+                  <button
+                    class="flex-1 px-4 py-2 rounded-full h-12 bg-[#DFECEE]"
+                  >
+                    SEND
+                  </button>
+                  <button
+                    class="flex-1 px-4 py-2 rounded-full h-12 bg-[#DFECEE]"
+                  >
+                    BUY
+                  </button>
+                </div>
               </div>
               <div>
-                <button
-                  class="px-2 py-1 rounded"
-                  :style="{ backgroundColor: selectedColor }"
+                <h2
+                  class="font-light font-nohemi mb-2 flex justify-between items-baseline"
                 >
-                  Icon
-                </button>
+                  <span class="text-base">Assets</span>
+                  <span class="text-xs font-thin">Sort by Value</span>
+                </h2>
+                <div
+                  class="h-28 flex flex-col rounded-xl"
+                  :style="{
+                    backgroundColor:
+                      selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
+                  }"
+                >
+                  <div class="flex-1 p-4">
+                    <div class="flex items-center justify-between mb-2">
+                      <span>XAR</span>
+                      <span>0 ETH</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                      <span>Ethereum</span>
+                      <span>552156560.642827 ETH</span>
+                    </div>
+                  </div>
+                  <div
+                    class="flex justify-center items-center h-8 rounded-b-xl"
+                    :style="{
+                      backgroundColor: selectedColor,
+                    }"
+                  >
+                    <span>New</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex flex-row items-center justify-center">
+                <a
+                  class="text-xs font-light no-underline"
+                  :style="{ color: selectedFontColor }"
+                >
+                  Powered By
+                </a>
+                <img
+                  src="@/assets/arcana-logo.webp"
+                  alt="Arcana Logo"
+                  class="ml-1 h-3 align-middle"
+                />
               </div>
             </div>
-            <div class="mb-4">
-              <div class="flex items-center justify-between mb-2">
-                <span>Total Balance:</span>
-                <span class="text-2xl font-bold">552156560.642827 ETH</span>
-              </div>
-              <div class="flex space-x-2">
-                <button
-                  class="flex-1 px-4 py-2 rounded"
-                  :style="{ backgroundColor: selectedColor }"
-                >
-                  SEND
-                </button>
-                <button
-                  class="flex-1 px-4 py-2 rounded"
-                  :style="{ backgroundColor: selectedColor }"
-                >
-                  BUY
-                </button>
-              </div>
-            </div>
-            <div>
-              <h2 class="font-semibold mb-2">Assets</h2>
-              <div class="flex items-center justify-between mb-2">
-                <span>XAR</span>
-                <span>0 ETH</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span>Ethereum</span>
-                <span>552156560.642827 ETH</span>
+            <div
+              class="h-16 flex justify-center items-center"
+              :style="{
+                backgroundColor:
+                  selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
+                borderRadius: `0 ${getRadius(selectedRadius)}`,
+              }"
+            >
+              <div class="w-[270px] flex justify-between items-center">
+                <div v-for="menu in navMenu" :key="menu">
+                  <span class="font-inter text-xs font-light">{{ menu }}</span>
+                </div>
               </div>
             </div>
           </div>
