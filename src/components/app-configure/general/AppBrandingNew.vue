@@ -32,7 +32,7 @@ function isActiveTab(tab) {
     >
       Wallet Branding
     </button>
-    <button
+    <!-- <button
       class="text-sm pb-1"
       :class="[
         isActiveTab('emailer')
@@ -42,7 +42,7 @@ function isActiveTab(tab) {
       @click="activeTab = 'emailer'"
     >
       Emailer Branding
-    </button>
+    </button> -->
   </div>
   <WalletBranding v-if="activeTab === 'wallet'" />
   <EmailerBranding v-if="activeTab === 'emailer'" />
