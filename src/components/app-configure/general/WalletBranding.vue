@@ -130,7 +130,10 @@ const accentColors = [
   '#000000',
 ]
 const radii = ['-', 'S', 'M', 'L', 'XL']
-const fontColors = ['#F7F7F7', '#1D2A31', '#464646', '#151515']
+const fontColors = {
+  'black-haze': ['#F7F7F7', '#BBCCD6', '#829299'],
+  'white-mist': ['#1D2A31', '#74919C', '#4C626E'],
+}
 const fonts = ['Nohemi + Inter', 'Syne + Onest', 'Nunito + PT Sans']
 
 const navMenu = ['Tokens', 'NFT', 'Profile', 'Activity']
@@ -196,6 +199,10 @@ watchEffect(() => {
   const [primaryFont, secondaryFont] = selectedFontPairing.value.split(' + ')
   primaryFontClass.value = primaryFont.toLowerCase()
   secondaryFontClass.value = secondaryFont.toLowerCase()
+})
+
+watchEffect(() => {
+  selectedFontColor.value = fontColors[selectedTheme.value][0]
 })
 
 const getLogoMark = (theme) => {
@@ -388,7 +395,7 @@ function onLogoError(e) {
                   class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
                 >
                   <option
-                    v-for="color in fontColors"
+                    v-for="color in fontColors[selectedTheme]"
                     :key="color"
                     :value="color"
                   >
