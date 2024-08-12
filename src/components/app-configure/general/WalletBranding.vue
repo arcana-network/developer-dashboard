@@ -1,7 +1,7 @@
-<script setup>
+<script setup lang="ts">
+import bytes from 'bytes'
 import { ref, watchEffect } from 'vue'
 
-import facebookIcon from '@/assets/facebook-sso.svg'
 import googleIcon from '@/assets/google-sso.svg'
 import buyIconDark from '@/assets/iconography/wallet-ui/dark/buy-icon.svg'
 import nftsIconDark from '@/assets/iconography/wallet-ui/dark/nfts-icon.svg'
@@ -12,6 +12,7 @@ import qrCodeIconDark from '@/assets/iconography/wallet-ui/dark/qr-code.svg'
 import sellIconDark from '@/assets/iconography/wallet-ui/dark/sell.svg'
 import sendIconDark from '@/assets/iconography/wallet-ui/dark/send-icon.svg'
 import tokensIconDark from '@/assets/iconography/wallet-ui/dark/tokens-icon-selected.svg'
+import placeholderLogo from '@/assets/iconography/wallet-ui/fallback-logo.png'
 import buyIconLight from '@/assets/iconography/wallet-ui/light/buy-icon.svg'
 import nftsIconLight from '@/assets/iconography/wallet-ui/light/nfts-icon.svg'
 import notificationsIconLight from '@/assets/iconography/wallet-ui/light/notifications-icon.svg'
@@ -24,6 +25,12 @@ import tokensIconLight from '@/assets/iconography/wallet-ui/light/tokens-icon-se
 import redditIcon from '@/assets/reddit-sso.svg'
 import twitchIcon from '@/assets/twitch-sso.svg'
 import twitterIcon from '@/assets/twitter-sso.svg'
+import { useToast } from '@/components/lib/VToast'
+import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
+import { api } from '@/utils/constants'
+import getEnvApi from '@/utils/get-env-api'
 
 const selectedTheme = ref('black-haze')
 const selectedColor = ref('#1D2A31')
@@ -35,6 +42,38 @@ const showPreviewOf = ref('wallet')
 
 const primaryFontClass = ref('nohemi')
 const secondaryFontClass = ref('inter')
+
+const appsStore = useAppsStore()
+const appId = useAppId()
+const currentApp = appsStore.app(appId)
+const toast = useToast()
+
+const themeLogos = ref({
+  dark: {
+    vertical: {
+      logo: currentApp.logos.dark.vertical,
+      isLoading: false,
+      hasError: false,
+    },
+    horizontal: {
+      logo: currentApp.logos.dark.horizontal,
+      isLoading: false,
+      hasError: false,
+    },
+  },
+  light: {
+    vertical: {
+      logo: currentApp.logos.light.vertical,
+      isLoading: false,
+      hasError: false,
+    },
+    horizontal: {
+      logo: currentApp.logos.light.horizontal,
+      isLoading: false,
+      hasError: false,
+    },
+  },
+})
 
 const footerIcons = {
   'black-haze': {
@@ -91,7 +130,7 @@ const accentColors = [
   '#000000',
 ]
 const radii = ['-', 'S', 'M', 'L', 'XL']
-const fontColors = ['#F7F7F7', '#1D2A31']
+const fontColors = ['#F7F7F7', '#1D2A31', '#464646', '#151515']
 const fonts = ['Nohemi + Inter', 'Syne + Onest', 'Nunito + PT Sans']
 
 const navMenu = ['Tokens', 'NFT', 'Profile', 'Activity']
@@ -113,6 +152,11 @@ const updateLogo = (type, event) => {
   const file = event.target.files[0]
   console.log(`Updating ${type}:`, file)
   // Handle file upload here
+  handleFileChange(
+    selectedTheme.value === 'black-haze' ? 'dark' : 'light',
+    type === 'logo' ? 'horizontal' : 'vertical',
+    [file]
+  )
 }
 
 const saveConfiguration = () => {
@@ -153,6 +197,46 @@ watchEffect(() => {
   primaryFontClass.value = primaryFont.toLowerCase()
   secondaryFontClass.value = secondaryFont.toLowerCase()
 })
+
+const getLogoMark = (theme) => {
+  return themeLogos.value[theme].vertical.logo
+}
+
+const getLogo = (theme) => {
+  return themeLogos.value[theme].horizontal.logo
+}
+
+async function handleFileChange(
+  mode: 'light' | 'dark',
+  orientation: 'vertical' | 'horizontal',
+  files: File[]
+) {
+  if (files[0].size > bytes('1 MB')) {
+    return (themeLogos.value[mode][orientation].hasError = true)
+  }
+  themeLogos.value[mode][orientation].hasError = false
+  themeLogos.value[mode][orientation].isLoading = true
+  try {
+    const app = appsStore.app(appId)
+    await uploadThemeLogo(appId, files[0], mode, app.network, orientation)
+    toast.success('Logo uploaded successfully')
+    const logoUrl = `${api.gateway[app.network]}${getEnvApi(
+      'v2'
+    )}/app/${appId}/logo/?type=${mode}&orientation=${orientation}`
+    themeLogos.value[mode][orientation].logo = logoUrl
+    currentApp.logos[mode][orientation] = logoUrl
+    appsStore.updateApp(appId, currentApp, currentApp.network)
+  } catch (e) {
+    console.error(e)
+    toast.error("Couldn't upload logo. Please try again or contact support")
+  } finally {
+    themeLogos.value[mode][orientation].isLoading = false
+  }
+}
+
+function onLogoError(e) {
+  e.target.src = placeholderLogo
+}
 </script>
 
 <template>
@@ -447,7 +531,16 @@ watchEffect(() => {
               </div>
               <div class="flex justify-between items-center mb-4">
                 <div class="flex items-center gap-2">
-                  <img src="@/assets/placeholder-logo.svg" alt="logo" />
+                  <img
+                    :src="
+                      getLogoMark(
+                        selectedTheme === 'black-haze' ? 'dark' : 'light'
+                      )
+                    "
+                    alt="logo"
+                    class="w-6 h-6"
+                    @error="onLogoError"
+                  />
                   <span
                     class="text-base font-normal"
                     :style="{ fontFamily: primaryFontClass }"
@@ -617,9 +710,12 @@ watchEffect(() => {
             >
               <div class="text-center">
                 <img
-                  src="@/assets/placeholder-logo.svg"
+                  :src="
+                    getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
+                  "
                   alt="logo"
-                  class="mx-auto mb-4"
+                  class="mx-auto mb-4 w-12 h-12"
+                  @error="onLogoError"
                 />
                 <h2
                   class="text-2xl font-semibold mb-2"
