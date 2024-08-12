@@ -230,7 +230,7 @@ async function handleFileChange(
     const logoUrl = `${api.gateway[app.network]}${getEnvApi(
       'v2'
     )}/app/${appId}/logo/?type=${mode}&orientation=${orientation}`
-    themeLogos.value[mode][orientation].logo = logoUrl
+    themeLogos.value[mode][orientation].logo = `${logoUrl}&r=${Math.random()}`
     currentApp.logos[mode][orientation] = logoUrl
     appsStore.updateApp(appId, currentApp, currentApp.network)
   } catch (e) {
