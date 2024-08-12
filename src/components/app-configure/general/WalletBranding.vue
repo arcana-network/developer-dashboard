@@ -305,9 +305,7 @@ function onLogoError(e) {
               class="w-8 h-8 rounded-full cursor-pointer border-[1px] border-[#DCDCDC]"
               @click="selectedColor = color"
             ></div>
-            <div
-              class="relative flex items-center space-x-4 border-1 border-red-700"
-            >
+            <div class="flex items-center space-x-4">
               <button
                 class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
                 @click="onColorPickerClick"
@@ -317,9 +315,8 @@ function onLogoError(e) {
               <input
                 id="color-picker"
                 v-model="selectedColor"
-                hidden
                 type="color"
-                class="absolute left-0 w-16 h-16 p-0 mt-12 border-none outline-none"
+                class="w-0 h-0 p-0 border-none outline-none"
               />
             </div>
           </div>
