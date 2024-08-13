@@ -26,7 +26,7 @@ import redditIcon from '@/assets/reddit-sso.svg'
 import twitchIcon from '@/assets/twitch-sso.svg'
 import twitterIcon from '@/assets/twitter-sso.svg'
 import { useToast } from '@/components/lib/VToast'
-import { uploadThemeLogo, removeThemeLogo } from '@/services/gateway.service'
+import { uploadThemeLogo } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import { api } from '@/utils/constants'
@@ -35,7 +35,7 @@ import getEnvApi from '@/utils/get-env-api'
 const selectedTheme = ref('black-haze')
 const selectedColor = ref('#1862E8')
 const selectedFontPairing = ref('Nohemi + Inter')
-const selectedFontSize = ref(14)
+const selectedFontSize = ref(1)
 const selectedFontColor = ref('#F7F7F7')
 const selectedRadius = ref('M')
 const showPreviewOf = ref('wallet')
@@ -180,7 +180,7 @@ const onColorPickerClick = () => {
   document.getElementById('color-picker').click()
 }
 
-const getRadius = (radius) => {
+const getRadius = (radius: string) => {
   switch (radius) {
     case 'S':
       return '4px'
@@ -361,21 +361,21 @@ function onLogoError(e) {
               >
               <div class="flex space-x-4 items-baseline">
                 <span
-                  :class="fontSizeClass(10)"
+                  :class="fontSizeClass(1)"
                   class="text-sm cursor-pointer"
-                  @click="selectedFontSize = 10"
+                  @click="selectedFontSize = 1"
                   >AA</span
                 >
                 <span
-                  :class="fontSizeClass(12)"
+                  :class="fontSizeClass(1.2)"
                   class="text-lg cursor-pointer"
-                  @click="selectedFontSize = 12"
+                  @click="selectedFontSize = 1.2"
                   >AA</span
                 >
                 <span
-                  :class="fontSizeClass(14)"
+                  :class="fontSizeClass(1.4)"
                   class="text-2xl cursor-pointer"
-                  @click="selectedFontSize = 14"
+                  @click="selectedFontSize = 1.4"
                   >AA</span
                 >
               </div>
@@ -524,7 +524,6 @@ function onLogoError(e) {
               backgroundColor:
                 selectedTheme === 'black-haze' ? '#13171A' : '#EFEFEF',
               color: selectedFontColor,
-              fontSize: `${selectedFontSize}px`,
               borderRadius: `${getRadius(selectedRadius)}`,
               fontFamily: secondaryFontClass,
             }"
@@ -547,7 +546,10 @@ function onLogoError(e) {
                   />
                   <span
                     class="text-base font-normal"
-                    :style="{ fontFamily: primaryFontClass }"
+                    :style="{
+                      fontFamily: primaryFontClass,
+                      fontSize: `${selectedFontSize * 16}px`,
+                    }"
                     >xyz company</span
                   >
                 </div>
@@ -571,18 +573,33 @@ function onLogoError(e) {
                     class="w-6 h-6"
                   />
                   <span
-                    :style="{ fontFamily: primaryFontClass }"
+                    :style="{
+                      fontFamily: primaryFontClass,
+                      fontSize: `${selectedFontSize * 12}px`,
+                    }"
                     class="text-sm font-normal"
                     >0xdw...9dg5</span
                   >
                 </div>
                 <div class="flex flex-col mb-2">
                   <span class="text-xs">Total Balance:</span>
-                  <span
-                    class="text-2xl font-normal"
-                    :style="{ fontFamily: primaryFontClass }"
-                    >552156560.642827 ETH</span
-                  >
+                  <div>
+                    <span
+                      class="font-normal"
+                      :style="{
+                        fontFamily: primaryFontClass,
+                        fontSize: `${selectedFontSize * 18}px`,
+                      }"
+                      >552156560.642827</span
+                    >
+                    <span
+                      :style="{
+                        fontFamily: primaryFontClass,
+                        fontSize: `${selectedFontSize * 14}px`,
+                      }"
+                      >ETH</span
+                    >
+                  </div>
                 </div>
                 <div class="flex space-x-2">
                   <button
@@ -592,6 +609,7 @@ function onLogoError(e) {
                     :style="{
                       borderColor:
                         selectedTheme === 'black-haze' ? '#F7F7F7' : '#1D2A31',
+                      fontSize: `${selectedFontSize * 14}px`,
                     }"
                   >
                     <img
@@ -605,15 +623,19 @@ function onLogoError(e) {
               <div>
                 <h2
                   class="font-light mb-2 flex justify-between items-baseline"
-                  :style="{ fontFamily: primaryFontClass }"
+                  :style="{
+                    fontFamily: primaryFontClass,
+                    fontSize: `${selectedFontSize * 16}px`,
+                  }"
                 >
-                  <span class="text-base">Assets</span>
+                  <span>Assets</span>
                 </h2>
                 <div
                   class="h-28 flex flex-col rounded-xl"
                   :style="{
                     backgroundColor:
                       selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
+                    fontSize: `${selectedFontSize * 12}px`,
                   }"
                 >
                   <div class="flex-1 p-4">
@@ -644,6 +666,7 @@ function onLogoError(e) {
                     class="flex justify-center items-center h-8 rounded-b-xl gap-2"
                     :style="{
                       backgroundColor: selectedColor,
+                      fontSize: `${selectedFontSize * 10}px`,
                     }"
                   >
                     <img
@@ -651,14 +674,17 @@ function onLogoError(e) {
                       alt="new"
                       class="w-3 h-3"
                     />
-                    <span class="text-xs">New</span>
+                    <span>New</span>
                   </div>
                 </div>
               </div>
               <div class="flex flex-row items-center justify-center">
                 <a
                   class="text-xs font-light no-underline"
-                  :style="{ color: selectedFontColor }"
+                  :style="{
+                    color: selectedFontColor,
+                    fontSize: `${selectedFontSize * 10}px`,
+                  }"
                 >
                   Powered By
                 </a>
@@ -677,6 +703,7 @@ function onLogoError(e) {
                 borderRadius: `0 0 ${getRadius(selectedRadius)} ${getRadius(
                   selectedRadius
                 )}`,
+                fontSize: `${selectedFontSize * 10}px`,
               }"
             >
               <div class="w-[290px] flex justify-between items-center">
@@ -690,7 +717,7 @@ function onLogoError(e) {
                     :alt="menu"
                     class="w-6 h-6"
                   />
-                  <span class="text-xs font-light">{{ menu }}</span>
+                  <span class="font-light">{{ menu }}</span>
                 </div>
               </div>
             </div>
@@ -707,12 +734,11 @@ function onLogoError(e) {
                 backgroundColor:
                   selectedTheme === 'black-haze' ? '#1D2A31' : '#FFFFFF',
                 color: selectedFontColor,
-                fontSize: `${selectedFontSize}px`,
                 borderRadius: `${getRadius(selectedRadius)}`,
                 fontFamily: secondaryFontClass,
               }"
             >
-              <div class="text-center">
+              <div class="text-center h-[400px] flex flex-col justify-between">
                 <img
                   :src="
                     getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
@@ -722,12 +748,18 @@ function onLogoError(e) {
                   @error="onLogoError"
                 />
                 <h2
-                  class="text-2xl font-semibold mb-2"
-                  :style="{ fontFamily: primaryFontClass }"
+                  class="font-semibold mb-2"
+                  :style="{
+                    fontFamily: primaryFontClass,
+                    fontSize: `${selectedFontSize * 20}px`,
+                  }"
                 >
                   Welcome
                 </h2>
-                <p class="mb-4">
+                <p
+                  class="mb-4"
+                  :style="{ fontSize: `${selectedFontSize * 12}px` }"
+                >
                   We’ll email you a login link for a password-free sign in.
                 </p>
                 <input
@@ -735,14 +767,23 @@ function onLogoError(e) {
                   type="email"
                   placeholder="Email"
                   class="w-full px-4 py-2 border rounded mb-4"
+                  :style="{ fontSize: `${selectedFontSize * 12}px` }"
                 />
                 <button
                   class="w-full px-4 py-2 text-white rounded"
-                  :style="{ backgroundColor: selectedColor }"
+                  :style="{
+                    backgroundColor: selectedColor,
+                    fontSize: `${selectedFontSize * 12}px`,
+                  }"
                 >
                   Get Link
                 </button>
-                <p class="mt-4">or continue with</p>
+                <p
+                  class="mt-4"
+                  :style="{ fontSize: `${selectedFontSize * 12}px` }"
+                >
+                  or continue with
+                </p>
                 <div
                   class="flex justify-center space-x-4 mt-2"
                   :style="{
@@ -761,7 +802,10 @@ function onLogoError(e) {
                 <div class="flex flex-row items-center justify-center mt-4">
                   <a
                     class="text-xs font-light no-underline"
-                    :style="{ color: selectedFontColor }"
+                    :style="{
+                      color: selectedFontColor,
+                      fontSize: `${selectedFontSize * 12}px`,
+                    }"
                   >
                     Powered By
                   </a>
