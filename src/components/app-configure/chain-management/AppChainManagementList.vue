@@ -93,6 +93,18 @@ const sortedList = computed(() => {
 
 const chainSettingData = chainManagementStore.getChainSettings(appId, 'testnet')
 
+const shardValue = computed(() => {
+  if (app.keyspace === 'global') {
+    return '-'
+  }
+
+  return chainSettings.value.shards !== null &&
+    chainSettings.value.shards !== undefined &&
+    chainSettings.value.shards !== 'None'
+    ? chainSettings.value.shards
+    : 'None'
+})
+
 const sortBy = (column: null) => {
   if (sortOrder.value.column === column) {
     sortOrder.value.ascending = !sortOrder.value.ascending
@@ -214,7 +226,7 @@ function isGaslessSupport(chainId: number) {
           <td v-if="selectedChainType !== 'near'">{{ chain.chain_id }}</td>
           <td>{{ chain.currency }}</td>
           <td v-if="selectedChainType === 'multiversx'">
-            {{ chainSettings.shards }}
+            {{ shardValue }}
           </td>
           <td>{{ chain.chain_type }}</td>
           <td class="text-ellipsis">{{ chain.rpc_url }}</td>
