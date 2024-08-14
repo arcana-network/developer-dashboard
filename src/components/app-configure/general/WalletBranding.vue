@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import bytes from 'bytes'
-import { ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 
 import googleIcon from '@/assets/google-sso.svg'
 import buyIconDark from '@/assets/iconography/wallet-ui/dark/buy-icon.svg'
@@ -26,10 +26,11 @@ import redditIcon from '@/assets/reddit-sso.svg'
 import twitchIcon from '@/assets/twitch-sso.svg'
 import twitterIcon from '@/assets/twitter-sso.svg'
 import { useToast } from '@/components/lib/VToast'
-import { uploadThemeLogo } from '@/services/gateway.service'
+import { uploadThemeLogo, updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import { api } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
 import getEnvApi from '@/utils/get-env-api'
 
 const selectedTheme = ref('black-haze')
@@ -117,7 +118,7 @@ const socialIcon = [redditIcon, twitterIcon, googleIcon, twitchIcon]
 
 const buttons = ['Send', 'Buy', 'Sell']
 
-const accentColors = [
+const accentColors = ref([
   '#1862E8',
   '#55B893',
   '#5F9DBA',
@@ -128,7 +129,7 @@ const accentColors = [
   '#DEA13B',
   '#FFFFFF',
   '#000000',
-]
+])
 const radii = ['-', 'S', 'M', 'L', 'XL']
 const fontColors = {
   'black-haze': ['#F7F7F7', '#BBCCD6', '#829299'],
@@ -138,20 +139,25 @@ const fonts = ['Nohemi + Inter', 'Syne + Onest', 'Nunito + PT Sans']
 
 const navMenu = ['Tokens', 'NFT', 'Profile', 'Activity']
 
-const themeClass = (theme) =>
+const themeClass = (theme: string) =>
   theme === selectedTheme.value
     ? 'border-2 border-[#FF4E9F]'
     : 'border-2 border-transparent'
 
-const fontSizeClass = (size) =>
+const fontSizeClass = (size: number) =>
   size === selectedFontSize.value ? 'text-[#FF4E9F]' : 'text-[#1D2A31]'
 
-const radiusClass = (radius) =>
+const radiusClass = (radius: string) =>
   radius === selectedRadius.value
     ? 'border-2 border-[#FF4E9F]'
     : 'border-2 border-transparent'
 
-const updateLogo = (type, event) => {
+const accentColorClass = (color: string) =>
+  color === selectedColor.value
+    ? 'border-2 border-[#FF4E9F]'
+    : 'border-[1.5px] border-transparent'
+
+const updateLogo = (type: string, event: any) => {
   const file = event.target.files[0]
   console.log(`Updating ${type}:`, file)
   // Handle file upload here
@@ -162,17 +168,39 @@ const updateLogo = (type, event) => {
   )
 }
 
-const saveConfiguration = () => {
-  console.log('Saving configuration...')
-  // Save configuration logic here
+const saveConfiguration = async () => {
+  try {
+    const { auth } = currentApp
+    auth.wallet.selectedTheme =
+      selectedTheme.value === 'black-haze' ? 'dark' : 'light'
+    const theme_settings = {
+      accent_color: selectedColor.value,
+      font_pairing: selectedFontPairing.value,
+      font_size: String(selectedFontSize.value),
+      font_color: selectedFontColor.value,
+      radius: selectedRadius.value,
+    }
+    await updateApp(appId, { auth, theme_settings }, currentApp.network)
+    toast.success(content.WALLET.THEME.SUCCESS)
+    currentApp.auth.wallet.selectedTheme = auth.wallet.selectedTheme
+    currentApp.theme_settings = theme_settings
+  } catch (e) {
+    console.error(e)
+    toast.error(errors.WALLET.THEME.ERROR)
+  }
 }
 
 const cancelConfiguration = () => {
-  console.log('Cancelling configuration...')
-  // Cancel configuration logic here
+  selectedTheme.value =
+    currentApp.auth.wallet.theme === 'dark' ? 'black-haze' : 'white-mist'
+  selectedColor.value = currentApp.theme_settings.accent_color
+  selectedFontPairing.value = currentApp.theme_settings.font_pairing
+  selectedFontSize.value = Number(currentApp.theme_settings.font_size)
+  selectedFontColor.value = currentApp.theme_settings.font_color
+  selectedRadius.value = currentApp.theme_settings.radius
 }
 
-const clickLogoUpload = (id) => {
+const clickLogoUpload = (id: string) => {
   document.getElementById(id).click()
 }
 
@@ -205,11 +233,11 @@ watchEffect(() => {
   selectedFontColor.value = fontColors[selectedTheme.value][0]
 })
 
-const getLogoMark = (theme) => {
+const getLogoMark = (theme: string) => {
   return themeLogos.value[theme].vertical.logo
 }
 
-const getLogo = (theme) => {
+const getLogo = (theme: string) => {
   return themeLogos.value[theme].horizontal.logo
 }
 
@@ -243,6 +271,40 @@ async function handleFileChange(
 
 function onLogoError(e) {
   e.target.src = placeholderLogo
+}
+
+function addAccentColor() {
+  if (!accentColors.value.includes(selectedColor.value)) {
+    accentColors.value.push(selectedColor.value)
+  }
+}
+
+onMounted(() => {
+  const { auth, theme_settings } = currentApp
+  const theme =
+    auth.wallet.selectedTheme === 'dark' ? 'black-haze' : 'white-mist'
+  selectedTheme.value = theme
+  selectedColor.value = theme_settings.accent_color
+  selectedFontPairing.value = theme_settings.font_pairing
+  selectedFontSize.value = Number(theme_settings.font_size)
+  selectedFontColor.value = theme_settings.font_color
+  selectedRadius.value = theme_settings.radius
+  addAccentColor()
+})
+
+const disableSave = () => {
+  const { auth, theme_settings } = currentApp
+  const theme =
+    auth.wallet.selectedTheme === 'dark' ? 'black-haze' : 'white-mist'
+
+  return (
+    selectedTheme.value === theme &&
+    selectedColor.value === theme_settings.accent_color &&
+    selectedFontPairing.value === theme_settings.font_pairing &&
+    selectedFontSize.value === Number(theme_settings.font_size) &&
+    selectedFontColor.value === theme_settings.font_color &&
+    selectedRadius.value === theme_settings.radius
+  )
 }
 </script>
 
@@ -297,14 +359,19 @@ function onLogoError(e) {
           >
             Accent Color
           </h2>
-          <div class="flex space-x-2 mb-4">
+          <div class="flex space-x-2 mb-4 overflow-auto">
             <div
               v-for="color in accentColors"
               :key="color"
-              :style="{ backgroundColor: color }"
-              class="w-8 h-8 rounded-full cursor-pointer border-[1px] border-[#DCDCDC]"
+              class="p-[1px] rounded-full cursor-pointer"
+              :class="accentColorClass(color)"
               @click="selectedColor = color"
-            ></div>
+            >
+              <div
+                :style="{ backgroundColor: color }"
+                class="w-8 h-8 rounded-full"
+              ></div>
+            </div>
             <div class="flex items-center space-x-4">
               <button
                 class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
@@ -317,6 +384,7 @@ function onLogoError(e) {
                 v-model="selectedColor"
                 type="color"
                 class="w-0 h-0 p-0 border-none outline-none"
+                @change="addAccentColor"
               />
             </div>
           </div>
@@ -491,18 +559,19 @@ function onLogoError(e) {
 
         <div class="flex justify-end">
           <div class="flex items-center justify-center w-52 gap-3">
-            <div
+            <button
               class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#DFECEE] text-[#1D2A31] cursor-pointer"
               @click="cancelConfiguration"
             >
               Cancel
-            </div>
-            <div
-              class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#1D2A31] text-[#F7F7F7] cursor-pointer"
+            </button>
+            <button
+              class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#1D2A31] text-[#F7F7F7] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              :disabled="disableSave()"
               @click="saveConfiguration"
             >
               Save
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -879,5 +948,10 @@ function onLogoError(e) {
 .nohemi {
   font-family: Nohemi, sans-serif;
   font-style: normal;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
 </style>

@@ -45,6 +45,14 @@ type AppConfigThemeLogo = {
   light_vertical?: string
 }
 
+type ThemeSettings = {
+  accent_color: string
+  font_pairing: string
+  font_size: string
+  font_color: string
+  radius: string
+}
+
 type AppConfig = {
   ID: AppId
   name: string
@@ -66,6 +74,7 @@ type AppConfig = {
   chain_type: string
   session_persisted: boolean
   session_max_age: number
+  theme_settings: ThemeSettings
 }
 
 const gatewayInstance = {
@@ -147,6 +156,7 @@ function updateApp(
   if (app) {
     const updatedAppConfig = { ...app, ...fieldsToUpdate }
     const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
+    console.log('appConfigRequestBody', appConfigRequestBody)
     return getGatewayInstance(network).patch(
       `${getEnvApi('v2')}/app/?id=${appId}`,
       appConfigRequestBody
@@ -220,6 +230,7 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     status: app.status,
     wallet_mode: app.wallet_mode,
     chain_type: app.chain_type,
+    theme_settings: app.theme_settings,
   }
 }
 
