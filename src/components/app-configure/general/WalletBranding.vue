@@ -327,6 +327,10 @@ const disableSave = () => {
     selectedRadius.value === theme_settings.radius
   )
 }
+
+function switchPreview() {
+  showPreviewOf.value = showPreviewOf.value === 'wallet' ? 'login' : 'wallet'
+}
 </script>
 
 <template>
@@ -608,7 +612,14 @@ const disableSave = () => {
         Preview
       </h1>
 
-      <div class="flex flex-col flex-1 gap-3">
+      <div class="flex flex-col flex-1 gap-3 relative">
+        <button @click="switchPreview">
+          <img
+            src="@/assets/arrow-next.svg"
+            alt="next"
+            class="absolute right-3 bottom-1/2"
+          />
+        </button>
         <div class="flex-1 flex justify-center items-center">
           <!-- Wallet UI -->
           <div
