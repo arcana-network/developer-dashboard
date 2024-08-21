@@ -637,14 +637,14 @@ function resetToDefault() {
       </h1>
 
       <div class="flex flex-col flex-1 gap-3 relative">
-        <button @click="switchPreview">
+        <button v-if="showPreviewOf === 'wallet'" @click="switchPreview">
           <img
             src="@/assets/arrow-next.svg"
             alt="next"
             class="absolute right-3 bottom-1/2"
           />
         </button>
-        <button @click="switchPreview">
+        <button v-if="showPreviewOf === 'login'" @click="switchPreview">
           <img
             src="@/assets/arrow-next.svg"
             alt="next"
@@ -928,21 +928,16 @@ function resetToDefault() {
                     fontSize: `${selectedFontSize * 20}px`,
                   }"
                 >
-                  Welcome
+                  Log in
                 </h2>
-                <p
-                  class="mb-4"
-                  :style="{ fontSize: `${selectedFontSize * 12}px` }"
-                >
-                  We’ll email you a login link for a password-free sign in.
-                </p>
-                <input
-                  v-model="email"
-                  type="email"
-                  placeholder="Email"
-                  class="w-full px-4 py-2 border rounded mb-4"
-                  :style="{ fontSize: `${selectedFontSize * 12}px` }"
-                />
+                <div class="w-full h-11 border rounded mb-4">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    :style="{ fontSize: `${selectedFontSize * 14}px` }"
+                    class="w-full h-full p-2 outline-none"
+                  />
+                </div>
                 <button
                   class="w-full px-4 py-2 text-white rounded"
                   :style="{
