@@ -331,15 +331,39 @@ const disableSave = () => {
 function switchPreview() {
   showPreviewOf.value = showPreviewOf.value === 'wallet' ? 'login' : 'wallet'
 }
+
+function resetToDefault() {
+  selectedTheme.value = 'black-haze'
+  selectedColor.value = '#1862E8'
+  selectedFontPairing.value = 'Nohemi + Inter'
+  selectedFontSize.value = 1
+  selectedFontColor.value = '#F7F7F7'
+  selectedRadius.value = 'M'
+}
 </script>
 
 <template>
   <div class="flex gap-3">
     <!-- Configuration Panel -->
     <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px]">
-      <h1 class="text-[22px] font-nohemi font-light mb-4 text-[#1D2A31]">
-        Configuration
-      </h1>
+      <div class="flex justify-between items-baseline">
+        <h1 class="text-[22px] font-nohemi font-light mb-4 text-[#1D2A31]">
+          Configuration
+        </h1>
+        <button
+          class="flex items-center justify-center gap-2"
+          @click="resetToDefault"
+        >
+          <img
+            src="@/assets/iconography/reset-icon.svg"
+            alt="next"
+            class="w-3 h-3"
+          />
+          <span class="text-[#4C626E] text-sm font-medium"
+            >Reset to Default</span
+          >
+        </button>
+      </div>
 
       <div class="flex flex-col gap-2 p-2">
         <!-- Theme -->
@@ -618,6 +642,13 @@ function switchPreview() {
             src="@/assets/arrow-next.svg"
             alt="next"
             class="absolute right-3 bottom-1/2"
+          />
+        </button>
+        <button @click="switchPreview">
+          <img
+            src="@/assets/arrow-next.svg"
+            alt="next"
+            class="absolute left-3 bottom-1/2 rotate-180"
           />
         </button>
         <div class="flex-1 flex justify-center items-center">
