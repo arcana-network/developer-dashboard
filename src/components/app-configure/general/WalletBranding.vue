@@ -26,7 +26,11 @@ import redditIcon from '@/assets/reddit-sso.svg'
 import twitchIcon from '@/assets/twitch-sso.svg'
 import twitterIcon from '@/assets/twitter-sso.svg'
 import { useToast } from '@/components/lib/VToast'
-import { uploadThemeLogo, updateApp } from '@/services/gateway.service'
+import {
+  uploadThemeLogo,
+  updateApp,
+  removeThemeLogo,
+} from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
 import { api } from '@/utils/constants'
@@ -160,12 +164,15 @@ const accentColorClass = (color: string) =>
 const updateLogo = (type: string, event: any) => {
   const file = event.target.files[0]
   console.log(`Updating ${type}:`, file)
-  // Handle file upload here
-  handleFileChange(
-    selectedTheme.value === 'black-haze' ? 'dark' : 'light',
-    type === 'logo' ? 'horizontal' : 'vertical',
-    [file]
-  )
+  const theme = selectedTheme.value === 'black-haze' ? 'dark' : 'light'
+  handleFileChange(theme, 'horizontal', [file])
+  handleFileChange(theme, 'vertical', [file])
+}
+
+const deleteLogo = () => {
+  const theme = selectedTheme.value === 'black-haze' ? 'dark' : 'light'
+  handleFileRemove(theme, 'horizontal')
+  handleFileRemove(theme, 'vertical')
 }
 
 const saveConfiguration = async () => {
@@ -233,10 +240,6 @@ watchEffect(() => {
   selectedFontColor.value = fontColors[selectedTheme.value][0]
 })
 
-const getLogoMark = (theme: string) => {
-  return themeLogos.value[theme].vertical.logo
-}
-
 const getLogo = (theme: string) => {
   return themeLogos.value[theme].horizontal.logo
 }
@@ -264,6 +267,24 @@ async function handleFileChange(
   } catch (e) {
     console.error(e)
     toast.error("Couldn't upload logo. Please try again or contact support")
+  } finally {
+    themeLogos.value[mode][orientation].isLoading = false
+  }
+}
+
+async function handleFileRemove(
+  mode: 'light' | 'dark',
+  orientation: 'vertical' | 'horizontal'
+) {
+  themeLogos.value[mode][orientation].isLoading = true
+  try {
+    const app = appsStore.app(appId)
+    await removeThemeLogo(appId, mode, app.network, orientation)
+    toast.success('Logo removed successfully')
+    themeLogos.value[mode][orientation].logo = ''
+  } catch (e) {
+    console.error(e)
+    toast.error("Couldn't remove logo. Please try again or contact support")
   } finally {
     themeLogos.value[mode][orientation].isLoading = false
   }
@@ -502,7 +523,7 @@ const disableSave = () => {
           <h2
             class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
           >
-            Update Logos
+            Update Logo
           </h2>
           <div class="flex gap-8">
             <div class="mb-2">
@@ -511,48 +532,52 @@ const disableSave = () => {
                 class="block mb-1 font-normal text-sm text-[#1D2A31]"
                 >Logo</label
               >
-              <input
-                id="logo"
-                type="file"
-                hidden
-                class="w-full p-2 border rounded"
-                @change="updateLogo('logo', $event)"
-              />
-              <button
-                class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
-                @click="clickLogoUpload('logo')"
+              <div
+                v-if="
+                  getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
+                "
+                class="flex gap-3"
               >
-                <img
-                  src="@/assets/iconography/upload.svg"
-                  alt="plus"
-                  class="w-4 h-4"
+                <div
+                  class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2"
+                >
+                  <img
+                    :src="
+                      getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
+                    "
+                    alt="logo"
+                    class="w-12 h-12"
+                    @error="onLogoError"
+                  />
+                </div>
+                <button @click="deleteLogo()">
+                  <img
+                    src="@/assets/iconography/delete-icon-logo.svg"
+                    alt="delete"
+                    class="w-4 h-4"
+                  />
+                </button>
+              </div>
+              <div v-else>
+                <input
+                  id="logo"
+                  type="file"
+                  hidden
+                  class="w-full p-2 border rounded"
+                  @change="updateLogo('logo', $event)"
                 />
-                <span>Upload Logo</span>
-              </button>
-            </div>
-            <div>
-              <label
-                for="logo-mark"
-                class="block mb-1 font-normal text-sm text-[#1D2A31]"
-                >Logo Mark</label
-              >
-              <input
-                id="logo-mark"
-                type="file"
-                hidden
-                class="w-full p-2 border rounded"
-                @change="updateLogo('logoMark', $event)"
-              />
-              <button
-                class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-14 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
-                @click="clickLogoUpload('logo-mark')"
-              >
-                <img
-                  src="@/assets/iconography/upload.svg"
-                  alt="plus"
-                  class="w-4 h-4"
-                />
-              </button>
+                <button
+                  class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
+                  @click="clickLogoUpload('logo')"
+                >
+                  <img
+                    src="@/assets/iconography/upload.svg"
+                    alt="plus"
+                    class="w-4 h-4"
+                  />
+                  <span>Upload Logo</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -591,7 +616,7 @@ const disableSave = () => {
             class="rounded border flex flex-col justify-between w-[372px] h-[570px]"
             :style="{
               backgroundColor:
-                selectedTheme === 'black-haze' ? '#13171A' : '#EFEFEF',
+                selectedTheme === 'black-haze' ? '#13171A' : '#F7F7F7',
               color: selectedFontColor,
               borderRadius: `${getRadius(selectedRadius)}`,
               fontFamily: secondaryFontClass,
@@ -605,9 +630,7 @@ const disableSave = () => {
                 <div class="flex items-center gap-2">
                   <img
                     :src="
-                      getLogoMark(
-                        selectedTheme === 'black-haze' ? 'dark' : 'light'
-                      )
+                      getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
                     "
                     alt="logo"
                     class="w-6 h-6"
@@ -628,46 +651,72 @@ const disableSave = () => {
                   <img :src="qrCodeIcon[selectedTheme]" alt="qr-code" />
                 </div>
               </div>
-              <div
-                class="mb-4 h-48 p-4 rounded-xl flex flex-col justify-between"
-                :style="{
-                  backgroundColor:
-                    selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
-                }"
-              >
-                <div class="flex gap-1 items-center">
-                  <img
-                    src="@/assets/iconography/wallet-ui/fallback-logo.png"
-                    alt="chain"
-                    class="w-6 h-6"
-                  />
-                  <span
-                    :style="{
-                      fontFamily: primaryFontClass,
-                      fontSize: `${selectedFontSize * 12}px`,
-                    }"
-                    class="text-sm font-normal"
-                    >0xdw...9dg5</span
-                  >
-                </div>
-                <div class="flex flex-col mb-2">
-                  <span class="text-xs">Total Balance:</span>
-                  <div>
+              <div>
+                <div
+                  class="mb-2 gap-3 h-32 p-4 rounded-xl flex flex-col justify-between"
+                  :style="{
+                    backgroundColor:
+                      selectedTheme === 'black-haze' ? '#1D2A31' : '#E4E9EB',
+                  }"
+                >
+                  <div class="flex gap-1 items-center">
+                    <img
+                      src="@/assets/iconography/wallet-ui/fallback-logo.png"
+                      alt="chain"
+                      class="w-6 h-6"
+                    />
+                    <div class="flex flex-col">
+                      <span
+                        :style="{
+                          fontFamily: primaryFontClass,
+                          fontSize: `${selectedFontSize * 12}px`,
+                        }"
+                        class="text-sm font-normal block"
+                        >0xdw...9dg5</span
+                      >
+                      <span
+                        class="block text-[#74919C]"
+                        :style="{
+                          fontFamily: secondaryFontClass,
+                          fontSize: `${selectedFontSize * 8}px`,
+                        }"
+                        :class="
+                          selectedTheme === 'black-haze'
+                            ? 'text-[#829299]'
+                            : 'text-[#74919C]'
+                        "
+                        >Smart Contract Wallet Address</span
+                      >
+                    </div>
+                  </div>
+                  <div class="flex flex-col">
                     <span
-                      class="font-normal"
-                      :style="{
-                        fontFamily: primaryFontClass,
-                        fontSize: `${selectedFontSize * 18}px`,
-                      }"
-                      >552156560.642827</span
+                      class="text-[10px] uppercase"
+                      :class="
+                        selectedTheme === 'black-haze'
+                          ? 'text-[#829299]'
+                          : 'text-[#74919C]'
+                      "
+                      >Total Balance:</span
                     >
-                    <span
-                      :style="{
-                        fontFamily: primaryFontClass,
-                        fontSize: `${selectedFontSize * 14}px`,
-                      }"
-                      >ETH</span
-                    >
+
+                    <div class="space-x-2">
+                      <span
+                        class="font-normal"
+                        :style="{
+                          fontFamily: primaryFontClass,
+                          fontSize: `${selectedFontSize * 24}px`,
+                        }"
+                        >552.642</span
+                      >
+                      <span
+                        :style="{
+                          fontFamily: primaryFontClass,
+                          fontSize: `${selectedFontSize * 14}px`,
+                        }"
+                        >ETH</span
+                      >
+                    </div>
                   </div>
                 </div>
                 <div class="flex space-x-2">
@@ -689,21 +738,29 @@ const disableSave = () => {
                   </button>
                 </div>
               </div>
-              <div>
+              <div class="flex flex-col gap-2">
                 <h2
-                  class="font-light mb-2 flex justify-between items-baseline"
+                  class="font-light flex justify-between items-baseline"
                   :style="{
                     fontFamily: primaryFontClass,
                     fontSize: `${selectedFontSize * 16}px`,
                   }"
                 >
-                  <span>Assets</span>
+                  <span
+                    class="uppercase"
+                    :class="
+                      selectedTheme === 'black-haze'
+                        ? 'text-[#829299]'
+                        : 'text-[#74919C]'
+                    "
+                    >Assets</span
+                  >
                 </h2>
                 <div
-                  class="h-28 flex flex-col rounded-xl"
+                  class="h-20 flex flex-col rounded-xl"
                   :style="{
                     backgroundColor:
-                      selectedTheme === 'black-haze' ? '#1D2A31' : '#F7F7F7',
+                      selectedTheme === 'black-haze' ? '#1D2A31' : '#E4E9EB',
                     fontSize: `${selectedFontSize * 12}px`,
                   }"
                 >
@@ -728,25 +785,31 @@ const disableSave = () => {
                         />
                         <span>Ethereum</span>
                       </div>
-                      <span>552156560.642827 ETH</span>
+                      <span>5521.642 ETH</span>
                     </div>
                   </div>
-                  <div
-                    class="flex justify-center items-center h-8 rounded-b-xl gap-2"
+                </div>
+                <div
+                  class="flex justify-center items-center rounded-b-xl gap-2"
+                  :style="{
+                    fontSize: `${selectedFontSize * 10}px`,
+                  }"
+                >
+                  <img :src="addIcon[selectedTheme]" alt="new" />
+                  <span
                     :style="{
-                      backgroundColor: selectedColor,
-                      fontSize: `${selectedFontSize * 10}px`,
+                      fontSize: `${selectedFontSize * 14}px`,
                     }"
+                    :class="
+                      selectedTheme === 'black-haze'
+                        ? 'text-[#BBCCD6]'
+                        : 'text-[#4C626E]'
+                    "
+                    >New Asset</span
                   >
-                    <img
-                      :src="addIcon[selectedTheme]"
-                      alt="new"
-                      class="w-3 h-3"
-                    />
-                    <span>New</span>
-                  </div>
                 </div>
               </div>
+
               <div class="flex flex-row items-center justify-center">
                 <a
                   class="text-xs font-light no-underline"
