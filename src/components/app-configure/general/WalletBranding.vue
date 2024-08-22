@@ -1,19 +1,24 @@
 <script setup lang="ts">
 import bytes from 'bytes'
-import { onMounted, ref, watchEffect } from 'vue'
+import { onMounted, ref, watchEffect, watch } from 'vue'
 
 import googleIcon from '@/assets/google-sso.svg'
+import arcanaLogoDark from '@/assets/iconography/wallet-ui/dark/arcana-logo.svg'
+import arrowIconDark from '@/assets/iconography/wallet-ui/dark/arrow-icon.svg'
 import buyIconDark from '@/assets/iconography/wallet-ui/dark/buy-icon.svg'
+import dotsHorizontalDark from '@/assets/iconography/wallet-ui/dark/dots-horizontal.svg'
 import nftsIconDark from '@/assets/iconography/wallet-ui/dark/nfts-icon.svg'
 import notificationsIconDark from '@/assets/iconography/wallet-ui/dark/notifications-icon.svg'
 import plusIconDark from '@/assets/iconography/wallet-ui/dark/plus.svg'
 import profileIconDark from '@/assets/iconography/wallet-ui/dark/profile-icon.svg'
 import qrCodeIconDark from '@/assets/iconography/wallet-ui/dark/qr-code.svg'
-import sellIconDark from '@/assets/iconography/wallet-ui/dark/sell.svg'
 import sendIconDark from '@/assets/iconography/wallet-ui/dark/send-icon.svg'
 import tokensIconDark from '@/assets/iconography/wallet-ui/dark/tokens-icon-selected.svg'
 import placeholderLogo from '@/assets/iconography/wallet-ui/fallback-logo.png'
+import arcanaLogoLight from '@/assets/iconography/wallet-ui/light/arcana-logo.svg'
+import arrowIconLight from '@/assets/iconography/wallet-ui/light/arrow-icon.svg'
 import buyIconLight from '@/assets/iconography/wallet-ui/light/buy-icon.svg'
+import dotsHorizontalLight from '@/assets/iconography/wallet-ui/light/dots-horizontal.svg'
 import nftsIconLight from '@/assets/iconography/wallet-ui/light/nfts-icon.svg'
 import notificationsIconLight from '@/assets/iconography/wallet-ui/light/notifications-icon.svg'
 import plusIconLight from '@/assets/iconography/wallet-ui/light/plus.svg'
@@ -38,7 +43,7 @@ import { content, errors } from '@/utils/content'
 import getEnvApi from '@/utils/get-env-api'
 
 const selectedTheme = ref('black-haze')
-const selectedColor = ref('#1862E8')
+const selectedAccentColor = ref('#1862E8')
 const selectedFontPairing = ref('Nohemi + Inter')
 const selectedFontSize = ref(1)
 const selectedFontColor = ref('#F7F7F7')
@@ -118,7 +123,22 @@ const qrCodeIcon = {
   'white-mist': qrCodeIconLight,
 }
 
-const socialIcon = [redditIcon, twitterIcon, googleIcon, twitchIcon]
+const arcanaLogo = {
+  'black-haze': arcanaLogoDark,
+  'white-mist': arcanaLogoLight,
+}
+
+const arrowIcon = {
+  'black-haze': arrowIconDark,
+  'white-mist': arrowIconLight,
+}
+
+const dotsHorizontal = {
+  'black-haze': dotsHorizontalDark,
+  'white-mist': dotsHorizontalLight,
+}
+
+const socialIcon = [googleIcon, twitterIcon, redditIcon, twitchIcon]
 
 const buttons = ['Send', 'Buy', 'Sell']
 
@@ -129,8 +149,6 @@ const accentColors = ref([
   '#521AD3',
   '#BA2CE1',
   '#D73390',
-  '#D73226',
-  '#DEA13B',
   '#FFFFFF',
   '#000000',
 ])
@@ -157,7 +175,7 @@ const radiusClass = (radius: string) =>
     : 'border-2 border-transparent'
 
 const accentColorClass = (color: string) =>
-  color === selectedColor.value
+  color === selectedAccentColor.value
     ? 'border-2 border-[#FF4E9F]'
     : 'border-[1.5px] border-transparent'
 
@@ -181,7 +199,7 @@ const saveConfiguration = async () => {
     auth.wallet.selectedTheme =
       selectedTheme.value === 'black-haze' ? 'dark' : 'light'
     const theme_settings = {
-      accent_color: selectedColor.value,
+      accent_color: selectedAccentColor.value,
       font_pairing: selectedFontPairing.value,
       font_size: String(selectedFontSize.value),
       font_color: selectedFontColor.value,
@@ -200,7 +218,7 @@ const saveConfiguration = async () => {
 const cancelConfiguration = () => {
   selectedTheme.value =
     currentApp.auth.wallet.theme === 'dark' ? 'black-haze' : 'white-mist'
-  selectedColor.value = currentApp.theme_settings.accent_color
+  selectedAccentColor.value = currentApp.theme_settings.accent_color
   selectedFontPairing.value = currentApp.theme_settings.font_pairing
   selectedFontSize.value = Number(currentApp.theme_settings.font_size)
   selectedFontColor.value = currentApp.theme_settings.font_color
@@ -238,6 +256,10 @@ watchEffect(() => {
 
 watchEffect(() => {
   selectedFontColor.value = fontColors[selectedTheme.value][0]
+})
+
+watch(selectedAccentColor, () => {
+  setSvgStrokeColor()
 })
 
 const getLogo = (theme: string) => {
@@ -295,8 +317,8 @@ function onLogoError(e) {
 }
 
 function addAccentColor() {
-  if (!accentColors.value.includes(selectedColor.value)) {
-    accentColors.value.push(selectedColor.value)
+  if (!accentColors.value.includes(selectedAccentColor.value)) {
+    accentColors.value.push(selectedAccentColor.value)
   }
 }
 
@@ -305,12 +327,19 @@ onMounted(() => {
   const theme =
     auth.wallet.selectedTheme === 'dark' ? 'black-haze' : 'white-mist'
   selectedTheme.value = theme
-  selectedColor.value = theme_settings.accent_color
+  selectedAccentColor.value = theme_settings.accent_color
   selectedFontPairing.value = theme_settings.font_pairing
   selectedFontSize.value = Number(theme_settings.font_size)
   selectedFontColor.value = theme_settings.font_color
   selectedRadius.value = theme_settings.radius
   addAccentColor()
+})
+
+onMounted(() => {
+  window.SVGInject(document.querySelectorAll('.svg-icon'))
+  setTimeout(() => {
+    setSvgStrokeColor()
+  }, 1000)
 })
 
 const disableSave = () => {
@@ -320,7 +349,7 @@ const disableSave = () => {
 
   return (
     selectedTheme.value === theme &&
-    selectedColor.value === theme_settings.accent_color &&
+    selectedAccentColor.value === theme_settings.accent_color &&
     selectedFontPairing.value === theme_settings.font_pairing &&
     selectedFontSize.value === Number(theme_settings.font_size) &&
     selectedFontColor.value === theme_settings.font_color &&
@@ -334,11 +363,20 @@ function switchPreview() {
 
 function resetToDefault() {
   selectedTheme.value = 'black-haze'
-  selectedColor.value = '#1862E8'
+  selectedAccentColor.value = '#1862E8'
   selectedFontPairing.value = 'Nohemi + Inter'
   selectedFontSize.value = 1
   selectedFontColor.value = '#F7F7F7'
   selectedRadius.value = 'M'
+}
+
+function setSvgStrokeColor() {
+  const svgIcons = document.querySelectorAll('.svg-icon')
+  svgIcons.forEach((icon) => {
+    let path = icon.querySelector('path')
+    path?.setAttribute('stroke', selectedAccentColor.value)
+    path?.setAttribute('fill', selectedAccentColor.value)
+  })
 }
 </script>
 
@@ -414,7 +452,7 @@ function resetToDefault() {
               :key="color"
               class="p-[1px] rounded-full cursor-pointer"
               :class="accentColorClass(color)"
-              @click="selectedColor = color"
+              @click="selectedAccentColor = color"
             >
               <div
                 :style="{ backgroundColor: color }"
@@ -430,7 +468,7 @@ function resetToDefault() {
               </button>
               <input
                 id="color-picker"
-                v-model="selectedColor"
+                v-model="selectedAccentColor"
                 type="color"
                 class="w-0 h-0 p-0 border-none outline-none"
                 @change="addAccentColor"
@@ -690,7 +728,11 @@ function resetToDefault() {
                 <div class="flex items-center gap-2">
                   <img src="@/assets/eth_logo.svg" alt="eth-logo" />
 
-                  <img :src="qrCodeIcon[selectedTheme]" alt="qr-code" />
+                  <img
+                    :src="qrCodeIcon[selectedTheme]"
+                    alt="qr-code"
+                    class="svg-icon"
+                  />
                 </div>
               </div>
               <div>
@@ -767,14 +809,15 @@ function resetToDefault() {
                     :key="button"
                     class="flex-1 flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border-[1.5px]"
                     :style="{
-                      borderColor:
-                        selectedTheme === 'black-haze' ? '#F7F7F7' : '#1D2A31',
+                      borderColor: selectedAccentColor,
                       fontSize: `${selectedFontSize * 14}px`,
+                      color: selectedAccentColor,
                     }"
                   >
                     <img
                       :src="buttonIcons[selectedTheme][button.toLowerCase()]"
                       alt=""
+                      class="svg-icon"
                     />
                     {{ button }}
                   </button>
@@ -837,16 +880,16 @@ function resetToDefault() {
                     fontSize: `${selectedFontSize * 10}px`,
                   }"
                 >
-                  <img :src="addIcon[selectedTheme]" alt="new" />
+                  <img
+                    :src="addIcon[selectedTheme]"
+                    alt="new"
+                    class="svg-icon"
+                  />
                   <span
                     :style="{
                       fontSize: `${selectedFontSize * 14}px`,
+                      color: selectedAccentColor,
                     }"
-                    :class="
-                      selectedTheme === 'black-haze'
-                        ? 'text-[#BBCCD6]'
-                        : 'text-[#4C626E]'
-                    "
                     >New Asset</span
                   >
                 </div>
@@ -863,9 +906,9 @@ function resetToDefault() {
                   Powered By
                 </a>
                 <img
-                  src="@/assets/arcana-logo.webp"
+                  :src="arcanaLogo[selectedTheme]"
                   alt="Arcana Logo"
-                  class="ml-1 h-3 align-middle"
+                  class="ml-1 h-[10px] align-middle"
                 />
               </div>
             </div>
@@ -882,7 +925,7 @@ function resetToDefault() {
             >
               <div class="w-[290px] flex justify-between items-center">
                 <div
-                  v-for="menu in navMenu"
+                  v-for="(menu, index) in navMenu"
                   :key="menu"
                   class="flex flex-col items-center gap-2"
                 >
@@ -890,6 +933,9 @@ function resetToDefault() {
                     :src="footerIcons[selectedTheme][menu.toLowerCase()]"
                     :alt="menu"
                     class="w-6 h-6"
+                    :class="{
+                      'svg-icon': index === 0,
+                    }"
                   />
                   <span class="font-light">{{ menu }}</span>
                 </div>
@@ -912,7 +958,7 @@ function resetToDefault() {
                 fontFamily: secondaryFontClass,
               }"
             >
-              <div class="text-center h-[400px] flex flex-col justify-between">
+              <div class="text-center h-[450px] flex flex-col justify-between">
                 <img
                   :src="
                     getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
@@ -930,45 +976,63 @@ function resetToDefault() {
                 >
                   Log in
                 </h2>
-                <div class="w-full h-11 border rounded mb-4">
+                <div
+                  class="w-full h-11 p-2 rounded mb-4 flex items-center"
+                  :style="{
+                    backgroundColor:
+                      selectedTheme === 'black-haze' ? '#39444a' : '#e4e9eb',
+                  }"
+                >
                   <input
                     type="email"
                     placeholder="Enter your email"
                     :style="{ fontSize: `${selectedFontSize * 14}px` }"
-                    class="w-full h-full p-2 outline-none"
+                    class="w-full h-full p-2 outline-none bg-transparent"
+                  />
+                  <img
+                    :src="arrowIcon[selectedTheme]"
+                    alt="submit"
+                    class="w-4 h-4"
                   />
                 </div>
-                <button
-                  class="w-full px-4 py-2 text-white rounded"
-                  :style="{
-                    backgroundColor: selectedColor,
-                    fontSize: `${selectedFontSize * 12}px`,
-                  }"
-                >
-                  Get Link
-                </button>
-                <p
-                  class="mt-4"
-                  :style="{ fontSize: `${selectedFontSize * 12}px` }"
-                >
-                  or continue with
-                </p>
-                <div
-                  class="flex justify-center space-x-4 mt-2"
-                  :style="{
-                    borderColor:
-                      selectedTheme === 'black-haze' ? '#F7F7F7' : '#1D2A31',
-                  }"
-                >
+                <p :style="{ fontSize: `${selectedFontSize * 12}px` }">or</p>
+                <div class="flex justify-center space-x-4 mt-2">
                   <button
                     v-for="icon in socialIcon"
                     :key="icon"
-                    class="p-2 border-[1px] rounded-full"
+                    class="p-2 rounded-full"
+                    :style="{
+                      backgroundColor:
+                        selectedTheme === 'black-haze' ? '#39444a' : '#e4e9eb',
+                    }"
                   >
                     <img :src="icon" alt="" class="w-8 h-8" />
                   </button>
+                  <button
+                    class="p-2 rounded-full"
+                    :style="{
+                      backgroundColor:
+                        selectedTheme === 'black-haze' ? '#39444a' : '#e4e9eb',
+                    }"
+                  >
+                    <img
+                      :src="dotsHorizontal[selectedTheme]"
+                      alt="more"
+                      class="w-8 h-8"
+                    />
+                  </button>
                 </div>
-                <div class="flex flex-row items-center justify-center mt-4">
+                <p :style="{ fontSize: `${selectedFontSize * 12}px` }">or</p>
+                <button
+                  class="w-full h-11 px-4 py-2 text-sm font-normal text-white rounded-full"
+                  :style="{
+                    backgroundColor: selectedAccentColor,
+                    fontSize: `${selectedFontSize * 12}px`,
+                  }"
+                >
+                  Connect with a wallet
+                </button>
+                <div class="flex flex-row items-center justify-center">
                   <a
                     class="text-xs font-light no-underline"
                     :style="{
@@ -979,9 +1043,9 @@ function resetToDefault() {
                     Powered By
                   </a>
                   <img
-                    src="@/assets/arcana-logo.webp"
+                    :src="arcanaLogo[selectedTheme]"
                     alt="Arcana Logo"
-                    class="ml-1 h-3 align-middle"
+                    class="ml-1 h-[10px] align-middle"
                   />
                 </div>
               </div>
