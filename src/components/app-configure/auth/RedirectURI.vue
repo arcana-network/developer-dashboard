@@ -73,8 +73,8 @@ async function copyRedirectUri() {
 }
 
 .full-bleed {
-  width: calc(100% + 3rem);
-  margin-inline: -1.5rem;
+  width: calc(100% + 2rem);
+  margin-inline: -1rem;
 }
 
 .redirect-uri {
