@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import bytes from 'bytes'
-import { onMounted, ref, watchEffect, watch } from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
 
 import googleIcon from '@/assets/google-sso.svg'
 import arcanaLogoDark from '@/assets/iconography/wallet-ui/dark/arcana-logo.svg'
@@ -250,16 +250,12 @@ const getRadius = (radius: string) => {
 
 watchEffect(() => {
   const [primaryFont, secondaryFont] = selectedFontPairing.value.split(' + ')
-  primaryFontClass.value = primaryFont.toLowerCase()
-  secondaryFontClass.value = secondaryFont.toLowerCase()
+  primaryFontClass.value = primaryFont?.toLowerCase()
+  secondaryFontClass.value = secondaryFont?.toLowerCase()
 })
 
 watchEffect(() => {
   selectedFontColor.value = fontColors[selectedTheme.value][0]
-})
-
-watch(selectedAccentColor, () => {
-  setSvgStrokeColor()
 })
 
 const getLogo = (theme: string) => {
@@ -335,13 +331,6 @@ onMounted(() => {
   addAccentColor()
 })
 
-onMounted(() => {
-  window.SVGInject(document.querySelectorAll('.svg-icon'))
-  setTimeout(() => {
-    setSvgStrokeColor()
-  }, 1000)
-})
-
 const disableSave = () => {
   const { auth, theme_settings } = currentApp
   const theme =
@@ -368,15 +357,6 @@ function resetToDefault() {
   selectedFontSize.value = 1
   selectedFontColor.value = '#F7F7F7'
   selectedRadius.value = 'M'
-}
-
-function setSvgStrokeColor() {
-  const svgIcons = document.querySelectorAll('.svg-icon')
-  svgIcons.forEach((icon) => {
-    let path = icon.querySelector('path')
-    path?.setAttribute('stroke', selectedAccentColor.value)
-    path?.setAttribute('fill', selectedAccentColor.value)
-  })
 }
 </script>
 
@@ -484,7 +464,7 @@ function setSvgStrokeColor() {
           >
             Fonts
           </h2>
-          <div class="flex justify-between">
+          <div class="flex gap-3">
             <div class="mb-2">
               <label
                 for="font-pairing"
@@ -506,33 +486,6 @@ function setSvgStrokeColor() {
                   alt="select"
                   class="h-5 w-5 absolute top-3 right-2"
                 />
-              </div>
-            </div>
-            <div class="mb-4 flex flex-col gap-2">
-              <label
-                for="font-size"
-                class="block mb-1 font-normal text-sm text-[#1D2A31]"
-                >Size</label
-              >
-              <div class="flex space-x-4 items-baseline">
-                <span
-                  :class="fontSizeClass(1)"
-                  class="text-sm cursor-pointer"
-                  @click="selectedFontSize = 1"
-                  >AA</span
-                >
-                <span
-                  :class="fontSizeClass(1.2)"
-                  class="text-lg cursor-pointer"
-                  @click="selectedFontSize = 1.2"
-                  >AA</span
-                >
-                <span
-                  :class="fontSizeClass(1.4)"
-                  class="text-2xl cursor-pointer"
-                  @click="selectedFontSize = 1.4"
-                  >AA</span
-                >
               </div>
             </div>
             <div class="mb-4">
@@ -732,6 +685,7 @@ function setSvgStrokeColor() {
                     :src="qrCodeIcon[selectedTheme]"
                     alt="qr-code"
                     class="svg-icon"
+                    onload="SVGInject(this)"
                   />
                 </div>
               </div>
@@ -818,6 +772,7 @@ function setSvgStrokeColor() {
                       :src="buttonIcons[selectedTheme][button.toLowerCase()]"
                       alt=""
                       class="svg-icon"
+                      onload="SVGInject(this)"
                     />
                     {{ button }}
                   </button>
@@ -878,12 +833,14 @@ function setSvgStrokeColor() {
                   class="flex justify-center items-center rounded-b-xl gap-2"
                   :style="{
                     fontSize: `${selectedFontSize * 10}px`,
+                    color: selectedAccentColor,
                   }"
                 >
                   <img
                     :src="addIcon[selectedTheme]"
                     alt="new"
                     class="svg-icon"
+                    onload="SVGInject(this)"
                   />
                   <span
                     :style="{
@@ -928,6 +885,9 @@ function setSvgStrokeColor() {
                   v-for="(menu, index) in navMenu"
                   :key="menu"
                   class="flex flex-col items-center gap-2"
+                  :style="{
+                    color: selectedAccentColor,
+                  }"
                 >
                   <img
                     :src="footerIcons[selectedTheme][menu.toLowerCase()]"
@@ -936,6 +896,7 @@ function setSvgStrokeColor() {
                     :class="{
                       'svg-icon': index === 0,
                     }"
+                    onload="SVGInject(this)"
                   />
                   <span class="font-light">{{ menu }}</span>
                 </div>
@@ -995,7 +956,31 @@ function setSvgStrokeColor() {
                     class="w-4 h-4"
                   />
                 </div>
-                <p :style="{ fontSize: `${selectedFontSize * 12}px` }">or</p>
+                <div class="flex items-center gap-2">
+                  <span
+                    class="flex-1 h-[1px]"
+                    :style="{
+                      backgroundColor:
+                        selectedTheme === 'black-haze' ? '#829299' : '#C8D5D9',
+                    }"
+                  ></span>
+                  <p
+                    class="text-xs"
+                    :style="{
+                      color:
+                        selectedTheme === 'black-haze' ? '#829299' : '#74919C',
+                    }"
+                  >
+                    or
+                  </p>
+                  <span
+                    class="flex-1 h-[1px]"
+                    :style="{
+                      backgroundColor:
+                        selectedTheme === 'black-haze' ? '#829299' : '#C8D5D9',
+                    }"
+                  ></span>
+                </div>
                 <div class="flex justify-center space-x-4 mt-2">
                   <button
                     v-for="icon in socialIcon"
@@ -1022,12 +1007,35 @@ function setSvgStrokeColor() {
                     />
                   </button>
                 </div>
-                <p :style="{ fontSize: `${selectedFontSize * 12}px` }">or</p>
+                <div class="flex items-center gap-2">
+                  <span
+                    class="flex-1 h-[1px]"
+                    :style="{
+                      backgroundColor:
+                        selectedTheme === 'black-haze' ? '#829299' : '#C8D5D9',
+                    }"
+                  ></span>
+                  <p
+                    class="text-xs"
+                    :style="{
+                      color:
+                        selectedTheme === 'black-haze' ? '#829299' : '#74919C',
+                    }"
+                  >
+                    or
+                  </p>
+                  <span
+                    class="flex-1 h-[1px]"
+                    :style="{
+                      backgroundColor:
+                        selectedTheme === 'black-haze' ? '#829299' : '#C8D5D9',
+                    }"
+                  ></span>
+                </div>
                 <button
                   class="w-full h-11 px-4 py-2 text-sm font-normal text-white rounded-full"
                   :style="{
                     backgroundColor: selectedAccentColor,
-                    fontSize: `${selectedFontSize * 12}px`,
                   }"
                 >
                   Connect with a wallet
