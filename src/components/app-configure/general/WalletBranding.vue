@@ -4,8 +4,10 @@ import { onMounted, ref, watchEffect } from 'vue'
 
 import googleIcon from '@/assets/google-sso.svg'
 import arcanaLogoDark from '@/assets/iconography/wallet-ui/dark/arcana-logo.svg'
+import ArrowDownIconDark from '@/assets/iconography/wallet-ui/dark/arrow-down.svg'
 import arrowIconDark from '@/assets/iconography/wallet-ui/dark/arrow-icon.svg'
 import buyIconDark from '@/assets/iconography/wallet-ui/dark/buy-icon.svg'
+import copyIconDark from '@/assets/iconography/wallet-ui/dark/copy.svg'
 import dotsHorizontalDark from '@/assets/iconography/wallet-ui/dark/dots-horizontal.svg'
 import nftsIconDark from '@/assets/iconography/wallet-ui/dark/nfts-icon.svg'
 import notificationsIconDark from '@/assets/iconography/wallet-ui/dark/notifications-icon.svg'
@@ -16,8 +18,10 @@ import sendIconDark from '@/assets/iconography/wallet-ui/dark/send-icon.svg'
 import tokensIconDark from '@/assets/iconography/wallet-ui/dark/tokens-icon-selected.svg'
 import placeholderLogo from '@/assets/iconography/wallet-ui/fallback-logo.png'
 import arcanaLogoLight from '@/assets/iconography/wallet-ui/light/arcana-logo.svg'
+import ArrowDownIconLight from '@/assets/iconography/wallet-ui/light/arrow-down.svg'
 import arrowIconLight from '@/assets/iconography/wallet-ui/light/arrow-icon.svg'
 import buyIconLight from '@/assets/iconography/wallet-ui/light/buy-icon.svg'
+import copyIconLight from '@/assets/iconography/wallet-ui/light/copy.svg'
 import dotsHorizontalLight from '@/assets/iconography/wallet-ui/light/dots-horizontal.svg'
 import nftsIconLight from '@/assets/iconography/wallet-ui/light/nfts-icon.svg'
 import notificationsIconLight from '@/assets/iconography/wallet-ui/light/notifications-icon.svg'
@@ -136,6 +140,16 @@ const arrowIcon = {
 const dotsHorizontal = {
   'black-haze': dotsHorizontalDark,
   'white-mist': dotsHorizontalLight,
+}
+
+const arrowDownIcon = {
+  'black-haze': ArrowDownIconDark,
+  'white-mist': ArrowDownIconLight,
+}
+
+const copyIcon = {
+  'black-haze': copyIconDark,
+  'white-mist': copyIconLight,
 }
 
 const socialIcon = [googleIcon, twitterIcon, redditIcon, twitchIcon]
@@ -678,8 +692,18 @@ function resetToDefault() {
                     >xyz company</span
                   >
                 </div>
-                <div class="flex items-center gap-2">
+                <div
+                  class="flex items-center gap-2"
+                  :style="{ color: selectedAccentColor }"
+                >
                   <img src="@/assets/eth_logo.svg" alt="eth-logo" />
+
+                  <img
+                    :src="arrowDownIcon[selectedTheme]"
+                    alt="qr-code"
+                    class="svg-icon"
+                    onload="SVGInject(this)"
+                  />
 
                   <img
                     :src="qrCodeIcon[selectedTheme]"
@@ -704,14 +728,24 @@ function resetToDefault() {
                       class="w-6 h-6"
                     />
                     <div class="flex flex-col">
-                      <span
-                        :style="{
-                          fontFamily: primaryFontClass,
-                          fontSize: `${selectedFontSize * 12}px`,
-                        }"
-                        class="text-sm font-normal block"
-                        >0xdw...9dg5</span
-                      >
+                      <div class="flex">
+                        <span
+                          :style="{
+                            fontFamily: primaryFontClass,
+                            fontSize: `${selectedFontSize * 12}px`,
+                          }"
+                          class="text-sm font-normal block"
+                          >0xdw...9dg5</span
+                        >
+                        <div :style="{ color: selectedAccentColor }">
+                          <img
+                            :src="copyIcon[selectedTheme]"
+                            alt="copy"
+                            class="svg-icon"
+                            onload="SVGInject(this)"
+                          />
+                        </div>
+                      </div>
                       <span
                         class="block text-[#74919C]"
                         :style="{
