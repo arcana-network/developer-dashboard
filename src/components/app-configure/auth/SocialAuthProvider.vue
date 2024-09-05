@@ -77,6 +77,29 @@ function handleInput2(value: string) {
     value
   )
 }
+function handleInput3(value: string) {
+  socialAuthStore.setTeamId(
+    AUTH_TYPE_SOCIAL,
+    selectedAuthProviderVerifier.value,
+    value
+  )
+}
+
+function handleInput4(value: string) {
+  socialAuthStore.setKeyId(
+    AUTH_TYPE_SOCIAL,
+    selectedAuthProviderVerifier.value,
+    value
+  )
+}
+
+function handleInput5(value: string) {
+  socialAuthStore.setPrivateKey(
+    AUTH_TYPE_SOCIAL,
+    selectedAuthProviderVerifier.value,
+    value
+  )
+}
 
 async function handleSubmit() {
   if (keyspace === GLOBAL_KEYSPACE && disableMainnetNetwork) {
@@ -90,6 +113,7 @@ async function handleSubmit() {
       AUTH_TYPE_SOCIAL,
       app
     )
+    console.log('fetching app config', app.auth.social)
     await appsStore.fetchAndStoreAppConfig(appId, app.network)
     setIamAuth()
     toast.success(content.SOCIAL_AUTH.SUCCESS)
@@ -197,6 +221,9 @@ socialAuthStore.$subscribe((mutation) => {
             :auth-type="AUTH_TYPE_SOCIAL"
             @input1="handleInput1"
             @input2="handleInput2"
+            @input3="handleInput3"
+            @input4="handleInput4"
+            @input5="handleInput5"
           />
         </div>
         <div class="space-x-5 flex justify-end">

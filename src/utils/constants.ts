@@ -1,9 +1,10 @@
 import bytes from 'bytes'
 
+import AppleIcon from '@/assets/apple-sso.svg'
 import CognitoIcon from '@/assets/cognito-sso.png'
 import DiscordIcon from '@/assets/discord-sso.svg'
 import FirebaseIcon from '@/assets/firebase-sso.svg'
-import GithubIcon from '@/assets/github-sso.svg'
+import GithubIcon from '@/assets/github-sso-light.svg'
 import GoogleIcon from '@/assets/google-sso.svg'
 import brandingIcon from '@/assets/iconography/branding.svg'
 import BugIcon from '@/assets/iconography/bug.png'
@@ -171,6 +172,7 @@ const bandwidthUnits: BandwidthLimitUnit[] = [
 
 type SocialAuthVerifier =
   | 'google'
+  | 'apple'
   | 'twitter'
   | 'twitch'
   | 'reddit'
@@ -182,6 +184,7 @@ type SocialAuthVerifier =
 
 type SocialAuthVerifierLabel =
   | 'Google'
+  | 'Apple'
   | 'Twitter'
   | 'Twitch'
   | 'Reddit'
@@ -194,6 +197,9 @@ type SocialAuthVerifierLabel =
 type SocialAuthOptionTitle = {
   label1: string
   label2: string
+  label3: string
+  label4: string
+  label5: string
 }
 
 type SocialAuthOptionDocumentation = {
@@ -206,12 +212,16 @@ type SocialAuthOption = {
   icon: string
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
+  isApple: boolean
   documentation?: string
   inputLabels: SocialAuthOptionTitle
   documentation1: SocialAuthOptionDocumentation
   documentation2?: SocialAuthOptionDocumentation
   clientId?: string
   clientSecret?: string
+  privateKey?: string
+  teamId?: string
+  keyId?: string
   note?: string
 }
 
@@ -221,10 +231,14 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'google',
     icon: GoogleIcon,
     hasClientSecret: false,
+    isApple: false,
     documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
     inputLabels: {
       label1: 'Client ID',
       label2: '',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Client ID',
@@ -235,14 +249,43 @@ const socialLogins: readonly SocialAuthOption[] = [
     note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
   },
   {
+    name: 'Apple',
+    verifier: 'apple',
+    icon: AppleIcon,
+    hasClientSecret: true,
+    isApple: true,
+    documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
+    inputLabels: {
+      label1: 'Client ID',
+      label2: 'Client Secret',
+      label3: 'Team ID',
+      label4: 'Key ID',
+      label5: 'Private Key',
+    },
+    documentation1: {
+      label: 'Get your Client ID',
+      link: 'https://support.google.com/cloud/answer/6158849?hl=en',
+    },
+    clientId: '',
+    clientSecret: '',
+    privateKey: '',
+    teamId: '',
+    keyId: '',
+    note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
+  },
+  {
     name: 'Twitch',
     verifier: 'twitch',
     icon: TwitchIcon,
     hasClientSecret: false,
+    isApple: false,
     documentation: 'https://dev.twitch.tv/docs/authentication#registration',
     inputLabels: {
       label1: 'Client ID',
       label2: '',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Client ID',
@@ -256,10 +299,14 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'discord',
     icon: DiscordIcon,
     hasClientSecret: true,
+    isApple: false,
     documentation: 'https://discord.com/developers/applications',
     inputLabels: {
       label1: 'Client ID',
       label2: 'Client Secret',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Client ID',
@@ -277,11 +324,15 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'github',
     icon: GithubIcon,
     hasClientSecret: true,
+    isApple: false,
     documentation:
       'https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app',
     inputLabels: {
       label1: 'Client ID',
       label2: 'Client Secret',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Client ID',
@@ -299,10 +350,14 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'twitter',
     icon: TwitterIcon,
     hasClientSecret: true,
+    isApple: false,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
     inputLabels: {
       label1: 'Client ID',
       label2: 'Client Secret',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Client ID',
@@ -320,10 +375,14 @@ const socialLogins: readonly SocialAuthOption[] = [
     verifier: 'steam',
     icon: SteamIcon,
     hasClientSecret: true,
+    isApple: false,
     documentation: 'https://steamcommunity.com/dev/apikey',
     inputLabels: {
       label1: '',
       label2: 'Steam API Key',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Steam API key',
@@ -345,9 +404,13 @@ const IAM_Providers: SocialAuthOption[] = [
     verifier: 'firebase',
     icon: FirebaseIcon,
     hasClientSecret: false,
+    isApple: false,
     inputLabels: {
       label1: 'Project ID',
       label2: '',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Project ID',
@@ -361,9 +424,13 @@ const IAM_Providers: SocialAuthOption[] = [
     verifier: 'aws',
     icon: CognitoIcon,
     hasClientSecret: true,
+    isApple: false,
     inputLabels: {
       label1: 'Client ID',
       label2: 'Cognito User Pool Domain',
+      label3: '',
+      label4: '',
+      label5: '',
     },
     documentation1: {
       label: 'Get your Client ID',
