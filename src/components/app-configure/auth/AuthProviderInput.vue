@@ -2,8 +2,12 @@
 import type { PropType } from 'vue'
 
 import VStack from '@/components/lib/VStack/VStack.vue'
+import { useToast } from '@/components/lib/VToast'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
+import { useAppId } from '@/use/getAppId'
 import type { SocialAuthOption } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
+import copyToClipboard from '@/utils/copyToClipboard'
 
 defineProps({
   authProvider: {
@@ -16,6 +20,19 @@ defineProps({
   },
 })
 
+const toast = useToast()
+const appId = useAppId()
+
+const redirectUri = `https://oauth.arcana.network/auth/apple/redirect/${appId}`
+
+async function copyRedirectUri() {
+  try {
+    await copyToClipboard(redirectUri)
+    toast.success(content.REDIRECT_URI.COPIED)
+  } catch (e) {
+    toast.error(errors.REDIRECT_URI.ERROR)
+  }
+}
 const socialAuthStore = useSocialAuthStore()
 const emits = defineEmits(['input1', 'input2', 'input3', 'input4', 'input5'])
 
@@ -70,7 +87,7 @@ function handleInput5(event: Event) {
         />
       </VStack>
       <VStack
-        v-if="authProvider.hasClientSecret"
+        v-if="authProvider.hasClientSecret && !authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"
       >
         <div class="flex justify-between">
@@ -88,20 +105,11 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientSecret === '::'
-              ? ''
-              : socialAuthStore.authCredentialsInput[authType][
-                  authProvider.verifier
-                ].clientSecret
+            ].clientSecret
           "
-          :disabled="authProvider.isApple"
           @input="handleInput2"
         />
       </VStack>
-    </div>
-    <div
-      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
-    >
       <VStack
         v-if="authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"
@@ -118,6 +126,10 @@ function handleInput5(event: Event) {
           @input="handleInput3"
         />
       </VStack>
+    </div>
+    <div
+      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
+    >
       <VStack
         v-if="authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"
@@ -134,10 +146,6 @@ function handleInput5(event: Event) {
           @input="handleInput4"
         />
       </VStack>
-    </div>
-    <div
-      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
-    >
       <VStack
         v-if="authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"
@@ -153,6 +161,55 @@ function handleInput5(event: Event) {
           "
           @input="handleInput5"
         />
+      </VStack>
+    </div>
+    <div
+      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
+    >
+      <VStack
+        v-if="authProvider.hasClientSecret && authProvider.isApple"
+        class="flex flex-1 flex-col space-y-2"
+      >
+        <div class="flex justify-between">
+          <span class="text-xs">{{ authProvider.inputLabels.label2 }}</span>
+        </div>
+        <input
+          class="flex-1 text-black bg-liquidlight p-2 rounded-md outline-none"
+          :placeholder="authProvider.inputLabels.label2"
+          :value="
+            socialAuthStore.authCredentialsInput[authType][
+              authProvider.verifier
+            ].clientSecret === '::'
+              ? ''
+              : socialAuthStore.authCredentialsInput[authType][
+                  authProvider.verifier
+                ].clientSecret
+          "
+          :disabled="authProvider.isApple"
+          @input="handleInput2"
+        />
+      </VStack>
+      <VStack
+        v-if="authProvider.isApple"
+        class="flex flex-1 flex-col space-y-2"
+      >
+        <div class="flex justify-between">
+          <span class="text-xs">Redirect URL</span>
+        </div>
+        <div
+          class="flex items-center justify-between text-black bg-liquidlight p-2 rounded-md outline-none"
+        >
+          <span
+            class="text-md font-normal text-ellipsis redirect-uri overflow-hidden"
+            :title="redirectUri"
+            >{{ redirectUri }}</span
+          >
+          <img
+            src="@/assets/iconography/copy.svg"
+            class="cursor-pointer copy-icon"
+            @click.stop="copyRedirectUri"
+          />
+        </div>
       </VStack>
     </div>
   </div>
