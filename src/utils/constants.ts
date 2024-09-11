@@ -256,7 +256,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     isApple: true,
     documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
     inputLabels: {
-      label1: 'Client ID',
+      label1: 'Service ID',
       label2: '',
       label3: 'Team ID',
       label4: 'Key ID',
@@ -302,8 +302,8 @@ const socialLogins: readonly SocialAuthOption[] = [
     isApple: false,
     documentation: 'https://discord.com/developers/applications',
     inputLabels: {
-      label1: 'Client ID',
-      label2: 'Client Secret',
+      label1: 'Application ID',
+      label2: 'Public Key',
       label3: '',
       label4: '',
       label5: '',
@@ -353,8 +353,8 @@ const socialLogins: readonly SocialAuthOption[] = [
     isApple: false,
     documentation: 'https://developer.twitter.com/en/docs/apps/overview',
     inputLabels: {
-      label1: 'Client ID',
-      label2: 'Client Secret',
+      label1: 'API Key',
+      label2: 'API Key Secret',
       label3: '',
       label4: '',
       label5: '',
