@@ -3,6 +3,7 @@ import type { PropType } from 'vue'
 
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
+import { useAppsStore } from '@/stores/apps.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
 import type { SocialAuthOption } from '@/utils/constants'
@@ -22,8 +23,10 @@ defineProps({
 
 const toast = useToast()
 const appId = useAppId()
+const appsStore = useAppsStore()
+const app = appsStore.app(appId)
 
-const redirectUri = `https://oauth.arcana.network/auth/apple/redirect/${appId}`
+const redirectUri = `https://oauth.arcana.network/auth/apple/redirect/${app.address}`
 
 async function copyRedirectUri() {
   try {
@@ -166,29 +169,6 @@ function handleInput5(event: Event) {
     <div
       class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
     >
-      <VStack
-        v-if="authProvider.hasClientSecret && authProvider.isApple"
-        class="flex flex-1 flex-col space-y-2"
-      >
-        <div class="flex justify-between">
-          <span class="text-xs">{{ authProvider.inputLabels.label2 }}</span>
-        </div>
-        <input
-          class="flex-1 text-black bg-liquidlight p-2 rounded-md outline-none"
-          :placeholder="authProvider.inputLabels.label2"
-          :value="
-            socialAuthStore.authCredentialsInput[authType][
-              authProvider.verifier
-            ].clientSecret === '::'
-              ? ''
-              : socialAuthStore.authCredentialsInput[authType][
-                  authProvider.verifier
-                ].clientSecret
-          "
-          :disabled="authProvider.isApple"
-          @input="handleInput2"
-        />
-      </VStack>
       <VStack
         v-if="authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"

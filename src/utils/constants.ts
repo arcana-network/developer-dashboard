@@ -257,7 +257,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
     inputLabels: {
       label1: 'Client ID',
-      label2: 'Client Secret',
+      label2: '',
       label3: 'Team ID',
       label4: 'Key ID',
       label5: 'Private Key',
