@@ -107,7 +107,7 @@ const useSocialAuthStore = defineStore('socialAuth', {
           this.authCredentialsInput[type][verifier].privateKey,
         ].join(':')
         this.authCredentialsInput[type][verifier].clientSecret =
-          appleClientSecret
+          JSON.stringify(appleClientSecret)
       }
     },
     async updateSocialAuthProviders(
@@ -126,6 +126,7 @@ const useSocialAuthStore = defineStore('socialAuth', {
             clientId: inputs[a.verifier].clientId,
             clientSecret: inputs[a.verifier].clientSecret,
           }
+          console.log('credObj', credObj)
           delete inputs[a.verifier]
           return credObj
         } else return a
