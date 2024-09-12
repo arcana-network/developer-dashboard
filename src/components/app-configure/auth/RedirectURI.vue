@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import VCard from '@/components/lib/VCard/VCard.vue'
-import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
-import VStack from '@/components/lib/VStack/VStack.vue'
+import type { PropType } from 'vue'
+import { computed } from 'vue'
+
 import { useToast } from '@/components/lib/VToast'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
+import type { SocialAuthOption } from '@/utils/constants'
 import { content, errors } from '@/utils/content'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -12,94 +13,88 @@ const toast = useToast()
 const appsStore = useAppsStore()
 const appId = useAppId()
 
-const redirectUri = appsStore.app(appId).auth.redirectUri
+const redirectUri = computed(() => {
+  if (props.authProvider.isApple) {
+    return `https://oauth.arcana.network/auth/apple/redirect/${
+      appsStore.app(appId).address
+    }`
+  }
+  return appsStore.app(appId).auth.redirectUri
+})
 
 async function copyRedirectUri() {
   try {
-    await copyToClipboard(redirectUri)
+    await copyToClipboard(redirectUri.value)
     toast.success(content.REDIRECT_URI.COPIED)
   } catch (e) {
     toast.error(errors.REDIRECT_URI.ERROR)
   }
 }
+
+const props = defineProps({
+  authProvider: {
+    type: Object as PropType<SocialAuthOption>,
+    required: true,
+  },
+  authType: {
+    type: String,
+    required: true,
+  },
+})
 </script>
 
 <template>
-  <section name="redirect-uri">
-    <VCard variant="elevated" class="redirect-uri-info__container">
-      <VStack gap="1rem" direction="column" class="redirect-uri-info__stack">
-        <VStack
-          justify="space-between"
-          align="center"
-          class="flex-wrap justify-between"
-          gap="1rem"
+  <div
+    class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
+  >
+    <VStack class="flex flex-1 flex-col space-y-2">
+      <div class="flex justify-between">
+        <span class="text-xs">Redirect URL</span>
+      </div>
+      <div
+        class="flex items-center justify-between text-black bg-liquidlight p-2 rounded-md outline-none"
+      >
+        <span
+          class="text-md font-normal text-ellipsis redirect-uri overflow-hidden"
+          :title="redirectUri"
+          >{{ redirectUri }}</span
         >
-          <h3 class="pl-2.5">Redirect URI</h3>
-          <VCard variant="depressed" class="redirect-uri-card">
-            <VStack
-              align="center"
-              justify="space-between"
-              class="flex-1 w-full"
-            >
-              <span
-                class="text-lg font-normal text-ellipsis redirect-uri overflow-hidden"
-                :title="redirectUri"
-                >{{ redirectUri }}</span
-              >
-              <img
-                src="@/assets/iconography/copy.svg"
-                class="cursor-pointer copy-icon"
-                @click.stop="copyRedirectUri"
-              />
-            </VStack>
-          </VCard>
-        </VStack>
-        <VSeperator class="full-bleed" />
-        <p class="text-sm font-normal redirect-uri-info__description">
-          Arcana automatically generates this URL for every registered app. Use
-          this value to setup the callbacks in the developer console for each
-          social provider that you want to support in your app.
-        </p>
-      </VStack>
-    </VCard>
-  </section>
+        <img
+          src="@/assets/iconography/copy.svg"
+          class="cursor-pointer copy-icon"
+          @click.stop="copyRedirectUri"
+        />
+      </div>
+    </VStack>
+  </div>
 </template>
 
 <style scoped>
-.redirect-uri-card {
-  width: 20rem;
-  padding: 0.75rem 1.5rem;
+.redirect-uri-info__container {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--background-color);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
 }
 
-.full-bleed {
-  width: calc(100% + 2rem);
-  margin-inline: -1rem;
-}
-
-.redirect-uri {
-  width: 100%;
-}
-
-.redirect-uri-info__container {
+.redirect-uri-input {
   padding: 1rem;
+  font-size: 1rem;
+  color: var(--text-color);
+  cursor: not-allowed;
+  border: none;
+  border-radius: 10px;
 }
 
-.redirect-uri-info__stack {
-  width: 100%;
+.copy-icon {
+  width: 24px;
+  height: 24px;
 }
 
 .redirect-uri-info__description {
+  margin-top: 1rem;
   color: var(--text-grey);
-}
-
-.redirect-url-info__value {
-  flex-wrap: wrap;
-}
-
-@media only screen and (max-width: 1023px) {
-  .redirect-uri-card {
-    width: 100%;
-  }
 }
 </style>

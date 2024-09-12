@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { PropType } from 'vue'
 
+import RedirectURI from '@/components/app-configure/auth/RedirectURI.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useToast } from '@/components/lib/VToast'
 import { useAppsStore } from '@/stores/apps.store'
@@ -62,6 +63,11 @@ function handleInput5(event: Event) {
 
 <template>
   <div class="flex flex-col">
+    <RedirectURI
+      :auth-provider="authProvider"
+      :auth-type="authType"
+      class="py-5"
+    />
     <div
       class="flex space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
     >
@@ -126,6 +132,8 @@ function handleInput5(event: Event) {
               authProvider.verifier
             ].clientSecret.split(':')[0]
           "
+          rows="1"
+          as="div"
           @input="handleInput3"
         />
       </VStack>
@@ -154,42 +162,19 @@ function handleInput5(event: Event) {
         class="flex flex-1 flex-col space-y-2"
       >
         <span class="text-xs">{{ authProvider.inputLabels.label5 }}</span>
-        <input
+
+        <textarea
           class="flex-1 text-black bg-liquidlight p-2 rounded-md outline-none"
-          :placeholder="authProvider.inputLabels.label5"
+          :placeholder="`-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----`"
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
             ].clientSecret.split(':')[2]
           "
+          rows="1"
+          as="div"
           @input="handleInput5"
         />
-      </VStack>
-    </div>
-    <div
-      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
-    >
-      <VStack
-        v-if="authProvider.isApple"
-        class="flex flex-1 flex-col space-y-2"
-      >
-        <div class="flex justify-between">
-          <span class="text-xs">Redirect URL</span>
-        </div>
-        <div
-          class="flex items-center justify-between text-black bg-liquidlight p-2 rounded-md outline-none"
-        >
-          <span
-            class="text-md font-normal text-ellipsis redirect-uri overflow-hidden"
-            :title="redirectUri"
-            >{{ redirectUri }}</span
-          >
-          <img
-            src="@/assets/iconography/copy.svg"
-            class="cursor-pointer copy-icon"
-            @click.stop="copyRedirectUri"
-          />
-        </div>
       </VStack>
     </div>
   </div>
