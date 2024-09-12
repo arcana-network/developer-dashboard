@@ -126,7 +126,6 @@ const useSocialAuthStore = defineStore('socialAuth', {
             clientId: inputs[a.verifier].clientId,
             clientSecret: inputs[a.verifier].clientSecret,
           }
-          console.log('credObj', credObj)
           delete inputs[a.verifier]
           return credObj
         } else return a
