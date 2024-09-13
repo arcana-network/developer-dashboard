@@ -10,7 +10,7 @@ import { useLoaderStore } from '@/stores/loader.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
 import {
-  socialLogins,
+  socialLogins as defaultSocialLogins,
   EMPTY_STRING,
   DOCS_URL,
   GLOBAL_KEYSPACE,
@@ -19,11 +19,17 @@ import {
 import { content, errors } from '@/utils/content'
 
 const appsStore = useAppsStore()
+const appId = useAppId()
 const loaderStore = useLoaderStore()
 const toast = useToast()
-const appId = useAppId()
 const app = appsStore.app(appId)
 const socialAuthStore = useSocialAuthStore()
+const socialLogins = defaultSocialLogins.filter((login) => {
+  if (isProductionDashboard && app.network === 'mainnet') {
+    return login.verifier !== 'apple'
+  }
+  return true
+})
 const AUTH_TYPE_SOCIAL = 'social'
 const LEARN_MORE_LINK = `${DOCS_URL}/howto/config_social/index.html`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = socialLogins[0].verifier
@@ -77,6 +83,29 @@ function handleInput2(value: string) {
     value
   )
 }
+function handleInput3(value: string) {
+  socialAuthStore.setTeamId(
+    AUTH_TYPE_SOCIAL,
+    selectedAuthProviderVerifier.value,
+    value
+  )
+}
+
+function handleInput4(value: string) {
+  socialAuthStore.setKeyId(
+    AUTH_TYPE_SOCIAL,
+    selectedAuthProviderVerifier.value,
+    value
+  )
+}
+
+function handleInput5(value: string) {
+  socialAuthStore.setPrivateKey(
+    AUTH_TYPE_SOCIAL,
+    selectedAuthProviderVerifier.value,
+    value
+  )
+}
 
 async function handleSubmit() {
   if (keyspace === GLOBAL_KEYSPACE && disableMainnetNetwork) {
@@ -90,6 +119,7 @@ async function handleSubmit() {
       AUTH_TYPE_SOCIAL,
       app
     )
+    console.log('fetching app config', app.auth.social)
     await appsStore.fetchAndStoreAppConfig(appId, app.network)
     setIamAuth()
     toast.success(content.SOCIAL_AUTH.SUCCESS)
@@ -197,6 +227,9 @@ socialAuthStore.$subscribe((mutation) => {
             :auth-type="AUTH_TYPE_SOCIAL"
             @input1="handleInput1"
             @input2="handleInput2"
+            @input3="handleInput3"
+            @input4="handleInput4"
+            @input5="handleInput5"
           />
         </div>
         <div class="space-x-5 flex justify-end">

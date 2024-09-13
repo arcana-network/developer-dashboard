@@ -99,23 +99,28 @@ async function handleSave() {
       <form @submit.prevent="handleSave">
         <VStack direction="column" gap="1rem">
           <VStack direction="column" gap="1rem" class="flex-grow">
-            <div class="text-lg font-normal text-grey">
+            <div class="text-sm font-normal text-liquiddark">
               Secure Arcana wallet by restricting to load only in the context of
               the specified app domain. Arcana uses frame-ancestors CSP to
               restrict domains.
               <a
                 href="https://developer.mozilla.org/en-US/docs/web/http/headers/content-security-policy#frame-ancestors"
                 target="_blank"
+                class="text-sm"
               >
                 READ MORE
               </a>
+              <p class="text-sm font-normal mt-2 text-liquidaqua">
+                Note: It may take 10 minutes to an hour for the Domain URL
+                setting to take effect.
+              </p>
             </div>
             <div class="space-x-5 flex">
               <div class="flex flex-col space-y-3">
                 <span>Domain URL</span>
                 <VTextFieldSecondary
                   v-model.trim="walletWebsiteDomain"
-                  class="web-wallet-input"
+                  class="max-w-sm"
                   :icon="walletWebsiteDomain ? CloseIcon : ''"
                   :message-type="
                     isEdited && !isValidWebsiteDomain() ? 'error' : ''
@@ -147,15 +152,3 @@ async function handleSave() {
     </SettingCard>
   </section>
 </template>
-
-<style scoped>
-.text-grey {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-grey);
-}
-
-.web-wallet-input {
-  max-width: 24rem;
-}
-</style>

@@ -38,9 +38,18 @@ function areRequiredFieldsFilled(verifier: string) {
   const selectedAuthProvider = authProvider.find(
     (provider) => provider.verifier === verifier
   )
-  const { hasClientSecret } = selectedAuthProvider
-  const { clientId, clientSecret } =
+  const { hasClientSecret, isApple } = selectedAuthProvider
+  const { clientId, clientSecret, privateKey, teamId, keyId } =
     socialAuthStore.authCredentialsInput[props.authType][verifier]
+
+  if (isApple) {
+    return hasClientSecret
+      ? clientId.length > 0 &&
+          privateKey.length > 0 &&
+          keyId.length > 0 &&
+          teamId.length > 0
+      : clientId.length > 0
+  }
   return hasClientSecret
     ? clientId.length > 0 && clientSecret.length > 0
     : clientId.length > 0
@@ -57,7 +66,7 @@ function areRequiredFieldsFilled(verifier: string) {
       class="flex flex-col items-center space-y-1 text-[#8D8D8DDE]"
     >
       <button
-        class="border-2 bg-[#1F1F1F] cursor-pointer w-14 h-14 rounded-full flex items-center justify-center"
+        class="border-2 bg-white cursor-pointer w-14 h-14 rounded-full flex items-center justify-center"
         :class="{
           'border-pink': isSelected(provider.verifier),
           grayscale: !areRequiredFieldsFilled(provider.verifier),
@@ -67,7 +76,7 @@ function areRequiredFieldsFilled(verifier: string) {
         <img
           :src="provider.icon"
           :alt="provider.verifier"
-          class="transition-all ease-in-out"
+          class="transition-all ease-in-out w-10 h-10"
         />
       </button>
       <span
