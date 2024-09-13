@@ -130,7 +130,9 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientSecret.split(':')[0]
+            ].clientSecret
+              .split(':')[0]
+              .substring(1)
           "
           rows="1"
           as="div"
@@ -169,7 +171,9 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientSecret.split(':')[2]
+            ].clientSecret
+              .split(':')[2]
+              .slice(0, -1)
           "
           rows="1"
           as="div"
