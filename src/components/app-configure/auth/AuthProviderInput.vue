@@ -8,6 +8,7 @@ import { useAppsStore } from '@/stores/apps.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
 import type { SocialAuthOption } from '@/utils/constants'
+import { api, isProductionDashboard } from '@/utils/constants'
 import { content, errors } from '@/utils/content'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -27,7 +28,14 @@ const appId = useAppId()
 const appsStore = useAppsStore()
 const app = appsStore.app(appId)
 
-const redirectUri = `https://oauth.arcana.network/auth/apple/redirect/${app.address}`
+const base = isProductionDashboard
+  ? app.network === 'mainnet'
+    ? api.appleRedirct.mainnet
+    : api.appleRedirct.testnet
+  : app.network === 'mainnet'
+  ? api.appleRedirct.testnet
+  : api.appleRedirct.dev
+const redirectUri = `${base}/auth/apple/redirect/${app.address}`
 
 async function copyRedirectUri() {
   try {

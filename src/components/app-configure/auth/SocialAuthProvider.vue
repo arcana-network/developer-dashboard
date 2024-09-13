@@ -10,7 +10,7 @@ import { useLoaderStore } from '@/stores/loader.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
 import { useAppId } from '@/use/getAppId'
 import {
-  socialLogins,
+  socialLogins as defaultSocialLogins,
   EMPTY_STRING,
   DOCS_URL,
   GLOBAL_KEYSPACE,
@@ -19,11 +19,17 @@ import {
 import { content, errors } from '@/utils/content'
 
 const appsStore = useAppsStore()
+const appId = useAppId()
 const loaderStore = useLoaderStore()
 const toast = useToast()
-const appId = useAppId()
 const app = appsStore.app(appId)
 const socialAuthStore = useSocialAuthStore()
+const socialLogins = defaultSocialLogins.filter((login) => {
+  if (isProductionDashboard && app.network === 'mainnet') {
+    return login.verifier !== 'apple'
+  }
+  return true
+})
 const AUTH_TYPE_SOCIAL = 'social'
 const LEARN_MORE_LINK = `${DOCS_URL}/howto/config_social/index.html`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = socialLogins[0].verifier

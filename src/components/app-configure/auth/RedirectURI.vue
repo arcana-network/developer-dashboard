@@ -5,7 +5,11 @@ import { computed } from 'vue'
 import { useToast } from '@/components/lib/VToast'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import type { SocialAuthOption } from '@/utils/constants'
+import {
+  api,
+  isProductionDashboard,
+  type SocialAuthOption,
+} from '@/utils/constants'
 import { content, errors } from '@/utils/content'
 import copyToClipboard from '@/utils/copyToClipboard'
 
@@ -15,9 +19,15 @@ const appId = useAppId()
 
 const redirectUri = computed(() => {
   if (props.authProvider.isApple) {
-    return `https://oauth.arcana.network/auth/apple/redirect/${
-      appsStore.app(appId).address
-    }`
+    const app = appsStore.app(appId)
+    const base = isProductionDashboard
+      ? app.network === 'mainnet'
+        ? api.appleRedirct.mainnet
+        : api.appleRedirct.testnet
+      : app.network === 'mainnet'
+      ? api.appleRedirct.testnet
+      : api.appleRedirct.dev
+    return `${base}/auth/apple/redirect/${appsStore.app(appId).address}`
   }
   return appsStore.app(appId).auth.redirectUri
 })

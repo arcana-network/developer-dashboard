@@ -36,6 +36,11 @@ const api = {
     mainnet: import.meta.env.VITE_ARCANA_VERIFY_MAINNET_URL,
     testnet: import.meta.env.VITE_ARCANA_VERIFY_TESTNET_URL,
   },
+  appleRedirct: {
+    dev: 'https://oauth.arcana.network',
+    testnet: 'https://oauth-testnet.arcana.network',
+    mainnet: 'https://api-auth.arcana.network',
+  },
 }
 
 const isAppDown: boolean = import.meta.env.VITE_IS_APP_DOWN || false
