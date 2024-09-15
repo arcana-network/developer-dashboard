@@ -1,9 +1,6 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
-import VSeperator from '@/components/lib/VSeperator/VSeperator.vue'
-
-// Theme and color options
 const colors = ref([
   '#1862E8',
   '#55B893',
@@ -14,80 +11,68 @@ const colors = ref([
   '#D73226',
   '#DEA13B',
   '#FFFFFF',
+  '#F7F7F7',
   '#000000',
 ])
-const fontColors = ['#F7F7F7', '#BBCCD6', '#829299']
-// Reactive state variables
-const theme = ref('WhiteMist')
-const accentColor = ref('#F7F7F7')
-const fontColor = ref('#1D2A31')
-const radius = ref('M')
-const title = ref('Login to DexMex')
-const bodyHeader = ref(
-  'Use this code to sign up to Arcana’s Developer Dashboard. This code will expire in 10 minutes.'
-)
-const bodyFooter = ref(
-  'If you did not make this request, don’t worry, your account is safe and you can simply ignore this email.'
-)
-const logoSrc = ref('@/assets/logos/logo.svg')
+
+const fontColors = ['#F7F7F7', '#BBCCD6', '#829299', '#000000']
+const backgroundColor = ref('#F7F7F7')
+const selectedBackgroundColor = ref('#F7F7F7') // Holds the color selected from the color picker
+
+const primaryFontColor = ref(fontColors[3])
+const secondaryFontColor = ref(fontColors[3])
 
 const selectedPrimaryFont = ref('Nohemi')
 const selectedSecondaryFont = ref('Inter')
-const selectedFontColor = ref('#F7F7F7')
 
 const primaryfonts = ['Nohemi', 'Syne', 'Nunito']
 const secondaryfonts = ['Inter', 'Onest', 'PT Sans']
 
-// Functions to update state
-const setTheme = (selectedTheme) => {
-  theme.value = selectedTheme
-}
-
 const setAccentColor = (selectedColor) => {
-  accentColor.value = selectedColor
+  backgroundColor.value = selectedColor
 }
 
-const setRadius = (selectedRadius) => {
-  radius.value = selectedRadius
+const addBackgroundColor = (event) => {
+  setAccentColor(event.target.value)
+  selectedBackgroundColor.value = event.target.value
 }
 
-const uploadLogo = (event) => {
-  const file = event.target.files[0]
-  console.log(file)
-}
-
-// Helper functions to apply classes dynamically
-const themeButtonClass = (buttonTheme) => {
-  return buttonTheme === theme.value
-    ? 'border-2 border-[#FF4E9F]'
-    : 'border-2 border-transparent'
+const onColorPickerClick = () => {
+  document.getElementById('color-picker').click()
 }
 
 const colorButtonClass = (color) => {
-  return color === accentColor.value
+  return color === backgroundColor.value
     ? 'w-8 h-8 rounded-full border-2 border-black cursor-pointer'
     : 'w-8 h-8 rounded-full cursor-pointer'
 }
 
-const radiusButtonClass = (buttonRadius) => {
-  return buttonRadius === radius.value
-    ? 'border-2 border-[#FF4E9F]'
-    : 'border-2 border-transparent'
+// Computed styles for preview
+const previewStyle = computed(() => ({
+  backgroundColor: backgroundColor.value,
+  color: primaryFontColor.value,
+  fontFamily: selectedPrimaryFont.value,
+}))
+
+const previewSecondaryStyle = computed(() => ({
+  color: secondaryFontColor.value,
+  fontFamily: selectedSecondaryFont.value,
+}))
+
+// Logo Upload Methods
+const logoFile = ref(null)
+
+const updateLogo = (type, event) => {
+  const file = event.target.files[0]
+  if (file && file.type.startsWith('image/')) {
+    logoFile.value = URL.createObjectURL(file)
+  } else {
+    alert('Please upload a valid image file.')
+  }
 }
 
-const radiusClass = () => {
-  switch (radius.value) {
-    case 'S':
-      return 'rounded-sm'
-    case 'M':
-      return 'rounded'
-    case 'L':
-      return 'rounded-lg'
-    case 'XL':
-      return 'rounded-xl'
-    default:
-      return 'rounded'
-  }
+const clickLogoUpload = () => {
+  document.getElementById('logo').click()
 }
 </script>
 
@@ -99,11 +84,12 @@ const radiusClass = () => {
         Configuration
       </h2>
       <div class="space-y-4">
+        <!-- Background Color Section -->
         <label
           class="font-medium font-inter text-base mb-4 text-[#989898] uppercase"
-          >Background Color</label
         >
-
+          Background Color
+        </label>
         <div class="flex space-x-2 mb-4">
           <span
             v-for="color in colors"
@@ -121,14 +107,15 @@ const radiusClass = () => {
             </button>
             <input
               id="color-picker"
-              v-model="selectedAccentColor"
+              v-model="selectedBackgroundColor"
               type="color"
               class="w-0 h-0 p-0 border-none outline-none"
-              @change="addAccentColor"
+              @change="addBackgroundColor"
             />
           </div>
         </div>
 
+        <!-- Fonts Section -->
         <h3
           class="font-medium font-inter text-base mb-4 text-[#989898] uppercase"
         >
@@ -141,7 +128,6 @@ const radiusClass = () => {
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Primary Font</label
             >
-
             <div class="relative inline-block w-44 h-14">
               <select
                 v-model="selectedPrimaryFont"
@@ -160,14 +146,13 @@ const radiusClass = () => {
           </div>
           <div>
             <label
-              for="font-pairing"
+              for="font-color"
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Primary Color</label
             >
-
             <div class="relative inline-block w-44 h-14">
               <select
-                v-model="selectedFontColor"
+                v-model="primaryFontColor"
                 class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
               >
                 <option v-for="font in fontColors" :key="font" :value="font">
@@ -189,7 +174,6 @@ const radiusClass = () => {
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Secondary Font</label
             >
-
             <div class="relative inline-block w-44 h-14">
               <select
                 v-model="selectedSecondaryFont"
@@ -212,14 +196,13 @@ const radiusClass = () => {
           </div>
           <div>
             <label
-              for="font-pairing"
+              for="font-color"
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Secondary Color</label
             >
-
             <div class="relative inline-block w-44 h-14">
               <select
-                v-model="selectedFontColor"
+                v-model="secondaryFontColor"
                 class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
               >
                 <option v-for="font in fontColors" :key="font" :value="font">
@@ -234,6 +217,7 @@ const radiusClass = () => {
             </div>
           </div>
         </div>
+
         <!-- Update Logos -->
         <div class="flex flex-col gap-2">
           <h2
@@ -248,7 +232,21 @@ const radiusClass = () => {
                 class="block mb-1 font-normal text-sm text-[#1D2A31]"
                 >Logo</label
               >
-              <div>
+              <div v-if="logoFile" class="flex gap-3">
+                <div
+                  class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2"
+                >
+                  <img :src="logoFile" alt="logo" class="w-12 h-12" />
+                </div>
+                <button @click="logoFile = null">
+                  <img
+                    src="@/assets/iconography/delete-icon-logo.svg"
+                    alt="delete"
+                    class="w-4 h-4"
+                  />
+                </button>
+              </div>
+              <div v-else>
                 <input
                   id="logo"
                   type="file"
@@ -258,7 +256,7 @@ const radiusClass = () => {
                 />
                 <button
                   class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
-                  @click="clickLogoUpload('logo')"
+                  @click="clickLogoUpload"
                 >
                   <img
                     src="@/assets/iconography/upload.svg"
@@ -288,26 +286,74 @@ const radiusClass = () => {
       </div>
     </div>
 
-    <!-- Preview Panel -->
+    <!-- Preview Section -->
     <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px] flex flex-col">
-      <h2 class="text-[22px] font-nohemi font-light mb-4 text-[#1D2A31]">
+      <h2 class="text-[22px] font-nohemi font-light mb-10 text-[#1D2A31]">
         Preview
       </h2>
-      <div class="bg-[#EFEFEF] rounded-lg shadow-md" :class="radiusClass">
+      <div
+        class="bg-[#EFEFEF] rounded-lg shadow-md"
+        :style="{ backgroundColor: backgroundColor }"
+      >
         <div class="flex justify-between items-center mb-4">
           <img
+            v-if="logoFile"
+            :src="logoFile"
+            alt="Logo"
+            class="h-44 w-full rounded-lg rounded-b-none"
+          />
+          <img
+            v-else
             src="@/assets/email-branding.svg"
             alt="Logo"
             class="h-44 w-full rounded-lg rounded-b-none"
           />
         </div>
-        <div class="mb-60 p-8" :style="{ color: fontColor }">
-          <h2 class="font-nohemi font-thin mb-10 text-[#1D2A31]">
+        <div
+          class="mb-60 p-8"
+          :style="{ color: primaryFontColor, fontFamily: selectedPrimaryFont }"
+        >
+          <h2
+            class="font-nohemi font-thin mb-5 text-[#1D2A31]"
+            :style="{
+              color: primaryFontColor,
+              fontFamily: selectedPrimaryFont,
+            }"
+          >
             Authentication
           </h2>
-          <p class="text-gray-500 mb-8">{{ bodyHeader }}</p>
-          <h1 class="py-2 rounded font-thin tracking-widest mb-4">356904</h1>
-          <p class="text-gray-500 mt-4">{{ bodyFooter }}</p>
+          <p
+            class="mb-8 text-sm"
+            :style="{
+              color: secondaryFontColor,
+              fontFamily: selectedSecondaryFont,
+            }"
+          >
+            Use this code to sign up to Arcana’s Developer Dashboard. This code
+            will expire in 10 minutes.
+          </p>
+          <div class="flex justify-center items-center bg-white rounded-lg">
+            <h1
+              class="pt-2 rounded tracking-widest"
+              :style="{
+                color: primaryFontColor,
+                fontFamily: selectedPrimaryFont,
+              }"
+            >
+              356904
+            </h1>
+          </div>
+
+          <p
+            class="mt-4 text-sm"
+            :style="{
+              color: secondaryFontColor,
+              fontFamily: selectedSecondaryFont,
+            }"
+          >
+            If you did not make this request, don’t worry, your account is safe
+            and you can simply ignore this email.
+          </p>
         </div>
         <div
           class="bg-white text-[#000102] text-sm mt-4 rounded-lg rounded-t-none text-center flex flex-col items-center align-middle py-4"
@@ -316,7 +362,7 @@ const radiusClass = () => {
             <p>Copyright 2022 XYZ Technologies Ltd.</p>
           </div>
 
-          <div class="flex flex-row ml-5 it">
+          <div class="flex flex-row ml-5">
             <a
               class="text-md font-medium mt-[2px] text-black no-underline"
               href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
