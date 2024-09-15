@@ -3,14 +3,8 @@ import type { PropType } from 'vue'
 
 import RedirectURI from '@/components/app-configure/auth/RedirectURI.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
-import { useToast } from '@/components/lib/VToast'
-import { useAppsStore } from '@/stores/apps.store'
 import { useSocialAuthStore } from '@/stores/socialAuth.store'
-import { useAppId } from '@/use/getAppId'
 import type { SocialAuthOption } from '@/utils/constants'
-import { api, isProductionDashboard } from '@/utils/constants'
-import { content, errors } from '@/utils/content'
-import copyToClipboard from '@/utils/copyToClipboard'
 
 defineProps({
   authProvider: {
@@ -23,49 +17,27 @@ defineProps({
   },
 })
 
-const toast = useToast()
-const appId = useAppId()
-const appsStore = useAppsStore()
-const app = appsStore.app(appId)
-
-const base = isProductionDashboard
-  ? app.network === 'mainnet'
-    ? api.appleRedirct.mainnet
-    : api.appleRedirct.testnet
-  : app.network === 'mainnet'
-  ? api.appleRedirct.testnet
-  : api.appleRedirct.dev
-const redirectUri = `${base}/auth/apple/redirect/${app.address}`
-
-async function copyRedirectUri() {
-  try {
-    await copyToClipboard(redirectUri)
-    toast.success(content.REDIRECT_URI.COPIED)
-  } catch (e) {
-    toast.error(errors.REDIRECT_URI.ERROR)
-  }
-}
 const socialAuthStore = useSocialAuthStore()
 const emits = defineEmits(['input1', 'input2', 'input3', 'input4', 'input5'])
 
 function handleInput1(event: Event) {
-  emits('input1', event.target?.value)
+  emits('input1', (event.target as HTMLInputElement).value)
 }
 
 function handleInput2(event: Event) {
-  emits('input2', event.target?.value)
+  emits('input2', (event.target as HTMLInputElement).value)
 }
 
 function handleInput3(event: Event) {
-  emits('input3', event.target?.value)
+  emits('input3', (event.target as HTMLInputElement).value)
 }
 
 function handleInput4(event: Event) {
-  emits('input4', event.target?.value)
+  emits('input4', (event.target as HTMLInputElement).value)
 }
 
 function handleInput5(event: Event) {
-  emits('input5', event.target?.value)
+  emits('input5', (event.target as HTMLInputElement).value)
 }
 </script>
 
@@ -98,7 +70,7 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientId
+            ]?.clientId
           "
           @input="handleInput1"
         />
@@ -122,11 +94,15 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientSecret
+            ]?.clientSecret
           "
           @input="handleInput2"
         />
       </VStack>
+    </div>
+    <div
+      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
+    >
       <VStack
         v-if="authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"
@@ -138,7 +114,7 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientSecret
+            ]?.clientSecret
               .split(':')[0]
               .substring(1)
           "
@@ -147,10 +123,6 @@ function handleInput5(event: Event) {
           @input="handleInput3"
         />
       </VStack>
-    </div>
-    <div
-      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
-    >
       <VStack
         v-if="authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"
@@ -162,11 +134,15 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientSecret.split(':')[1]
+            ]?.clientSecret.split(':')[1]
           "
           @input="handleInput4"
         />
       </VStack>
+    </div>
+    <div
+      class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
+    >
       <VStack
         v-if="authProvider.isApple"
         class="flex flex-1 flex-col space-y-2"
@@ -179,11 +155,11 @@ function handleInput5(event: Event) {
           :value="
             socialAuthStore.authCredentialsInput[authType][
               authProvider.verifier
-            ].clientSecret
+            ]?.clientSecret
               .split(':')[2]
-              .slice(0, -1)
+              ?.slice(0, -1)
           "
-          rows="1"
+          rows="6"
           as="div"
           @input="handleInput5"
         />
