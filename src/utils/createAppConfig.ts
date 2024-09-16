@@ -66,5 +66,6 @@ export function createAppConfig(
     session_persisted: app.session_persisted,
     session_max_age: app.session_max_age,
     theme_settings: app.theme_settings,
+    email_settings: app.email_settings,
   }
 }

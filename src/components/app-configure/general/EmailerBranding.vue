@@ -26,7 +26,14 @@ const accentColors = ref([
   '#DEA13B',
   '#000000',
 ])
-const fontColors = ['#F7F7F7', '#BBCCD6', '#829299', '#1D2A31']
+const fontColors = [
+  '#F7F7F7',
+  '#BBCCD6',
+  '#74919C',
+  '#829299',
+  '#4C626E',
+  '#1D2A31',
+]
 const primaryfonts = ['Nohemi', 'Syne', 'Nunito']
 const secondaryfonts = ['Inter', 'Onest', 'PT Sans']
 
@@ -44,7 +51,7 @@ const toast = useToast()
 const accentColorClass = (color) => {
   return color === selectedAccentColor.value
     ? 'border-2 border-[#FF4E9F]'
-    : 'border-[1.5px] border-transparent'
+    : 'border-2 border-transparent hover:border-black'
 }
 
 function addAccentColor() {
@@ -102,8 +109,8 @@ const cancelConfiguration = () => {
 function resetToDefault() {
   selectedPrimaryFont.value = 'Nohemi'
   selectedSecondaryFont.value = 'Inter'
-  primaryFontColor.value = '#000000'
-  secondaryFontColor.value = '#000000'
+  primaryFontColor.value = '#1D2A31'
+  secondaryFontColor.value = '#1D2A31'
   selectedAccentColor.value = '#F7F7F7'
 }
 // const disableSave = () => {
@@ -158,7 +165,7 @@ function resetToDefault() {
           <h2
             class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
           >
-            Accent Color
+            Background Color
           </h2>
           <div class="flex space-x-2 mb-4 overflow-auto">
             <div

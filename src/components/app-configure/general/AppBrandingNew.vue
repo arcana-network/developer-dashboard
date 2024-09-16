@@ -15,9 +15,9 @@ function isActiveTab(tab) {
   <div>
     <h1>Branding</h1>
     <p>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-      tempor incididunt ut labore et dolore magna aliqua. Lectus magna fringilla
-      urna porttitor rhoncus dolor purus non.
+      Customise the branding for emails sent during login. Choose your brand’s
+      accent colors, fonts, and logo to maintain your brand identity during user
+      logins.
     </p>
   </div>
   <div class="border-b-[1px] border-[#DCDCDC] flex flex-row gap-4">

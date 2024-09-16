@@ -53,6 +53,14 @@ type ThemeSettings = {
   radius: string
 }
 
+type EmailBranding = {
+  background_color: string
+  primary_font: string
+  primary_color: string
+  secondary_font: string
+  secondary_color: string
+}
+
 type AppConfig = {
   ID: AppId
   name: string
@@ -75,6 +83,7 @@ type AppConfig = {
   session_persisted: boolean
   session_max_age: number
   theme_settings: ThemeSettings
+  email_settings: EmailBranding
 }
 
 const gatewayInstance = {
@@ -231,6 +240,7 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     wallet_mode: app.wallet_mode,
     chain_type: app.chain_type,
     theme_settings: app.theme_settings,
+    email_settings: app.email_settings,
   }
 }
 
