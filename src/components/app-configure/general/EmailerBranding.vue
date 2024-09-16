@@ -1,7 +1,21 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 
-const colors = ref([
+import { useToast } from '@/components/lib/VToast'
+import {
+  uploadThemeLogo,
+  updateApp,
+  removeThemeLogo,
+} from '@/services/gateway.service'
+import { useAppsStore } from '@/stores/apps.store'
+import { useAppId } from '@/use/getAppId'
+import { api } from '@/utils/constants'
+import { content, errors } from '@/utils/content'
+import getEnvApi from '@/utils/get-env-api'
+
+const accentColors = ref([
+  '#FFFFFF',
+  '#F7F7F7',
   '#1862E8',
   '#55B893',
   '#5F9DBA',
@@ -10,56 +24,39 @@ const colors = ref([
   '#D73390',
   '#D73226',
   '#DEA13B',
-  '#FFFFFF',
-  '#F7F7F7',
   '#000000',
 ])
-
-const fontColors = ['#F7F7F7', '#BBCCD6', '#829299', '#000000']
-const backgroundColor = ref('#F7F7F7')
-const selectedBackgroundColor = ref('#F7F7F7') // Holds the color selected from the color picker
-
-const primaryFontColor = ref(fontColors[3])
-const secondaryFontColor = ref(fontColors[3])
-
-const selectedPrimaryFont = ref('Nohemi')
-const selectedSecondaryFont = ref('Inter')
-
+const fontColors = ['#F7F7F7', '#BBCCD6', '#829299', '#1D2A31']
 const primaryfonts = ['Nohemi', 'Syne', 'Nunito']
 const secondaryfonts = ['Inter', 'Onest', 'PT Sans']
 
-const setAccentColor = (selectedColor) => {
-  backgroundColor.value = selectedColor
+const selectedAccentColor = ref('#F7F7F7')
+const primaryFontColor = ref('#1D2A31')
+const secondaryFontColor = ref('#1D2A31')
+const selectedPrimaryFont = ref('Nohemi')
+const selectedSecondaryFont = ref('Inter')
+
+const appsStore = useAppsStore()
+const appId = useAppId()
+const currentApp = appsStore.app(appId)
+const toast = useToast()
+
+const accentColorClass = (color) => {
+  return color === selectedAccentColor.value
+    ? 'border-2 border-[#FF4E9F]'
+    : 'border-[1.5px] border-transparent'
 }
 
-const addBackgroundColor = (event) => {
-  setAccentColor(event.target.value)
-  selectedBackgroundColor.value = event.target.value
+function addAccentColor() {
+  if (!accentColors.value.includes(selectedAccentColor.value)) {
+    accentColors.value.push(selectedAccentColor.value)
+  }
 }
 
 const onColorPickerClick = () => {
   document.getElementById('color-picker').click()
 }
 
-const colorButtonClass = (color) => {
-  return color === backgroundColor.value
-    ? 'w-8 h-8 rounded-full border-2 border-black cursor-pointer'
-    : 'w-8 h-8 rounded-full cursor-pointer'
-}
-
-// Computed styles for preview
-const previewStyle = computed(() => ({
-  backgroundColor: backgroundColor.value,
-  color: primaryFontColor.value,
-  fontFamily: selectedPrimaryFont.value,
-}))
-
-const previewSecondaryStyle = computed(() => ({
-  color: secondaryFontColor.value,
-  fontFamily: selectedSecondaryFont.value,
-}))
-
-// Logo Upload Methods
 const logoFile = ref(null)
 
 const updateLogo = (type, event) => {
@@ -74,44 +71,123 @@ const updateLogo = (type, event) => {
 const clickLogoUpload = () => {
   document.getElementById('logo').click()
 }
+
+const saveConfiguration = async () => {
+  try {
+    const { auth } = currentApp
+    const email_settings = {
+      background_color: selectedAccentColor.value,
+      primary_font: selectedPrimaryFont.value,
+      primary_color: primaryFontColor.value,
+      secondary_font: selectedSecondaryFont.value,
+      secondary_color: secondaryFontColor.value,
+    }
+    await updateApp(appId, { auth, email_settings }, currentApp.network)
+    toast.success(content.BRANDING.SAVED)
+    currentApp.email_settings = email_settings
+  } catch (e) {
+    console.error(e)
+    toast.error(errors.BRANDING.ERROR)
+  }
+}
+
+const cancelConfiguration = () => {
+  selectedAccentColor.value = currentApp.email_settings.backgroundColor
+  selectedPrimaryFont.value = currentApp.email_settings.primary_font
+  primaryFontColor.value = currentApp.email_settings.primary_color
+  selectedSecondaryFont.value = currentApp.email_settings.secondary_font
+  secondaryFontColor.value = currentApp.email_settings.secondary_color
+}
+
+function resetToDefault() {
+  selectedPrimaryFont.value = 'Nohemi'
+  selectedSecondaryFont.value = 'Inter'
+  primaryFontColor.value = '#000000'
+  secondaryFontColor.value = '#000000'
+  selectedAccentColor.value = '#F7F7F7'
+}
+// const disableSave = () => {
+//   const { auth, email_settings } = currentApp
+
+//   return (
+//     selectedAccentColor.value === email_settings.background_color &&
+//     selectedPrimaryFont.value === email_settings.primary_font &&
+//     selectedSecondaryFont.value === email_settings.secondary_font &&
+//     primaryFontColor.value === email_settings.primary_color &&
+//     secondaryFontColor.value === email_settings.secondary_color
+//   )
+// }
+
+// onMounted(() => {
+//   const { email_settings } = currentApp
+//   selectedAccentColor.value = email_settings.background_color
+//   selectedPrimaryFont.value = email_settings.primary_font
+//   primaryFontColor.value = email_settings.primary_color
+//   selectedSecondaryFont.value = email_settings.secondary_font
+//   secondaryfonts.value = email_settings.secondary_color
+//   addAccentColor()
+// })
 </script>
 
 <template>
   <div class="flex gap-3">
     <!-- Configuration Panel -->
     <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px]">
-      <h2 class="text-[22px] font-nohemi font-light mb-6 text-[#1D2A31]">
-        Configuration
-      </h2>
+      <div class="flex justify-between items-baseline">
+        <h1 class="text-[22px] font-nohemi font-light mb-4 text-[#1D2A31]">
+          Configuration
+        </h1>
+        <button
+          class="flex items-center justify-center gap-2"
+          @click="resetToDefault"
+        >
+          <img
+            src="@/assets/iconography/reset-icon.svg"
+            alt="next"
+            class="w-3 h-3"
+          />
+          <span class="text-[#4C626E] text-sm font-medium"
+            >Reset to Default</span
+          >
+        </button>
+      </div>
       <div class="space-y-4">
         <!-- Background Color Section -->
-        <label
-          class="font-medium font-inter text-base mb-4 text-[#989898] uppercase"
-        >
-          Background Color
-        </label>
-        <div class="flex space-x-2 mb-4">
-          <span
-            v-for="color in colors"
-            :key="color"
-            :style="{ backgroundColor: color }"
-            :class="colorButtonClass(color)"
-            @click="setAccentColor(color)"
-          ></span>
-          <div class="flex items-center space-x-4">
-            <button
-              class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
-              @click="onColorPickerClick"
+        <!-- Accent Color -->
+        <div class="flex flex-col gap-2">
+          <h2
+            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
+          >
+            Accent Color
+          </h2>
+          <div class="flex space-x-2 mb-4 overflow-auto">
+            <div
+              v-for="color in accentColors"
+              :key="color"
+              class="p-[1px] rounded-full cursor-pointer"
+              :class="accentColorClass(color)"
+              @click="selectedAccentColor = color"
             >
-              <img src="@/assets/iconography/plus.svg" alt="add" />
-            </button>
-            <input
-              id="color-picker"
-              v-model="selectedBackgroundColor"
-              type="color"
-              class="w-0 h-0 p-0 border-none outline-none"
-              @change="addBackgroundColor"
-            />
+              <div
+                :style="{ backgroundColor: color }"
+                class="w-8 h-8 rounded-full"
+              ></div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button
+                class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
+                @click="onColorPickerClick"
+              >
+                <img src="@/assets/iconography/plus.svg" alt="add" />
+              </button>
+              <input
+                id="color-picker"
+                v-model="selectedAccentColor"
+                type="color"
+                class="w-0 h-0 p-0 border-none outline-none"
+                @change="addAccentColor"
+              />
+            </div>
           </div>
         </div>
 
@@ -273,11 +349,13 @@ const clickLogoUpload = () => {
           <div class="flex items-center justify-center w-52 gap-3">
             <button
               class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#DFECEE] text-[#1D2A31] cursor-pointer"
+              @click="cancelConfiguration"
             >
               Cancel
             </button>
             <button
               class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#1D2A31] text-[#F7F7F7] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="saveConfiguration"
             >
               Save
             </button>
@@ -293,7 +371,7 @@ const clickLogoUpload = () => {
       </h2>
       <div
         class="bg-[#EFEFEF] rounded-lg shadow-md"
-        :style="{ backgroundColor: backgroundColor }"
+        :style="{ backgroundColor: selectedAccentColor }"
       >
         <div class="flex justify-between items-center mb-4">
           <img
@@ -313,7 +391,7 @@ const clickLogoUpload = () => {
           class="mb-60 p-8"
           :style="{ color: primaryFontColor, fontFamily: selectedPrimaryFont }"
         >
-          <h2
+          <h1
             class="font-nohemi font-thin mb-5 text-[#1D2A31]"
             :style="{
               color: primaryFontColor,
@@ -321,9 +399,9 @@ const clickLogoUpload = () => {
             }"
           >
             Authentication
-          </h2>
+          </h1>
           <p
-            class="mb-8 text-sm"
+            class="mb-8 text-md"
             :style="{
               color: secondaryFontColor,
               fontFamily: selectedSecondaryFont,
@@ -332,7 +410,7 @@ const clickLogoUpload = () => {
             Use this code to sign up to Arcana’s Developer Dashboard. This code
             will expire in 10 minutes.
           </p>
-          <div class="flex justify-center items-center bg-white rounded-lg">
+          <div class="flex justify-center items-center rounded-lg">
             <h1
               class="pt-2 rounded tracking-widest"
               :style="{
@@ -345,7 +423,7 @@ const clickLogoUpload = () => {
           </div>
 
           <p
-            class="mt-4 text-sm"
+            class="mt-4 text-md"
             :style="{
               color: secondaryFontColor,
               fontFamily: selectedSecondaryFont,
