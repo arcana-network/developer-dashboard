@@ -165,7 +165,7 @@ const areRequiredFieldsFilled = computed(() => {
       </p>
     </div>
     <form
-      class="h-64 px-3.5 pb-3.5 flex space-x-10"
+      class="h-72 px-3.5 pb-3.5 flex space-x-10"
       @submit.prevent="handleSubmit"
     >
       <AuthProviderList
@@ -174,22 +174,19 @@ const areRequiredFieldsFilled = computed(() => {
         :selected-provider-verifier="selectedAuthProviderVerifier"
         @select-provider="selectedAuthProviderVerifier = $event"
       />
-      <div class="flex flex-col flex-wrap justify-between w-full">
-        <div class="flex-1">
-          <AuthProviderInput
-            :auth-provider="selectedAuthProvider"
-            :auth-type="AUTH_TYPE_IAM"
-            @input1="handleInput1"
-            @input2="handleInput2"
-          />
-        </div>
-        <div class="space-x-5 flex justify-end">
-          <ConfigureActionButtons
-            :save-disabled="!isEdited || !areRequiredFieldsFilled"
-            :cancel-disabled="!isEdited"
-            @cancel="handleCancel"
-          />
-        </div>
+      <div class="flex flex-col justify-between w-full">
+        <AuthProviderInput
+          class="pb-5"
+          :auth-provider="selectedAuthProvider"
+          :auth-type="AUTH_TYPE_IAM"
+          @input1="handleInput1"
+          @input2="handleInput2"
+        />
+        <ConfigureActionButtons
+          :save-disabled="!isEdited || !areRequiredFieldsFilled"
+          :cancel-disabled="!isEdited"
+          @cancel="handleCancel"
+        />
       </div>
     </form>
   </div>

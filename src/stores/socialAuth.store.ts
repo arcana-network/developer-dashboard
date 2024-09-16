@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { toRaw } from 'vue'
+import { set } from 'vue-gtag'
 
 import { updateApp, deleteCred } from '@/services/gateway.service'
 import type {
@@ -17,7 +18,10 @@ type SocialAuthState = Array<SocialAuthOption>
 type IAMAuthProviders = Array<SocialAuthOption>
 type SocialAuthCredentialsInput = {
   [authType in AuthType]: {
-    [verifier in SocialAuthVerifier]: { clientId: string; clientSecret: string }
+    [verifier in SocialAuthVerifier]: {
+      clientId: string
+      clientSecret: string
+    }
   }
 }
 
@@ -49,6 +53,9 @@ const useSocialAuthStore = defineStore('socialAuth', {
         this.authCredentialsInput.social[authProvider.verifier] = {
           clientId: authProvider.clientId,
           clientSecret: authProvider.clientSecret,
+          privateKey: authProvider.privateKey,
+          teamId: authProvider.teamId,
+          keyId: authProvider.keyId,
         }
       })
     },
@@ -75,6 +82,33 @@ const useSocialAuthStore = defineStore('socialAuth', {
       clientSecret: string
     ) {
       this.authCredentialsInput[type][verifier].clientSecret = clientSecret
+    },
+    setTeamId(type: AuthType, verifier: SocialAuthVerifier, teamId: string) {
+      this.authCredentialsInput[type][verifier].teamId = teamId
+      this.setAppleClientSecret(type, verifier)
+    },
+    setKeyId(type: AuthType, verifier: SocialAuthVerifier, keyId: string) {
+      this.authCredentialsInput[type][verifier].keyId = keyId
+      this.setAppleClientSecret(type, verifier)
+    },
+    setPrivateKey(
+      type: AuthType,
+      verifier: SocialAuthVerifier,
+      privateKey: string
+    ) {
+      this.authCredentialsInput[type][verifier].privateKey = privateKey
+      this.setAppleClientSecret(type, verifier)
+    },
+    setAppleClientSecret(type: AuthType, verifier: SocialAuthVerifier) {
+      if (verifier === 'apple') {
+        const appleClientSecret = [
+          this.authCredentialsInput[type][verifier].teamId,
+          this.authCredentialsInput[type][verifier].keyId,
+          this.authCredentialsInput[type][verifier].privateKey,
+        ].join(':')
+        this.authCredentialsInput[type][verifier].clientSecret =
+          JSON.stringify(appleClientSecret)
+      }
     },
     async updateSocialAuthProviders(
       appId: number,
