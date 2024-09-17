@@ -1,21 +1,14 @@
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { onMounted, ref, watchEffect, computed, watch } from 'vue'
 
 import { useToast } from '@/components/lib/VToast'
-import {
-  uploadThemeLogo,
-  updateApp,
-  removeThemeLogo,
-} from '@/services/gateway.service'
+import { updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
-import { api } from '@/utils/constants'
 import { content, errors } from '@/utils/content'
-import getEnvApi from '@/utils/get-env-api'
 
 const accentColors = ref([
   '#FFFFFF',
-  '#F7F7F7',
   '#1862E8',
   '#55B893',
   '#5F9DBA',
@@ -81,17 +74,19 @@ const clickLogoUpload = () => {
 
 const saveConfiguration = async () => {
   try {
-    const { auth } = currentApp
-    const email_settings = {
-      background_color: selectedAccentColor.value,
+    const email_branding = {
+      background: selectedAccentColor.value,
       primary_font: selectedPrimaryFont.value,
       primary_color: primaryFontColor.value,
       secondary_font: selectedSecondaryFont.value,
       secondary_color: secondaryFontColor.value,
     }
-    await updateApp(appId, { auth, email_settings }, currentApp.network)
+    console.log('email_branding_onSave', email_branding)
+
+    await updateApp(appId, { email_branding }, currentApp.network)
+    console.log('currentApp', currentApp)
     toast.success(content.BRANDING.SAVED)
-    currentApp.email_settings = email_settings
+    currentApp.email_branding = email_branding
   } catch (e) {
     console.error(e)
     toast.error(errors.BRANDING.ERROR)
@@ -99,11 +94,11 @@ const saveConfiguration = async () => {
 }
 
 const cancelConfiguration = () => {
-  selectedAccentColor.value = currentApp.email_settings.backgroundColor
-  selectedPrimaryFont.value = currentApp.email_settings.primary_font
-  primaryFontColor.value = currentApp.email_settings.primary_color
-  selectedSecondaryFont.value = currentApp.email_settings.secondary_font
-  secondaryFontColor.value = currentApp.email_settings.secondary_color
+  selectedAccentColor.value = currentApp.email_branding.background
+  selectedPrimaryFont.value = currentApp.email_branding.primary_font
+  primaryFontColor.value = currentApp.email_branding.primary_color
+  selectedSecondaryFont.value = currentApp.email_branding.secondary_font
+  secondaryFontColor.value = currentApp.email_branding.secondary_color
 }
 
 function resetToDefault() {
@@ -113,27 +108,31 @@ function resetToDefault() {
   secondaryFontColor.value = '#1D2A31'
   selectedAccentColor.value = '#F7F7F7'
 }
+
 // const disableSave = () => {
-//   const { auth, email_settings } = currentApp
+//   const { email_branding } = currentApp
 
 //   return (
-//     selectedAccentColor.value === email_settings.background_color &&
-//     selectedPrimaryFont.value === email_settings.primary_font &&
-//     selectedSecondaryFont.value === email_settings.secondary_font &&
-//     primaryFontColor.value === email_settings.primary_color &&
-//     secondaryFontColor.value === email_settings.secondary_color
+//     selectedAccentColor.value === email_branding.background &&
+//     selectedPrimaryFont.value === email_branding.primary_font &&
+//     selectedSecondaryFont.value === email_branding.secondary_font &&
+//     primaryFontColor.value === email_branding.primary_color &&
+//     secondaryFontColor.value === email_branding.secondary_color
 //   )
 // }
 
-// onMounted(() => {
-//   const { email_settings } = currentApp
-//   selectedAccentColor.value = email_settings.background_color
-//   selectedPrimaryFont.value = email_settings.primary_font
-//   primaryFontColor.value = email_settings.primary_color
-//   selectedSecondaryFont.value = email_settings.secondary_font
-//   secondaryfonts.value = email_settings.secondary_color
-//   addAccentColor()
-// })
+onMounted(() => {
+  const { email_branding } = currentApp
+  console.log('email_branding_onMounted', email_branding)
+
+  selectedAccentColor.value = email_branding.background
+  selectedPrimaryFont.value = email_branding.primary_font
+  primaryFontColor.value = email_branding.primary_color
+  selectedSecondaryFont.value = email_branding.secondary_font
+  secondaryfonts.value = email_branding.secondary_color
+
+  addAccentColor()
+})
 </script>
 
 <template>
@@ -370,7 +369,6 @@ function resetToDefault() {
         </div>
       </div>
     </div>
-
     <!-- Preview Section -->
     <div class="w-1/2 p-4 bg-[#F7F7F7] rounded-[10px] flex flex-col">
       <h2 class="text-[22px] font-nohemi font-light mb-10 text-[#1D2A31]">

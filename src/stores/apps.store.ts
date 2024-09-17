@@ -82,8 +82,8 @@ type App = {
     font_size: string
     radius: string
   }
-  email_settings: {
-    background_color: string
+  email_branding: {
+    background: string
     primary_font: string
     primary_color: string
     secondary_font: string
