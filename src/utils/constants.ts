@@ -17,6 +17,7 @@ import settingsIcon from '@/assets/iconography/settings.svg'
 import SteamIcon from '@/assets/iconography/steam-sso.svg'
 import socialMediaIcon from '@/assets/iconography/user.svg'
 import walletIcon from '@/assets/iconography/wallet.svg'
+import TelegramIcon from '@/assets/telegram.svg'
 import TwitchIcon from '@/assets/twitch-sso.svg'
 import TwitterIcon from '@/assets/twitter-sso.svg'
 
@@ -180,6 +181,7 @@ type SocialAuthVerifier =
   | 'apple'
   | 'twitter'
   | 'twitch'
+  | 'telegram'
   | 'reddit'
   | 'github'
   | 'discord'
@@ -192,6 +194,7 @@ type SocialAuthVerifierLabel =
   | 'Apple'
   | 'Twitter'
   | 'Twitch'
+  | 'Telegram'
   | 'Reddit'
   | 'GitHub'
   | 'Discord'
@@ -297,6 +300,26 @@ const socialLogins: readonly SocialAuthOption[] = [
       link: 'https://dev.twitch.tv/docs/authentication#registration',
     },
     clientId: '',
+    clientSecret: '',
+  },
+  {
+    name: 'Telegram',
+    verifier: 'telegram',
+    icon: TelegramIcon,
+    hasClientSecret: true,
+    isApple: false,
+    documentation: '',
+    inputLabels: {
+      label1: '',
+      label2: 'Bot Token',
+      label3: '',
+      label4: '',
+      label5: '',
+    },
+    documentation1: {
+      label: 'Get your Bot Token',
+      link: '',
+    },
     clientSecret: '',
   },
   {
