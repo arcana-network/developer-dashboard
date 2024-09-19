@@ -262,7 +262,8 @@ const socialLogins: readonly SocialAuthOption[] = [
     icon: AppleIcon,
     hasClientSecret: true,
     isApple: true,
-    documentation: 'https://support.google.com/cloud/answer/6158849?hl=en',
+    documentation:
+      'https://docs.arcana.network/auth/onboard/react-nextjs/custom-ui/build-social/apple-oauth/',
     inputLabels: {
       label1: 'Service ID',
       label2: '',
@@ -272,7 +273,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     },
     documentation1: {
       label: 'Get your Client ID',
-      link: 'https://support.google.com/cloud/answer/6158849?hl=en',
+      link: 'https://docs.arcana.network/setup/config-social/apple-oauth/',
     },
     clientId: '',
     clientSecret: '',
@@ -318,7 +319,7 @@ const socialLogins: readonly SocialAuthOption[] = [
     },
     documentation1: {
       label: 'Get your Bot Token',
-      link: '',
+      link: 'https://core.telegram.org/bots/tutorial#obtain-your-bot-token',
     },
     clientSecret: '',
   },
