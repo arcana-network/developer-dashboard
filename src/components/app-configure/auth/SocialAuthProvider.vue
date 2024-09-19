@@ -26,7 +26,7 @@ const app = appsStore.app(appId)
 const socialAuthStore = useSocialAuthStore()
 const socialLogins = defaultSocialLogins.filter((login) => {
   if (isProductionDashboard && app.network === 'mainnet') {
-    return login.verifier !== 'apple'
+    return login.verifier !== 'apple' && login.verifier !== 'telegram'
   }
   return true
 })
@@ -180,6 +180,7 @@ watch(
   () => {
     const verifier = selectedAuthProviderVerifier.value
     if (verifier === 'steam') handleInput1(app.address)
+    if (verifier === 'telegram') handleInput1(app.address)
   }
 )
 
