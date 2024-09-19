@@ -44,6 +44,7 @@ function handleInput5(event: Event) {
 <template>
   <div class="flex flex-col">
     <RedirectURI
+      v-if="authProvider.verifier !== 'telegram'"
       :auth-provider="authProvider"
       :auth-type="authType"
       class="py-5"
@@ -52,7 +53,10 @@ function handleInput5(event: Event) {
       class="flex space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
     >
       <VStack
-        v-if="authProvider.verifier !== 'steam'"
+        v-if="
+          authProvider.verifier !== 'steam' &&
+          authProvider.verifier !== 'telegram'
+        "
         class="flex flex-1 flex-col space-y-2"
       >
         <div class="flex justify-between">
