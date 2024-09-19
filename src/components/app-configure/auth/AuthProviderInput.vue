@@ -44,6 +44,7 @@ function handleInput5(event: Event) {
 <template>
   <div class="flex flex-col">
     <RedirectURI
+      v-if="authProvider.verifier !== 'telegram'"
       :auth-provider="authProvider"
       :auth-type="authType"
       class="py-5"
