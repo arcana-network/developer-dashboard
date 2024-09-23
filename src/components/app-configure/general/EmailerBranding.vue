@@ -30,6 +30,7 @@ const fontColors = [
 const primaryfonts = ['Nohemi', 'Syne', 'Nunito']
 const secondaryfonts = ['Inter', 'Onest', 'PT Sans']
 
+const bannerImage = ref('')
 const selectedAccentColor = ref('#F7F7F7')
 const primaryFontColor = ref('#1D2A31')
 const secondaryFontColor = ref('#1D2A31')
@@ -57,34 +58,18 @@ const onColorPickerClick = () => {
   document.getElementById('color-picker').click()
 }
 
-const logoFile = ref(null)
-
-const updateLogo = (type, event) => {
-  const file = event.target.files[0]
-  if (file && file.type.startsWith('image/')) {
-    logoFile.value = URL.createObjectURL(file)
-  } else {
-    alert('Please upload a valid image file.')
-  }
-}
-
-const clickLogoUpload = () => {
-  document.getElementById('logo').click()
-}
-
 const saveConfiguration = async () => {
   try {
     const email_branding = {
+      image_url: bannerImage.value,
       background: selectedAccentColor.value,
       primary_font: selectedPrimaryFont.value,
       primary_color: primaryFontColor.value,
       secondary_font: selectedSecondaryFont.value,
       secondary_color: secondaryFontColor.value,
     }
-    console.log('email_branding_onSave', email_branding)
 
     await updateApp(appId, { email_branding }, currentApp.network)
-    console.log('currentApp', currentApp)
     toast.success(content.BRANDING.SAVED)
     currentApp.email_branding = email_branding
   } catch (e) {
@@ -94,6 +79,7 @@ const saveConfiguration = async () => {
 }
 
 const cancelConfiguration = () => {
+  bannerImage.value = currentApp.email_branding.image_url
   selectedAccentColor.value = currentApp.email_branding.background
   selectedPrimaryFont.value = currentApp.email_branding.primary_font
   primaryFontColor.value = currentApp.email_branding.primary_color
@@ -102,6 +88,7 @@ const cancelConfiguration = () => {
 }
 
 function resetToDefault() {
+  bannerImage.value = ''
   selectedPrimaryFont.value = 'Nohemi'
   selectedSecondaryFont.value = 'Inter'
   primaryFontColor.value = '#1D2A31'
@@ -109,22 +96,14 @@ function resetToDefault() {
   selectedAccentColor.value = '#F7F7F7'
 }
 
-// const disableSave = () => {
-//   const { email_branding } = currentApp
-
-//   return (
-//     selectedAccentColor.value === email_branding.background &&
-//     selectedPrimaryFont.value === email_branding.primary_font &&
-//     selectedSecondaryFont.value === email_branding.secondary_font &&
-//     primaryFontColor.value === email_branding.primary_color &&
-//     secondaryFontColor.value === email_branding.secondary_color
-//   )
-// }
+const handleBannerInput = (event) => {
+  bannerImage.value = event.target.value
+}
 
 onMounted(() => {
   const { email_branding } = currentApp
-  console.log('email_branding_onMounted', email_branding)
 
+  bannerImage.value = email_branding.image_url
   selectedAccentColor.value = email_branding.background
   selectedPrimaryFont.value = email_branding.primary_font
   primaryFontColor.value = email_branding.primary_color
@@ -302,54 +281,20 @@ onMounted(() => {
 
         <!-- Update Logos -->
         <div class="flex flex-col gap-2">
-          <h2
-            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
-          >
-            Update Logo
+          <h2 class="font-medium font-inter text-base text-[#989898] uppercase">
+            Update Email Banner
           </h2>
-          <div class="flex gap-8">
-            <div class="mb-2">
-              <label
-                for="logo"
-                class="block mb-1 font-normal text-sm text-[#1D2A31]"
-                >Logo</label
-              >
-              <div v-if="logoFile" class="flex gap-3">
-                <div
-                  class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2"
-                >
-                  <img :src="logoFile" alt="logo" class="w-12 h-12" />
-                </div>
-                <button @click="logoFile = null">
-                  <img
-                    src="@/assets/iconography/delete-icon-logo.svg"
-                    alt="delete"
-                    class="w-4 h-4"
-                  />
-                </button>
-              </div>
-              <div v-else>
-                <input
-                  id="logo"
-                  type="file"
-                  hidden
-                  class="w-full p-2 border rounded"
-                  @change="updateLogo('logo', $event)"
-                />
-                <button
-                  class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
-                  @click="clickLogoUpload"
-                >
-                  <img
-                    src="@/assets/iconography/upload.svg"
-                    alt="plus"
-                    class="w-4 h-4"
-                  />
-                  <span>Upload Logo</span>
-                </button>
-              </div>
-            </div>
-          </div>
+          <p class="text-sm font-normal mb-2 text-liquidaqua">
+            Recommended Resolution: 600x200 or above.
+          </p>
+          <VStack class="flex flex-1 flex-col space-y-2">
+            <input
+              v-model="bannerImage"
+              type="text"
+              placeholder="Enter banner URL"
+              class="flex-1 text-black bg-[#EFEFEF] p-2 rounded-md outline-none"
+            />
+          </VStack>
         </div>
         <div class="flex justify-end pt-96">
           <div class="flex items-center justify-center w-52 gap-3">
@@ -361,6 +306,7 @@ onMounted(() => {
             </button>
             <button
               class="px-4 py-2 rounded-full transition-colors duration-300 flex-1 flex justify-center bg-[#1D2A31] text-[#F7F7F7] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              :disabled="disableSave"
               @click="saveConfiguration"
             >
               Save
@@ -380,16 +326,16 @@ onMounted(() => {
       >
         <div class="flex justify-between items-center mb-4">
           <img
-            v-if="logoFile"
-            :src="logoFile"
+            v-if="bannerImage"
+            :src="bannerImage"
             alt="Logo"
-            class="h-44 w-full rounded-lg rounded-b-none"
+            class="h-full w-full object-cover rounded-lg rounded-b-none"
           />
           <img
             v-else
             src="@/assets/email-branding.svg"
             alt="Logo"
-            class="h-44 w-full rounded-lg rounded-b-none"
+            class="h-full w-full object-cover rounded-lg rounded-b-none"
           />
         </div>
         <div

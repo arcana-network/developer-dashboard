@@ -54,6 +54,7 @@ type ThemeSettings = {
 }
 
 type EmailBranding = {
+  image_url: string
   background: string
   primary_font: string
   primary_color: string

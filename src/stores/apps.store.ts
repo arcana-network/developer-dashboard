@@ -83,6 +83,7 @@ type App = {
     radius: string
   }
   email_branding: {
+    image_url: string
     background: string
     primary_font: string
     primary_color: string

@@ -251,7 +251,6 @@ const socialLogins: readonly SocialAuthOption[] = [
     },
     clientId: '',
     clientSecret: '',
-    note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
   },
   {
     name: 'Apple',
@@ -276,7 +275,6 @@ const socialLogins: readonly SocialAuthOption[] = [
     privateKey: '',
     teamId: '',
     keyId: '',
-    note: 'Note: If you enable Cognito as one of the multiple onboarding options then you can directly configure Google login through Cognito itself instead of using Arcana Dashboard.',
   },
   {
     name: 'Twitch',
