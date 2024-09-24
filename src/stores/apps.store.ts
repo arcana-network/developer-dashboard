@@ -89,6 +89,7 @@ type App = {
     primary_color: string
     secondary_font: string
     secondary_color: string
+    footer_color: string
   }
 }
 

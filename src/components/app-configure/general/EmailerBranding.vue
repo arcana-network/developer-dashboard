@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, ref, watchEffect, computed, watch } from 'vue'
 
+import VDropdown from '@/components/lib/VDropdown/VDropdown.vue'
 import { useToast } from '@/components/lib/VToast'
 import { updateApp } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
@@ -19,23 +20,30 @@ const accentColors = ref([
   '#DEA13B',
   '#000000',
 ])
-const fontColors = [
-  '#F7F7F7',
-  '#BBCCD6',
-  '#74919C',
-  '#829299',
-  '#4C626E',
-  '#1D2A31',
+const fontColors = ['#FFFFFF', '#F7F7F7', '#1D2A31', '#151515', '#000000']
+
+const fonts = [
+  'Arial',
+  'Century Gothic',
+  'Courier New',
+  'Garamond',
+  'Georgia',
+  'Helvetica',
+  'Impact',
+  'Lucida',
+  'Times New Roman',
+  'Tahoma',
+  'Trebuchet',
+  'Verdana',
 ]
-const primaryfonts = ['Nohemi', 'Syne', 'Nunito']
-const secondaryfonts = ['Inter', 'Onest', 'PT Sans']
 
 const bannerImage = ref('')
 const selectedAccentColor = ref('#F7F7F7')
 const primaryFontColor = ref('#1D2A31')
 const secondaryFontColor = ref('#1D2A31')
-const selectedPrimaryFont = ref('Nohemi')
-const selectedSecondaryFont = ref('Inter')
+const selectedPrimaryFont = ref('Arial')
+const selectedSecondaryFont = ref('Times New Roman')
+const selectedFooterColor = ref('#F7F7F7')
 
 const appsStore = useAppsStore()
 const appId = useAppId()
@@ -48,9 +56,45 @@ const accentColorClass = (color) => {
     : 'border-2 border-transparent hover:border-black'
 }
 
+const primaryFontColorClass = (color) => {
+  return color === primaryFontColor.value
+    ? 'border-2 border-[#FF4E9F]'
+    : 'border-2 border-transparent hover:border-black'
+}
+
+const secondaryFontColorClass = (color) => {
+  return color === secondaryFontColor.value
+    ? 'border-2 border-[#FF4E9F]'
+    : 'border-2 border-transparent hover:border-black'
+}
+
+const footerColorClass = (color) => {
+  return color === selectedFooterColor.value
+    ? 'border-2 border-[#FF4E9F]'
+    : 'border-2 border-transparent hover:border-black'
+}
+
 function addAccentColor() {
   if (!accentColors.value.includes(selectedAccentColor.value)) {
     accentColors.value.push(selectedAccentColor.value)
+  }
+}
+
+function addPrimaryFontColor() {
+  if (!fontColors.includes(primaryFontColor.value)) {
+    fontColors.push(primaryFontColor.value)
+  }
+}
+
+function addSecondaryFontColor() {
+  if (!fontColors.includes(secondaryFontColor.value)) {
+    fontColors.push(secondaryFontColor.value)
+  }
+}
+
+function addFooterColor() {
+  if (!accentColors.value.includes(selectedFooterColor.value)) {
+    accentColors.value.push(selectedFooterColor.value)
   }
 }
 
@@ -67,6 +111,7 @@ const saveConfiguration = async () => {
       primary_color: primaryFontColor.value,
       secondary_font: selectedSecondaryFont.value,
       secondary_color: secondaryFontColor.value,
+      footer_color: selectedFooterColor.value,
     }
 
     await updateApp(appId, { email_branding }, currentApp.network)
@@ -85,19 +130,17 @@ const cancelConfiguration = () => {
   primaryFontColor.value = currentApp.email_branding.primary_color
   selectedSecondaryFont.value = currentApp.email_branding.secondary_font
   secondaryFontColor.value = currentApp.email_branding.secondary_color
+  selectedFooterColor.value = currentApp.email_branding.footer_color
 }
 
 function resetToDefault() {
   bannerImage.value = ''
-  selectedPrimaryFont.value = 'Nohemi'
-  selectedSecondaryFont.value = 'Inter'
-  primaryFontColor.value = '#1D2A31'
+  selectedPrimaryFont.value = 'Arial'
+  selectedSecondaryFont.value = 'Times New Roman'
+  primaryFontColor.value = '#000000'
   secondaryFontColor.value = '#1D2A31'
   selectedAccentColor.value = '#F7F7F7'
-}
-
-const handleBannerInput = (event) => {
-  bannerImage.value = event.target.value
+  selectedFooterColor.value = '#FFFFFF'
 }
 
 onMounted(() => {
@@ -108,9 +151,13 @@ onMounted(() => {
   selectedPrimaryFont.value = email_branding.primary_font
   primaryFontColor.value = email_branding.primary_color
   selectedSecondaryFont.value = email_branding.secondary_font
-  secondaryfonts.value = email_branding.secondary_color
+  secondaryFontColor.value = email_branding.secondary_color
+  selectedFooterColor.value = email_branding.footer_color
 
   addAccentColor()
+  addPrimaryFontColor()
+  addSecondaryFontColor()
+  addFooterColor()
 })
 </script>
 
@@ -189,21 +236,11 @@ onMounted(() => {
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Primary Font</label
             >
-            <div class="relative inline-block w-44 h-14">
-              <select
-                v-model="selectedPrimaryFont"
-                class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
-              >
-                <option v-for="font in primaryfonts" :key="font" :value="font">
-                  {{ font }}
-                </option>
-              </select>
-              <img
-                src="@/assets/iconography/arrow-down.svg"
-                alt="select"
-                class="h-5 w-5 absolute top-3 right-2"
-              />
-            </div>
+            <VDropdown
+              v-model="selectedPrimaryFont"
+              :options="fonts"
+              class="w-64"
+            />
           </div>
           <div>
             <label
@@ -211,23 +248,38 @@ onMounted(() => {
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Primary Color</label
             >
-            <div class="relative inline-block w-44 h-14">
-              <select
-                v-model="primaryFontColor"
-                class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
+            <div class="flex space-x-2 mb-4 overflow-auto">
+              <div
+                v-for="color in fontColors"
+                :key="color"
+                class="p-[1px] rounded-full cursor-pointer"
+                :class="primaryFontColorClass(color)"
+                @click="primaryFontColor = color"
               >
-                <option v-for="font in fontColors" :key="font" :value="font">
-                  {{ font }}
-                </option>
-              </select>
-              <img
-                src="@/assets/iconography/arrow-down.svg"
-                alt="select"
-                class="h-5 w-5 absolute top-3 right-2"
-              />
+                <div
+                  :style="{ backgroundColor: color }"
+                  class="w-8 h-8 rounded-full"
+                ></div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <button
+                  class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
+                  @click="onColorPickerClick"
+                >
+                  <img src="@/assets/iconography/plus.svg" alt="add" />
+                </button>
+                <input
+                  id="color-picker"
+                  v-model="primaryFontColor"
+                  type="color"
+                  class="w-0 h-0 p-0 border-none outline-none"
+                  @change="addPrimaryFontColor"
+                />
+              </div>
             </div>
           </div>
         </div>
+
         <div class="mb-2 flex flex-row space-x-10">
           <div>
             <label
@@ -235,25 +287,11 @@ onMounted(() => {
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Secondary Font</label
             >
-            <div class="relative inline-block w-44 h-14">
-              <select
-                v-model="selectedSecondaryFont"
-                class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
-              >
-                <option
-                  v-for="font in secondaryfonts"
-                  :key="font"
-                  :value="font"
-                >
-                  {{ font }}
-                </option>
-              </select>
-              <img
-                src="@/assets/iconography/arrow-down.svg"
-                alt="select"
-                class="h-5 w-5 absolute top-3 right-2"
-              />
-            </div>
+            <VDropdown
+              v-model="selectedSecondaryFont"
+              :options="fonts"
+              class="w-64"
+            ></VDropdown>
           </div>
           <div>
             <label
@@ -261,20 +299,34 @@ onMounted(() => {
               class="block mb-1 font-normal text-sm text-[#1D2A31]"
               >Secondary Color</label
             >
-            <div class="relative inline-block w-44 h-14">
-              <select
-                v-model="secondaryFontColor"
-                class="block appearance-none w-full bg-[#EFEFEF] border border-[#DCDCDC] text-[#1D2A31] py-3 px-4 pr-8 rounded-lg leading-tight outline-none"
+            <div class="flex space-x-2 mb-4 overflow-auto">
+              <div
+                v-for="color in fontColors"
+                :key="color"
+                class="p-[1px] rounded-full cursor-pointer"
+                :class="secondaryFontColorClass(color)"
+                @click="secondaryFontColor = color"
               >
-                <option v-for="font in fontColors" :key="font" :value="font">
-                  {{ font }}
-                </option>
-              </select>
-              <img
-                src="@/assets/iconography/arrow-down.svg"
-                alt="select"
-                class="h-5 w-5 absolute top-3 right-2"
-              />
+                <div
+                  :style="{ backgroundColor: color }"
+                  class="w-8 h-8 rounded-full"
+                ></div>
+              </div>
+              <div class="flex items-center space-x-4">
+                <button
+                  class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
+                  @click="onColorPickerClick"
+                >
+                  <img src="@/assets/iconography/plus.svg" alt="add" />
+                </button>
+                <input
+                  id="color-picker"
+                  v-model="secondaryFontColor"
+                  type="color"
+                  class="w-0 h-0 p-0 border-none outline-none"
+                  @change="addSecondaryFontColor"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -295,6 +347,43 @@ onMounted(() => {
               class="flex-1 text-black bg-[#EFEFEF] p-2 rounded-md outline-none"
             />
           </VStack>
+        </div>
+
+        <div class="flex flex-col gap-2 py-2">
+          <h2
+            class="font-medium font-inter text-base mb-2 text-[#989898] uppercase"
+          >
+            Footer Color
+          </h2>
+          <div class="flex space-x-2 mb-4 overflow-auto">
+            <div
+              v-for="color in accentColors"
+              :key="color"
+              class="p-[1px] rounded-full cursor-pointer"
+              :class="footerColorClass(color)"
+              @click="selectedFooterColor = color"
+            >
+              <div
+                :style="{ backgroundColor: color }"
+                class="w-8 h-8 rounded-full"
+              ></div>
+            </div>
+            <div class="flex items-center space-x-4">
+              <button
+                class="flex items-center justify-center w-8 h-8 border-[1.5px] border-[#1D2A31] rounded-full"
+                @click="onColorPickerClick"
+              >
+                <img src="@/assets/iconography/plus.svg" alt="add" />
+              </button>
+              <input
+                id="color-picker"
+                v-model="selectedFooterColor"
+                type="color"
+                class="w-0 h-0 p-0 border-none outline-none"
+                @change="addFooterColor"
+              />
+            </div>
+          </div>
         </div>
         <div class="flex justify-end pt-96">
           <div class="flex items-center justify-center w-52 gap-3">
@@ -386,6 +475,7 @@ onMounted(() => {
         </div>
         <div
           class="bg-white text-[#000102] text-sm mt-4 rounded-lg rounded-t-none text-center flex flex-col items-center align-middle py-4"
+          :style="{ backgroundColor: selectedFooterColor }"
         >
           <div class="pb-2">
             <p>Copyright 2022 XYZ Technologies Ltd.</p>
