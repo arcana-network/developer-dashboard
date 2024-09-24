@@ -45,6 +45,24 @@ type AppConfigThemeLogo = {
   light_vertical?: string
 }
 
+type ThemeSettings = {
+  accent_color: string
+  font_pairing: string
+  font_size: string
+  font_color: string
+  radius: string
+}
+
+type EmailBranding = {
+  image_url: string
+  background: string
+  primary_font: string
+  primary_color: string
+  secondary_font: string
+  secondary_color: string
+  footer_color: string
+}
+
 type AppConfig = {
   ID: AppId
   name: string
@@ -66,6 +84,8 @@ type AppConfig = {
   chain_type: string
   session_persisted: boolean
   session_max_age: number
+  theme_settings: ThemeSettings
+  email_branding: EmailBranding
 }
 
 const gatewayInstance = {
@@ -147,6 +167,7 @@ function updateApp(
   if (app) {
     const updatedAppConfig = { ...app, ...fieldsToUpdate }
     const appConfigRequestBody = getAppConfigRequestBody(updatedAppConfig)
+    console.log('appConfigRequestBody', appConfigRequestBody)
     return getGatewayInstance(network).patch(
       `${getEnvApi('v2')}/app/?id=${appId}`,
       appConfigRequestBody
@@ -220,6 +241,8 @@ function getAppConfigRequestBody(app: AppState): AppConfigRequiredProps {
     status: app.status,
     wallet_mode: app.wallet_mode,
     chain_type: app.chain_type,
+    theme_settings: app.theme_settings,
+    email_branding: app.email_branding,
   }
 }
 

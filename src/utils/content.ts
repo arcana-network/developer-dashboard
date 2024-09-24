@@ -8,6 +8,10 @@ const content = {
     UPDATED: 'Profile details updated successfully.',
     COPY: 'Copied Successfully.',
   },
+  BRANDING: {
+    SAVING: 'Saving Email Branding settings...',
+    SAVED: 'Email Branding settings saved successfully.',
+  },
   SMART_CONTRACT: {
     CREATING: 'Creating Smart Contract',
     WHITELIST_EDIT: 'Whitelist edited successfully',
@@ -112,6 +116,9 @@ const errors = {
     SOMETHING_WENT_WRONG:
       'Something went wrong. Please try again or contact support!',
     COPY: 'Unable to copy. Please try again or contact support.',
+  },
+  BRANDING: {
+    ERROR: 'Error occurred while saving the Email Branding settings.',
   },
   GLOBAL_KEYSPACE_ERROR:
     'Login providers are disabled as you have chosen Global keys',

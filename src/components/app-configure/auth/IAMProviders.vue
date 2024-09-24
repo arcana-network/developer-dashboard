@@ -151,7 +151,7 @@ const areRequiredFieldsFilled = computed(() => {
       </h3>
       <p class="text-liquiddark text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
-        care of issuing public and prviate keys to each user through our
+        care of issuing public and private keys to each user through our
         Decentralised Key Generation (DKG) mechanism and keep them secure.
         <a
           :href="LEARN_MORE_LINK"
