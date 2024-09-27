@@ -110,7 +110,7 @@ function toggleNotifications() {
         <div id="help_menu" ref="help_menu" class="relative flex">
           <button class="help-button" @click.stop="toggleHelpMenu">Help</button>
           <VCard v-if="showHelpMenu" class="help-menu-items absolute">
-            <ul style="margin: 0">
+            <ul class="m-0">
               <li
                 v-for="helpItem in HelpItems"
                 :key="helpItem.label"
@@ -119,8 +119,7 @@ function toggleNotifications() {
               >
                 <a
                   :href="helpItem.link"
-                  class="flex text-black no-underline font-normal"
-                  style="gap: 0.75rem"
+                  class="flex text-black no-underline font-normal gap-3"
                   target="_blank"
                 >
                   <img :src="helpItem.icon" />
@@ -147,7 +146,7 @@ function toggleNotifications() {
             @click.stop="toggleProfileMenu"
           />
           <VCard v-if="showProfileMenu" class="help-menu-items absolute">
-            <ul style="margin: 0">
+            <ul class="m-0">
               <li
                 v-for="profileItem in ProfileItems"
                 :key="profileItem.label"
@@ -158,16 +157,12 @@ function toggleNotifications() {
                   :to="{
                     name: `App${profileItem.label}`,
                   }"
-                  class="flex text-black no-underline font-normal help-menu-router"
-                  style="gap: 0.75rem"
+                  class="flex text-black no-underline font-normal help-menu-router gap-3"
                   ><img :src="profileItem.icon" />
                   <span>{{ profileItem.label }} </span></RouterLink
                 >
               </li>
-              <li
-                class="cursor-pointer help-menu-item"
-                style="margin-top: 0.5rem"
-              >
+              <li class="cursor-pointer help-menu-item mt-2">
                 <VButton
                   label="LOGOUT"
                   variant="secondary"

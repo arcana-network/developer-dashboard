@@ -16,8 +16,7 @@ function handleCloseToast(toastMessage: ToastMessage) {
 
 <template>
   <VStack
-    class="v-toast-container"
-    :style="{ padding: toastMessages.length ? '2rem' : '0' }"
+    class="v-toast-container toastMessages.length ? 'p-8' : 'p-0'"
     direction="column"
     gap="1rem"
   >

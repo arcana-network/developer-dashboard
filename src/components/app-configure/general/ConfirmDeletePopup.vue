@@ -18,8 +18,7 @@ const appsStore = useAppsStore()
     class="lg:text-[2rem] md:text-[1.25rem] max-[768px]:text-[1.125rem] font-bold flex-1 flex justify-center"
   >
     <div
-      class="text-ellipsis overflow-hidden"
-      style="max-width: 100%"
+      class="text-ellipsis overflow-hidden max-w-full"
       :title="`Delete app - ${appsStore.app(props.appId as number).name}`"
     >
       Delete app - {{ appsStore.app(props.appId as number).name }}

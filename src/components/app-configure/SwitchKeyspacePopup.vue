@@ -11,10 +11,7 @@ const emit = defineEmits(['cancel', 'switch'])
   <VOverlay>
     <div class="popup-container">
       <VCard class="popup-card">
-        <img
-          src="@/assets/iconography/hazard-sign-icon.png"
-          style="width: 8rem"
-        />
+        <img src="@/assets/iconography/hazard-sign-icon.png" class="w-32" />
         <h3 class="popup-title">Warning!</h3>
         <span class="popup-message">
           Attempting to switch between App-Specific & Global Keys. Please be
@@ -24,12 +21,12 @@ const emit = defineEmits(['cancel', 'switch'])
           <VButton
             variant="secondary"
             label="CANCEL"
-            style="width: 120px"
+            class="w-[120px]"
             @click.stop="emit('cancel')"
           />
           <VButton
             label="SWITCH"
-            style="width: 120px"
+            class="w-[120px]"
             @click.stop="emit('switch')"
           />
         </VStack>

@@ -256,7 +256,7 @@ async function fetchActiveUsers() {
 
 <template>
   <div :key="appId">
-    <main style="margin-bottom: 2rem">
+    <main class="mb-8">
       <section class="flex dashboard-heading flex-wrap">
         <VStack
           justify="space-between"
@@ -268,7 +268,7 @@ async function fetchActiveUsers() {
             gap="1rem"
             class="flex justify-content-center items-center flex-wrap"
           >
-            <span style="color: var(--text-grey)" class="text-lg font-normal">
+            <span class="text-lg font-normal text-[var(--text-grey)]">
               Client ID:
             </span>
             <VTextField
@@ -284,11 +284,7 @@ async function fetchActiveUsers() {
           </VStack>
         </VStack>
       </section>
-      <v-card
-        class="column usage-container"
-        variant="elevated"
-        style="align-items: stretch"
-      >
+      <v-card class="column usage-container items-stretch" variant="elevated">
         <div class="flex justify-between items-center">
           <h2 class="font-normal">Users</h2>
           <div class="flex flex-wrap duration">
@@ -318,11 +314,7 @@ async function fetchActiveUsers() {
           ></canvas>
         </section>
       </v-card>
-      <v-card
-        class="column usage-container"
-        variant="elevated"
-        style="align-items: stretch"
-      >
+      <v-card class="column usage-container items-stretch" variant="elevated">
         <VStack justify="space-between" align="center" class="flex-grow">
           <h2>Tutorials</h2>
         </VStack>

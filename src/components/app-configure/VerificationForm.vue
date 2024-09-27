@@ -102,24 +102,19 @@ async function handleSubmit() {
       <VCard class="verification-form-card relative">
         <img
           src="@/assets/iconography/close.svg"
-          class="absolute cursor-pointer"
-          style="top: 1.25rem; right: 1.25rem; width: 1.25rem"
+          class="absolute cursor-pointer top-5 right-5 w-5"
           @click.stop="emit('close')"
         />
         <VStack direction="column" align="center">
           <h3 class="verification-title">Verification Form</h3>
-          <div class="verification-description" style="text-align: center">
+          <div class="verification-description text-center">
             Fill up this verification form to register your application on
             {{ NetworkName.mainnet }} and enable the Global keys feature. For
             assistance,&nbsp;
             <a href="mailto:support@arcana.network">contact support</a>.
           </div>
           <form @submit.prevent="handleSubmit">
-            <VStack
-              direction="column"
-              gap="1.25rem"
-              style="padding-inline: 3rem"
-            >
+            <VStack direction="column" gap="1.25rem" class="px-12">
               <VTextField
                 v-model="formData.companyName"
                 label="Company Name"
@@ -181,10 +176,7 @@ async function handleSubmit() {
               </div>
               <div v-show="error.trim()" class="error">{{ error }}</div>
             </VStack>
-            <VStack
-              gap="1.25rem"
-              style="justify-content: center; margin-block: 2rem"
-            >
+            <VStack gap="1.25rem" class="flex justify-center mb-8">
               <VButton
                 variant="secondary"
                 label="CANCEL"

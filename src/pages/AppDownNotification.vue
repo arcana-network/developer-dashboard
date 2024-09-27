@@ -1,35 +1,15 @@
 <template>
-  <main style="height: calc(100% - 80px)">
+  <main class="h-[calc(100%-80px)]">
     <div
-      class="flex column"
-      style="
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
-        color: var(--text-black);
-      "
+      class="flex column items-center justify-center w-full h-full text-[var(--text-black)]"
     >
       <h1
-        style="
-          padding: 0 1em;
-          font-weight: 700;
-          color: var(--text-black);
-          text-align: center;
-          letter-spacing: unset;
-        "
+        class="px-4 font-bold text-[var(--text-black)] text-center tracking-normal"
       >
         Under Maintenance
       </h1>
       <h2
-        style="
-          max-width: 720px;
-          padding: 0 1em;
-          margin: 1.25em auto 0;
-          font-weight: 500;
-          line-height: 1.5em;
-          text-align: center;
-        "
+        class="max-w-[720px] px-4 mt-5 mx-auto mb-0 font-medium leading-6 text-center"
       >
         The dashboard is currently undergoing maintenance and will be back
         online soon. Please check back in a little while.

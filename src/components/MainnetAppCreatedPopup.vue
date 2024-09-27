@@ -25,7 +25,7 @@ function handleMainnetKeySpace() {
   <VOverlay>
     <div class="popup-container">
       <VCard class="popup-card">
-        <img src="@/assets/success-celebrate.svg" style="width: 8rem" />
+        <img src="@/assets/success-celebrate.svg" class="w-32" />
         <h3 class="popup-title">{{ NetworkName.mainnet }} App Created!</h3>
         <span class="popup-message">
           {{ NetworkName.mainnet }} app has been configured. <br />Please
@@ -33,7 +33,7 @@ function handleMainnetKeySpace() {
         </span>
         <VButton
           label="CONFIGURE KEYSPACE"
-          style="width: 200px"
+          class="w-[200px]"
           @click.stop="handleMainnetKeySpace()"
         />
       </VCard>

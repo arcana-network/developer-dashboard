@@ -179,12 +179,9 @@ function convertToBytes(value: number) {
 
 <template>
   <div>
-    <main class="container" style="margin-top: 2rem">
+    <main class="container mt-8">
       <h1>USERS</h1>
-      <div
-        class="flex sm-column"
-        style="gap: 1em; justify-content: space-between; margin-top: 2rem"
-      >
+      <div class="flex sm-column gap-4 justify-between mt-8">
         <h4 class="user-details-title">USER DETAILS</h4>
         <v-text-field
           v-model="walletAddress"
@@ -192,16 +189,12 @@ function convertToBytes(value: number) {
           clickable-icon
           :no-message="true"
           placeholder="Enter Wallet Address"
-          :style="'width: 20em'"
+          class="w-80"
           @icon-clicked="searchUsersByWalletAddress"
           @keyup.enter="searchUsersByWalletAddress"
         />
       </div>
-      <v-card
-        variant="elevated"
-        class="flex column users-table-card"
-        style="margin-top: 1rem"
-      >
+      <v-card variant="elevated" class="flex column users-table-card mt-4">
         <div class="table-container">
           <table class="table-head">
             <thead>
@@ -213,7 +206,7 @@ function convertToBytes(value: number) {
               </tr>
             </thead>
           </table>
-          <table v-if="users.length" style="width: 100%">
+          <table v-if="users.length" class="w-full">
             <tbody>
               <tr
                 v-for="(user, index) in users"
@@ -230,111 +223,59 @@ function convertToBytes(value: number) {
           <h4 v-else>No records found</h4>
         </div>
       </v-card>
-      <div class="flex column" style="gap: 1rem; margin-top: 3rem">
+      <div class="flex column gap-4 mt-12">
         <h4>NUMBER OF USERS</h4>
-        <v-card variant="elevated" style="height: 240px; padding: 2em">
+        <v-card variant="elevated" class="h-[240px] p-8">
           <canvas id="numberOfUsersChart" height="100%"></canvas>
         </v-card>
       </div>
     </main>
-    <v-overlay
-      v-if="showDetails"
-      style="display: flex; align-items: center; justify-content: center"
-    >
+    <v-overlay v-if="showDetails" class="flex items-center justify-center">
       <v-card
         variant="popup"
-        class="flex column"
-        style="
-          gap: 1em;
-          width: 72%;
-          min-width: 300px;
-          max-width: 720px;
-          padding: 2em;
-        "
+        class="flex column gap-4 w-[72%] min-w-[300px] max-w-[720px] p-8"
       >
-        <div
-          class="flex"
-          style="justify-content: space-between; margin-bottom: 2em"
-        >
-          <h2 style="align-self: center; padding: 3px 2vh">USER LOG</h2>
+        <div class="flex justify-between mb-8">
+          <h2 class="self-center p-[3px] py-[2vh]">USER LOG</h2>
           <span
             v-wave
-            style="
-              padding: 3px;
-              font-size: 1.5em;
-              font-weight: 600;
-              color: var(--primary);
-              cursor: pointer;
-            "
-            class="body-1"
+            class="body-1 p-[3px] text-[1.5em] font-semibold text-[var(--primary)] cursor-pointer"
             @click.stop="showDetails = false"
             >X</span
           >
         </div>
-        <div
-          class="flex column"
-          style="gap: 2vh; padding: 0 2vh; margin-bottom: 2vh"
-        >
-          <span class="body-1" style="color: var(--text-grey)">
-            Wallet Address
-          </span>
+        <div class="flex column gap-[2vh] px-[2vh] mb-[2vh]">
+          <span class="body-1 text-[var(--text-grey)]"> Wallet Address </span>
           <span
-            class="text-xl font-semibold"
-            style="color: var(--text-white); word-wrap: break-word"
+            class="text-xl font-semibold text-[var(--text-white)] break-words"
           >
             {{ userLog.walletAddress }}
           </span>
         </div>
-        <div
-          class="flex flex-wrap"
-          style="
-            gap: 4vh;
-            justify-content: space-between;
-            padding: 0 2vh;
-            margin-bottom: 1rem;
-          "
-        >
-          <div class="flex column" style="gap: 1vh">
-            <span class="body-1" style="color: var(--text-grey)">
+        <div class="flex flex-wrap gap-[4vh] justify-between px-[2vh] mb-4">
+          <div class="flex column gap-[1vh]">
+            <span class="body-1 text-[var(--text-grey)]">
               Public Identifier
             </span>
-            <span
-              class="text-xl font-semibold"
-              style="color: var(--text-white)"
-            >
+            <span class="text-xl font-semibold text-[var(--text-white)]">
               {{ userLog.email }}
             </span>
           </div>
-          <div class="flex column" style="gap: 1vh">
-            <span class="body-1" style="color: var(--text-grey)">
-              Storage
-            </span>
-            <span
-              class="text-xl font-semibold"
-              style="color: var(--text-white)"
-            >
+          <div class="flex column gap-[1vh]">
+            <span class="body-1 text-[var(--text-grey)]"> Storage </span>
+            <span class="text-xl font-semibold text-[var(--text-white)]">
               {{ convertToBytes(userLog.storage as number) }}
             </span>
           </div>
-          <div class="flex column" style="gap: 1vh">
-            <span class="body-1" style="color: var(--text-grey)">
-              Bandwidth
-            </span>
-            <span
-              class="text-xl font-semibold"
-              style="color: var(--text-white)"
-            >
+          <div class="flex column gap-[1vh]">
+            <span class="body-1 text-[var(--text-grey)]"> Bandwidth </span>
+            <span class="text-xl font-semibold text-[var(--text-white)]">
               {{ convertToBytes(userLog.bandwidth as number) }}
             </span>
           </div>
-          <div class="flex column" style="gap: 1vh">
-            <span class="body-1" style="color: var(--text-grey)">
-              Action Count
-            </span>
-            <span
-              class="text-xl font-semibold"
-              style="color: var(--text-white)"
-            >
+          <div class="flex column gap-[1vh]">
+            <span class="body-1 text-[var(--text-grey)]"> Action Count </span>
+            <span class="text-xl font-semibold text-[var(--text-white)]">
               {{ userLog.actionCount }}
             </span>
           </div>
@@ -351,7 +292,7 @@ function convertToBytes(value: number) {
                   </tr>
                 </thead>
               </table>
-              <table v-if="userTransactions.length" style="width: 100%">
+              <table v-if="userTransactions.length" class="w-full">
                 <tbody>
                   <tr
                     v-for="transaction in userTransactions"

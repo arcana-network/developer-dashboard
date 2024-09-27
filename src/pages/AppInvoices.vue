@@ -126,7 +126,7 @@ onBeforeMount(async () => {
           </VStack>
         </SettingCard>
       </section>
-      <section style="margin-top: 1.25rem; margin-bottom: 3rem">
+      <section class="mt-5 mb-12">
         <VStack direction="column" gap="1.25rem">
           <VCard
             v-for="invoice in invoices"
@@ -156,7 +156,7 @@ onBeforeMount(async () => {
                     :href="invoice.url"
                     download
                     target="_blank"
-                    style="display: flex"
+                    class="flex"
                     @click.stop="(e) => e.preventDefault()"
                   >
                     <img src="@/assets/iconography/download.svg" />

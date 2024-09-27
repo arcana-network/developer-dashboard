@@ -78,7 +78,7 @@ async function handleSave() {
   <section name="web-wallet">
     <form @submit.prevent="handleSave">
       <VStack direction="column" gap="1rem">
-        <VStack direction="column" gap="1rem" style="margin-bottom: 1rem">
+        <VStack direction="column" gap="1rem" class="mb-4">
           <h3>Wallet Theme</h3>
           <VStack direction="column" gap="0.5rem" align="start">
             <h4 class="text-grey">Choose Theme</h4>

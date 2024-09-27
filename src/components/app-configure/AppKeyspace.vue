@@ -135,10 +135,7 @@ function handleCancel() {
                   with an app review and validation process before approving the
                   global keys feature for an app.</span
                 >
-                <VStack
-                  class="justify-end"
-                  style="margin-top: 2rem; visibility: hidden"
-                >
+                <VStack class="justify-end mt-8 invisible">
                   <VButton label="VERIFY" disabled></VButton>
                 </VStack>
               </VStack>

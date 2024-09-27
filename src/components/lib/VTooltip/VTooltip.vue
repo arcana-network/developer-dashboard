@@ -28,11 +28,10 @@ const positionClass = {
   <div v-if="title" class="tooltip-wrapper" v-bind="attrs">
     <slot></slot>
     <div
-      class="tooltip text-[0.84em] leading-[1.6em]"
+      class="tooltip text-[0.84em] leading-[1.6em] delay-500"
       :class="positionClass"
       role="tooltip"
       aria-hidden="true"
-      style="transition-delay: 500ms"
       :style="tooltipStyle"
       v-html="title"
     />

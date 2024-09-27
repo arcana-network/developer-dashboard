@@ -20,12 +20,12 @@ const emit = defineEmits(['cancel', 'proceed'])
           <VButton
             variant="secondary"
             label="CANCEL"
-            style="width: 120px"
+            class="w-[120px]"
             @click.stop="emit('cancel')"
           />
           <VButton
             label="DELETE"
-            style="width: 120px"
+            class="w-[120px]"
             @click.stop="emit('proceed')"
           />
         </VStack>

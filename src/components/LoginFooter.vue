@@ -53,7 +53,7 @@ const socialLinks = [
           />
         </a>
       </VStack>
-      <VStack gap="2.5rem" class="flex-1" style="justify-content: end">
+      <VStack gap="2.5rem" class="flex-1 justify-end">
         <VStack gap="1rem" align="center" class="footer-links">
           <a
             class="text-xs font-normal text-black no-underline"

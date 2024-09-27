@@ -268,7 +268,7 @@ function handleCancel() {
           </div>
         </SettingCard>
       </section>
-      <section style="margin-top: 3em">
+      <section class="mt-12">
         <SettingCard>
           <template #title>Organisation</template>
           <form @submit.prevent="onUpdateOrganization">
@@ -314,7 +314,7 @@ function handleCancel() {
           </form>
         </SettingCard>
       </section>
-      <!-- <section id="billing-details" style="margin-top: 3em">
+      <!-- <section id="billing-details" class="mt-12">
         <SettingCard>
           <template #title>Billing Address Details</template>
           <form @submit.prevent="updateBillingDetails">
@@ -343,7 +343,7 @@ function handleCancel() {
                   @icon-clicked="invoiceDetails.address = ''"
                 />
               </div>
-              <div class="flex column flex-1" style="visibility: hidden"></div>
+              <div class="flex column flex-1 invisible"></div>
             </VStack>
             <div class="flex column flex-1 space-y-4">
               <div

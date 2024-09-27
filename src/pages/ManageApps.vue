@@ -179,7 +179,7 @@ function ellipsisAppName(appName: string) {
                 >
                   <img
                     src="@/assets/iconography/info-circle-outline.svg"
-                    style="margin-top: 2rem; cursor: pointer"
+                    class="mt-8 cursor-pointer"
                   />
                 </VTooltip>
               </VStack>
@@ -188,7 +188,8 @@ function ellipsisAppName(appName: string) {
                 <VStack
                   direction="column"
                   gap="0.75rem"
-                  :style="{ width: `${freeMausWidth}%`, overflow: 'visible' }"
+                  class="overflow-visible"
+                  :style="{ width: `${freeMausWidth}%` }"
                 >
                   <VStack
                     gap="0.25rem"
@@ -209,8 +210,8 @@ function ellipsisAppName(appName: string) {
                   direction="column"
                   gap="0.75rem"
                   align="start"
-                  :style="{ width: `${paidMausWidth}%`, overflow: 'visible' }"
-                  class="text-ellipsis"
+                  :style="{ width: `${paidMausWidth}%` }"
+                  class="text-ellipsis overflow-visible"
                 >
                   <VStack
                     gap="0.25rem"
@@ -221,8 +222,7 @@ function ellipsisAppName(appName: string) {
                     <span class="info-detail">{{ paidMausUsed }}</span>
                   </VStack>
                   <VProgressBar
-                    class="info-progress"
-                    style="min-width: 0"
+                    class="info-progress min-w-0"
                     :percentage="100"
                   />
                 </VStack>
@@ -230,17 +230,11 @@ function ellipsisAppName(appName: string) {
               <VStack class="flex-grow info-margin justify-end">
                 <VStack gap="1.25rem" sm-direction="column">
                   <VStack gap="0.5rem" align="center">
-                    <div
-                      class="legend-dot"
-                      style="background-color: var(--color-green)"
-                    ></div>
+                    <div class="legend-dot bg-[var(--color-green)]"></div>
                     <span class="info-detail-name">Free users</span>
                   </VStack>
                   <VStack gap="0.5rem" align="center">
-                    <div
-                      class="legend-dot"
-                      style="background-color: var(--primary)"
-                    ></div>
+                    <div class="legend-dot bg-[var(--primary)]"></div>
                     <span class="info-detail-name">Paid users</span>
                   </VStack>
                 </VStack>
@@ -303,7 +297,7 @@ function ellipsisAppName(appName: string) {
               <img :src="getImageUrl(app.id)" class="app-logo" />
               <VStack
                 gap="0.5rem"
-                style="max-width: 100%"
+                class="max-w-full"
                 @mouseenter="setHover(app.id, true)"
                 @mouseleave="setHover(app.id, false)"
               >
@@ -343,7 +337,7 @@ function ellipsisAppName(appName: string) {
                 <VSeperator
                   v-if="isMainnetAppAvailable(app.id)"
                   vertical
-                  style="height: 100%; margin-inline: 1rem"
+                  class="h-full mx-4"
                 />
                 <VStack
                   v-if="isMainnetAppAvailable(app.id)"
@@ -359,7 +353,7 @@ function ellipsisAppName(appName: string) {
                   }}</span>
                 </VStack>
               </VCard>
-              <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
+              <VStack gap="1rem" class="w-full mt-2">
                 <VButton
                   variant="secondary"
                   :label="NetworkName.testnet"
