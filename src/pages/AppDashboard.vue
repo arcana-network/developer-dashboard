@@ -268,9 +268,7 @@ async function fetchActiveUsers() {
             gap="1rem"
             class="flex justify-content-center items-center flex-wrap"
           >
-            <span class="text-lg font-normal text-[var(--text-grey)]">
-              Client ID:
-            </span>
+            <span class="text-lg font-normal text-text_grey"> Client ID: </span>
             <VTextField
               v-model="appAddress"
               class="text-ellipsis"

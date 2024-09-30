@@ -239,43 +239,39 @@ function convertToBytes(value: number) {
           <h2 class="self-center p-[3px] py-[2vh]">USER LOG</h2>
           <span
             v-wave
-            class="body-1 p-[3px] text-[1.5em] font-semibold text-[var(--primary)] cursor-pointer"
+            class="body-1 p-[3px] text-[1.5em] font-semibold text-primary cursor-pointer"
             @click.stop="showDetails = false"
             >X</span
           >
         </div>
         <div class="flex column gap-[2vh] px-[2vh] mb-[2vh]">
-          <span class="body-1 text-[var(--text-grey)]"> Wallet Address </span>
-          <span
-            class="text-xl font-semibold text-[var(--text-white)] break-words"
-          >
+          <span class="body-1 text-text_grey"> Wallet Address </span>
+          <span class="text-xl font-semibold text-text_white break-words">
             {{ userLog.walletAddress }}
           </span>
         </div>
         <div class="flex flex-wrap gap-[4vh] justify-between px-[2vh] mb-4">
           <div class="flex column gap-[1vh]">
-            <span class="body-1 text-[var(--text-grey)]">
-              Public Identifier
-            </span>
-            <span class="text-xl font-semibold text-[var(--text-white)]">
+            <span class="body-1 text-text_grey"> Public Identifier </span>
+            <span class="text-xl font-semibold text-text_white">
               {{ userLog.email }}
             </span>
           </div>
           <div class="flex column gap-[1vh]">
-            <span class="body-1 text-[var(--text-grey)]"> Storage </span>
-            <span class="text-xl font-semibold text-[var(--text-white)]">
+            <span class="body-1 text-text_grey"> Storage </span>
+            <span class="text-xl font-semibold text-text_white">
               {{ convertToBytes(userLog.storage as number) }}
             </span>
           </div>
           <div class="flex column gap-[1vh]">
-            <span class="body-1 text-[var(--text-grey)]"> Bandwidth </span>
-            <span class="text-xl font-semibold text-[var(--text-white)]">
+            <span class="body-1 text-text_grey"> Bandwidth </span>
+            <span class="text-xl font-semibold text-text_white">
               {{ convertToBytes(userLog.bandwidth as number) }}
             </span>
           </div>
           <div class="flex column gap-[1vh]">
-            <span class="body-1 text-[var(--text-grey)]"> Action Count </span>
-            <span class="text-xl font-semibold text-[var(--text-white)]">
+            <span class="body-1 text-text_grey"> Action Count </span>
+            <span class="text-xl font-semibold text-text_white">
               {{ userLog.actionCount }}
             </span>
           </div>

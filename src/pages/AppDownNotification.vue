@@ -3,9 +3,7 @@
     <div
       class="flex column items-center justify-center w-full h-full text-[var(--text-black)]"
     >
-      <h1
-        class="px-4 font-bold text-[var(--text-black)] text-center tracking-normal"
-      >
+      <h1 class="px-4 font-bold text-text_black text-center tracking-normal">
         Under Maintenance
       </h1>
       <h2

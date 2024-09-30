@@ -230,11 +230,11 @@ function ellipsisAppName(appName: string) {
               <VStack class="flex-grow info-margin justify-end">
                 <VStack gap="1.25rem" sm-direction="column">
                   <VStack gap="0.5rem" align="center">
-                    <div class="legend-dot bg-[var(--color-green)]"></div>
+                    <div class="legend-dot bg-color_green"></div>
                     <span class="info-detail-name">Free users</span>
                   </VStack>
                   <VStack gap="0.5rem" align="center">
-                    <div class="legend-dot bg-[var(--primary)]"></div>
+                    <div class="legend-dot bg-primary"></div>
                     <span class="info-detail-name">Paid users</span>
                   </VStack>
                 </VStack>
