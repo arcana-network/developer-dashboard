@@ -194,7 +194,7 @@ const enableSave = computed(() => {
       </div>
       <div
         v-else
-        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-black p-4 bg-white m-auto"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-black_solid-default p-4 bg-white m-auto"
       >
         <div class="space-y-7">
           <div class="space-y-2.5">
@@ -202,7 +202,7 @@ const enableSave = computed(() => {
               Deposit Crypto to Gas Tank
             </p>
             <p v-else class="text-sm">Withdraw Crypto from Gas Tank</p>
-            <p class="text-sm text-liquiddark leading-4">
+            <p class="text-sm text-system-grey leading-4">
               Declare the owner of the gas tank by signing a message with your
               wallet:
             </p>
@@ -210,15 +210,17 @@ const enableSave = computed(() => {
           <div v-if="isConnected">
             <div>
               <p class="text-[10px]">
-                <span class="text-liquiddark">Total balance:</span>
+                <span class="text-system-grey">Total balance:</span>
                 {{ walletBalance }}
               </p>
               <p class="text-[10px]">
-                <span class="text-liquiddark">Total deposit:</span>
+                <span class="text-system-grey">Total deposit:</span>
                 {{ walletDeposit }}
               </p>
             </div>
-            <label for="amount" class="text-xs text-black">Amount</label>
+            <label for="amount" class="text-xs text-black_solid-default"
+              >Amount</label
+            >
             <input
               v-model="depositAmount"
               :disabled="!isConnectedAddressSameAsOwner()"
@@ -227,7 +229,7 @@ const enableSave = computed(() => {
                 'bg-neutral-900 cursor-not-allowed':
                   !isConnectedAddressSameAsOwner(),
               }"
-              class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none rounded-md"
+              class="text-sm bg-whitemist-default p-[10px] w-full border-none outline-none rounded-md"
               name="amount"
             />
             <p
@@ -239,9 +241,9 @@ const enableSave = computed(() => {
             </p>
           </div>
           <div v-else>
-            <span class="text-sm text-liquiddark leading-4">Tank Owner</span>
+            <span class="text-sm text-system-grey leading-4">Tank Owner</span>
             <button
-              class="uppercase border-2 text-sm w-full p-1 rounded-md bg-liquid text-black"
+              class="uppercase border-2 text-sm w-full p-1 rounded-md bg-firefly-default text-black_solid-default"
               @click.stop="connectToWallet(selectedGasTank.chainId)"
             >
               Connect Wallet
@@ -249,16 +251,18 @@ const enableSave = computed(() => {
           </div>
           <div class="space-x-2.5 flex justify-end">
             <button
-              class="border-[1.5px] text-sm border-liquid w-[100px] p-2 rounded-3xl hover:text-pink"
+              class="border-[1.5px] text-sm border-firefly-default w-[100px] p-2 rounded-3xl hover:text-fairy_dust-default"
               @click="emits('close')"
             >
               Cancel
             </button>
             <button
-              class="bg-liquid text-sm text-black w-[100px] p-2 rounded-3xl transition-opacity duration-500"
+              class="bg-firefly-default text-sm text-black_solid-default w-[100px] p-2 rounded-3xl transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[
-                !enableSave ? 'opacity-30' : 'opacity-100 hover:text-pink',
+                !enableSave
+                  ? 'opacity-30'
+                  : 'opacity-100 hover:text-fairy_dust-default',
               ]"
               @click.prevent="onProceed"
             >

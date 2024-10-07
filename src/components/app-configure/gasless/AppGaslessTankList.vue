@@ -58,30 +58,34 @@ function onClickOfOption(option: number, id: number) {
 </script>
 
 <template>
-  <div class="rounded-md border-[1px] bg-white border-liquidgrey">
+  <div class="rounded-md border-px1 bg-white border-system-light_gray">
     <table
       v-if="gastankList.length"
-      class="table-fixed text-black block overflow-x-auto border-collapse"
+      class="table-fixed text-black_solid-default block overflow-x-auto border-collapse"
     >
-      <thead class="border-b-[1px] border-b-liquidgrey">
-        <tr class="text-liquiddark">
-          <th class="w-[5%]"></th>
-          <th class="w-[20%]">Name</th>
-          <th class="w-[20%]">Network</th>
-          <th class="w-[15%]">Type</th>
-          <th class="w-[15%]">Owner</th>
-          <th class="w-[5%]">Whitelists</th>
-          <th class="w-[15%]">Enable Smart Account</th>
-          <th class="w-[10%]"></th>
+      <thead class="border-b-px1 border-b-system-light_gray">
+        <tr class="text-system-grey">
+          <th class="w-5% p-px15 text-left text-px12 font-normal"></th>
+          <th class="w-20% p-px15 text-left text-px12 font-normal">Name</th>
+          <th class="w-20% p-px15 text-left text-px12 font-normal">Network</th>
+          <th class="w-15% p-px15 text-left text-px12 font-normal">Type</th>
+          <th class="w-15% p-px15 text-left text-px12 font-normal">Owner</th>
+          <th class="w-5% p-px15 text-left text-px12 font-normal">
+            Whitelists
+          </th>
+          <th class="w-15% p-px15 text-left text-px12 font-normal">
+            Enable Smart Account
+          </th>
+          <th class="w-10% p-px15 text-left text-px12 font-normal"></th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="tank in filteredGastankList"
           :key="tank.name"
-          class="hover:bg-liquid"
+          class="hover:bg-firefly-default"
         >
-          <td>
+          <td class="p-px15 text-left text-px14 font-medium overflow-ellipsis">
             <img
               :src="getChainLogo(tank.chainId, 'evm', app.network)"
               alt="chain logo"
@@ -89,33 +93,46 @@ function onClickOfOption(option: number, id: number) {
               @error="onChainLogoError"
             />
           </td>
-          <td>{{ tank.name }}</td>
-          <td>{{ tank.network }}</td>
-          <td>{{ tank.type }}</td>
-          <td :title="tank.owner">{{ shrinkWalletAddress(tank.owner) }}</td>
-          <td>{{ tank.whitelists || '-' }}</td>
-          <td>
+          <td class="p-px15 text-left text-px14 font-medium overflow-ellipsis">
+            {{ tank.name }}
+          </td>
+          <td class="p-px15 text-left text-px14 font-medium overflow-ellipsis">
+            {{ tank.network }}
+          </td>
+          <td class="p-px15 text-left text-px14 font-medium overflow-ellipsis">
+            {{ tank.type }}
+          </td>
+          <td
+            class="p-px15 text-left text-px14 font-medium overflow-ellipsis"
+            :title="tank.owner"
+          >
+            {{ shrinkWalletAddress(tank.owner) }}
+          </td>
+          <td class="p-px15 text-left text-px14 font-medium overflow-ellipsis">
+            {{ tank.whitelists || '-' }}
+          </td>
+          <td class="p-px15 text-left text-px14 font-medium overflow-ellipsis">
             <VSwitch
               :value="tank.enabled"
               @update:model-value="() => emits('toggle-chain-status', tank)"
             />
           </td>
-          <td>
+          <td class="p-px15 text-left text-px14 font-medium overflow-ellipsis">
             <PopperJs placement="left-start" :arrow="true">
               <button
-                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-black rounded-[5px]"
+                class="flex justify-center items-center cursor-pointer w-7 h-7 bg-black rounded-px5"
               >
                 <img :src="MoreIcon" alt="more" />
               </button>
               <template #content>
                 <ul
                   ref="showRowOptions_menu"
-                  class="flex flex-col bg-white text-black rounded-md border-[1px] border-liquidgrey p-2 space-y-1 absolute w-36 left-[-100px] top-[10px] z-[999]"
+                  class="flex flex-col bg-white text-black_solid-default rounded-md border-px1 border-system-light_gray p-2 space-y-1 absolute w-36 left-px-100 top-px10 z-mid-overlay"
                 >
                   <li
                     v-for="option in rowOptions"
                     :key="option.value"
-                    class="p-1 rounded-[5px] hover:bg-liquidlight text-left cursor-pointer"
+                    class="p-1 rounded-px5 hover:bg-whitemist-default text-left cursor-pointer"
                     @click.stop="() => onClickOfOption(option.value, tank.id)"
                   >
                     <button>
@@ -130,41 +147,34 @@ function onClickOfOption(option: number, id: number) {
       </tbody>
     </table>
     <div v-else class="h-40 flex flex-col">
-      <table class="table-fixed text-white overflow-x-auto border-collapse">
-        <thead class="border-b-[1px] border-b-liquidgrey">
-          <tr class="text-liquiddark">
-            <th class="w-[14%]">Name</th>
-            <th class="w-[14%]">Balance</th>
-            <th class="w-[14%]">Deposit Address</th>
-            <th class="w-[14%]">Network</th>
-            <th class="w-[14%]">Type</th>
-            <th class="w-[14%]">Last Transaction Date</th>
-            <th class="w-[14%]">Whitelists</th>
+      <table
+        class="table-fixed text-white_solid-default overflow-x-auto border-collapse"
+      >
+        <thead class="border-b-px1 border-b-system-light_gray">
+          <tr class="text-system-grey">
+            <th class="w-14% p-px15 text-left text-px12 font-normal">Name</th>
+            <th class="w-14% p-px15 text-left text-px12 font-normal">
+              Balance
+            </th>
+            <th class="w-14% p-px15 text-left text-px12 font-normal">
+              Deposit Address
+            </th>
+            <th class="w-14% p-px15 text-left text-px12 font-normal">
+              Network
+            </th>
+            <th class="w-14% p-px15 text-left text-px12 font-normal">Type</th>
+            <th class="w-14% p-px15 text-left text-px12 font-normal">
+              Last Transaction Date
+            </th>
+            <th class="w-14% p-px15 text-left text-px12 font-normal">
+              Whitelists
+            </th>
           </tr>
         </thead>
       </table>
       <div class="flex-1 flex justify-center items-center">
-        <p class="text-liquiddark">Begin by Adding a Gas Tank</p>
+        <p class="text-system-grey">Begin by Adding a Gas Tank</p>
       </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-th,
-td {
-  padding: 15px;
-  text-align: left;
-}
-
-th {
-  font-size: 12px;
-  font-weight: 400;
-}
-
-td {
-  font-size: 14px;
-  font-weight: 500;
-  text-overflow: ellipsis;
-}
-</style>

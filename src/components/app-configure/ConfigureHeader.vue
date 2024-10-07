@@ -11,12 +11,12 @@ const selectedNetwork = ref('Testnet')
 </script>
 
 <template>
-  <VStack direction="column" gap="2rem" class="container">
+  <VStack direction="column" gap="2rem" class="my-4 mx-auto">
     <VStack justify="space-between" class="flex-1">
       <VStack gap="2rem">
         <img
           src="@/assets/iconography/back.svg"
-          class="cursor-pointer back-icon"
+          class="cursor-pointer w-12"
           alt="Go Back"
           @click.stop="router.back()"
         />
@@ -26,13 +26,3 @@ const selectedNetwork = ref('Testnet')
     </VStack>
   </VStack>
 </template>
-
-<style scoped>
-.back-icon {
-  width: 3rem;
-}
-
-.container {
-  margin: 1rem auto;
-}
-</style>

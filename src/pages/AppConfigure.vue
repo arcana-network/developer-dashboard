@@ -28,20 +28,10 @@ function switchTab(tab: ConfigureTab) {
 </script>
 
 <template>
-  <VStack direction="column" gap="2rem" class="configure-container">
+  <VStack direction="column" gap="2rem" class="min-h-screen">
     <ConfigureHeader />
-    <VStack gap="2rem" class="container app-settings-container">
+    <VStack gap="2rem" class="container mb-8">
       <RouterView />
     </VStack>
   </VStack>
 </template>
-
-<style scoped>
-.configure-container {
-  min-height: 100vh;
-}
-
-.app-settings-container {
-  margin-bottom: 2rem;
-}
-</style>

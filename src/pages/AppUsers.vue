@@ -182,7 +182,7 @@ function convertToBytes(value: number) {
     <main class="container mt-8">
       <h1>USERS</h1>
       <div class="flex sm-column gap-4 justify-between mt-8">
-        <h4 class="user-details-title">USER DETAILS</h4>
+        <h4 class="user-details-title flex items-center">USER DETAILS</h4>
         <v-text-field
           v-model="walletAddress"
           :icon="SearchIcon"
@@ -194,29 +194,69 @@ function convertToBytes(value: number) {
           @keyup.enter="searchUsersByWalletAddress"
         />
       </div>
-      <v-card variant="elevated" class="flex column users-table-card mt-4">
-        <div class="table-container">
-          <table class="table-head">
-            <thead>
-              <tr>
-                <th>WALLET ADDRESS</th>
-                <th>STORAGE</th>
-                <th>BANDWIDTH</th>
-                <th>ACTION COUNT</th>
+      <v-card
+        variant="elevated"
+        class="flex column users-table-card p-em2 mt-4 max-md:p-em0.8"
+      >
+        <div class="table-container max-h-vh30 overflow-x-auto max-md:h-vh40">
+          <table
+            class="table-head my-em1 mb-em2 max-md:my-4 max-md:mt-2 max-md:mb-4"
+          >
+            <thead class="text-white_solid-default">
+              <tr
+                class="cursor-pointer rounded-px5 hover:bg-black_solid-default hover:shadow-custom active:bg-system-low_black_shadow active:shadow-none hover:text-cornflower_blue-default"
+              >
+                <th
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  WALLET ADDRESS
+                </th>
+                <th
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  STORAGE
+                </th>
+                <th
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  BANDWIDTH
+                </th>
+                <th
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  ACTION COUNT
+                </th>
               </tr>
             </thead>
           </table>
           <table v-if="users.length" class="w-full">
-            <tbody>
+            <tbody class="text-system-grey">
               <tr
                 v-for="(user, index) in users"
                 :key="user.walletAddress"
+                class="cursor-pointer rounded-px5 hover:bg-black_solid-default hover:shadow-custom active:bg-system-low_black_shadow active:shadow-none hover:text-cornflower_blue-default active:text-white_solid-default"
                 @click.stop="fetchUserLogsApi(user.walletAddress, index)"
               >
-                <td>{{ truncate(user.walletAddress) }}</td>
-                <td>{{ convertToBytes(user.storage) }}</td>
-                <td>{{ convertToBytes(user.bandwidth) }}</td>
-                <td>{{ user.actionCount }}</td>
+                <td
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  {{ truncate(user.walletAddress) }}
+                </td>
+                <td
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  {{ convertToBytes(user.storage) }}
+                </td>
+                <td
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  {{ convertToBytes(user.bandwidth) }}
+                </td>
+                <td
+                  class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                >
+                  {{ user.actionCount }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -225,7 +265,7 @@ function convertToBytes(value: number) {
       </v-card>
       <div class="flex column gap-4 mt-12">
         <h4>NUMBER OF USERS</h4>
-        <v-card variant="elevated" class="h-[240px] p-8">
+        <v-card variant="elevated" class="h-px240 p-8">
           <canvas id="numberOfUsersChart" height="100%"></canvas>
         </v-card>
       </div>
@@ -233,70 +273,116 @@ function convertToBytes(value: number) {
     <v-overlay v-if="showDetails" class="flex items-center justify-center">
       <v-card
         variant="popup"
-        class="flex column gap-4 w-[72%] min-w-[300px] max-w-[720px] p-8"
+        class="flex column gap-4 w-72% min-w-px300 max-w-px720 p-8"
       >
         <div class="flex justify-between mb-8">
-          <h2 class="self-center p-[3px] py-[2vh]">USER LOG</h2>
+          <h2 class="self-center p-px3 py-vh2">USER LOG</h2>
           <span
             v-wave
-            class="body-1 p-[3px] text-[1.5em] font-semibold text-primary cursor-pointer"
+            class="body-1 p-px3 text-em1.5 font-semibold text-cornflower_blue-default cursor-pointer text-em0.9"
             @click.stop="showDetails = false"
             >X</span
           >
         </div>
-        <div class="flex column gap-[2vh] px-[2vh] mb-[2vh]">
-          <span class="body-1 text-text_grey"> Wallet Address </span>
-          <span class="text-xl font-semibold text-text_white break-words">
+        <div class="flex column gap-2vh px-vh2 mb-vh2">
+          <span class="body-1 text-em0.9 text-system-grey">
+            Wallet Address
+          </span>
+          <span
+            class="text-xl m-px2 text-em1.2 font-semibold text-white_solid-default break-words max-md:m-0.5 max-md:text-em0.9"
+          >
             {{ userLog.walletAddress }}
           </span>
         </div>
-        <div class="flex flex-wrap gap-[4vh] justify-between px-[2vh] mb-4">
-          <div class="flex column gap-[1vh]">
-            <span class="body-1 text-text_grey"> Public Identifier </span>
-            <span class="text-xl font-semibold text-text_white">
+        <div class="flex flex-wrap gap-4vh justify-between px-vh2 mb-4">
+          <div class="flex column gap-1vh">
+            <span class="body-1 text-em0.9 text-system-grey">
+              Public Identifier
+            </span>
+            <span
+              class="text-xl m-px2 text-em1.2 font-semibold text-white_solid-default max-md:m-0.5 max-md:text-em0.9"
+            >
               {{ userLog.email }}
             </span>
           </div>
-          <div class="flex column gap-[1vh]">
-            <span class="body-1 text-text_grey"> Storage </span>
-            <span class="text-xl font-semibold text-text_white">
+          <div class="flex column gap-1vh">
+            <span class="body-1 text-em0.9 text-system-grey"> Storage </span>
+            <span
+              class="text-xl m-px2 text-em1.2 font-semibold text-white_solid-default max-md:m-0.5 max-md:text-em0.9"
+            >
               {{ convertToBytes(userLog.storage as number) }}
             </span>
           </div>
-          <div class="flex column gap-[1vh]">
-            <span class="body-1 text-text_grey"> Bandwidth </span>
-            <span class="text-xl font-semibold text-text_white">
+          <div class="flex column gap-1vh">
+            <span class="body-1 text-em0.9 text-system-grey"> Bandwidth </span>
+            <span
+              class="text-xl m-px2 text-em1.2 font-semibold text-white_solid-default max-md:m-0.5 max-md:text-em0.9"
+            >
               {{ convertToBytes(userLog.bandwidth as number) }}
             </span>
           </div>
-          <div class="flex column gap-[1vh]">
-            <span class="body-1 text-text_grey"> Action Count </span>
-            <span class="text-xl font-semibold text-text_white">
+          <div class="flex column gap-1vh">
+            <span class="body-1 text-em0.9 text-system-grey">
+              Action Count
+            </span>
+            <span
+              class="text-xl m-px2 text-em1.2 font-semibold text-white_solid-default max-md:m-0.5 max-md:text-em0.9"
+            >
               {{ userLog.actionCount }}
             </span>
           </div>
         </div>
         <div>
-          <v-card variant="depressed" class="flex column log-table-card">
-            <div class="log-container">
-              <table class="log-table">
-                <thead>
-                  <tr>
-                    <th>ACTION TYPE</th>
-                    <th>DATE</th>
-                    <th>TIME</th>
+          <v-card
+            variant="depressed"
+            class="flex column log-table-card py-em1 pl-em2.5 px-em1 max-md:py-1 max-md:px-1 max-md:pl-3"
+          >
+            <div class="log-container max-h-vh30 overflow-auto max-md:h-vh30">
+              <table class="log-table my-em1 mb-em2 max-md:my-em0.6">
+                <thead class="text-white_solid-default">
+                  <tr
+                    class="cursor-pointer rounded-px5 hover:bg-black_solid-default hover:shadow-custom active:bg-system-low_black_shadow active:shadow-none hover:text-cornflower_blue-default"
+                  >
+                    <th
+                      class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                    >
+                      ACTION TYPE
+                    </th>
+                    <th
+                      class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                    >
+                      DATE
+                    </th>
+                    <th
+                      class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                    >
+                      TIME
+                    </th>
                   </tr>
                 </thead>
               </table>
               <table v-if="userTransactions.length" class="w-full">
-                <tbody>
+                <tbody class="text-system-grey">
                   <tr
                     v-for="transaction in userTransactions"
                     :key="`${transaction.date}-${transaction.type}`"
+                    class="cursor-pointer rounded-px5 hover:bg-black_solid-default active:bg-system-low_black_shadow active:shadow-none hover:shadow-custom hover:text-cornflower_blue-default active:text-white_solid-default"
                   >
-                    <td>{{ transaction.type }}</td>
-                    <td>{{ getDate(transaction.date) }}</td>
-                    <td>{{ getTime(transaction.date) }}</td>
+                    <td
+                      class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                    >
+                      {{ transaction.type }}
+                    </td>
+                    <td
+                      class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                    >
+                      {{ getDate(transaction.date) }}
+                    </td>
+                    <td
+                      class="w-vw20 min-w-em6.4 p-em0.8 mx-em0.5 text-left max-md:w-vw20 max-md:min-w-em6.4 max-md:p-em0.6 max-md:mx-em0.4 max-md:text-left max-md:text-em0.9"
+                    >
+                      {{ getTime(transaction.date) }}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -310,122 +396,3 @@ function convertToBytes(value: number) {
     </v-overlay>
   </div>
 </template>
-
-<style scoped>
-.table-container {
-  max-height: 30vh;
-  overflow-x: auto;
-}
-
-.log-container {
-  max-height: 30vh;
-  overflow-x: auto;
-  overflow-y: auto;
-}
-
-.body-1 {
-  font-size: 0.9em;
-}
-
-.text-xl font-semibold {
-  margin: 2px;
-  font-size: 1.2em;
-}
-
-thead {
-  color: var(--text-white);
-}
-
-tbody {
-  color: var(--text-grey);
-}
-
-.table-head {
-  margin: 1em 0 2em;
-}
-
-.log-table-card {
-  padding: 1em 1em 1em 2.5em;
-}
-
-.log-table {
-  margin: 1em 0 2em;
-}
-
-.users-table-card {
-  padding: 2em;
-}
-
-th,
-td {
-  width: 20vw;
-  min-width: 6.4em;
-  padding: 0.8em;
-  margin: 0 0.5em;
-  text-align: left;
-}
-
-tbody tr {
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-tbody tr:hover {
-  color: var(--primary);
-  background: #171717;
-  box-shadow: 0 4px 4px rgb(0 0 0 / 25%), 0 4px 15px rgb(1 1 1 / 30%),
-    inset 8px 6px 12px -2px #212121;
-}
-
-tbody tr:active {
-  color: var(--text-white);
-  background: rgb(255 255 255 / 10%);
-  box-shadow: unset;
-}
-
-.user-details-title {
-  display: flex;
-  align-items: center;
-}
-
-@media only screen and (max-width: 767px) {
-  .table-head {
-    margin: 0.5em 0 1em;
-  }
-
-  .text-xl font-semibold {
-    margin: 2px;
-    font-size: 0.9em;
-  }
-
-  .log-table-card {
-    padding: 0.4em 0.4em 0.4em 1.2em;
-  }
-
-  .log-table {
-    margin: 0.6em 0;
-  }
-
-  .users-table-card {
-    padding: 0.8em;
-  }
-
-  .table-container {
-    height: 40vh;
-  }
-
-  .log-container {
-    height: 30vh;
-  }
-
-  th,
-  td {
-    width: 20vw;
-    min-width: 6.4em;
-    padding: 0.6em;
-    margin: 0 0.4em;
-    font-size: 0.9em;
-    text-align: left;
-  }
-}
-</style>

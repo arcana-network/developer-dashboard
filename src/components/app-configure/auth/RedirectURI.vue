@@ -55,14 +55,14 @@ const props = defineProps({
 
 <template>
   <div
-    class="flex pt-5 space-x-4 max-[1080px]:flex-col max-[1080px]:space-x-0 max-[1080px]:space-y-4"
+    class="flex pt-5 space-x-4 max-px1080:flex-col max-px1080:space-x-0 max-px1080:space-y-4"
   >
     <VStack class="flex flex-1 flex-col space-y-2">
       <div class="flex justify-between">
         <span class="text-xs">Redirect URL</span>
       </div>
       <div
-        class="flex items-center justify-between text-black bg-liquidlight p-2 rounded-md outline-none"
+        class="flex items-center justify-between text-black_solid-default bg-whitemist-default p-2 rounded-md outline-none"
       >
         <span
           class="text-md font-normal text-ellipsis redirect-uri overflow-hidden"
@@ -71,40 +71,10 @@ const props = defineProps({
         >
         <img
           src="@/assets/iconography/copy.svg"
-          class="cursor-pointer copy-icon"
+          class="cursor-pointer w-px24 h-px24"
           @click.stop="copyRedirectUri"
         />
       </div>
     </VStack>
   </div>
 </template>
-
-<style scoped>
-.redirect-uri-info__container {
-  display: flex;
-  align-items: center;
-  padding: 1rem;
-  background-color: var(--background-color);
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-}
-
-.redirect-uri-input {
-  padding: 1rem;
-  font-size: 1rem;
-  color: var(--text-color);
-  cursor: not-allowed;
-  border: none;
-  border-radius: 10px;
-}
-
-.copy-icon {
-  width: 24px;
-  height: 24px;
-}
-
-.redirect-uri-info__description {
-  margin-top: 1rem;
-  color: var(--text-grey);
-}
-</style>

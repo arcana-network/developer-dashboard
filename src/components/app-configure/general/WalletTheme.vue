@@ -81,12 +81,12 @@ async function handleSave() {
         <VStack direction="column" gap="1rem" class="mb-4">
           <h3>Wallet Theme</h3>
           <VStack direction="column" gap="0.5rem" align="start">
-            <h4 class="text-grey">Choose Theme</h4>
+            <h4 class="text-system-grey">Choose Theme</h4>
             <VDropdown
               v-model="selectedTheme"
               :options="availableThemes"
               display-field="label"
-              class="theme-dropdown"
+              class="min-w-rem16"
             />
           </VStack>
         </VStack>
@@ -94,34 +94,35 @@ async function handleSave() {
           <h3>Branding Preview</h3>
           <VStack gap="2.5rem" wrap>
             <VStack direction="column" gap="0.5rem">
-              <h4 class="text-grey">Desktop</h4>
+              <h4 class="text-system-grey">Desktop</h4>
               <img
                 v-if="selectedTheme.value === 'light'"
                 src="@/assets/web-wallet-preview-desktop-light.png"
                 alt="Web wallet desktop preview"
-                class="web-wallet-desktop-preview"
+                class="w-full max-w-rem38"
               />
+
               <img
                 v-else
                 src="@/assets/web-wallet-preview-desktop-dark.png"
                 alt="Web wallet desktop preview"
-                class="web-wallet-desktop-preview"
+                class="w-full max-w-rem38"
               />
             </VStack>
             <VSeperator vertical class="tablet-remove mobile-remove" />
             <VStack direction="column" gap="0.5rem">
-              <h4 class="text-grey">Mobile</h4>
+              <h4 class="text-system-grey">Mobile</h4>
               <img
                 v-if="selectedTheme.value === 'light'"
                 src="@/assets/web-wallet-preview-mobile-light.png"
                 alt="Web wallet mobile preview"
-                class="web-wallet-mobile-preview"
+                class="w-full max-w-rem12"
               />
               <img
                 v-else
                 src="@/assets/web-wallet-preview-mobile-dark.png"
                 alt="Web wallet mobile preview"
-                class="web-wallet-mobile-preview"
+                class="w-full max-w-rem12"
               />
             </VStack>
           </VStack>
@@ -135,33 +136,3 @@ async function handleSave() {
     </form>
   </section>
 </template>
-
-<style scoped>
-.theme-dropdown {
-  min-width: 16rem;
-}
-
-.text-grey {
-  font-size: 1rem;
-  font-weight: 500;
-  color: var(--text-grey);
-}
-
-.web-wallet-input {
-  max-width: 24rem;
-}
-
-.ui-mode-switch {
-  margin-top: 4px;
-}
-
-.web-wallet-desktop-preview {
-  width: 100%;
-  max-width: 38rem;
-}
-
-.web-wallet-mobile-preview {
-  width: 100%;
-  max-width: 12rem;
-}
-</style>

@@ -232,23 +232,25 @@ function handleCancel() {
 <template>
   <div>
     <AppHeader />
-    <main :class="{ container: route.name === 'AppProfile' }">
-      <VStack class="heading" gap="1rem">
+    <main class="pb-16" :class="{ container: route.name === 'AppProfile' }">
+      <VStack class="mt-8 max-lg:mt-em0.9 max-lg:text-em1.8" gap="1rem">
         <img
           src="@/assets/iconography/back.svg"
-          class="cursor-pointer"
+          class="cursor-pointer w-rem2"
           @click.stop="router.back()"
         />
         <h1>Profile</h1>
       </VStack>
-      <section class="personal-details">
+      <section class="mt-12 max-lg:mt-8">
         <SettingCard>
           <template #title>User Account</template>
           <div
-            class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
+            class="flex flex-wrap justify-between space-x-5 max-md:flex-col max-md:space-x-0 max-md:space-y-5"
           >
             <div class="flex flex-col flex-1 space-y-2">
-              <label for="light-horizontal-logo">Name</label>
+              <label for="light-horizontal-logo" class="text-system-grey"
+                >Name</label
+              >
               <VTextFieldSecondary
                 v-model.trim="name"
                 class="app-name-input"
@@ -257,7 +259,9 @@ function handleCancel() {
               />
             </div>
             <div class="flex flex-col flex-1 space-y-2">
-              <label for="light-horizontal-logo">Account Identifier</label>
+              <label for="light-horizontal-logo" class="text-system-grey"
+                >Account Identifier</label
+              >
               <VTextFieldSecondary
                 v-model.trim="email"
                 class="app-name-input"
@@ -273,10 +277,12 @@ function handleCancel() {
           <template #title>Organisation</template>
           <form @submit.prevent="onUpdateOrganization">
             <div
-              class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
+              class="flex flex-wrap justify-between space-x-5 max-md:flex-col max-md:space-x-0 max-md:space-y-5"
             >
               <div class="flex column flex-1 space-y-2">
-                <label for="light-horizontal-logo">Name</label>
+                <label for="light-horizontal-logo" class="text-system-grey"
+                  >Name</label
+                >
                 <VTextFieldSecondary
                   v-model.trim="organisationDetails.name"
                   class="app-name-input"
@@ -284,7 +290,9 @@ function handleCancel() {
                 />
               </div>
               <div class="flex column flex-1 space-y-2">
-                <label for="light-horizontal-logo">Country</label>
+                <label for="light-horizontal-logo" class="text-system-grey"
+                  >Country</label
+                >
                 <VTextFieldSecondary
                   v-model.trim="organisationDetails.country"
                   class="app-name-input"
@@ -292,7 +300,9 @@ function handleCancel() {
                 />
               </div>
               <div class="flex column flex-1 space-y-2">
-                <label for="light-horizontal-logo">Organization Size</label>
+                <label for="light-horizontal-logo" class="text-system-grey"
+                  >Organization Size</label
+                >
                 <VTextFieldSecondary
                   v-model.trim="organisationDetails.size"
                   class="app-name-input"
@@ -314,248 +324,6 @@ function handleCancel() {
           </form>
         </SettingCard>
       </section>
-      <!-- <section id="billing-details" class="mt-12">
-        <SettingCard>
-          <template #title>Billing Address Details</template>
-          <form @submit.prevent="updateBillingDetails">
-            <VStack
-              v-if="false"
-              class="flex flex-col flex-wrap justify-between"
-              gap="1.25rem"
-            >
-              <div class="flex column flex-1 space-y-2">
-                <label for="light-horizontal-logo">Billing Name</label>
-                <VTextFieldSecondary
-                  v-model.trim="invoiceDetails.name"
-                  class="app-name-input"
-                  :icon="CloseIcon"
-                  clickable-icon
-                  @icon-clicked="invoiceDetails.name = ''"
-                />
-              </div>
-              <div class="flex column flex-1 space-y-2">
-                <label for="light-horizontal-logo">Billing Address</label>
-                <VTextFieldSecondary
-                  v-model.trim="invoiceDetails.address"
-                  class="app-name-input"
-                  :icon="CloseIcon"
-                  clickable-icon
-                  @icon-clicked="invoiceDetails.address = ''"
-                />
-              </div>
-              <div class="flex column flex-1 invisible"></div>
-            </VStack>
-            <div class="flex column flex-1 space-y-4">
-              <div
-                class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
-              >
-                <div class="flex flex-col flex-1 space-y-2">
-                  <label for="billing-address-line-1">Address Line 1</label>
-                  <VTextFieldSecondary
-                    id="billing-address-line-1"
-                    v-model.trim="billingDetails.addressLine1"
-                    class="app-name-input"
-                    no-message
-                  />
-                </div>
-                <div class="flex flex-col flex-1 space-y-2">
-                  <label for="billing-address-line-2"
-                    >Address Line 2 (Optional)</label
-                  >
-                  <VTextFieldSecondary
-                    id="billing-address-line-2"
-                    v-model.trim="billingDetails.addressLine2"
-                    class="app-name-input"
-                    no-message
-                  />
-                </div>
-              </div>
-              <div
-                class="flex flex-wrap justify-between space-x-5 max-[768px]:flex-col max-[768px]:space-x-0 max-[768px]:space-y-5"
-              >
-                <div class="flex column flex-1 space-y-2">
-                  <label for="billing-city">City</label>
-                  <VTextFieldSecondary
-                    id="billing-city"
-                    v-model.trim="billingDetails.city"
-                    no-message
-                  />
-                </div>
-                <div class="flex column flex-1 space-y-2">
-                  <label for="billing-state">State</label>
-                  <VTextFieldSecondary
-                    id="billing-state"
-                    v-model.trim="billingDetails.state"
-                    no-message
-                  />
-                </div>
-                <div class="flex column flex-1 space-y-2">
-                  <label for="billing-zipcode">Zip Code</label>
-                  <VTextFieldSecondary
-                    id="billing-zipcode"
-                    v-model.trim="billingDetails.zipCode"
-                    type="number"
-                    no-message
-                  />
-                </div>
-                <div class="flex column flex-1 space-y-2">
-                  <label for="billing-country">Country</label>
-                  <VTextFieldSecondary
-                    id="billing-country"
-                    v-model.trim="billingDetails.country"
-                  />
-                </div>
-              </div>
-            </div>
-            <ConfigureActionButtons
-              :save-disabled="isBillingCopySame() || !hasBillingAddress()"
-              :cancel-disabled="isBillingCopySame()"
-              @cancel="handleCancel"
-            />
-          </form>
-        </SettingCard>
-      </section> -->
     </main>
   </div>
 </template>
-
-<style scoped>
-main {
-  padding-bottom: 4rem;
-}
-
-.card-element {
-  padding: 1rem;
-  background: linear-gradient(141.48deg, #161616 -4.56%, #151515 135.63%);
-  border-radius: 10px;
-  box-shadow: inset 5px 5px 10px rgb(11 11 11 / 50%),
-    inset -50px 49px 29px 22px rgb(28 28 28 / 84%);
-}
-
-.card-name {
-  width: 30%;
-  font-family: Sora, sans-serif;
-  font-size: 16px;
-  font-weight: 400;
-  color: #f7f7f7;
-  background: transparent;
-  border: none;
-  outline: none;
-  box-shadow: none;
-  -webkit-font-smoothing: antialiased;
-}
-
-.card-name::placeholder {
-  color: #8d8d8d;
-}
-
-.payment-details-input {
-  gap: 0.5rem;
-  width: 100%;
-  margin-top: 1em;
-}
-
-.heading {
-  margin-top: 2rem;
-}
-
-.heading img {
-  width: 2rem;
-}
-
-.personal-details {
-  margin-top: 3rem;
-}
-
-label {
-  color: var(--text-grey);
-}
-
-.payment-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.switch-icon {
-  transition: transform 0.3s;
-}
-
-.payment-input {
-  display: grid;
-  grid-template-columns: 24vw 20vw 10rem 10rem;
-  gap: 1.5rem;
-}
-
-.cvv {
-  -webkit-text-security: disc;
-}
-
-.swapped {
-  transform: rotate(-180deg);
-}
-
-.stripe-focused {
-  outline: 1px solid var(--primary);
-}
-
-.billing-details {
-  display: flex;
-}
-
-.payment-form {
-  position: relative;
-}
-
-.hide-payment-form::before {
-  position: absolute;
-  inset: -2rem -1.5rem;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-  text-align: center;
-  content: 'Enter the billing address details to access payment methods.';
-  background: rgb(10 10 10 / 70%);
-  backdrop-filter: blur(16px);
-}
-
-@media only screen and (max-width: 1023px) {
-  .heading {
-    margin-top: 0.9em;
-    font-size: 1.8em;
-  }
-
-  .personal-details {
-    margin-top: 2em;
-  }
-
-  .switch-icon-container {
-    text-align: center;
-  }
-
-  .payment-container {
-    gap: 2rem;
-    align-items: stretch;
-  }
-
-  .switch-icon {
-    transform: rotate(-90deg);
-  }
-
-  .swapped {
-    transform: rotate(-270deg);
-  }
-
-  .payment-input {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .details {
-    width: unset;
-  }
-}
-</style>

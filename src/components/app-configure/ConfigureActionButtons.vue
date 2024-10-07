@@ -28,7 +28,9 @@ const emit = defineEmits(['cancel', 'save'])
 </script>
 
 <template>
-  <div class="footer flex flex-wrap flex-1">
+  <div
+    class="flex gap-8 justify-end mt-4 flex-wrap flex-1 max-md:flex-wrap-reverse max-md:gap-2 max-md:justify-center"
+  >
     <VButton
       v-if="!hideCancel"
       v-wave
@@ -48,19 +50,3 @@ const emit = defineEmits(['cancel', 'save'])
     />
   </div>
 </template>
-
-<style scoped>
-.footer {
-  gap: 2rem;
-  justify-content: flex-end;
-  margin-top: 1rem;
-}
-
-@media only screen and (max-width: 767px) {
-  .footer {
-    flex-wrap: wrap-reverse;
-    gap: 0.5rem;
-    justify-content: center;
-  }
-}
-</style>

@@ -36,21 +36,23 @@ function onClickofItem(notification) {
 </script>
 
 <template>
-  <VCard class="absolute z-[999] flex flex-col p-2 | notification__container">
+  <VCard
+    class="absolute z-overlay flex flex-col p-2 top-px25 right-px-10 w-px380 max-h-px380 border border-system-light_gray max-md:top-0 max-md:right-0 max-md:w-screen max-md:h-screen max-md:rounded-none max-md:rounded-lg"
+  >
     <div
-      class="flex items-center justify-between w-full h-[50px] border-b-[1px] border-b-[#8d8d8d33]"
+      class="flex items-center justify-between w-full h-px50 border-b-px1 border-b-system-smoke"
     >
       <p class="text-lg">Notifications</p>
       <div class="flex items-center">
         <button
           v-show="appsStore.unreadNotificationCount"
-          class="bg-transparent border-none outline-none cursor-pointer text-sm text-black | notification__mark-read-btn"
+          class="bg-transparent border-none outline-none cursor-pointer text-sm text-black_solid-default max-md:mr-px15"
           @click="markAllRead"
         >
           Mark all as read
         </button>
         <button
-          class="bg-transparent border-none outline-none cursor-pointer h-3 p-0 | notification__close-btn"
+          class="bg-transparent border-none outline-none cursor-pointer h-3 p-0 hidden max-md:block"
           @click="close"
         >
           <img src="@/assets/iconography/close.svg" alt="close" class="h-3" />
@@ -65,35 +67,3 @@ function onClickofItem(notification) {
     </div>
   </VCard>
 </template>
-
-<style scoped>
-.notification__close-btn {
-  display: none;
-}
-
-.notification__container {
-  top: 25px;
-  right: -10px;
-  width: 380px;
-  max-height: 380px;
-  border: #d9d9d9 1px solid;
-}
-
-@media only screen and (max-width: 767px) {
-  .notification__close-btn {
-    display: block;
-  }
-
-  .notification__container {
-    top: 0;
-    right: 0;
-    width: 100vw;
-    height: 100vh;
-    border-radius: 0;
-  }
-
-  .notification__mark-read-btn {
-    margin-right: 15px;
-  }
-}
-</style>

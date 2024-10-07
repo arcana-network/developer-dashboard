@@ -56,14 +56,14 @@ const socialLinks = [
       <VStack gap="2.5rem" class="flex-1 justify-end">
         <VStack gap="1rem" align="center" class="footer-links">
           <a
-            class="text-xs font-normal text-black no-underline"
+            class="text-xs font-normal text-black_solid-default no-underline"
             href="https://github.com/arcana-network/license/blob/main/TERMS.md"
             target="_blank"
           >
             Terms of Use
           </a>
           <a
-            class="text-xs font-normal text-black no-underline"
+            class="text-xs font-normal text-black_solid-default no-underline"
             href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
             target="_blank"
           >
@@ -71,7 +71,7 @@ const socialLinks = [
           </a>
           <div class="flex flex-row ml-5">
             <a
-              class="text-sm font-normal mt-[2px] text-black no-underline"
+              class="text-sm font-normal mt-[2px] text-black_solid-default no-underline"
               href="https://github.com/arcana-network/license/blob/main/PRIVACY.md"
               target="_blank"
             >

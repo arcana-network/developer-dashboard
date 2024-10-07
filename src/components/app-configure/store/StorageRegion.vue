@@ -15,7 +15,7 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
 
 <template>
   <section name="storage-region">
-    <SettingCard class="storage-region-card">
+    <SettingCard class="storage-region-card z-20">
       <template #title>Storage Region</template>
       <template #description
         >Arcana Store uses physical storage nodes that are logically grouped by
@@ -32,7 +32,7 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
         <VDropdown
           :options="regions"
           display-field="name"
-          class="region-dropdown"
+          class="w-rem16"
           :model-value="selectedRegion"
           disabled
         />
@@ -40,15 +40,3 @@ const selectedRegion = regions.find((region) => region.value === storageRegion)
     </SettingCard>
   </section>
 </template>
-
-<style scoped>
-.region-dropdown {
-  width: 16rem;
-}
-</style>
-
-<style>
-.storage-region-card > * {
-  z-index: 2 !important;
-}
-</style>

@@ -9,11 +9,13 @@ const emit = defineEmits(['cancel', 'switch'])
 
 <template>
   <VOverlay>
-    <div class="popup-container">
-      <VCard class="popup-card">
+    <div class="flex items-center justify-center w-full h-full">
+      <VCard class="flex flex-col items-center w-full max-w-px600 p-8">
         <img src="@/assets/iconography/hazard-sign-icon.png" class="w-32" />
-        <h3 class="popup-title">Warning!</h3>
-        <span class="popup-message">
+        <h3 class="my-px10 text-px35 text-center">Warning!</h3>
+        <span
+          class="max-w-px500 mt-px10 mb-16 text-px20 leading-1.5 text-center text-black_solid-default"
+        >
           Attempting to switch between App-Specific & Global Keys. Please be
           aware that doing so will change your user's wallet
         </span>
@@ -21,12 +23,12 @@ const emit = defineEmits(['cancel', 'switch'])
           <VButton
             variant="secondary"
             label="CANCEL"
-            class="w-[120px]"
+            class="w-px120"
             @click.stop="emit('cancel')"
           />
           <VButton
             label="SWITCH"
-            class="w-[120px]"
+            class="w-px120"
             @click.stop="emit('switch')"
           />
         </VStack>
@@ -34,37 +36,3 @@ const emit = defineEmits(['cancel', 'switch'])
     </div>
   </VOverlay>
 </template>
-
-<style scoped>
-.popup-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.popup-card {
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 600px;
-  padding: 2rem;
-}
-
-.popup-title {
-  margin-block: 10px;
-  font-size: 35px;
-  text-align: center;
-}
-
-.popup-message {
-  max-width: 500px;
-  margin-top: 10px;
-  margin-bottom: 64px;
-  font-size: 20px;
-  line-height: 1.5;
-  color: var(--text-black);
-  text-align: center;
-}
-</style>

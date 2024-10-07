@@ -65,7 +65,9 @@ function handleCancel() {
 
 <template>
   <VOverlay>
-    <VCard class="modal-card">
+    <VCard
+      class="fixed top-1/2 left-1/2 flex flex-col gap-1vh w-72% min-w-px200 max-w-px560 p-8 transform -translate-x-1/2 -translate-y-1/2"
+    >
       <ConfirmDeletePopup
         v-if="showDeletePopup"
         :app-id="props.appId"
@@ -81,18 +83,3 @@ function handleCancel() {
     </VCard>
   </VOverlay>
 </template>
-
-<style scoped>
-.modal-card {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  flex-direction: column;
-  gap: 1vh;
-  width: 72%;
-  min-width: 200px;
-  max-width: 560px;
-  padding: 2em;
-  transform: translate(-50%, -50%);
-}
-</style>

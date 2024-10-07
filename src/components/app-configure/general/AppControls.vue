@@ -17,7 +17,7 @@ const showDeletePopup = ref(false)
       <VButton
         label="DELETE"
         variant="secondary"
-        class="delete-button"
+        class="self-start"
         @click.stop="showDeletePopup = true"
       />
     </SettingCard>
@@ -28,9 +28,3 @@ const showDeletePopup = ref(false)
     />
   </section>
 </template>
-
-<style scoped>
-.delete-button {
-  align-self: flex-start;
-}
-</style>

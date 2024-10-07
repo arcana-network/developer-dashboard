@@ -54,7 +54,7 @@ function handleProceedDeletion() {
 <template>
   <div class="flex flex-col space-y-10">
     <header
-      class="lg:text-[2rem] md:text-[1.25rem] max-[768px]:text-[1.125rem] font-bold flex-1 flex justify-center"
+      class="lg:text-rem2 md:text-rem1.25 max-md:text-rem1.125 font-bold flex-1 flex justify-center"
     >
       <div
         class="text-ellipsis overflow-hidden max-w-full"
@@ -64,21 +64,21 @@ function handleProceedDeletion() {
       </div>
     </header>
     <div
-      class="outer-clock | flex relative items-center self-center justify-center w-[200px] h-[200px] mx-[3em] bg-black rounded-full"
+      class="flex relative items-center self-center justify-center w-px200 h-px200 mx-3em bg-black_solid-default rounded-full"
     >
       <Vue3CircleProgress
         :percent="timerProgressPercentage"
-        fill-color="secondary"
-        empty-color="primary_liquid"
+        fill-color="fairy_dust-default"
+        empty-color="firefly-100"
         :size="200"
       />
       <div
-        class="inner-clock | flex absolute z-[1] items-center justify-center w-[94%] h-[94%] rounded-full"
+        class="flex absolute z-top items-center justify-center w-94% h-94% rounded-full bg-white_solid-default"
       >
-        <span class="lg:text-2xl max-[768px]:text-xl">{{ timerDisplay }}</span>
+        <span class="lg:text-2xl max-md:text-xl">{{ timerDisplay }}</span>
       </div>
     </div>
-    <footer class="flex flex-row items-center justify-center gap-[2vh] flex-1">
+    <footer class="flex flex-row items-center justify-center gap-2vh flex-1">
       <VButton
         v-wave
         variant="secondary"
@@ -94,13 +94,3 @@ function handleProceedDeletion() {
     </footer>
   </div>
 </template>
-
-<style scoped>
-.outer-clock {
-  background: #000;
-}
-
-.inner-clock {
-  background: #fff;
-}
-</style>

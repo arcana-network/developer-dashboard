@@ -9,10 +9,12 @@ const emit = defineEmits(['cancel', 'proceed'])
 
 <template>
   <VOverlay>
-    <div class="popup-container">
-      <VCard class="popup-card">
-        <h3 class="popup-title">Are you sure?</h3>
-        <span class="popup-message">
+    <div class="flex items-center justify-center w-full h-full">
+      <VCard class="flex flex-col items-center w-full max-w-px480 p-8">
+        <h3 class="mb-2 text-px35 text-center">Are you sure?</h3>
+        <span
+          class="max-w-px500 mt-2 mb-10 text-base leading-6 text-center text-white_solid-default"
+        >
           This action will delete your saved card. You'll need to add a card
           again to continue your billing cycle.
         </span>
@@ -20,12 +22,12 @@ const emit = defineEmits(['cancel', 'proceed'])
           <VButton
             variant="secondary"
             label="CANCEL"
-            class="w-[120px]"
+            class="w-px120"
             @click.stop="emit('cancel')"
           />
           <VButton
             label="DELETE"
-            class="w-[120px]"
+            class="w-px120"
             @click.stop="emit('proceed')"
           />
         </VStack>
@@ -33,37 +35,3 @@ const emit = defineEmits(['cancel', 'proceed'])
     </div>
   </VOverlay>
 </template>
-
-<style scoped>
-.popup-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.popup-card {
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 480px;
-  padding: 2rem;
-}
-
-.popup-title {
-  margin-block: 10px;
-  font-size: 35px;
-  text-align: center;
-}
-
-.popup-message {
-  max-width: 500px;
-  margin-top: 10px;
-  margin-bottom: 40px;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-white);
-  text-align: center;
-}
-</style>

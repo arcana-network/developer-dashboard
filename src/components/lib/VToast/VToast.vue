@@ -28,7 +28,9 @@ function handleCloseToast(toastMessage: ToastMessage) {
         :class="toastMessage.type"
       >
         <VStack justify="space-between" align="start" gap="0.5rem">
-          <span class="body-2 font-medium v-toast-message">
+          <span
+            class="body-2 font-medium v-toast-message text-system-deep_black"
+          >
             {{ toastMessage.message }}
           </span>
           <span
@@ -78,10 +80,6 @@ function handleCloseToast(toastMessage: ToastMessage) {
 .v-toast-close:hover,
 .v-toast-close:focus {
   opacity: 0.5;
-}
-
-.v-toast-message {
-  color: var(--dark-theme-bg);
 }
 
 .v-toast-slide-enter-active,

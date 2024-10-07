@@ -185,20 +185,25 @@ function isButtonDisabled() {
             gap="2rem"
             wrap
           >
-            <VStack direction="column" gap="0.75rem" align="start">
+            <VStack
+              direction="column"
+              gap="0.75rem"
+              align="start"
+              class="lg:flex-0 lg:flex-none lg:w-calc-half-minus-rem1"
+            >
               <h4>Storage</h4>
               <VStack gap="1.25rem" wrap class="w-full">
                 <VDropdown
                   v-model="storageLimitKind"
                   :options="userLimitOptions"
-                  class="limits-type-dropdown"
+                  class="min-w-rem12"
                   trigger-class="limits-type-dropdown-trigger"
                   @update:model-value="
                     handleIsUnlimitedChange('storage', $event)
                   "
                 />
                 <VStack direction="column" class="flex-1">
-                  <div class="input-group">
+                  <div class="flex flex-nowrap justify-between w-full">
                     <VTextField
                       id="storage-user-limit"
                       v-model="storageLimit.value"
@@ -207,7 +212,7 @@ function isButtonDisabled() {
                       max="1024"
                       :disabled="storageLimitKind === 'Unlimited'"
                       no-message
-                      class="usage-value-textfield"
+                      class="w-rem8 rounded-tr-none rounded-br-none"
                       placeholder="value"
                       @blur="isEdited = true"
                     />
@@ -215,34 +220,39 @@ function isButtonDisabled() {
                       v-model="storageLimit.unit"
                       :options="storageValues"
                       placeholder="unit"
-                      class="usage-unit-dropdown"
-                      trigger-class="usage-unit-dropdown-trigger"
+                      class="min-w-rem10"
+                      trigger-class="rounded-tl-none rounded-bl-none"
                       :disabled="storageLimitKind === 'Unlimited'"
                     />
                   </div>
                   <div
                     v-show="isEdited && !isLimitValid('storage')"
-                    class="message"
+                    class="max-w-rem16 my-1.25 mx-5 text-rem0.9 font-normal leading-6 text-system-creamy_red"
                   >
                     Invalid value - Value must be in between 1 MB and 99 GB
                   </div>
                 </VStack>
               </VStack>
             </VStack>
-            <VStack direction="column" gap="0.75rem" align="start">
+            <VStack
+              direction="column"
+              gap="0.75rem"
+              align="start"
+              class="lg:flex-0 lg:flex-none lg:w-calc-half-minus-rem1"
+            >
               <h4>Bandwidth</h4>
               <VStack gap="1.25rem" wrap class="w-full">
                 <VDropdown
                   v-model="bandwidthLimitKind"
                   :options="userLimitOptions"
-                  class="limits-type-dropdown"
+                  class="min-w-rem12"
                   trigger-class="limits-type-dropdown-trigger"
                   @update:model-value="
                     handleIsUnlimitedChange('bandwidth', $event)
                   "
                 />
                 <VStack direction="column" class="flex-1">
-                  <div class="input-group">
+                  <div class="flex flex-nowrap justify-between w-full">
                     <VTextField
                       id="bandwidth-user-limit"
                       v-model="bandwidthLimit.value"
@@ -251,7 +261,7 @@ function isButtonDisabled() {
                       max="1024"
                       :disabled="bandwidthLimitKind === 'Unlimited'"
                       no-message
-                      class="usage-value-textfield"
+                      class="w-rem8 rounded-tr-none rounded-br-none"
                       placeholder="value"
                       @blur="isEdited = true"
                     />
@@ -260,15 +270,15 @@ function isButtonDisabled() {
                       :options="bandwidthUnits"
                       display-field="label"
                       placeholder="unit"
-                      class="usage-unit-dropdown"
-                      trigger-class="usage-unit-dropdown-trigger"
+                      class="min-w-rem10"
+                      trigger-class="rounded-tl-none rounded-bl-none"
                       :disabled="bandwidthLimitKind === 'Unlimited'"
                       @update:model-value="updateBandwidthUnit($event)"
                     />
                   </div>
                   <div
                     v-show="isEdited && !isLimitValid('bandwidth')"
-                    class="message"
+                    class="max-w-rem16 my-1.25 mx-5 text-rem0.9 font-normal leading-6 text-system-creamy_red"
                   >
                     Invalid value - Value must be in between 1 MB and 99 GB
                   </div>
@@ -286,50 +296,3 @@ function isButtonDisabled() {
     </SettingCard>
   </section>
 </template>
-
-<style scoped>
-.limits-type-dropdown {
-  min-width: 12rem;
-}
-
-.input-group {
-  flex-wrap: nowrap;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.usage-value-textfield {
-  width: 8rem;
-}
-
-.usage-unit-dropdown {
-  min-width: 10rem;
-}
-
-.message {
-  max-width: 16rem;
-  margin: 5px 20px;
-  font-size: 0.9rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #ee193f;
-}
-
-@media screen and (min-width: 1024px) {
-  .limits-input-container > * {
-    flex: 0 0 calc(50% - 1rem);
-  }
-}
-</style>
-
-<style>
-.usage-unit-dropdown-trigger {
-  border-top-left-radius: 0 !important;
-  border-bottom-left-radius: 0 !important;
-}
-
-.usage-value-textfield > * {
-  border-top-right-radius: 0 !important;
-  border-bottom-right-radius: 0 !important;
-}
-</style>

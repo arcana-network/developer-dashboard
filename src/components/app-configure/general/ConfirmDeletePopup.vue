@@ -15,7 +15,7 @@ const appsStore = useAppsStore()
 
 <template>
   <header
-    class="lg:text-[2rem] md:text-[1.25rem] max-[768px]:text-[1.125rem] font-bold flex-1 flex justify-center"
+    class="lg:text-rem2 md:text-rem1.25 max-md:text-rem1.125 font-bold flex-1 flex justify-center"
   >
     <div
       class="text-ellipsis overflow-hidden max-w-full"
@@ -25,14 +25,14 @@ const appsStore = useAppsStore()
     </div>
   </header>
   <VSeperator />
-  <main class="body-3">
+  <main class="body-3 p-8 text-sm leading-6 text-center">
     Deleting the app will remove all the assets that have been uploaded by your
     application and it's users, remove public and private keys assigned to users
     and any access controls that may have been set.
     <br /><br />
     Please press 'Delete' to confirm this action.
   </main>
-  <footer class="flex sm-column flex-1">
+  <footer class="flex sm-column flex-1 gap-8 items-center justify-center">
     <VButton
       v-wave
       variant="secondary"
@@ -47,18 +47,3 @@ const appsStore = useAppsStore()
     />
   </footer>
 </template>
-
-<style scoped>
-main {
-  padding: 2vw;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  text-align: center;
-}
-
-footer {
-  gap: 2vh;
-  align-items: center;
-  justify-content: center;
-}
-</style>

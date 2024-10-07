@@ -220,63 +220,87 @@ function ellipsisAppName(appName: string) {
 </script>
 
 <template>
-  <aside class="configure-sidebar">
-    <VCard class="configure-sidebar-card">
-      <VStack direction="column" gap="1rem" class="configure-tabs flex-1">
-        <VStack class="apps-name__container relative">
+  <aside class="configure-sidebar w-60 h-full">
+    <VCard
+      class="configure-sidebar-card box-border flex flex-1 flex-col h-full p-8 pb-3 overflow-y-auto rounded-none"
+    >
+      <VStack direction="column" gap="1rem" class="configure-tabs flex-1 mb-8">
+        <VStack
+          class="apps-name__container relative w-full text-left flex flex-col pb-5"
+        >
           <button
-            class="flex space-x-2 justify-between app-name__container cursor-pointer"
+            class="flex space-x-2 justify-between app-name__container cursor-pointer flex items-center p-0 cursor-pointer bg-transparent border-0 outline-none"
             :title="appsStore.app(useAppId()).name"
             @click="showAppsList = !showAppsList"
           >
-            <img :src="getlogo(useAppId())" alt="app logo" class="app-logo" />
+            <img
+              :src="getlogo(useAppId())"
+              alt="app logo"
+              class="app-logo w-8 h-8"
+            />
             <label
-              class="text-ellipsis text-black font-bold text-2xl overflow-hidden"
+              class="text-ellipsis text-black_solid-default font-bold text-2xl overflow-hidden"
               >{{ ellipsisAppName(appsStore.app(useAppId()).name) }}</label
             >
             <img
               :src="arrowIcon"
               alt="arrow-icon"
-              class="arrow-icon"
+              class="arrow-icon w-px18 h-px18 ml-1 opacity-50 transition ease-in-out duration-500"
               :class="{
-                'arrow-icon--active': showAppsList,
+                'arrow-icon--active opacity-100 transition ease-in-out duration-500 transform rotate-180':
+                  showAppsList,
               }"
             />
           </button>
-          <VCard v-if="showAppsList" class="apps-name__list-container absolute">
+          <VCard
+            v-if="showAppsList"
+            class="apps-name__list-container border absolute top-0 right-rem-1 left-0 z-full-overlay flex flex-col gap-5 p-5 border-system-light_gray"
+          >
             <button
-              class="apps-name__close-btn"
+              class="apps-name__close-btn absolute top-2.5 right-2.5 cursor-pointer bg-transparent border-0 outline-none"
               @click.stop="showAppsList = false"
             >
-              <img :src="CloseIcon" alt="close" />
+              <img :src="CloseIcon" alt="close" class="w-px15" />
             </button>
             <VCardButton
               v-for="app in apps"
               :key="app.name"
-              class="apps-name__list-item"
+              class="apps-name__list-item flex gap-2 items-center justify-start p-0 mt-2.5 bg-transparent border-0 outline-none"
               :class="{ 'active-app': useAppId() === app.id }"
               @click="onAppClick(app.id)"
             >
-              <img :src="getlogo(app.id)" alt="app logo" class="app-logo" />
-              <span class="app-name text-ellipsis overflow-hidden">{{
-                app.name
-              }}</span>
+              <img
+                :src="getlogo(app.id)"
+                alt="app logo"
+                class="app-logo w-8 h-8 space-x-px5"
+              />
+              <span
+                class="app-name text-base font-normal leading-6 text-left text-ellipsis overflow-hidden text-black_solid-default hover:text-fairy_dust-default space-x-px5"
+                >{{ app.name }}</span
+              >
             </VCardButton>
-            <VSeperator class="app-full-bleed" />
+            <VSeperator
+              class="app-full-bleed w-calc-full-add-rem2.5 mx--rem1.25"
+            />
             <VCardButton
-              class="apps-name__list-item"
+              class="apps-name__list-item flex gap-2 items-center justify-start p-0 mt-2.5 bg-transparent border-0 outline-none"
               @click="router.push({ name: 'ManageApps' })"
             >
               <img
                 src="@/assets/iconography/manage.svg"
                 alt="manage apps"
-                class="app-icon"
+                class="app-icon w-6 h-6 p-1 space-x-px5"
               />
-              <span class="app-name text-ellipsis">Manage Apps</span>
+              <span
+                class="app-name text-base font-normal leading-6 text-left text-ellipsis hover:text-fairy_dust-default space-x-px5"
+                >Manage Apps</span
+              >
             </VCardButton>
           </VCard>
         </VStack>
-        <VSeperator class="full-bleed" />
+        <VSeperator
+          class="full-bleed w-calc-full-add-rem4 mx--rem2 w-full text-left"
+        />
         <VCardButton
           v-for="tab in ConfigureTabs"
           :key="`configure-sidebar-tab-${tab.type}`"
@@ -284,42 +308,78 @@ function ellipsisAppName(appName: string) {
             'active-tab':
               props.currentTab === tab.label || hasSubMenuSelected(tab.label),
           }"
-          class="sidebar__option"
+          class="sidebar__option w-full text-left flex flex-col gap-4 items-start justify-start py-2"
           @click.stop="onClickOfMenu(tab)"
         >
-          <div class="sidebar__option-item">
-            <img :src="tab.icon" alt="icon" class="sidebar__option-icon" />
+          <div
+            class="sidebar__option-item flex flex-row gap-4 items-start justify-center hover:custom-filter"
+          >
+            <img
+              :src="tab.icon"
+              alt="icon"
+              class="sidebar__option-icon custom-sidebar-filter"
+              :class="{
+                'custom-submenu-filter':
+                  props.currentTab === tab.label ||
+                  hasSubMenuSelected(tab.label),
+              }"
+            />
             <VStack gap="0.5rem" align="center">
-              <span class="tab-label">{{ tab.label }}</span>
+              <span
+                :class="[
+                  'tab-label text-base font-normal leading-6 text-left',
+                  props.currentTab === tab.label ||
+                  hasSubMenuSelected(tab.label)
+                    ? 'text-black_solid-default'
+                    : 'text-whitemist-400',
+                ]"
+                >{{ tab.label }}</span
+              >
               <img
                 v-if="tab.subMenu"
                 :src="arrowIcon"
                 alt="arrow-icon"
-                class="arrow-icon"
+                class="arrow-icon w-px18 h-px18 ml-1 opacity-50 transition ease-in-out duration-500"
                 :class="{
-                  'arrow-icon--active': showConfigureSubmenu,
+                  'arrow-icon--active opacity-100 transition ease-in-out duration-500 transform rotate-180':
+                    showConfigureSubmenu,
                 }"
               />
             </VStack>
           </div>
           <div
             v-if="tab.subMenu && showConfigureSubmenu"
-            class="sidebar__submenu | space-y-3"
+            class="sidebar__submenu | space-y-3 flex flex-col items-baseline justify-center mt-2 ml-5"
           >
             <div v-for="subTab in tab.subMenu" :key="subTab.label">
               <VCardButton
-                class="sidebar__submenu-option"
+                class="sidebar__submenu-option relative p-0 hover:custom-filter"
                 :class="{ 'submenu-active': isSubmenuSelected(subTab.label) }"
                 @click.stop="onClickOfMenu(subTab)"
               >
                 <div class="gap-3 flex flex-col">
-                  <div class="sidebar__submenu-option-item">
+                  <div
+                    class="sidebar__submenu-option-item flex flex-row gap-3 items-start"
+                  >
                     <img
                       :src="subTab.icon"
                       alt="icon"
-                      class="sidebar__submenu-option-icon"
+                      class="sidebar__submenu-option-icon custom-sidebar-filter"
+                      :class="{
+                        'custom-submenu-filter': isSubmenuSelected(
+                          subTab.label
+                        ),
+                      }"
                     />
-                    <span class="submenu-tab-label">{{ subTab.label }}</span>
+                    <span
+                      :class="[
+                        'submenu-tab-label text-base font-normal leading-6 text-left',
+                        isSubmenuSelected(subTab.label)
+                          ? 'text-black_solid-default'
+                          : 'text-whitemist-400',
+                      ]"
+                      >{{ subTab.label }}</span
+                    >
                   </div>
                 </div>
               </VCardButton>
@@ -330,249 +390,3 @@ function ellipsisAppName(appName: string) {
     </VCard>
   </aside>
 </template>
-
-<style scoped>
-.logo {
-  display: flex;
-  justify-content: flex-start;
-  padding: 0;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  outline: none;
-  transition: opacity 0.3s;
-}
-
-.app-logo {
-  width: 2rem;
-  height: 2rem;
-}
-
-.app-full-bleed {
-  width: calc(100% + 2.5rem);
-  margin-inline: -1.25rem;
-}
-
-.app-icon {
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 0.25rem;
-}
-
-.configure-sidebar {
-  width: 15rem;
-  height: 100%;
-}
-
-.full-bleed {
-  width: calc(100% + 4rem) !important;
-  margin-inline: -2rem;
-}
-
-.configure-sidebar-card {
-  box-sizing: border-box;
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  height: 100%;
-  padding: 2rem;
-  padding-bottom: 0.75rem;
-  overflow-y: auto;
-  border-radius: 0;
-}
-
-.configure-tabs > * {
-  width: 100%;
-  text-align: left;
-}
-
-.configure-tabs {
-  margin-bottom: 2rem;
-}
-
-.sidebar__option {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: flex-start;
-  justify-content: flex-start;
-  padding: 0.5rem 0 !important;
-}
-
-.sidebar__option-item {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-  align-items: flex-start;
-  justify-content: center;
-}
-
-.sidebar__submenu {
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  justify-content: center;
-  margin-top: 0.5rem;
-  margin-left: 1.25rem;
-}
-
-.sidebar__submenu-option {
-  position: relative;
-  padding: 0 !important;
-}
-
-.sidebar__submenu-option-item {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  align-items: start;
-}
-
-.arrow-icon {
-  width: 18px;
-  height: 18px;
-  margin-left: 4px;
-  opacity: 0.5;
-  transition: ease 0.5s;
-}
-
-.arrow-icon--active {
-  opacity: 1;
-  transition: ease 0.5s;
-  transform: rotate(-180deg);
-}
-
-.strong {
-  font-weight: 600 !important;
-}
-
-.apps-name__container {
-  display: flex;
-  flex-direction: column;
-  padding-bottom: 20px;
-}
-
-.apps-name__list-container {
-  top: 0;
-  right: -1rem;
-  left: 0;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding: 1.25rem;
-  border: 1px solid var(--primary-liquid-border);
-}
-
-.apps-name__close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-
-.apps-name__close-btn > img {
-  width: 15px;
-}
-
-.apps-name__list-item {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0 !important;
-  margin-top: 10px;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-
-.selected-app,
-.tab-label,
-.app-name,
-.submenu-tab-label {
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #989898;
-  text-align: left;
-}
-
-.active-app .app-name {
-  color: var(--primary-black);
-}
-
-.apps-name__list-item .app-name:hover {
-  color: var(--secondary);
-}
-
-.app-name__container {
-  display: flex;
-  align-items: center;
-  padding: 0;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
-.apps-name__list-item * + * {
-  margin-left: 5px;
-}
-
-.active-tab .tab-label {
-  color: var(--primary-black);
-}
-
-.submenu-active .submenu-tab-label {
-  color: var(--primary-black);
-}
-
-.sidebar__option-icon {
-  filter: brightness(0) saturate(100%) invert(71%) sepia(5%) saturate(24%)
-    hue-rotate(340deg) brightness(85%) contrast(91%);
-}
-
-.sidebar__option-item:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
-.sidebar__submenu-option:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
-.sidebar__submenu-option-icon {
-  filter: brightness(0) saturate(100%) invert(71%) sepia(5%) saturate(24%)
-    hue-rotate(340deg) brightness(85%) contrast(91%);
-}
-
-.active-tab .sidebar__option-icon {
-  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7494%)
-    hue-rotate(212deg) brightness(89%) contrast(100%);
-}
-
-.submenu-active .sidebar__submenu-option-icon {
-  filter: brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7494%)
-    hue-rotate(212deg) brightness(89%) contrast(100%);
-}
-
-.social-icon {
-  width: 1.25rem;
-  vertical-align: middle;
-}
-
-@media only screen and (max-width: 767px) {
-  .social-icon {
-    width: 1rem;
-  }
-
-  .configure-sidebar {
-    width: 100%;
-  }
-}
-</style>

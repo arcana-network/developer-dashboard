@@ -58,7 +58,7 @@ function areRequiredFieldsFilled(verifier: string) {
 
 <template>
   <div
-    class="w-32 h-full py-4 space-y-4 rounded-xl bg-liquidlight flex flex-col justify-around items-center"
+    class="w-32 h-full py-4 space-y-4 rounded-xl bg-whitemist-default flex flex-col justify-around items-center"
   >
     <div
       v-for="provider in providers"
@@ -68,7 +68,7 @@ function areRequiredFieldsFilled(verifier: string) {
       <button
         class="border-2 bg-white cursor-pointer w-14 h-14 rounded-full flex items-center justify-center"
         :class="{
-          'border-pink': isSelected(provider.verifier),
+          'border-fairy_dust-default': isSelected(provider.verifier),
           grayscale: !areRequiredFieldsFilled(provider.verifier),
         }"
         @click.prevent="selectProvider(provider.verifier)"
@@ -80,8 +80,8 @@ function areRequiredFieldsFilled(verifier: string) {
         />
       </button>
       <span
-        class="text-xs text-black"
-        :class="{ 'text-pink': isSelected(provider.verifier) }"
+        class="text-xs text-black_solid-default"
+        :class="{ 'text-fairy_dust-default': isSelected(provider.verifier) }"
         >{{ provider.name }}</span
       >
     </div>

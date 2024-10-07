@@ -274,7 +274,7 @@ watch(
   <div class="bg-white rounded-xl space-y-5">
     <div>
       <div
-        class="flex items-center justify-between border-b border-liquidgrey p-7"
+        class="flex items-center justify-between border-b border-system-light_gray p-7"
       >
         <h3>Custom OAuth</h3>
         <div v-if="fetchedData.name" class="flex items-center space-x-2">
@@ -297,7 +297,7 @@ watch(
         <a
           :href="LEARN_MORE_LINK"
           target="_blank"
-          class="no-underline uppercase text-black text-sm font-bold"
+          class="no-underline uppercase text-black_solid-default text-sm font-bold"
           >Learn More</a
         >
       </p>
@@ -317,7 +317,9 @@ watch(
                 name="idParam"
                 value="sub"
               />
-              <label class="text-black font-normal text-left" for="sub"
+              <label
+                class="text-black_solid-default font-normal text-left"
+                for="sub"
                 >Sub</label
               >
             </div>
@@ -329,7 +331,9 @@ watch(
                 name="idParam"
                 value="email"
               />
-              <label class="text-black font-normal" for="email">Email</label>
+              <label class="text-black_solid-default font-normal" for="email"
+                >Email</label
+              >
             </div>
             <div class="flex flex-row -space-x-2">
               <VRadioSecondary
@@ -339,7 +343,9 @@ watch(
                 name="idParam"
                 value="custom"
               />
-              <label class="text-black font-normal" for="custom">Custom</label>
+              <label class="text-black_solid-default font-normal" for="custom"
+                >Custom</label
+              >
             </div>
           </div>
           <div>
@@ -348,7 +354,7 @@ watch(
               v-model="idParam"
               type="text"
               name="idParam"
-              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black_solid-default bg-whitemist-default p-2 rounded-md outline-none w-full"
             />
           </div>
         </fieldset>
@@ -356,12 +362,12 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
               <span>JWKS URL</span>
-              <span class="text-liquidred text-lg">*</span>
+              <span class="text-system-deep_red text-lg">*</span>
             </legend>
             <a
               :href="WHATS_JWKS_URL_LINK"
               target="_blank"
-              class="text-xs no-underline text-black font-normal"
+              class="text-xs no-underline text-black_solid-default font-normal"
               >What is a JWKS Endpoint?</a
             >
           </div>
@@ -371,7 +377,7 @@ watch(
               v-model="jwkUrl"
               type="text"
               name="validation"
-              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black_solid-default bg-whitemist-default p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -379,7 +385,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
               <span>Issuer</span>
-              <span class="text-liquidred text-lg">*</span>
+              <span class="text-system-deep_red text-lg">*</span>
             </legend>
           </div>
           <div class="w-full">
@@ -388,7 +394,7 @@ watch(
               v-model="issuer"
               type="text"
               name="Issuer"
-              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black_solid-default bg-whitemist-default p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -396,7 +402,7 @@ watch(
           <div class="flex w-full justify-between">
             <legend class="text-[#8D8D8D] text-xs font-normal">
               <span>Audience</span>
-              <span class="text-liquidred text-lg">*</span>
+              <span class="text-system-deep_red text-lg">*</span>
             </legend>
           </div>
           <div class="w-full">
@@ -405,7 +411,7 @@ watch(
               v-model="audience"
               type="text"
               name="audience"
-              class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+              class="text-black_solid-default bg-whitemist-default p-2 rounded-md outline-none w-full"
             />
           </div>
         </div>
@@ -413,13 +419,13 @@ watch(
       <div class="flex flex-col flex-1 space-y-5 ml-10 align-bottom">
         <div class="flex flex-col space-y-2">
           <div class="flex w-full justify-between">
-            <legend class="text-liquiddark text-xs font-normal">
+            <legend class="text-system-grey text-xs font-normal">
               JWK Validation (Optional)
             </legend>
             <a
               :href="WHATS_JWK_VALIDATION_LINK"
               target="_blank"
-              class="text-xs no-underline text-black font-normal"
+              class="text-xs no-underline text-black_solid-default font-normal"
               >What are Validation fields?</a
             >
           </div>
@@ -435,7 +441,7 @@ watch(
                 name="validation"
                 :value="item.field"
                 :onInput="($event) => onFieldChange($event, idx)"
-                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+                class="text-black_solid-default bg-whitemist-default p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 flex-1">
@@ -445,20 +451,20 @@ watch(
                 name="validation"
                 :value="item.value"
                 :onInput="($event) => onValueChange($event, idx)"
-                class="text-black bg-liquidlight p-2 rounded-md outline-none w-full"
+                class="text-black_solid-default bg-whitemist-default p-2 rounded-md outline-none w-full"
               />
             </div>
             <div class="ml-2 w-7 h-7">
               <button
                 v-if="showDeleteButton(idx)"
-                class="text-black flex items-center w-7 h-7"
+                class="text-black_solid-default flex items-center w-7 h-7"
                 @click="removeValidationField(idx)"
               >
                 <img :src="DeleteIcon" alt="Add Chain" class="w-7 h-7" />
               </button>
               <button
                 v-else-if="idx < 2"
-                class="text-black flex items-center w-7 h-7"
+                class="text-black_solid-default flex items-center w-7 h-7"
                 @click="addValidationField"
               >
                 <img :src="PlusIcon" alt="Add Chain" class="w-7 h-7" />

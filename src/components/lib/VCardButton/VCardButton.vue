@@ -24,7 +24,7 @@ defineProps({
 
 <style scoped>
 .card-button {
-  padding: 0.8em 1.6em;
+  /* padding: 0.8em 1.6em; */
   font-size: 1em;
   font-weight: 400;
   color: #8d8d8d;

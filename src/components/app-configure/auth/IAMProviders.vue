@@ -146,21 +146,21 @@ const areRequiredFieldsFilled = computed(() => {
 <template>
   <div class="bg-white rounded-xl space-y-7">
     <div>
-      <h3 class="p-7 border-b-[1px] border-liquidgrey">
+      <h3 class="p-7 border-b-[1px] border-system-light_gray">
         Identity Access Managers
       </h3>
-      <p class="text-liquiddark text-sm font-normal p-3.5">
+      <p class="text-system-grey text-sm font-normal p-3.5">
         Increase adoption of your app by enabling this option. Arcana will take
         care of issuing public and prviate keys to each user through our
         Decentralised Key Generation (DKG) mechanism and keep them secure.
         <a
           :href="LEARN_MORE_LINK"
           target="_blank"
-          class="no-underline uppercase text-black text-sm font-bold"
+          class="no-underline uppercase text-black_solid-default text-sm font-bold"
           >Learn More</a
         >
       </p>
-      <p class="text-liquidaqua text-sm font-normal px-3.5 animate-pulse">
+      <p class="text-system-blue text-sm font-normal px-3.5 animate-pulse">
         {{ selectedAuthProvider.note }}
       </p>
     </div>
