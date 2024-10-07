@@ -30,7 +30,7 @@ function getNotificationsTime(timeStamp) {
         >
           {{ notification.data }}
         </p>
-        <p class="text-xs font-normal text-liquiddark">
+        <p class="text-xs font-normal text-system-grey">
           {{ getNotificationsTime(notification.time) }}
         </p>
       </div>
@@ -43,6 +43,6 @@ function getNotificationsTime(timeStamp) {
     </li>
   </ul>
   <div v-else class="p-2.5">
-    <p class="w-full text-center text-black">No Notifications</p>
+    <p class="w-full text-center text-black_solid-default">No Notifications</p>
   </div>
 </template>

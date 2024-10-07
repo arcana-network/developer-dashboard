@@ -98,28 +98,29 @@ async function handleSubmit() {
 
 <template>
   <VOverlay>
-    <div class="overlay-content">
-      <VCard class="verification-form-card relative">
+    <div class="py-8">
+      <VCard
+        class="relative w-full max-w-px600 h-calc-full-minus-rem4 mx-auto overflow-x-hidden overflow-y-scroll"
+      >
         <img
           src="@/assets/iconography/close.svg"
-          class="absolute cursor-pointer"
-          style="top: 1.25rem; right: 1.25rem; width: 1.25rem"
+          class="absolute cursor-pointer top-5 right-5 w-5"
           @click.stop="emit('close')"
         />
         <VStack direction="column" align="center">
-          <h3 class="verification-title">Verification Form</h3>
-          <div class="verification-description" style="text-align: center">
+          <h3 class="mt-8 mb-2 text-2xl font-bold">Verification Form</h3>
+          <div class="px-rem4.25 mb-8 text-base leading-6 text-center">
             Fill up this verification form to register your application on
             {{ NetworkName.mainnet }} and enable the Global keys feature. For
             assistance,&nbsp;
-            <a href="mailto:support@arcana.network">contact support</a>.
+            <a
+              href="mailto:support@arcana.network"
+              class="text-base font-normal leading-6 no-underline text-cornflower_blue-default"
+              >contact support</a
+            >.
           </div>
-          <form @submit.prevent="handleSubmit">
-            <VStack
-              direction="column"
-              gap="1.25rem"
-              style="padding-inline: 3rem"
-            >
+          <form class="w-full" @submit.prevent="handleSubmit">
+            <VStack direction="column" gap="1.25rem" class="px-12">
               <VTextField
                 v-model="formData.companyName"
                 label="Company Name"
@@ -169,22 +170,32 @@ async function handleSubmit() {
                 no-message
                 placeholder="Ex: aspire.com"
               />
-              <div class="form-group" aria-label="Form group">
-                <label for="description"> Project Description </label>
-                <div class="text-field">
+              <div class="inline-flex flex-col" aria-label="Form group">
+                <label
+                  for="description"
+                  class="mb-2 ml-1 text-base font-normal leading-6 text-black_solid-default"
+                >
+                  Project Description
+                </label>
+                <div
+                  class="flex rounded-px10 bg-firefly-default focus:outline focus:outline-cornflower_blue-default focus:outline-1"
+                >
                   <textarea
                     v-model="formData.projectDescription"
                     placeholder="Less than 160 words"
                     rows="4"
+                    class="w-full p-0 my-3.5 mx-4 text-base leading-6 resize-none bg-transparent border-0 outline-none shadow-none placeholder:text-system-grey text-black_solid-default placeholder:text-base placeholder:leading-6"
                   ></textarea>
                 </div>
               </div>
-              <div v-show="error.trim()" class="error">{{ error }}</div>
+              <div
+                v-show="error.trim()"
+                class="text-base leading-6 text-system-red"
+              >
+                {{ error }}
+              </div>
             </VStack>
-            <VStack
-              gap="1.25rem"
-              style="justify-content: center; margin-block: 2rem"
-            >
+            <VStack gap="1.25rem" class="flex justify-center mb-8">
               <VButton
                 variant="secondary"
                 label="CANCEL"
@@ -198,96 +209,3 @@ async function handleSubmit() {
     </div>
   </VOverlay>
 </template>
-
-<style scoped>
-.overlay-content {
-  padding-block: 2rem;
-}
-
-.verification-form-card {
-  width: 100%;
-  max-width: 600px;
-  height: calc(100vh - 4rem);
-  margin: auto;
-  overflow-x: hidden;
-  overflow-y: scroll;
-}
-
-form {
-  width: 100%;
-}
-
-div.form-group {
-  display: inline-flex;
-  flex-direction: column;
-}
-
-label {
-  margin-bottom: 0.5rem;
-  margin-left: 0.25rem;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5em;
-  color: var(--text-black);
-}
-
-div.text-field {
-  display: flex;
-  background: var(--primary-liquid);
-  border-radius: 10px;
-}
-
-.text-field.focused {
-  outline: 1px solid var(--primary);
-}
-
-textarea {
-  width: 100%;
-  padding: 0;
-  margin: 0.875rem 1rem;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-black);
-  resize: none;
-  background: transparent;
-  border: none;
-  outline: none;
-  box-shadow: none;
-
-  --webkit-outline: none;
-}
-
-textarea::placeholder {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-grey);
-}
-
-.verification-title {
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-  font-size: 2rem;
-  font-weight: 700;
-}
-
-.verification-description {
-  padding-inline: 4.25rem;
-  margin-bottom: 2rem;
-  font-size: 1rem;
-  line-height: 1.5;
-}
-
-.verification-description a {
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: var(--primary);
-  text-decoration: none;
-}
-
-.error {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--color-red);
-}
-</style>

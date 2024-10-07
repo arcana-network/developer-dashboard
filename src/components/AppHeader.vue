@@ -96,10 +96,19 @@ function toggleNotifications() {
 </script>
 
 <template>
-  <section class="header-section" :class="hideHeader ? 'hide-header' : ''">
+  <section
+    class="sticky top-0 z-mid-overlayTop w-full border-b border-system-light_gray transition-transform duration-400"
+    :class="hideHeader ? 'transform -translate-y-full' : ''"
+  >
     <AppBanner />
-    <header class="flex" :class="{ container: props.container }">
-      <div class="logo" @click.stop="onLogoClick">
+    <header
+      class="flex relative justify-between p-6 px-8 visible transition-transform duration-600 bg-white_solid-default"
+      :class="{ container: props.container }"
+    >
+      <div
+        class="cursor-pointer transition-opacity duration-300 hover:opacity-60"
+        @click.stop="onLogoClick"
+      >
         <img :src="ArcanaLogo" alt="Arcana Logo" />
       </div>
       <VStack
@@ -108,19 +117,26 @@ function toggleNotifications() {
         gap="1rem"
       >
         <div id="help_menu" ref="help_menu" class="relative flex">
-          <button class="help-button" @click.stop="toggleHelpMenu">Help</button>
-          <VCard v-if="showHelpMenu" class="help-menu-items absolute">
-            <ul style="margin: 0">
+          <button
+            class="cursor-pointer bg-transparent border-none outline-none text-black_solid-default hover:text-fairy_dust-default"
+            @click.stop="toggleHelpMenu"
+          >
+            Help
+          </button>
+          <VCard
+            v-if="showHelpMenu"
+            class="absolute top-calc-full-add-rem75 right-0 z-mid-overlay flex flex-col items-center w-px200 p-0 pt-rem1.25 border border-system-light_gray text-black_solid-default"
+          >
+            <ul class="m-0 p-0 text-black_solid-default">
               <li
                 v-for="helpItem in HelpItems"
                 :key="helpItem.label"
-                class="cursor-pointer help-menu-item"
+                class="cursor-pointer w-full px-4 pb-4 whitespace-nowrap list-none text-black_solid-default"
                 @click.stop="showHelpMenu = false"
               >
                 <a
                   :href="helpItem.link"
-                  class="flex text-black no-underline font-normal"
-                  style="gap: 0.75rem"
+                  class="flex text-black_solid-default no-underline font-normal gap-3 hover:custom-filter"
                   target="_blank"
                 >
                   <img :src="helpItem.icon" />
@@ -130,7 +146,7 @@ function toggleNotifications() {
             </ul>
           </VCard>
         </div>
-        <div ref="notification_menu" class="notification-container flex">
+        <div ref="notification_menu" class="relative flex max-md:relative">
           <NotificationIcon
             class="notification-icon"
             @click="toggleNotifications"
@@ -143,30 +159,31 @@ function toggleNotifications() {
         <div id="profile_menu" ref="profile_menu" class="relative flex">
           <img
             src="@/assets/iconography/profile.svg"
-            class="cursor-pointer profile-icon"
+            class="cursor-pointer hover:custom-filter"
             @click.stop="toggleProfileMenu"
           />
-          <VCard v-if="showProfileMenu" class="help-menu-items absolute">
-            <ul style="margin: 0">
+          <VCard
+            v-if="showProfileMenu"
+            class="absolute top-calc-full-add-rem75 right-0 z-mid-overlay flex flex-col items-center w-px200 p-0 pt-rem1.25 border border-system-light_gray text-black_solid-default"
+          >
+            <ul class="m-0 p-0 text-black_solid-default">
               <li
                 v-for="profileItem in ProfileItems"
                 :key="profileItem.label"
-                class="cursor-pointer help-menu-item"
+                class="cursor-pointer w-full px-4 pb-4 whitespace-nowrap list-none text-black_solid-default"
                 @click.stop="showProfileMenu = false"
               >
                 <RouterLink
                   :to="{
                     name: `App${profileItem.label}`,
                   }"
-                  class="flex text-black no-underline font-normal help-menu-router"
-                  style="gap: 0.75rem"
+                  class="flex text-black_solid-default no-underline font-normal gap-3 hover:custom-filter"
                   ><img :src="profileItem.icon" />
                   <span>{{ profileItem.label }} </span></RouterLink
                 >
               </li>
               <li
-                class="cursor-pointer help-menu-item"
-                style="margin-top: 0.5rem"
+                class="cursor-pointer w-full px-4 pb-4 whitespace-nowrap list-none text-black_solid-default mt-2"
               >
                 <VButton
                   label="LOGOUT"
@@ -181,114 +198,3 @@ function toggleNotifications() {
     </header>
   </section>
 </template>
-
-<style scoped>
-.header-section {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  width: 100%;
-  border-bottom: #d9d9d9 1px solid;
-  transition: transform 0.4s;
-}
-
-header {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  padding: 1.5rem 2rem;
-  visibility: visible;
-  background: var(--primary-light);
-  transition: transform 0.6s;
-}
-
-.notification-container {
-  position: relative;
-}
-
-.mobile-menu-icon-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  margin-right: 1rem;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-
-.hide-header {
-  transform: translateY(-100%);
-}
-
-.logo {
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.logo:hover {
-  opacity: 0.6;
-}
-
-.help-button {
-  color: var(--primary-black);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
-.help-button:hover {
-  color: var(--secondary);
-}
-
-.help-menu-items {
-  top: calc(100% + 0.75rem);
-  right: 0;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;
-  padding: 0;
-  padding-top: 1.25rem;
-  color: var(--primary-black);
-  border: #d9d9d9 1px solid;
-}
-
-.help-menu-items ul {
-  padding: 0;
-  color: var(--primary-black);
-}
-
-.help-menu-item {
-  width: 100%;
-  padding-inline: 1rem;
-  padding-bottom: 1rem;
-  color: var(--primary-black);
-  white-space: nowrap;
-  list-style: none;
-}
-
-.help-menu-router:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
-.help-menu-items a:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
-.profile-icon:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
-@media only screen and (max-width: 767px) {
-  .notification-container {
-    position: inherit;
-  }
-}
-</style>

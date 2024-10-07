@@ -76,7 +76,7 @@ const loadingColor = computed(() => {
     <v-circular-progress
       v-if="loading"
       :color="loadingColor"
-      style="top: 5%; left: calc(50% - 1.5em); transform: translate(-50%, -50%)"
+      class="absolute top-[5%] left-1/2 transform -translate-x-1/2 -translate-y-1/2 custom-left-offset"
     />
   </button>
   <a
@@ -173,6 +173,10 @@ progress {
   position: absolute;
   left: 0;
   margin: auto;
+}
+
+.custom-left-offset {
+  left: calc(50% - 1.5em);
 }
 
 @media only screen and (max-width: 1023px) {

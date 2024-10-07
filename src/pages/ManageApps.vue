@@ -163,32 +163,43 @@ function ellipsisAppName(appName: string) {
       v-if="accountStatus !== 'active'"
       :status="accountStatus"
     />
-    <main>
-      <VStack direction="column" gap="2rem" class="container">
+    <main class="pt-4 pb-16">
+      <VStack
+        direction="column"
+        gap="2rem"
+        class="container w-auto max-w-full mx-8"
+      >
         <VStack gap="2rem">
           <h1 class="tracking-h1">Manage Apps</h1>
         </VStack>
         <VStack gap="1.25rem" md-direction="column" sm-direction="column">
-          <VCard class="info-card">
+          <VCard
+            class="info-card flex flex-wrap justify-evenly w-full pb-8 bg-white_solid-default"
+          >
             <VStack direction="column" gap="1.5rem" class="flex-grow">
               <VStack gap="1rem" align="center">
-                <h2 class="info-title">Monthly Active Users</h2>
+                <h2
+                  class="info-title mt-8 ml-8 leading-6 text-black_solid-default"
+                >
+                  Monthly Active Users
+                </h2>
                 <VTooltip
                   v-if="hasDeleteApps"
                   title="If there is a discrepancy in aggregate billing please check billing section for further details as you may have deleted apps."
                 >
                   <img
                     src="@/assets/iconography/info-circle-outline.svg"
-                    style="margin-top: 2rem; cursor: pointer"
+                    class="mt-8 cursor-pointer"
                   />
                 </VTooltip>
               </VStack>
-              <VSeperator class="info-separator" />
-              <VStack gap="0.25rem" class="info-margin">
+              <VSeperator class="info-separator m-0 border-t border-gray-300" />
+              <VStack gap="0.25rem" class="info-margin mx-8">
                 <VStack
                   direction="column"
-                  gap="0.75rem"
-                  :style="{ width: `${freeMausWidth}%`, overflow: 'visible' }"
+                  gap="1.75rem"
+                  class="overflow-visible"
+                  :style="{ width: `${freeMausWidth}%` }"
                 >
                   <VStack
                     gap="0.25rem"
@@ -196,10 +207,13 @@ function ellipsisAppName(appName: string) {
                     align="end"
                     sm-align="start"
                   >
-                    <span class="info-detail">{{ freeMausUsed }}</span>
+                    <span
+                      class="info-detail -mb-3 text-rem2.5 font-normal leading-6 text-black_solid-default"
+                      >{{ freeMausUsed }}</span
+                    >
                   </VStack>
                   <VProgressBar
-                    class="info-progress"
+                    class="info-progress w-full !h-px10"
                     :percentage="percentageFreeMaus"
                     state="success"
                   />
@@ -207,10 +221,10 @@ function ellipsisAppName(appName: string) {
                 <VStack
                   v-if="paidMausUsed > 0"
                   direction="column"
-                  gap="0.75rem"
+                  gap="1.75rem"
                   align="start"
-                  :style="{ width: `${paidMausWidth}%`, overflow: 'visible' }"
-                  class="text-ellipsis"
+                  :style="{ width: `${paidMausWidth}%` }"
+                  class="text-ellipsis overflow-visible"
                 >
                   <VStack
                     gap="0.25rem"
@@ -218,42 +232,56 @@ function ellipsisAppName(appName: string) {
                     align="end"
                     sm-align="start"
                   >
-                    <span class="info-detail">{{ paidMausUsed }}</span>
+                    <span
+                      class="info-detail -mb-3 text-rem2.5 font-normal leading-6 text-black_solid-default"
+                      >{{ paidMausUsed }}</span
+                    >
                   </VStack>
                   <VProgressBar
-                    class="info-progress"
-                    style="min-width: 0"
+                    class="info-progress w-full !h-px10 min-w-0"
                     :percentage="100"
                   />
                 </VStack>
               </VStack>
-              <VStack class="flex-grow info-margin justify-end">
+              <VStack class="flex-grow info-margin mx-8 justify-end">
                 <VStack gap="1.25rem" sm-direction="column">
                   <VStack gap="0.5rem" align="center">
                     <div
-                      class="legend-dot"
-                      style="background-color: var(--color-green)"
+                      class="legend-dot w-px10 h-px10 rounded-full bg-system-green"
                     ></div>
-                    <span class="info-detail-name">Free users</span>
+                    <span
+                      class="info-detail-name text-rem1 leading-1.5 text-black_solid-default"
+                      >Free users</span
+                    >
                   </VStack>
                   <VStack gap="0.5rem" align="center">
                     <div
-                      class="legend-dot"
-                      style="background-color: var(--primary)"
+                      class="legend-dot w-px10 h-px10 rounded-full bg-cornflower_blue-default"
                     ></div>
-                    <span class="info-detail-name">Paid users</span>
+                    <span
+                      class="info-detail-name text-rem1 leading-1.5 text-black_solid-default"
+                      >Paid users</span
+                    >
                   </VStack>
                 </VStack>
               </VStack>
             </VStack>
           </VCard>
-          <VCard class="info-card">
+          <VCard
+            class="info-card flex flex-wrap justify-evenly w-full pb-8 bg-white_solid-default"
+          >
             <VStack direction="column" gap="1.5rem" class="flex-grow">
-              <h2 class="info-title">Estimated Cost</h2>
-              <VSeperator class="info-separator" />
-              <VStack gap="1rem" class="info-margin">
-                <span class="info-detail">Due:</span>
-                <span class="info-detail info-amount"
+              <h2 class="info-title mt-8 ml-8 leading-6 text-black">
+                Estimated Cost
+              </h2>
+              <VSeperator class="info-separator m-0 border-t border-gray-300" />
+              <VStack gap="1rem" class="info-margin mx-8">
+                <span
+                  class="info-detail -mb-3 text-rem2.5 font-normal leading-6 text-black_solid-default"
+                  >Due:</span
+                >
+                <span
+                  class="info-detail -mb-3 text-rem2.5 font-normal leading-6 text-black_solid-default info-amount text-system-deep_red"
                   >${{ estimatedCost }}</span
                 >
               </VStack>
@@ -263,12 +291,12 @@ function ellipsisAppName(appName: string) {
         <VStack gap="1.25rem" sm-justify="center" wrap>
           <VCard
             variant="depressed"
-            class="w-[19rem] min-h-[350px] relative flex items-center justify-center cursor-pointer border border-[#868c90] border-dashed"
+            class="w-rem19 min-h-px350 relative flex items-center justify-center cursor-pointer border border-system-ash border-dashed"
             @click.stop="canCreateApp = true"
             @cancel="canCreateApp = false"
           >
             <VStack
-              class="add-app"
+              class="add-app hover:custom-filter"
               direction="column"
               gap="1.25rem"
               align="center"
@@ -280,7 +308,7 @@ function ellipsisAppName(appName: string) {
           <VCard
             v-for="app in apps"
             :key="`app-${app.id}`"
-            class="w-[19rem] min-h-[350px] relative flex items-center justify-center cursor-pointer"
+            class="w-rem19 min-h-px350 relative flex items-center justify-center cursor-pointer"
             :class="{
               'cursor-not-allowed opacity-30': accountStatus !== 'active',
             }"
@@ -288,22 +316,25 @@ function ellipsisAppName(appName: string) {
             <VStack
               direction="column"
               align="center"
-              class="app-container justify-between relative"
+              class="group justify-between absolute inset-2rem-1.25rem"
             >
               <button
-                class="delete-icon-btn"
+                class="absolute top-px-12 right-px-12 bg-transparent border-0 outline-none hover:custom-filter"
                 @click.stop="handleDelete(app.id)"
               >
                 <img
                   src="@/assets/iconography/delete.svg"
                   alt="close icon"
-                  class="delete-icon-img"
+                  class="w-px22 h-px22 opacity-0 group-hover:opacity-100"
                 />
               </button>
-              <img :src="getImageUrl(app.id)" class="app-logo" />
+              <img
+                :src="getImageUrl(app.id)"
+                class="app-logo w-22 h-22 rounded-full bg-black_solid-default"
+              />
               <VStack
                 gap="0.5rem"
-                style="max-width: 100%"
+                class="max-w-full"
                 @mouseenter="setHover(app.id, true)"
                 @mouseleave="setHover(app.id, false)"
               >
@@ -320,7 +351,7 @@ function ellipsisAppName(appName: string) {
                 />
                 <span
                   v-else
-                  class="font-nohemi text-base font-thin app-name text-center text-ellipsis overflow-hidden"
+                  class="font-nohemi text-base font-thin app-name max-w-full mt-2.5 text-xl text-center text-ellipsis overflow-hidden"
                   :title="app.name"
                 >
                   {{ ellipsisAppName(app.name) }}
@@ -328,22 +359,29 @@ function ellipsisAppName(appName: string) {
                 <img
                   v-if="!app.editState && isHovered(app.id)"
                   src="@/assets/iconography/pencil.svg"
-                  class="edit-icon"
+                  class="edit-icon mt-2 cursor-pointer"
                   title="Edit app name"
                   @click.stop="app.editState = true"
                 />
               </VStack>
-              <VCard variant="popup" gap="6px" class="stats-card">
+              <VCard
+                variant="popup"
+                gap="6px"
+                class="stats-card box-border flex items-center justify-center w-full p-2 m-0"
+              >
                 <VStack direction="column" align="center" gap="0.25rem">
-                  <span class="stats-title"
+                  <span
+                    class="stats-title text-rem0.9 font-200 leading-1.5 text-system-grey"
                     >{{ NetworkName.testnet }} Users</span
                   >
-                  <span class="stats-number">{{ app.totalUsers || 0 }}</span>
+                  <span class="stats-number text-rem1.5 font-400 leading-1.5">{{
+                    app.totalUsers || 0
+                  }}</span>
                 </VStack>
                 <VSeperator
                   v-if="isMainnetAppAvailable(app.id)"
                   vertical
-                  style="height: 100%; margin-inline: 1rem"
+                  class="h-full mx-4"
                 />
                 <VStack
                   v-if="isMainnetAppAvailable(app.id)"
@@ -351,26 +389,27 @@ function ellipsisAppName(appName: string) {
                   align="center"
                   gap="0.25rem"
                 >
-                  <span class="stats-title"
+                  <span
+                    class="stats-title text-rem0.9 font-200 leading-1.5 text-system-grey"
                     >{{ NetworkName.mainnet }} Users</span
                   >
-                  <span class="stats-number">{{
+                  <span class="stats-number text-rem1.5 font-400 leading-1.5">{{
                     getMainnetTotalUsers(app.id)
                   }}</span>
                 </VStack>
               </VCard>
-              <VStack gap="1rem" style="width: 100%; margin-top: 0.5rem">
+              <VStack gap="1rem" class="w-full mt-2">
                 <VButton
                   variant="secondary"
                   :label="NetworkName.testnet"
-                  class="app-action-button delete-button"
+                  class="app-action-button w-full text-base min-w-unset delete-button"
                   :disabled="app.network !== 'testnet'"
                   @click.stop="() => goToDashboard(app.id, 'testnet')"
                 />
                 <VButton
                   variant="primary"
                   :label="NetworkName.mainnet"
-                  class="app-action-button pause-button"
+                  class="app-action-button w-full text-base min-w-unset pause-button"
                   :disabled="!isMainnetAppAvailable(app.id)"
                   @click.stop="() => goToDashboard(app.id, 'mainnet')"
                 />
@@ -391,151 +430,3 @@ function ellipsisAppName(appName: string) {
     </Transition>
   </div>
 </template>
-
-<style scoped>
-main {
-  padding-block: 1rem 4rem;
-}
-
-.container {
-  width: auto;
-  max-width: 100%;
-  margin: 0 2rem;
-}
-
-.app-container {
-  position: absolute;
-  inset: 2rem 1.25rem;
-}
-
-.app-logo {
-  width: 5.5rem;
-  height: 5.5rem;
-  background: var(--primary-dark);
-  border-radius: 50%;
-}
-
-.app-name {
-  max-width: 100%;
-  margin-top: 0.625rem;
-  font-size: 1.5rem;
-}
-
-.app-action-button {
-  width: 100%;
-  min-width: unset !important;
-  font-size: 16px;
-}
-
-.stats-card {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 10px;
-  margin: 0;
-}
-
-.stats-title {
-  font-size: 0.9rem;
-  font-weight: 200;
-  line-height: 1.5;
-  color: var(--text-grey);
-}
-
-.stats-number {
-  font-size: 1.5rem;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.info-card {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  width: 100%;
-  padding-bottom: 2rem;
-  background-color: white;
-}
-
-.info-title {
-  margin-top: 2rem;
-  margin-left: 2rem;
-  line-height: 1.5;
-  color: black;
-}
-
-.info-separator {
-  margin: 0;
-  border-top: 1px solid rgb(220 220 220);
-}
-
-.info-detail {
-  margin-bottom: -0.75rem;
-  font-size: 2.5rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: black;
-}
-
-.info-detail-name {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--text-grey);
-  color: black;
-}
-
-.info-margin {
-  margin-inline: 2rem;
-}
-
-.legend-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-}
-
-.info-amount {
-  color: #f55;
-}
-
-.info-progress {
-  width: 100%;
-  height: 10px;
-}
-
-.add-app:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
-.edit-icon {
-  margin-top: 0.5rem;
-  cursor: pointer;
-}
-
-.delete-icon-btn {
-  position: absolute;
-  top: -12px;
-  right: -12px;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-
-.delete-icon-img {
-  width: 22px;
-  height: 22px;
-  opacity: 0;
-}
-
-.delete-icon-btn:hover {
-  filter: brightness(0) saturate(100%) invert(50%) sepia(32%) saturate(4510%)
-    hue-rotate(304deg) brightness(100%) contrast(103%);
-}
-
-.app-container:hover .delete-icon-img {
-  opacity: 1;
-}
-</style>

@@ -85,7 +85,7 @@ function handleCancel() {
       <VStack gap="1.25rem" wrap>
         <VCard
           variant="depressed"
-          class="keyspace-card keyspace-container"
+          class="w-full max-w-px360 cursor-pointer max-w-px296 p-8 bg-black_solid-default"
           @click.stop="selectedKeyspace = 'app-specific'"
         >
           <VStack direction="column" gap="1.25rem" align="start">
@@ -94,15 +94,16 @@ function handleCancel() {
               type="radio"
               :checked="selectedKeyspace === 'app-specific'"
               value="app-specific"
+              class="grid place-content-center w-px20 h-px20 bg-white_solid-default border-2 border-black_solid-default rounded-full appearance-none shadow-none before:content-[''] before:w-4 before:h-4 before:bg-black_solid-default before:border-2 before:border-white_solid-default before:rounded-full before:appearance-none before:transition-transform before:duration-120 before:transform before:scale-0 before:ease-in-out checked:before:scale-100"
               @change="selectedKeyspace = 'app-specific'"
             />
             <VStack direction="column" gap="10px">
-              <span class="card-title">App Specific</span>
-              <span class="card-description"
+              <span class="text-base font-semibold">App Specific</span>
+              <span class="w-full text-xs leading-6 text-black_solid-default"
                 >Users will be assigned
-                <span class="bolder">a Wallet Address</span> that is unique to
-                your app. Since the user's keys are specific to your app, they
-                are not exposed to any malicious apps or transaction
+                <span class="font-extrabold">a Wallet Address</span> that is
+                unique to your app. Since the user's keys are specific to your
+                app, they are not exposed to any malicious apps or transaction
                 requests.</span
               >
             </VStack>
@@ -111,7 +112,7 @@ function handleCancel() {
         <div v-if="chosenWalletUIMode !== CUSTOM_UI" class="relative">
           <VCard
             variant="depressed"
-            class="keyspace-card-global keyspace-container"
+            class="keyspace-card-global max-w-px296 p-8 bg-black_solid-default"
             @click.stop="selectedKeyspace = 'global'"
           >
             <VStack gap="1.25rem" align="start" direction="column">
@@ -120,25 +121,23 @@ function handleCancel() {
                 type="radio"
                 :checked="selectedKeyspace === 'global'"
                 value="global"
+                class="grid place-content-center w-px20 h-px20 bg-white_solid-default border-2 border-black_solid-default rounded-full appearance-none shadow-none before:content-[''] before:w-4 before:h-4 before:bg-black_solid-default before:border-2 before:border-white_solid-default before:rounded-full before:appearance-none before:transition-transform before:duration-120 before:transform before:scale-0 before:ease-in-out checked:before:scale-100"
                 @change="selectedKeyspace = 'global'"
               />
               <VStack direction="column" gap="10px">
                 <VStack justify="space-between">
-                  <span class="card-title">Global</span>
+                  <span class="text-base font-semibold">Global</span>
                 </VStack>
-                <span class="card-description"
+                <span class="w-full text-xs leading-6 text-black_solid-default"
                   >Users will be assigned
-                  <span class="bolder">the same wallet address</span>
+                  <span class="font-extrabold">the same wallet address</span>
                   across all apps with Arcana Auth. This improves user
                   experience but users have to ensure they do not sign malicious
                   transactions on a fraudulent app. Arcana mitigates this risk
                   with an app review and validation process before approving the
                   global keys feature for an app.</span
                 >
-                <VStack
-                  class="justify-end"
-                  style="margin-top: 2rem; visibility: hidden"
-                >
+                <VStack class="justify-end mt-8 invisible">
                   <VButton label="VERIFY" disabled></VButton>
                 </VStack>
               </VStack>
@@ -167,78 +166,3 @@ function handleCancel() {
     />
   </section>
 </template>
-
-<style scoped>
-.keyspace-card {
-  width: 100%;
-  max-width: 360px;
-  cursor: pointer;
-}
-
-.circle-indicator {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.keyspace-container {
-  max-width: 296px;
-  padding: 2rem;
-  background-color: var(--primary-black);
-}
-
-.card-title {
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.card-description {
-  width: 100%;
-  font-size: 0.75rem;
-  line-height: 1.5;
-  color: var(--text-black);
-}
-
-.gradient-border-card {
-  padding: 2px;
-  background: var(--primary-dark);
-  border-radius: 10px;
-  opacity: 100;
-}
-
-.disabled-card {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-input[type='radio'] {
-  display: grid;
-  place-content: center;
-  width: 20px;
-  background: #fff;
-  border: #000 solid 2px;
-  border-radius: 50%;
-  box-shadow: none;
-  transform: translateX(0);
-  appearance: none;
-}
-
-input[type='radio']::before {
-  width: 16px;
-  height: 16px;
-  content: '';
-  background: #000;
-  border: #fff solid 2px;
-  border-radius: 50%;
-  transition: 120ms transform ease-in-out;
-  transform: scale(0);
-}
-
-input[type='radio']:checked::before {
-  transform: scale(1);
-}
-
-.bolder {
-  font-weight: bolder;
-}
-</style>

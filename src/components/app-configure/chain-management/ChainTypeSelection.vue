@@ -38,7 +38,7 @@ function handleModelValueUpdate(event: string) {
     >
       <div class="relative">
         <ListboxButton
-          class="relative w-full cursor-default rounded-md bg-liquidlight border border-solid border-liquidgrey py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="relative w-full cursor-default rounded-md bg-whitemist-default border border-solid border-system-light_gray py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white/75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 disabled:opacity-50 disabled:cursor-not-allowed"
           :class="{
             'opacity-50 cursor-not-allowed': props.disabled,
           }"

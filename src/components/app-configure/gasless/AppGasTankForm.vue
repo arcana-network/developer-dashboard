@@ -47,14 +47,14 @@ const enableSave = computed(() => {
     <div class="h-full flex overflow-y-auto py-2">
       <div
         v-if="!isMetaMaskInstalled"
-        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] h-[230px] text-white p-4 space-y-5 bg-[#1F1F1F] m-auto text-center flex flex-col justify-center items-center"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] h-[230px] text-white_solid-default p-4 space-y-5 bg-[#1F1F1F] m-auto text-center flex flex-col justify-center items-center"
       >
         <p>
           Looks like Metamask extension is not installed, please install to add
           gas tank
         </p>
         <button
-          class="bg-white text-black w-[100px] p-2 rounded-md transition-opacity duration-500"
+          class="bg-white text-black_solid-default w-[100px] p-2 rounded-md transition-opacity duration-500"
           @click="emits('close')"
         >
           Close
@@ -62,26 +62,28 @@ const enableSave = computed(() => {
       </div>
       <div
         v-else
-        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white p-4 space-y-5 bg-white m-auto"
+        class="border-[1px] border-[#363636] rounded-lg max-h-[600px] w-[330px] text-white_solid-default p-4 space-y-5 bg-white m-auto"
       >
         <div class="space-y-[10px]">
-          <p class="text-lg text-black">Add Gas Tank</p>
-          <p class="text-sm text-liquiddark leading-4">
+          <p class="text-lg text-black_solid-default">Add Gas Tank</p>
+          <p class="text-sm text-system-grey leading-4">
             Please provide the following details to setup a gas tank:
           </p>
         </div>
         <form class="space-y-5" @submit.prevent="onSave(formData)">
           <div class="flex flex-col space-y-2">
-            <label for="network-name" class="text-xs text-black">Name</label>
+            <label for="network-name" class="text-xs text-black_solid-default"
+              >Name</label
+            >
             <input
               v-model.trim="formData.name"
               type="text"
-              class="text-sm bg-liquidlight-100 text-black p-[10px] w-full border-none outline-none rounded-xl"
+              class="text-sm bg-whitemist-100 text-black_solid-default p-[10px] w-full border-none outline-none rounded-xl"
               name="network-name"
             />
           </div>
           <div class="flex flex-col space-y-2">
-            <label for="network-name" class="text-xs text-black"
+            <label for="network-name" class="text-xs text-black_solid-default"
               >Network (Gasless Supported)</label
             >
             <VDropdown
@@ -93,17 +95,19 @@ const enableSave = computed(() => {
           <div class="space-x-2.5 flex justify-end">
             <button
               type="button"
-              class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-3xl bg-black hover:bg-pink"
+              class="border-[1.5px] border-[#F7F7F7] w-[100px] p-2 rounded-3xl bg-black hover:bg-fairy_dust-default"
               @click.stop="emits('close')"
             >
               Cancel
             </button>
             <button
               type="submit"
-              class="bg-black text-white w-[100px] p-2 rounded-3xl transition-opacity duration-500"
+              class="bg-black text-white_solid-default w-[100px] p-2 rounded-3xl transition-opacity duration-500"
               :disabled="!enableSave"
               :class="[
-                !enableSave ? 'opacity-20' : 'opacity-100 hover:bg-pink ',
+                !enableSave
+                  ? 'opacity-20'
+                  : 'opacity-100 hover:bg-fairy_dust-default ',
               ]"
             >
               Save

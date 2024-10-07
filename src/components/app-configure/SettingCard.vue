@@ -9,18 +9,18 @@ const slot = useSlots()
 </script>
 
 <template>
-  <VCard variant="elevated" class="settings-card">
-    <VStack direction="column" gap="1rem" class="flex-1">
+  <VCard variant="elevated" class="box-border w-full pt-8 pb-8 px-6 py-6">
+    <VStack direction="column" gap="1rem" class="flex-1 z-10">
       <VStack align="center" justify="space-between">
         <h2>
           <slot name="title" />
         </h2>
         <slot name="controls" />
       </VStack>
-      <VSeperator class="settings-card-separator" />
+      <VSeperator class="w-calc-full-add-rem3 mx--rem1.5" />
       <div
         v-if="slot.description"
-        class="text-md font-normal settings-card-description"
+        class="text-md font-normal settings-card-description text-system-grey z-10"
       >
         <slot name="description" />
       </div>
@@ -28,24 +28,3 @@ const slot = useSlots()
     </VStack>
   </VCard>
 </template>
-
-<style scoped>
-.settings-card {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 2rem 1.5rem;
-}
-
-.settings-card > * {
-  z-index: 1;
-}
-
-.settings-card-separator {
-  width: calc(100% + 3rem);
-  margin: 0 -1.5rem;
-}
-
-.settings-card-description {
-  color: var(--text-grey);
-}
-</style>

@@ -52,7 +52,7 @@ function handleCancel() {
       <form @submit.prevent="handleSave">
         <VTextField
           v-model.trim="appName"
-          class="app-name-input"
+          class="w-full max-w-rem22"
           :message-type="!isValidAppName() ? 'error' : ''"
           message="App name cannot be empty"
         />
@@ -65,10 +65,3 @@ function handleCancel() {
     </SettingCard>
   </section>
 </template>
-
-<style scoped>
-.app-name-input {
-  width: 100%;
-  max-width: 22rem;
-}
-</style>

@@ -29,22 +29,28 @@ function onProceed() {
 
 <template>
   <VOverlay>
-    <div class="switch-chain__outer-container">
-      <div class="switch-chain__container">
-        <h3 class="switch-chain__title">
+    <div class="flex items-center justify-center h-full p-2.5">
+      <div
+        class="flex flex-col items-center justify-center max-w-px600 p-8 bg-white_solid-default rounded-lg space-y-5"
+      >
+        <h3 class="text-px35 text-center max-md:text-px20">
           Switch to {{ NetworkName.mainnet }}?
         </h3>
-        <p class="switch-chain__message">
+        <p
+          class="text-px15 text-black_solid-default text-center max-md:text-px15"
+        >
           To create {{ NetworkName.mainnet }} configuration profile you can copy
           {{ NetworkName.testnet }} application settings profile or create a
           fresh {{ NetworkName.mainnet }} configuration. Each configuration
           profile is assigned a unique App Address.
         </p>
-        <div class="flex switch-chain__copy-optionss">
+        <div
+          class="flex flex-wrap gap-5 justify-center w-full mt-10 space-x-px5"
+        >
           <div
             v-for="option in mainnetCopyOptions"
             :key="option.label"
-            class="switch-chain__copy-options"
+            class="flex items-baseline justify-center space-x-px5"
           >
             <VRadio
               id="switch-option"
@@ -57,103 +63,16 @@ function onProceed() {
             />
           </div>
         </div>
-        <div class="switch-chain__button-container">
+        <div class="flex gap-4 mt-16">
           <VButton
             variant="secondary"
-            class="switch-chain__button"
+            class="h-10"
             label="Cancel"
             @click="emits('cancel')"
           />
-          <VButton
-            class="switch-chain__button"
-            label="Proceed"
-            @click.stop="onProceed"
-          />
+          <VButton class="h-10" label="Proceed" @click.stop="onProceed" />
         </div>
       </div>
     </div>
   </VOverlay>
 </template>
-
-<style scoped>
-.switch-chain__dropdown-container {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.switch-chain__outer-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  padding: 10px;
-}
-
-.switch-chain__container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 600px;
-  padding: 2rem;
-  background-color: #fff;
-  border-radius: 10px;
-}
-
-.switch-chain__title {
-  font-size: 35px;
-  text-align: center;
-}
-
-.switch-chain__message {
-  font-size: 15px;
-  color: #000;
-  text-align: center;
-}
-
-.switch-chain__container > * + * {
-  margin-top: 20px;
-}
-
-.switch-chain__button-container {
-  display: flex;
-  gap: 1rem;
-  margin-top: 64px;
-}
-
-.switch-chain__button {
-  height: 40px;
-}
-
-.switch-chain__copy-optionss {
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  justify-content: center;
-  width: 100%;
-  margin-top: 40px;
-}
-
-.switch-chain__copy-optionss > * + * {
-  margin-left: 5px;
-}
-
-.switch-chain__copy-options {
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-}
-
-.switch-chain__copy-options > * + * {
-  margin-left: 5px;
-}
-
-@media only screen and (max-width: 767px) {
-  .switch-chain__title {
-    font-size: 20px;
-  }
-
-  .switch-chain__message {
-    font-size: 15px;
-  }
-}
-</style>

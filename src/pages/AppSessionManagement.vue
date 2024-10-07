@@ -78,9 +78,9 @@ function clearSessionAge() {
 
 <template>
   <div class="space-y-10 relative">
-    <div class="space-y-[15px]">
+    <div class="space-y-px15">
       <h1>Login Session Management</h1>
-      <p class="font-body text-[16px] text-liquiddark leading-[150%]">
+      <p class="font-body text-px16 text-system-grey leading-150%">
         Manage user authentication and session security.
         <a
           href="https://docs.arcana.network/concepts/session_type/"
@@ -94,18 +94,19 @@ function clearSessionAge() {
   <SettingCard>
     <template #title
       ><h2>
-        Session Cookie Mode <span class="text-liquidred">*</span>
+        Session Cookie Mode <span class="text-system-deep_red">*</span>
       </h2></template
     >
     <div class="flex flex-row gap-10">
       <div
         :class="{
-          'disabled-card gradient-border-card': app.keyspace === 'global',
+          'cursor-not-allowed opacity-40 p-0.5 rounded-lg opacity-100 bg-black_solid-950':
+            app.keyspace === 'global',
         }"
       >
         <VCard
           variant="depressed"
-          class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+          class="rounded-md p-8 h-vh30 max-w-sd bg-whitemist-default cursor-pointer"
           @click.stop="selectedSession = true"
         >
           <VStack direction="row" gap="1.25rem" align="start">
@@ -115,11 +116,12 @@ function clearSessionAge() {
               value="true"
               :checked="selectedSession === true"
               :disabled="app.keyspace === 'global'"
+              class="grid place-content-center w-px20 bg-white_solid-default border-2 border-black_solid-default rounded-full appearance-none shadow-none before:content-[''] before:w-4 before:h-4 before:bg-black_solid-default before:border-2 before:border-white_solid-default before:rounded-full before:appearance-none before:transition-transform before:duration-120 before:transform before:scale-0 before:ease-in-out checked:before:scale-100"
               @change="selectedSession = true"
             />
             <VStack direction="column" gap="10px">
               <span class="text-base font-medium">Persistent Session</span>
-              <span class="w-full text-sm text-liquiddark"
+              <span class="w-full text-sm text-system-grey"
                 >The authenticated session remains valid within a specified time
                 period, so users don't need to log in again after closing and
                 reopening the browser.</span
@@ -131,7 +133,7 @@ function clearSessionAge() {
 
       <VCard
         variant="depressed"
-        class="rounded-md p-8 h-[30vh] max-w-sd bg-liquidlight cursor-pointer"
+        class="rounded-md p-8 h-vh30 max-w-sd bg-whitemist-default cursor-pointer"
         @click.stop="selectedSession = false"
       >
         <VStack direction="row" gap="1.25rem" align="start">
@@ -140,11 +142,12 @@ function clearSessionAge() {
             type="radio"
             value="false"
             :checked="selectedSession == false"
+            class="grid place-content-center w-px20 bg-white_solid-default border-2 border-black_solid-default rounded-full appearance-none shadow-none before:content-[''] before:w-4 before:h-4 before:bg-black_solid-default before:border-2 before:border-white_solid-default before:rounded-full before:appearance-none before:transition-transform before:duration-120 before:transform before:scale-0 before:ease-in-out checked:before:scale-100"
             @change="selectedSession = false"
           />
           <VStack direction="column" gap="10px">
             <span class="text-base font-medium">Non-Persistent Session</span>
-            <span class="w-full text-sm text-liquiddark">
+            <span class="w-full text-sm text-system-grey">
               If the browser is closed, the authenticated session is
               invalidated. Users must log in again to continue using the
               app.</span
@@ -192,44 +195,3 @@ function clearSessionAge() {
     />
   </SettingCard>
 </template>
-
-<style scoped>
-.gradient-border-card {
-  padding: 2px;
-  background: var(--primary-dark);
-  border-radius: 10px;
-  opacity: 100;
-}
-
-.disabled-card {
-  cursor: not-allowed;
-  opacity: 0.4;
-}
-
-input[type='radio'] {
-  display: grid;
-  place-content: center;
-  width: 20px;
-  background: #fff;
-  border: #000 solid 2px;
-  border-radius: 50%;
-  box-shadow: none;
-  transform: translateX(0);
-  appearance: none;
-}
-
-input[type='radio']::before {
-  width: 16px;
-  height: 16px;
-  content: '';
-  background: #000;
-  border: #fff solid 2px;
-  border-radius: 50%;
-  transition: 120ms transform ease-in-out;
-  transform: scale(0);
-}
-
-input[type='radio']:checked::before {
-  transform: scale(1);
-}
-</style>

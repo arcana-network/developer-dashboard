@@ -177,7 +177,7 @@ async function toggleChainStatus(info: object) {
   <div class="space-y-10 relative">
     <div class="space-y-[15px]">
       <h1>Gas Tanks</h1>
-      <p class="font-body text-[14px] text-liquiddark leading-[150%]">
+      <p class="font-body text-[14px] text-system-grey leading-[150%]">
         Gas tanks can be set up for every network chain that your app supports.
         Deposit crypto into these tanks to enable gasless transactions for users
         of your dApp. Withdraw crypto if you ever need to.
@@ -185,7 +185,10 @@ async function toggleChainStatus(info: object) {
     </div>
     <div class="flex flex-col space-y-5">
       <div class="flex items-baseline w-full justify-end space-x-5">
-        <button class="text-black space-x-1.5" @click="showForm = true">
+        <button
+          class="text-black_solid-default space-x-1.5"
+          @click="showForm = true"
+        >
           <span>Add Gas Tank</span>
         </button>
         <SearchBar

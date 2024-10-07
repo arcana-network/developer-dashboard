@@ -289,7 +289,7 @@ watch(
 <template>
   <div class="flex flex-col">
     <AppHeader />
-    <VStack direction="row" class="app-details__container">
+    <VStack direction="row" class="flex w-full h-screen m-0 overflow-hidden">
       <div class="app-details__sidebar mobile-remove">
         <ConfigureSidebar
           :current-tab="currentTab"
@@ -298,7 +298,11 @@ watch(
           @switch-app="switchApp"
         />
       </div>
-      <VStack direction="column" class="app-details__content" gap="2rem">
+      <VStack
+        direction="column"
+        class="box-border flex-1 h-full p-8 pb-0 overflow-x-hidden overflow-y-auto"
+        gap="2rem"
+      >
         <VDropdownSecondary
           v-model="currentNetwork"
           :options="NetworkOptions"
@@ -306,11 +310,11 @@ watch(
           :disabled="
             selectedApp.chain_type === 'random' && isProductionDashboard
           "
-          class="app-details__network-dropdown"
+          class="self-end w-rem16"
           @change="(_, option) => onNetworkSwitch(option)"
         />
         <RouterView />
-        <AppFooter class="footer-bleed" />
+        <AppFooter class="-mx-8" />
       </VStack>
       <SwitchToMainnetConfirmation
         v-if="showMainnetConfirmation"
@@ -337,98 +341,3 @@ watch(
     </VStack>
   </div>
 </template>
-
-<style scoped>
-.app-details__container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  margin: 0;
-  overflow: hidden;
-}
-
-.app-details__content {
-  box-sizing: border-box;
-  flex: 1;
-  height: 100%;
-  padding: 2rem;
-  padding-bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
-.footer-bleed {
-  margin-inline: -2rem;
-}
-
-.help-button__container {
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
-
-@media only screen and (max-width: 1023px) {
-  .help-button__container {
-    gap: 0.3rem;
-  }
-}
-
-.help-button {
-  padding: 0;
-  color: var(--primary);
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  outline: none;
-}
-
-.notification-container {
-  position: relative;
-}
-
-.help-menu-items {
-  top: calc(100% + 0.75rem);
-  right: 0;
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 200px;
-  padding: 0;
-  padding-top: 1.25rem;
-  box-shadow: -4px -5px 4px rgb(0 0 0 / 20%), 4px 5px 4px rgb(0 0 0 / 20%) !important;
-}
-
-.help-menu-items ul {
-  padding: 0;
-}
-
-.help-menu-item {
-  width: 100%;
-  padding-inline: 1.25rem;
-  padding-bottom: 1.25rem;
-  color: var(--text-white);
-  white-space: nowrap;
-  list-style: none;
-}
-
-.help-menu-items a {
-  color: white;
-  text-decoration: none;
-}
-
-.logo {
-  cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.app-details__network-dropdown {
-  align-self: flex-end;
-  width: 16rem;
-}
-
-@media only screen and (max-width: 767px) {
-  .notification-container {
-    position: inherit;
-  }
-}
-</style>

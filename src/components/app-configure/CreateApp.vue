@@ -100,7 +100,7 @@ function onChainSelect(_, option) {
   <VOverlay>
     <div class="fixed inset-0 flex justify-center items-center">
       <div
-        class="rounded-[10px] flex-col p-8 max-[768px]:p-4 bg-white max-w-[560px] min-w-[200px] w-[70%] max-h-screen overflow-y-auto"
+        class="rounded-px10 flex-col p-8 max-md:p-4 bg-white_solid-default max-w-px560 min-w-px200 w-70% max-h-screen overflow-y-auto"
       >
         <div v-if="showLoader" class="h-full flex justify-center items-center">
           <p>Please wait...</p>
@@ -109,20 +109,20 @@ function onChainSelect(_, option) {
           <div class="flex items-center justify-center relative">
             <img
               src="@/assets/iconography/close.svg"
-              class="absolute right-0 w-4 max-[768px]:w-3 cursor-pointer"
+              class="absolute right-0 w-4 max-md:w-3 cursor-pointer"
               @click.stop="emit('close')"
             />
-            <h2 class="text-2xl max-[768px]:text-lg font-bold text-center">
+            <h2 class="text-2xl max-md:text-lg font-bold text-center">
               Create New App
             </h2>
           </div>
-          <VSeperator class="full-bleed" />
+          <VSeperator class="w-calc-full-add-rem4 -mx-8" />
           <form @submit.prevent="handleCreateApp">
             <VStack direction="column" class="space-y-4">
               <VStack direction="column" class="space-y-3">
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-system-grey"
                     for="app-name"
                     >Enter App Name</label
                   >
@@ -136,9 +136,11 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-system-grey"
                     for="default-chain"
-                    >Chain Type<span class="text-liquidred">*</span></label
+                    >Chain Type<span class="text-system-deep_red"
+                      >*</span
+                    ></label
                   >
                   <VDropdown
                     v-model="selectedChainType"
@@ -151,9 +153,11 @@ function onChainSelect(_, option) {
                   direction="column"
                 >
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-system-grey"
                     for="default-chain"
-                    >Shard Value<span class="text-liquidred">*</span></label
+                    >Shard Value<span class="text-system-deep_red"
+                      >*</span
+                    ></label
                   >
                   <VDropdown
                     v-model="selectedShard"
@@ -163,7 +167,7 @@ function onChainSelect(_, option) {
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-system-grey"
                     for="default-chain"
                     >Default Chain</label
                   >
@@ -177,24 +181,23 @@ function onChainSelect(_, option) {
                     :disabled="!selectedChainType"
                     @change="onChainSelect"
                   />
-                  <!-- <p class="text-liquiddark">
-                  *You can change the default chain later
-                </p> -->
                 </VStack>
                 <VStack direction="column">
                   <label
-                    class="text-lg font-normal text-liquiddark"
+                    class="text-lg font-normal text-system-grey"
                     for="default-chain"
-                    >Wallet UI Mode<span class="text-liquidred">*</span></label
+                    >Wallet UI Mode<span class="text-system-deep_red"
+                      >*</span
+                    ></label
                   >
                   <VDropdown
                     v-model="selectedWalletUIMode"
                     :options="WalletUIModes"
                     display-field="label"
                   />
-                  <p class="text-liquiddark">
-                    <span class="text-liquidred">*</span>You cannot change these
-                    properties later.
+                  <p class="text-system-grey">
+                    <span class="text-system-deep_red">*</span>You cannot change
+                    these properties later.
                   </p>
                 </VStack>
               </VStack>
@@ -211,10 +214,3 @@ function onChainSelect(_, option) {
     </div>
   </VOverlay>
 </template>
-
-<style scoped>
-.full-bleed {
-  width: calc(100% + 4rem);
-  margin-inline: -2rem;
-}
-</style>

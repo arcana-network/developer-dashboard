@@ -25,48 +25,17 @@ function handleCta() {
 </script>
 
 <template>
-  <div class="status-banner">
-    <span class="account-state">{{ props.status }}</span>
-    <button class="account-state-cta" @click.stop="handleCta">
+  <div
+    class="flex gap-5 items-center justify-center w-full h-rem2.5 bg-system-red"
+  >
+    <span class="text-base leading-6 capitalize text-whitemist-default">{{
+      props.status
+    }}</span>
+    <button
+      class="px-4 py-2 text-xs font-semibold cursor-pointer border-none rounded-md shadow-none transition-transform duration-300 transform scale-100 hover:scale-110 text-system-deep_black bg-whitemist-default"
+      @click.stop="handleCta"
+    >
       {{ getAction() }}
     </button>
   </div>
 </template>
-
-<style scoped>
-.status-banner {
-  display: flex;
-  gap: 1.25rem;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 2.5rem;
-  background-color: var(--color-red);
-}
-
-.account-state {
-  font-size: 1rem;
-  line-height: 1.5;
-  color: var(--color-white);
-  text-transform: capitalize;
-}
-
-.account-state-cta {
-  padding: 0.5rem 1rem;
-  font-size: 0.625rem;
-  font-weight: 600;
-  color: var(--color-black);
-  cursor: pointer;
-  background-color: var(--color-white);
-  border: none;
-  border-radius: 0.5rem;
-  box-shadow: none;
-  transition: transform 0.3s;
-  transform: scale(1);
-  will-change: transform;
-}
-
-.account-state-cta:hover {
-  transform: scale(1.1);
-}
-</style>

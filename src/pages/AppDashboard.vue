@@ -256,19 +256,23 @@ async function fetchActiveUsers() {
 
 <template>
   <div :key="appId">
-    <main style="margin-bottom: 2rem">
-      <section class="flex dashboard-heading flex-wrap">
+    <main class="mb-8">
+      <section class="flex flex-wrap">
         <VStack
           justify="space-between"
           sm-direction="column"
           class="flex-grow flex-wrap justify-between"
         >
-          <h1>Dashboard</h1>
+          <h1
+            class="max-px1080:w-full max-px1080:mb-4 max-md:w-auto max-md:mb-0"
+          >
+            Dashboard
+          </h1>
           <VStack
             gap="1rem"
             class="flex justify-content-center items-center flex-wrap"
           >
-            <span style="color: var(--text-grey)" class="text-lg font-normal">
+            <span class="text-lg font-normal text-system-grey">
               Client ID:
             </span>
             <VTextField
@@ -285,63 +289,78 @@ async function fetchActiveUsers() {
         </VStack>
       </section>
       <v-card
-        class="column usage-container"
+        class="column p-8 mt-8 max-md:p-4 items-stretch"
         variant="elevated"
-        style="align-items: stretch"
       >
         <div class="flex justify-between items-center">
           <h2 class="font-normal">Users</h2>
-          <div class="flex flex-wrap duration">
+          <div class="flex flex-wrap justify-end max-md:justify-center">
             <v-card-button
               label="Daily"
               :active="durationSelected === 'day'"
-              :class="{ strong: durationSelected === 'day' }"
+              :class="{
+                strong: durationSelected === 'day',
+                'font-semibold': durationSelected === 'day',
+              }"
               @click.stop="durationSelected = 'day'"
             />
             <v-card-button
               label="Monthly"
               :active="durationSelected === 'month'"
-              :class="{ strong: durationSelected === 'month' }"
+              :class="{
+                strong: durationSelected === 'month',
+                'font-semibold': durationSelected === 'month',
+              }"
               @click.stop="durationSelected = 'month'"
             />
           </div>
         </div>
-        <v-seperator class="full-bleed-separator" />
+        <v-seperator
+          class="w-calc-full-add-rem4 my-8 mx--rem2 max-md:w-calc-full-add-rem2 max-md:my-4 max-md:mx--rem1"
+        />
         <section class="flex column">
-          <div v-show="showNoDataChart" class="users-count-empty-state">
-            <p>No Data</p>
+          <div
+            v-show="showNoDataChart"
+            class="flex items-center justify-center my-4 font-semibold"
+          >
+            <p class="text-system-grey">No Data</p>
           </div>
           <canvas
             v-show="!showNoDataChart"
             id="users-count-chart"
-            class="users-count-chart"
+            class="max-h-px430"
           ></canvas>
         </section>
       </v-card>
       <v-card
-        class="column usage-container"
+        class="column p-8 mt-8 max-md:p-4 items-stretch"
         variant="elevated"
-        style="align-items: stretch"
       >
         <VStack justify="space-between" align="center" class="flex-grow">
           <h2>Tutorials</h2>
         </VStack>
-        <VSeperator class="full-bleed-separator" />
+        <VSeperator
+          class="w-calc-full-add-rem4 my-8 mx--rem2 max-md:w-calc-full-add-rem2 max-md:my-4 max-md:mx--rem1"
+        />
         <Carousel
-          class="tutorials__container"
+          class="max-lg:grid max-lg:grid-cols-2 max-md:grid-cols-1 mt-2.5"
           :breakpoints="carouselBreakpointSettings"
           :wrap-around="true"
         >
           <Slide v-for="tutorial in tutorials" :key="tutorial.id">
-            <div class="tutorial__card carousel__item">
+            <div
+              class="flex flex-col items-center justify-between w-full h-px350 p-5 mx-2.5 rounded-lg carousel__item bg-white_solid-default"
+            >
               <img
                 :src="tutorial.thumbnail_url"
                 alt="thumbnail image"
-                class="tutorial__thumbnail"
+                class="w-full h-px175 mb-2.5 rounded-lg object-contain mt-px7"
               />
-              <h3 class="tutorial__title">{{ tutorial.title }}</h3>
-              <p class="tutorial__description">{{ tutorial.description }}</p>
-              <a :href="tutorial.link" target="_blank" class="tutorial__link"
+              <h3 class="text-sm mt-px7">{{ tutorial.title }}</h3>
+              <p class="mb-2 text-xs text-system-grey mt-px7">
+                {{ tutorial.description }}
+              </p>
+              <a :href="tutorial.link" target="_blank" class="text-sm mt-px7"
                 >Read More</a
               >
             </div>
@@ -354,156 +373,3 @@ async function fetchActiveUsers() {
     </main>
   </div>
 </template>
-
-<style>
-.carousel__prev,
-.carousel__next {
-  background-color: var(--primary-liquid);
-  border-radius: 10px;
-}
-
-.carousel__prev {
-  left: 10px;
-}
-
-.carousel__next {
-  right: 10px;
-}
-</style>
-
-<style scoped>
-.users-count-chart {
-  max-height: 430px;
-}
-
-.users-count-empty-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-block: 1rem;
-  font-weight: 600;
-}
-
-.users-count-empty-state p {
-  color: var(--text-grey);
-}
-
-.tutorials__container {
-  margin-top: 10px;
-}
-
-.tutorial__card {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  height: 350px;
-  padding: 20px;
-  margin: 0 10px;
-  background-color: var(--primary-white);
-  border-radius: 10px;
-  border-radius: 8px;
-}
-
-.tutorial__card * + * {
-  margin-top: 7px;
-}
-
-.tutorial__thumbnail {
-  width: 100%;
-  height: 175px;
-  margin-bottom: 10px;
-  border-radius: 10px;
-  object-fit: contain;
-}
-
-.tutorial__link {
-  font-size: 14px;
-}
-
-.tutorial__title {
-  font-size: 14px;
-}
-
-.tutorial__description {
-  margin-bottom: 10px;
-  font-size: 10px;
-  color: #8d8d8d;
-}
-
-.usage-container {
-  padding: 2rem;
-  margin-top: 2rem;
-}
-
-.full-bleed-separator {
-  width: calc(100% + 4rem);
-  margin-block: 2rem;
-  margin-inline: -2rem;
-}
-
-.duration {
-  justify-content: flex-end;
-}
-
-.strong {
-  font-weight: 600;
-}
-
-ol {
-  padding: 0;
-}
-
-@media only screen and (max-width: 1080px) {
-  .dashboard-heading h1 {
-    width: 100%;
-    margin-bottom: 1em;
-  }
-}
-
-@media only screen and (max-width: 1023px) {
-  .smart-contract-copy {
-    visibility: hidden;
-  }
-
-  .tutorials__container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media only screen and (max-width: 767px) {
-  .dashboard-heading h1 {
-    width: auto;
-    margin-bottom: 0;
-  }
-
-  .tutorials__container {
-    grid-template-columns: 1fr;
-  }
-
-  .smart-contract-copy {
-    margin-top: 1em;
-    visibility: visible;
-  }
-
-  .usage-container {
-    padding: 1em;
-  }
-
-  .full-bleed-separator {
-    width: calc(100% + 2rem);
-    margin-block: 1rem;
-    margin-inline: -1rem;
-  }
-
-  .duration {
-    justify-content: center;
-  }
-
-  h4 {
-    font-size: 0.85em;
-  }
-}
-</style>

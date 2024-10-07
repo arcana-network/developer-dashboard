@@ -23,54 +23,24 @@ function handleMainnetKeySpace() {
 
 <template>
   <VOverlay>
-    <div class="popup-container">
-      <VCard class="popup-card">
-        <img src="@/assets/success-celebrate.svg" style="width: 8rem" />
-        <h3 class="popup-title">{{ NetworkName.mainnet }} App Created!</h3>
-        <span class="popup-message">
+    <div class="flex items-center justify-center w-full h-full">
+      <VCard class="flex flex-col items-center w-full max-w-px600 p-8">
+        <img src="@/assets/success-celebrate.svg" class="w-32" />
+        <h3 class="my-2.5 text-3xl text-center">
+          {{ NetworkName.mainnet }} App Created!
+        </h3>
+        <span
+          class="max-w-px500 mt-2.5 mb-16 text-base leading-6 text-center text-black_solid-default"
+        >
           {{ NetworkName.mainnet }} app has been configured. <br />Please
           proceed to configure your app's keyspace
         </span>
         <VButton
           label="CONFIGURE KEYSPACE"
-          style="width: 200px"
+          class="w-px200"
           @click.stop="handleMainnetKeySpace()"
         />
       </VCard>
     </div>
   </VOverlay>
 </template>
-
-<style scoped>
-.popup-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
-
-.popup-card {
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 600px;
-  padding: 2rem;
-}
-
-.popup-title {
-  margin-block: 10px;
-  font-size: 35px;
-  text-align: center;
-}
-
-.popup-message {
-  max-width: 500px;
-  margin-top: 10px;
-  margin-bottom: 64px;
-  font-size: 20px;
-  line-height: 1.5;
-  color: var(--text-black);
-  text-align: center;
-}
-</style>

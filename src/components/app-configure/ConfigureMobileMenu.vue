@@ -10,39 +10,21 @@ const props = defineProps<MobileMenuProps>()
 
 <template>
   <div
-    class="absolute configure-mobile--container"
-    :class="{ show: props.showMobileMenu }"
+    class="absolute z-mid-overlayTop w-80 h-full bg-system-light_shadow transform transition-transform duration-300"
+    :class="[
+      'transform',
+      {
+        'translate-x-0': props.showMobileMenu,
+        '-translate-x-80': !props.showMobileMenu,
+      },
+    ]"
   >
-    <button class="configure-mobile__close-btn" @click="emit('close')">
+    <button
+      class="absolute top-px34 right-px10 cursor-pointer bg-transparent border-none outline-none"
+      @click="emit('close')"
+    >
       <img src="@/assets/iconography/close.svg" alt="close icon" />
     </button>
     <slot />
   </div>
 </template>
-
-<style scoped>
-.configure-mobile--container {
-  z-index: 1000;
-  box-sizing: border-box;
-  width: 20rem;
-  height: 100%;
-  background-color: #262626;
-  transition: transform 0.3s;
-  transform: translateX(-20.5rem);
-}
-
-.configure-mobile__close-btn {
-  position: absolute;
-  top: 34px;
-  right: 10px;
-  box-sizing: border-box;
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  outline: none;
-}
-
-.show {
-  transform: translateX(0);
-}
-</style>

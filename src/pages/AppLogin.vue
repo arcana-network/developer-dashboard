@@ -157,7 +157,7 @@ onMounted(async () => {
 })
 </script>
 <template>
-  <div class="flex flex-col bg-liquidlight">
+  <div class="flex flex-col bg-whitemist-default">
     <AppBanner />
     <LoginHeader />
     <main
@@ -167,63 +167,73 @@ onMounted(async () => {
         <div
           class="w-full md:w-3/5 gap-4 py-10 flex flex-col justify-center items-center rounded-xl bg-white"
         >
-          <h1 class="text-rem2 max-w-xs text-black tracking-tight text-center">
+          <h1
+            class="text-rem2 max-w-xs text-black_solid-default tracking-tight text-center"
+          >
             Welcome to the Developer Dashboard
           </h1>
-          <p class="text-[0.85rem] text-liquiddark font-light text-center">
+          <p class="text-[0.85rem] text-system-grey font-light text-center">
             Sign-in using any of these methods to get started
           </p>
           <div class="flex flex-col gap-3 flex-grow-0">
-            <p class="text-[0.75rem] text-liquiddark ml-3">Social Login</p>
+            <p class="text-[0.75rem] text-system-grey ml-3">Social Login</p>
             <div class="flex flex-col items-center gap-3">
               <button
-                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                class="bg-firefly-950 hover:bg-fairy_dust-default flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
                 @click.stop="launchLogin('google')"
               >
                 <img src="@/assets/google-sso.svg" class="w-5" />
-                <span class="text-sm font-normal text-white"> Google </span>
+                <span class="text-sm font-normal text-white_solid-default">
+                  Google
+                </span>
               </button>
               <button
-                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                class="bg-firefly-950 hover:bg-fairy_dust-default flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
                 @click.stop="launchLogin('github')"
               >
                 <img src="@/assets/github-sso.svg" class="w-5" />
-                <span class="text-sm font-normal text-white"> Github </span>
+                <span class="text-sm font-normal text-white_solid-default">
+                  Github
+                </span>
               </button>
               <button
-                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                class="bg-firefly-950 hover:bg-fairy_dust-default flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
                 @click.stop="launchLogin('twitch')"
               >
                 <img src="@/assets/twitch-sso.svg" class="w-5" />
-                <span class="text-sm font-normal text-white"> Twitch </span>
+                <span class="text-sm font-normal text-white_solid-default">
+                  Twitch
+                </span>
               </button>
               <button
-                class="bg-liquiddark-100 hover:bg-pink flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
+                class="bg-firefly-950 hover:bg-fairy_dust-default flex w-80 rounded-3xl h-10 justify-center items-center gap-2"
                 @click.stop="launchLogin('discord')"
               >
                 <img src="@/assets/discord-sso.svg" class="w-5" />
-                <span class="text-sm font-normal text-white"> Discord </span>
+                <span class="text-sm font-normal text-white_solid-default">
+                  Discord
+                </span>
               </button>
             </div>
           </div>
-          <p class="text-[0.9rem] text-liquiddark text-center">Or</p>
+          <p class="text-[0.9rem] text-system-grey text-center">Or</p>
           <form
             class="flex flex-col gap-2"
             @submit.prevent="launchLogin('passwordless')"
           >
             <label
               for="login-email"
-              class="text-[0.75rem] font-normal text-liquiddark ml-3"
+              class="text-[0.75rem] font-normal text-system-grey ml-3"
               >Email ID</label
             >
             <div
-              class="flex justify-center items-center w-80 h-10 bg-liquiddark-100 px-2.5 rounded-xl focus:border-0"
+              class="flex justify-center items-center w-80 h-10 bg-firefly-950 px-2.5 rounded-xl focus:border-0"
             >
               <input
                 id="login-email"
                 v-model.trim="email"
                 type="email"
-                class="flex-1 bg-transparent input text-white border-0 focus:outline-none focus:border-transparent"
+                class="flex-1 bg-transparent input text-white_solid-default border-0 focus:outline-none focus:border-transparent"
               />
               <button
                 class="flex items-center justify-center"

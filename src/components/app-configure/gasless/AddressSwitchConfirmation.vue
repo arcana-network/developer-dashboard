@@ -27,7 +27,7 @@ const showEOAswitchWarning = ref(props.info.enabled)
           class="w-10 h-10"
         />
         <p>Confirm Switch</p>
-        <div class="text-liquiddark text-sm text-center space-y-2">
+        <div class="text-system-grey text-sm text-center space-y-2">
           <p v-if="showEOAswitchWarning">
             Disabling Smart Accounts will lead to your users using Externally
             Owned Accounts as the default. Your users will continue to have
@@ -48,7 +48,7 @@ const showEOAswitchWarning = ref(props.info.enabled)
             Cancel
           </button>
           <button
-            class="uppercase rounded-md bg-white border-black border-2 text-black w-24 h-9"
+            class="uppercase rounded-md bg-white border-black border-2 text-black_solid-default w-24 h-9"
             @click.stop="emits('proceed', props.info)"
           >
             Proceed

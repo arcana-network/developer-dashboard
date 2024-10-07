@@ -224,35 +224,35 @@ onMounted(() => {
       </div>
       <div
         v-else
-        class="flex flex-column border-[1px] border-[#363636] rounded-lg h-[430px] w-[630px] text-black p-4 space-y-5 bg-white m-auto"
+        class="flex flex-column border-[1px] border-[#363636] rounded-lg h-[430px] w-[630px] text-black_solid-default p-4 space-y-5 bg-white m-auto"
       >
         <div class="space-y-[10px]">
           <p class="text-sm">Add Smart Contracts</p>
-          <p class="text-sm text-liquiddark leading-4">
+          <p class="text-sm text-system-grey leading-4">
             Specify the details of a contract to add it to the whitelist
           </p>
         </div>
         <div class="flex space-x-3 flex-1 overflow-hidden">
           <form class="w-1/2 space-y-3 flex flex-col">
             <div class="flex flex-col space-y-2">
-              <label for="network-name" class="text-xs text-liquiddark"
+              <label for="network-name" class="text-xs text-system-grey"
                 >Contract Name</label
               >
               <input
                 v-model="contractName"
                 type="text"
-                class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none rounded-md"
+                class="text-sm bg-whitemist-default p-[10px] w-full border-none outline-none rounded-md"
                 name="network-name"
               />
             </div>
             <div class="flex flex-col space-y-2">
               <div class="flex justify-between items-baseline">
-                <label for="network-name" class="text-xs text-liquiddark"
+                <label for="network-name" class="text-xs text-system-grey"
                   >Smart Contract Address</label
                 >
                 <button
                   v-if="contractAddress.length && props.formType === 'add'"
-                  class="text-xs text-black underline"
+                  class="text-xs text-black_solid-default underline"
                   @click.prevent="fetchAbi"
                 >
                   Fetch ABI
@@ -261,7 +261,7 @@ onMounted(() => {
               <input
                 v-model="contractAddress"
                 type="text"
-                class="text-sm bg-liquidlight p-[10px] w-full border-none outline-none rounded-md"
+                class="text-sm bg-whitemist-default p-[10px] w-full border-none outline-none rounded-md"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
                 }"
@@ -270,13 +270,13 @@ onMounted(() => {
               />
             </div>
             <div class="flex flex-col space-y-2 flex-1">
-              <label for="network-name" class="text-xs text-liquiddark"
+              <label for="network-name" class="text-xs text-system-grey"
                 >Application Binary Interface (ABI)</label
               >
               <textarea
                 v-model="enteredAbi"
                 type="text"
-                class="text-sm bg-liquidlight p-[10px] w-full flex-1 border-none outline-none rounded-md"
+                class="text-sm bg-whitemist-default p-[10px] w-full flex-1 border-none outline-none rounded-md"
                 name="network-name"
                 :class="{
                   'text-gray-500': props.formType === 'edit',
@@ -289,10 +289,12 @@ onMounted(() => {
             </div>
           </form>
           <div class="w-1/2 flex flex-column space-y-2 overflow-hidden">
-            <span class="text-xs text-liquiddark"
+            <span class="text-xs text-system-grey"
               >Functions to Sponsor Gas Fees</span
             >
-            <div class="flex-1 bg-liquidlight p-1 overflow-auto space-y-2">
+            <div
+              class="flex-1 bg-whitemist-default p-1 overflow-auto space-y-2"
+            >
               <div
                 v-for="(abiItem, itemIndex) in abi"
                 :key="abiItem.name"
@@ -309,15 +311,17 @@ onMounted(() => {
         </div>
         <div class="space-x-2.5 flex justify-end">
           <button
-            class="border-[1.5px] bg-liquid hover:text-pink border-[#F7F7F7] w-[100px] p-2 rounded-3xl"
+            class="border-[1.5px] bg-firefly-default hover:text-fairy_dust-default border-[#F7F7F7] w-[100px] p-2 rounded-3xl"
             @click.stop="emits('close')"
           >
             Cancel
           </button>
           <button
-            class="bg-liquid text-black w-[100px] p-2 rounded-3xl transition-opacity duration-500"
+            class="bg-firefly-default text-black_solid-default w-[100px] p-2 rounded-3xl transition-opacity duration-500"
             :class="[
-              !enableSave ? 'opacity-40' : 'opacity-100 hover:text-pink',
+              !enableSave
+                ? 'opacity-40'
+                : 'opacity-100 hover:text-fairy_dust-default',
             ]"
             :disabled="!enableSave"
             @click.stop="save"

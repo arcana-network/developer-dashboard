@@ -117,7 +117,7 @@ async function resendOTP() {
       </button>
       <div class="flex flex-col items-center justify-center gap-3 text-center">
         <h2 class="text-rem2 font-bold">Verification</h2>
-        <span class="text-sm text-secondary-400"
+        <span class="text-sm text-fairy_dust-400"
           >Please enter the OTP that was sent to your email address</span
         >
       </div>
@@ -126,7 +126,7 @@ async function resendOTP() {
         @submit.prevent="submitOTP"
       >
         <div
-          class="relative z-10 flex gap-2 w-full items-center justify-between"
+          class="relative z-overlayTop flex gap-2 w-full items-center justify-between"
         >
           <input
             v-for="i in otpLength"
@@ -140,7 +140,7 @@ async function resendOTP() {
             pattern="\d*"
             maxlength="1"
             autocomplete="off"
-            class="outline-none border-none rounded-md p-2 bg-liquid placeholder:text-overlay-textplaceholder flex flex-grow justify-center items-center text-center overflow-x-scroll"
+            class="outline-none border-none rounded-md p-2 bg-firefly-default placeholder:text-whitemist-400 flex flex-grow justify-center items-center text-center overflow-x-scroll m-0 appearance-none"
             @input="void 0"
             @keydown="handleKeyDown($event, i - 1)"
             @paste.prevent="handlePaste"
@@ -182,12 +182,3 @@ async function resendOTP() {
     </div>
   </AppOverlay>
 </template>
-
-<style scoped>
-/* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  appearance: none;
-  margin: 0;
-}
-</style>
