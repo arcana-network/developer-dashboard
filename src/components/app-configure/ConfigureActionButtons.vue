@@ -53,7 +53,6 @@ const emit = defineEmits(['cancel', 'save'])
 .footer {
   gap: 2rem;
   justify-content: flex-end;
-  margin-top: 1rem;
 }
 
 @media only screen and (max-width: 767px) {
