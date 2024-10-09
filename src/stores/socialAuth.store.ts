@@ -56,6 +56,7 @@ const useSocialAuthStore = defineStore('socialAuth', {
           privateKey: authProvider.privateKey,
           teamId: authProvider.teamId,
           keyId: authProvider.keyId,
+          provider: authProvider.provider,
         }
       })
     },
@@ -82,6 +83,13 @@ const useSocialAuthStore = defineStore('socialAuth', {
       clientSecret: string
     ) {
       this.authCredentialsInput[type][verifier].clientSecret = clientSecret
+    },
+    setProvider(
+      type: AuthType,
+      verifier: SocialAuthVerifier,
+      provider: string
+    ) {
+      this.authCredentialsInput[type][verifier].provider = provider
     },
     setTeamId(type: AuthType, verifier: SocialAuthVerifier, teamId: string) {
       this.authCredentialsInput[type][verifier].teamId = teamId
@@ -118,6 +126,7 @@ const useSocialAuthStore = defineStore('socialAuth', {
       const { auth, network } = app
 
       const inputs = { ...this.authCredentialsInput[authType] }
+      console.log(this.authCredentialsInput)
 
       const payload = toRaw(auth.social).map((a) => {
         if (inputs[a.verifier]) {
@@ -142,8 +151,8 @@ const useSocialAuthStore = defineStore('socialAuth', {
 
       auth.social = [...payload, ...newCreds]
       const authToRemove = auth.social.filter((input) => input.clientId === '')
-      await updateApp(appId, { auth }, network)
-      await this.deleteSocialAuthProviders(appId, authToRemove, network)
+      // await updateApp(appId, { auth }, network)
+      // await this.deleteSocialAuthProviders(appId, authToRemove, network)
     },
     async deleteSocialAuthProviders(
       appId: number,

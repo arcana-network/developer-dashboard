@@ -188,6 +188,7 @@ type SocialAuthVerifier =
   | 'aws'
   | 'steam'
   | 'firebase'
+  | 'passkey'
 
 type SocialAuthVerifierLabel =
   | 'Google'
@@ -201,6 +202,7 @@ type SocialAuthVerifierLabel =
   | 'Cognito'
   | 'Steam'
   | 'Firebase'
+  | 'Passkey'
 
 type SocialAuthOptionTitle = {
   label1: string
@@ -231,6 +233,7 @@ type SocialAuthOption = {
   teamId?: string
   keyId?: string
   note?: string
+  provider?: string
 }
 
 const socialLogins: readonly SocialAuthOption[] = [
@@ -302,6 +305,27 @@ const socialLogins: readonly SocialAuthOption[] = [
     },
     clientId: '',
     clientSecret: '',
+  },
+  {
+    name: 'Passkey',
+    verifier: 'passkey',
+    icon: TelegramIcon,
+    hasClientSecret: true,
+    isApple: false,
+    documentation: '',
+    inputLabels: {
+      label1: '',
+      label2: 'Domain',
+      label3: '',
+      label4: '',
+      label5: '',
+    },
+    documentation1: {
+      label: 'Get your Domain',
+      link: 'https://core.telegram.org/bots/tutorial#obtain-your-bot-token',
+    },
+    clientSecret: '',
+    provider: '',
   },
   {
     name: 'Telegram',
