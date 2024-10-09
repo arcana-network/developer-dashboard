@@ -3,6 +3,7 @@ import { useRoute } from 'vue-router'
 
 import CustomVerifier from '@/components/app-configure/auth/CustomVerifier.vue'
 import IAMProviders from '@/components/app-configure/auth/IAMProviders.vue'
+import PasskeysProviders from '@/components/app-configure/auth/PasskeysProviders.vue'
 import SocialAuthProvider from '@/components/app-configure/auth/SocialAuthProvider.vue'
 import VStack from '@/components/lib/VStack/VStack.vue'
 import { useAppsStore } from '@/stores/apps.store'
@@ -33,6 +34,7 @@ const keyspace = app.keyspace
         <SocialAuthProvider />
         <IAMProviders />
         <CustomVerifier />
+        <PasskeysProviders />
       </div>
     </VStack>
   </main>

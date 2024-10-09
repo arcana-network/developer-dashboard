@@ -188,6 +188,7 @@ type SocialAuthVerifier =
   | 'aws'
   | 'steam'
   | 'firebase'
+  | 'passkey'
 
 type SocialAuthVerifierLabel =
   | 'Google'
@@ -201,6 +202,7 @@ type SocialAuthVerifierLabel =
   | 'Cognito'
   | 'Steam'
   | 'Firebase'
+  | 'Passkey'
 
 type SocialAuthOptionTitle = {
   label1: string
@@ -217,7 +219,7 @@ type SocialAuthOptionDocumentation = {
 
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
-  icon: string
+  icon?: string
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
   isApple: boolean
@@ -231,7 +233,31 @@ type SocialAuthOption = {
   teamId?: string
   keyId?: string
   note?: string
+  provider?: string
 }
+
+const passkeyLogins: readonly SocialAuthOption[] = [
+  {
+    name: 'Passkey',
+    verifier: 'passkey',
+    hasClientSecret: true,
+    isApple: false,
+    documentation: '',
+    inputLabels: {
+      label1: 'Domain',
+      label2: '',
+      label3: '',
+      label4: '',
+      label5: '',
+    },
+    documentation1: {
+      label: 'Get your Passkey',
+      link: 'https://support.google.com/accounts/answer/13548313?hl=en',
+    },
+    clientSecret: '',
+    provider: '',
+  },
+]
 
 const socialLogins: readonly SocialAuthOption[] = [
   {
@@ -563,6 +589,7 @@ export {
   bandwidthUnits,
   storageValues,
   socialLogins,
+  passkeyLogins,
   regions,
   ChainMapping,
   RegionMapping,
