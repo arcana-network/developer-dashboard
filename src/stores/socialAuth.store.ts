@@ -13,9 +13,10 @@ import type {
   Network,
 } from '@/utils/constants'
 
-type AuthType = 'iam' | 'social'
+type AuthType = 'iam' | 'social' | 'passkey'
 type SocialAuthState = Array<SocialAuthOption>
 type IAMAuthProviders = Array<SocialAuthOption>
+type PasskeyAuthState = Array<SocialAuthOption>
 type SocialAuthCredentialsInput = {
   [authType in AuthType]: {
     [verifier in SocialAuthVerifier]: {
@@ -29,6 +30,7 @@ type State = {
   socialAuthProviders: SocialAuthState
   iamAuthProviders: IAMAuthProviders
   authCredentialsInput: SocialAuthCredentialsInput | unknown
+  passkeyAuthProviders: PasskeyAuthState
 }
 
 const useSocialAuthStore = defineStore('socialAuth', {
@@ -36,6 +38,7 @@ const useSocialAuthStore = defineStore('socialAuth', {
     socialAuthProviders: [],
     iamAuthProviders: [],
     authCredentialsInput: {},
+    passkeyAuthProviders: [],
   }),
   getters: {
     SocialAuthProviders(): SocialAuthState {
@@ -43,6 +46,9 @@ const useSocialAuthStore = defineStore('socialAuth', {
     },
     IAMAuthProviders(): IAMAuthProviders {
       return this.iamAuthProviders
+    },
+    PasskeyAuthProviders(): PasskeyAuthState {
+      return this.passkeyAuthProviders
     },
   },
   actions: {
@@ -56,7 +62,6 @@ const useSocialAuthStore = defineStore('socialAuth', {
           privateKey: authProvider.privateKey,
           teamId: authProvider.teamId,
           keyId: authProvider.keyId,
-          provider: authProvider.provider,
         }
       })
     },
@@ -67,6 +72,17 @@ const useSocialAuthStore = defineStore('socialAuth', {
         this.authCredentialsInput.iam[authProvider.verifier] = {
           clientId: authProvider.clientId,
           clientSecret: authProvider.clientSecret,
+        }
+      })
+    },
+    setPasskeyAuthProviders(passkeyAuthProviders: PasskeyAuthState) {
+      this.passkeyAuthProviders = passkeyAuthProviders
+      this.authCredentialsInput['passkey'] = {}
+      passkeyAuthProviders.forEach((authProvider) => {
+        this.authCredentialsInput.passkey[authProvider.verifier] = {
+          clientId: authProvider.clientId,
+          clientSecret: authProvider.clientSecret,
+          provider: authProvider.provider,
         }
       })
     },
@@ -126,7 +142,6 @@ const useSocialAuthStore = defineStore('socialAuth', {
       const { auth, network } = app
 
       const inputs = { ...this.authCredentialsInput[authType] }
-      console.log(this.authCredentialsInput)
 
       const payload = toRaw(auth.social).map((a) => {
         if (inputs[a.verifier]) {
@@ -151,8 +166,9 @@ const useSocialAuthStore = defineStore('socialAuth', {
 
       auth.social = [...payload, ...newCreds]
       const authToRemove = auth.social.filter((input) => input.clientId === '')
-      // await updateApp(appId, { auth }, network)
-      // await this.deleteSocialAuthProviders(appId, authToRemove, network)
+
+      await updateApp(appId, { auth }, network)
+      await this.deleteSocialAuthProviders(appId, authToRemove, network)
     },
     async deleteSocialAuthProviders(
       appId: number,

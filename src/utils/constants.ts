@@ -236,6 +236,30 @@ type SocialAuthOption = {
   provider?: string
 }
 
+const passkeyLogins: readonly SocialAuthOption[] = [
+  {
+    name: 'Passkey',
+    verifier: 'passkey',
+    icon: TelegramIcon,
+    hasClientSecret: true,
+    isApple: false,
+    documentation: '',
+    inputLabels: {
+      label1: '',
+      label2: 'Domain',
+      label3: '',
+      label4: '',
+      label5: '',
+    },
+    documentation1: {
+      label: 'Get your Domain',
+      link: 'https://core.telegram.org/bots/tutorial#obtain-your-bot-token',
+    },
+    clientSecret: '',
+    provider: '',
+  },
+]
+
 const socialLogins: readonly SocialAuthOption[] = [
   {
     name: 'Google',
@@ -305,27 +329,6 @@ const socialLogins: readonly SocialAuthOption[] = [
     },
     clientId: '',
     clientSecret: '',
-  },
-  {
-    name: 'Passkey',
-    verifier: 'passkey',
-    icon: TelegramIcon,
-    hasClientSecret: true,
-    isApple: false,
-    documentation: '',
-    inputLabels: {
-      label1: '',
-      label2: 'Domain',
-      label3: '',
-      label4: '',
-      label5: '',
-    },
-    documentation1: {
-      label: 'Get your Domain',
-      link: 'https://core.telegram.org/bots/tutorial#obtain-your-bot-token',
-    },
-    clientSecret: '',
-    provider: '',
   },
   {
     name: 'Telegram',
@@ -587,6 +590,7 @@ export {
   bandwidthUnits,
   storageValues,
   socialLogins,
+  passkeyLogins,
   regions,
   ChainMapping,
   RegionMapping,
