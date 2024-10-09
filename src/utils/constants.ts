@@ -219,7 +219,7 @@ type SocialAuthOptionDocumentation = {
 
 type SocialAuthOption = {
   name: SocialAuthVerifierLabel
-  icon: string
+  icon?: string
   verifier: SocialAuthVerifier
   hasClientSecret: boolean
   isApple: boolean
@@ -240,20 +240,19 @@ const passkeyLogins: readonly SocialAuthOption[] = [
   {
     name: 'Passkey',
     verifier: 'passkey',
-    icon: TelegramIcon,
     hasClientSecret: true,
     isApple: false,
     documentation: '',
     inputLabels: {
-      label1: '',
-      label2: 'Domain',
+      label1: 'Domain',
+      label2: '',
       label3: '',
       label4: '',
       label5: '',
     },
     documentation1: {
-      label: 'Get your Domain',
-      link: 'https://core.telegram.org/bots/tutorial#obtain-your-bot-token',
+      label: 'Get your Passkey',
+      link: 'https://support.google.com/accounts/answer/13548313?hl=en',
     },
     clientSecret: '',
     provider: '',

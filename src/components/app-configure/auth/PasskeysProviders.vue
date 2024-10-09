@@ -36,7 +36,7 @@ const disableMainnetNetwork = network === 'mainnet' && !isProductionDashboard
 const selectedAuthProviderVerifier = ref(
   DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER
 )
-const isValid = ref<boolean>(false)
+const isEdited = ref<boolean>(false)
 
 setIamAuth()
 
@@ -77,7 +77,7 @@ const isUrlValid = (url: string): boolean => {
 const handleChange = (event: Event) => {
   const value = (event.target as HTMLInputElement).value
   const isEmpty = value.length === 0
-  isValid.value = !isEmpty && isUrlValid(value)
+  isEdited.value = !isEmpty && isUrlValid(value)
 
   socialAuthStore.setClientId(
     AUTH_TYPE_SOCIAL,
@@ -102,7 +102,7 @@ const handleSubmit = async () => {
     toast.error(errors.GLOBAL_KEYSPACE_ERROR)
     return
   }
-  if (isValid.value) {
+  if (isEdited.value) {
     try {
       loaderStore.showLoader(content.SOCIAL_AUTH.SAVING)
       await socialAuthStore.updateSocialAuthProviders(
@@ -163,13 +163,13 @@ function handleCancel() {
           <VStack class="flex flex-1 flex-col space-y-2">
             <div class="flex w-full justify-between">
               <legend class="text-[#8D8D8D] text-xs font-normal">
-                <span>{{ selectedAuthProvider.inputLabels.label2 }}</span>
+                <span>{{ selectedAuthProvider.inputLabels.label1 }}</span>
                 <span class="text-liquidred text-lg">*</span>
               </legend>
             </div>
             <input
               class="flex-1 text-black bg-liquidlight p-2 rounded-md outline-none"
-              :placeholder="selectedAuthProvider.inputLabels.label2"
+              :placeholder="selectedAuthProvider.inputLabels.label1"
               :value="
                 socialAuthStore.authCredentialsInput[AUTH_TYPE_SOCIAL][
                   selectedAuthProvider.verifier
@@ -181,8 +181,8 @@ function handleCancel() {
         </div>
         <div class="space-x-5 flex justify-end">
           <ConfigureActionButtons
-            :save-disabled="!isValid"
-            :cancel-disabled="!isValid"
+            :save-disabled="!isEdited"
+            :cancel-disabled="!isEdited"
             @cancel="handleCancel"
           />
         </div>
