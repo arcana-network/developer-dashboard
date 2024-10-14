@@ -25,7 +25,7 @@ const socialAuthStore = useSocialAuthStore()
 
 // Constants
 const AUTH_TYPE_SOCIAL = 'passkey'
-const LEARN_MORE_LINK = `${DOCS_URL}/howto/config_social/index.html`
+const LEARN_MORE_LINK = `${DOCS_URL}/concepts/authtype/auth-passkeys`
 const DEFAULT_SELECTED_AUTH_PROVIDER_VERIFIER = passkeyLogins[0].verifier
 const keyspace = app.keyspace
 const network = app.network
@@ -38,9 +38,9 @@ const selectedAuthProviderVerifier = ref(
 )
 const isEdited = ref<boolean>(false)
 
-setIamAuth()
+setPasskeyAuth()
 
-function setIamAuth() {
+function setPasskeyAuth() {
   const authProviders = passkeyLogins.map((login) => {
     const auth = app.auth.social.find((el) => el.verifier === login.verifier)
     const credentials = {
@@ -112,7 +112,7 @@ const handleSubmit = async () => {
       )
 
       await appsStore.fetchAndStoreAppConfig(appId, app.network)
-      setIamAuth()
+      setPasskeyAuth()
       toast.success(content.SOCIAL_AUTH.SUCCESS)
     } catch (e) {
       console.log(e)
@@ -146,9 +146,9 @@ function handleCancel() {
     <div>
       <h3 class="p-7 border-b-[1px] border-liquidgrey">Passkeys</h3>
       <p class="text-liquiddark text-sm font-normal p-3.5">
-        Provide your users the convenience of using magic links delivered to
-        their email addresses that they can click on to authenticate themselves
-        instead of using passwords.
+        Provide your users a safer and easier alternative login option with
+        passkeys. Users can sign in with a biometric sensor (fingerprint, facial
+        recognition), PIN, or a pattern.
         <a
           :href="LEARN_MORE_LINK"
           target="_blank"
@@ -166,6 +166,12 @@ function handleCancel() {
                 <span>{{ selectedAuthProvider.inputLabels.label1 }}</span>
                 <span class="text-liquidred text-lg">*</span>
               </legend>
+              <a
+                :href="selectedAuthProvider.documentation1.link"
+                target="_blank"
+                class="text-xs no-underline text-black font-normal"
+                >{{ selectedAuthProvider.documentation1.label }}</a
+              >
             </div>
             <input
               class="flex-1 text-black bg-liquidlight p-2 rounded-md outline-none"
