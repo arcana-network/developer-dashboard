@@ -242,7 +242,8 @@ const passkeyLogins: readonly SocialAuthOption[] = [
     verifier: 'passkey',
     hasClientSecret: true,
     isApple: false,
-    documentation: '',
+    documentation:
+      'https://docs.arcana.network/concepts/authtype/auth-passkeys',
     inputLabels: {
       label1: 'Domain',
       label2: '',
@@ -251,8 +252,8 @@ const passkeyLogins: readonly SocialAuthOption[] = [
       label5: '',
     },
     documentation1: {
-      label: 'Get your Passkey',
-      link: 'https://support.google.com/accounts/answer/13548313?hl=en',
+      label: 'What is domain?',
+      link: 'https://docs.arcana.network/concepts/authtype/auth-passkeys/#domain',
     },
     clientSecret: '',
     provider: '',
