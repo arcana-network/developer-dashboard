@@ -74,6 +74,11 @@ const ConfigureTabs = computed(() => {
           label: 'Arcana Wallet',
           icon: walletIcon,
         },
+        {
+          type: 'sessionManagement',
+          label: 'Login Session Management',
+          icon: sessionIcon,
+        },
       ],
     },
     // { type: 'users', label: 'Users', icon: UserGroupIcon },
@@ -84,17 +89,6 @@ const ConfigureTabs = computed(() => {
 
   const appId = useAppId()
   const app = appsStore.app(appId)
-
-  if (
-    !isProductionDashboard ||
-    (isProductionDashboard && app.network !== 'mainnet')
-  ) {
-    configureTabsCopy[configurePageIndex]?.subMenu?.push({
-      type: 'sessionManagement',
-      label: 'Login Session Management',
-      icon: sessionIcon,
-    })
-  }
 
   if (app.wallet_mode === WalletUIModes[1].value) {
     configureTabsCopy[configurePageIndex]?.subMenu?.push({
