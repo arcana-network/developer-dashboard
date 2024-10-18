@@ -167,6 +167,7 @@ const accentColors = ref([
   '#000000',
 ])
 const radii = ['-', 'S', 'M', 'L', 'XL']
+const fontSize = [1, 2, 3]
 const fontColors = {
   'black-haze': ['#F7F7F7', '#BBCCD6', '#829299'],
   'white-mist': ['#1D2A31', '#74919C', '#4C626E'],
@@ -197,14 +198,19 @@ const updateLogo = (type: string, event: any) => {
   const file = event.target.files[0]
   console.log(`Updating ${type}:`, file)
   const theme = selectedTheme.value === 'black-haze' ? 'dark' : 'light'
-  handleFileChange(theme, 'horizontal', [file])
-  handleFileChange(theme, 'vertical', [file])
+  handleFileChange(
+    theme,
+    type === 'horizonatalLogo' ? 'horizontal' : 'vertical',
+    [file]
+  )
 }
 
-const deleteLogo = () => {
+const deleteLogo = (type: string) => {
   const theme = selectedTheme.value === 'black-haze' ? 'dark' : 'light'
-  handleFileRemove(theme, 'horizontal')
-  handleFileRemove(theme, 'vertical')
+  handleFileRemove(
+    theme,
+    type === 'horizonatalLogo' ? 'horizontal' : 'vertical'
+  )
 }
 
 const saveConfiguration = async () => {
@@ -247,6 +253,19 @@ const onColorPickerClick = () => {
   document.getElementById('color-picker').click()
 }
 
+const fontSizeStyle = (font: number) => {
+  switch (font) {
+    case 1:
+      return 'text-xs'
+    case 2:
+      return 'text-sm'
+    case 3:
+      return 'text-base'
+    default:
+      return 'text-sm'
+  }
+}
+
 const getRadius = (radius: string) => {
   switch (radius) {
     case 'S':
@@ -272,8 +291,10 @@ watchEffect(() => {
   selectedFontColor.value = fontColors[selectedTheme.value][0]
 })
 
-const getLogo = (theme: string) => {
-  return themeLogos.value[theme].horizontal.logo
+const getLogo = (type: 'vertical' | 'horizontal', theme: string) => {
+  return type === 'horizontal'
+    ? themeLogos.value[theme].horizontal.logo
+    : themeLogos.value[theme].vertical.logo
 }
 
 async function handleFileChange(
@@ -334,6 +355,8 @@ function addAccentColor() {
 
 onMounted(() => {
   const { auth, theme_settings } = currentApp
+  console.log(currentApp, 'currentApp')
+
   const theme =
     auth.wallet.selectedTheme === 'dark' ? 'black-haze' : 'white-mist'
   selectedTheme.value = theme
@@ -372,6 +395,13 @@ function resetToDefault() {
   selectedFontColor.value = '#F7F7F7'
   selectedRadius.value = 'M'
 }
+
+console.log(selectedAccentColor.value, 'selectedAccentColor')
+console.log(selectedTheme.value, 'selectedTheme')
+console.log(selectedFontPairing.value, 'selectedFontPairing')
+console.log(selectedFontSize.value, 'selectedFontSize')
+console.log(selectedFontColor.value, 'selectedFontColor')
+console.log(selectedRadius.value, 'selectedRadius')
 </script>
 
 <template>
@@ -506,6 +536,25 @@ function resetToDefault() {
               <label
                 for="font-color"
                 class="block mb-1 font-normal text-sm text-[#1D2A31]"
+                >Size</label
+              >
+              <div class="relative inline-block w-35 h-14 flex">
+                <div
+                  v-for="(font, index) in fontSize"
+                  :key="font"
+                  :class="[fontSizeStyle(index + 1), fontSizeClass(font)]"
+                  class="cursor-pointer p-2 w-10 h-10 border-none text-center font-normal text-lg border flex items-center justify-center"
+                  @click="selectedFontSize = font"
+                >
+                  AA
+                  <!-- {{ font }} -->
+                </div>
+              </div>
+            </div>
+            <div class="mb-4">
+              <label
+                for="font-color"
+                class="block mb-1 font-normal text-sm text-[#1D2A31]"
                 >Color</label
               >
               <div class="relative inline-block w-32 h-14">
@@ -561,13 +610,16 @@ function resetToDefault() {
           <div class="flex gap-8">
             <div class="mb-2">
               <label
-                for="logo"
+                for="horizonatalLogo"
                 class="block mb-1 font-normal text-sm text-[#1D2A31]"
                 >Logo</label
               >
               <div
                 v-if="
-                  getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
+                  getLogo(
+                    'horizontal',
+                    selectedTheme === 'black-haze' ? 'dark' : 'light'
+                  )
                 "
                 class="flex gap-3"
               >
@@ -576,9 +628,12 @@ function resetToDefault() {
                 >
                   <img
                     :src="
-                      getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
+                      getLogo(
+                        'horizontal',
+                        selectedTheme === 'black-haze' ? 'dark' : 'light'
+                      )
                     "
-                    alt="logo"
+                    alt="horizonatalLogo"
                     class="w-12 h-12"
                     @error="onLogoError"
                   />
@@ -593,15 +648,15 @@ function resetToDefault() {
               </div>
               <div v-else>
                 <input
-                  id="logo"
+                  id="horizonatalLogo"
                   type="file"
                   hidden
                   class="w-full p-2 border rounded"
-                  @change="updateLogo('logo', $event)"
+                  @change="updateLogo('horizonatalLogo', $event)"
                 />
                 <button
                   class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-40 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
-                  @click="clickLogoUpload('logo')"
+                  @click="clickLogoUpload('horizonatalLogo')"
                 >
                   <img
                     src="@/assets/iconography/upload.svg"
@@ -609,6 +664,64 @@ function resetToDefault() {
                     class="w-4 h-4"
                   />
                   <span>Upload Logo</span>
+                </button>
+              </div>
+            </div>
+            <div class="mb-2">
+              <label
+                for="verticleLogo"
+                class="block mb-1 font-normal text-sm text-[#1D2A31]"
+                >Logo Mark</label
+              >
+              <div
+                v-if="
+                  getLogo(
+                    'vertical',
+                    selectedTheme === 'black-haze' ? 'dark' : 'light'
+                  )
+                "
+                class="flex gap-3"
+              >
+                <div
+                  class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-16 h-14 rounded-[14px] flex justify-center items-center gap-2"
+                >
+                  <img
+                    :src="
+                      getLogo(
+                        'vertical',
+                        selectedTheme === 'black-haze' ? 'dark' : 'light'
+                      )
+                    "
+                    alt="verticleLogo"
+                    class="w-12 h-12"
+                    @error="onLogoError"
+                  />
+                </div>
+                <button @click="deleteLogo()">
+                  <img
+                    src="@/assets/iconography/delete-icon-logo.svg"
+                    alt="delete"
+                    class="w-4 h-4"
+                  />
+                </button>
+              </div>
+              <div v-else>
+                <input
+                  id="verticleLogo"
+                  type="file"
+                  hidden
+                  class="w-full p-2 border rounded"
+                  @change="updateLogo('verticleLogo', $event)"
+                />
+                <button
+                  class="bg-[#EFEFEF] border-[1px] border-[#DCDCDC] w-16 h-14 rounded-[14px] flex justify-center items-center gap-2 text-sm font-normal"
+                  @click="clickLogoUpload('verticleLogo')"
+                >
+                  <img
+                    src="@/assets/iconography/upload.svg"
+                    alt="plus"
+                    class="w-4 h-4"
+                  />
                 </button>
               </div>
             </div>
@@ -677,7 +790,10 @@ function resetToDefault() {
                 <div class="flex items-center gap-2">
                   <img
                     :src="
-                      getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
+                      getLogo(
+                        'horizontal',
+                        selectedTheme === 'black-haze' ? 'dark' : 'light'
+                      )
                     "
                     alt="logo"
                     class="w-6 h-6"
@@ -685,9 +801,9 @@ function resetToDefault() {
                   />
                   <span
                     class="text-base font-normal"
+                    :class="fontSizeStyle(selectedFontSize)"
                     :style="{
                       fontFamily: primaryFontClass,
-                      fontSize: `${selectedFontSize * 16}px`,
                     }"
                     >xyz company</span
                   >
@@ -732,9 +848,9 @@ function resetToDefault() {
                         <span
                           :style="{
                             fontFamily: primaryFontClass,
-                            fontSize: `${selectedFontSize * 12}px`,
                           }"
                           class="text-sm font-normal block"
+                          :class="fontSizeStyle(selectedFontSize)"
                           >0xdw...9dg5</span
                         >
                         <div :style="{ color: selectedAccentColor }">
@@ -750,13 +866,13 @@ function resetToDefault() {
                         class="block text-[#74919C]"
                         :style="{
                           fontFamily: secondaryFontClass,
-                          fontSize: `${selectedFontSize * 8}px`,
                         }"
-                        :class="
+                        :class="[
                           selectedTheme === 'black-haze'
                             ? 'text-[#829299]'
-                            : 'text-[#74919C]'
-                        "
+                            : 'text-[#74919C]',
+                          fontSizeStyle(selectedFontSize),
+                        ]"
                         >Smart Contract Wallet Address</span
                       >
                     </div>
@@ -775,16 +891,16 @@ function resetToDefault() {
                     <div class="space-x-2">
                       <span
                         class="font-normal"
+                        :class="fontSizeStyle(selectedFontSize)"
                         :style="{
                           fontFamily: primaryFontClass,
-                          fontSize: `${selectedFontSize * 24}px`,
                         }"
                         >552.642</span
                       >
                       <span
+                        :class="fontSizeStyle(selectedFontSize)"
                         :style="{
                           fontFamily: primaryFontClass,
-                          fontSize: `${selectedFontSize * 14}px`,
                         }"
                         >ETH</span
                       >
@@ -796,9 +912,10 @@ function resetToDefault() {
                     v-for="button in buttons"
                     :key="button"
                     class="flex-1 flex items-center gap-2 px-4 py-2 rounded-full bg-transparent border-[1.5px]"
+                    :class="fontSizeStyle(selectedFontSize)"
                     :style="{
                       borderColor: selectedAccentColor,
-                      fontSize: `${selectedFontSize * 14}px`,
+
                       color: selectedAccentColor,
                     }"
                   >
@@ -815,9 +932,9 @@ function resetToDefault() {
               <div class="flex flex-col gap-2">
                 <h2
                   class="font-light flex justify-between items-baseline"
+                  :class="fontSizeStyle(selectedFontSize)"
                   :style="{
                     fontFamily: primaryFontClass,
-                    fontSize: `${selectedFontSize * 16}px`,
                   }"
                 >
                   <span
@@ -832,10 +949,10 @@ function resetToDefault() {
                 </h2>
                 <div
                   class="h-20 flex flex-col rounded-xl"
+                  :class="fontSizeStyle(selectedFontSize)"
                   :style="{
                     backgroundColor:
                       selectedTheme === 'black-haze' ? '#1D2A31' : '#E4E9EB',
-                    fontSize: `${selectedFontSize * 12}px`,
                   }"
                 >
                   <div class="flex-1 p-4">
@@ -865,8 +982,8 @@ function resetToDefault() {
                 </div>
                 <div
                   class="flex justify-center items-center rounded-b-xl gap-2"
+                  :class="fontSizeStyle(selectedFontSize)"
                   :style="{
-                    fontSize: `${selectedFontSize * 10}px`,
                     color: selectedAccentColor,
                   }"
                 >
@@ -877,8 +994,8 @@ function resetToDefault() {
                     onload="SVGInject(this)"
                   />
                   <span
+                    :class="fontSizeStyle(selectedFontSize)"
                     :style="{
-                      fontSize: `${selectedFontSize * 14}px`,
                       color: selectedAccentColor,
                     }"
                     >New Asset</span
@@ -889,9 +1006,9 @@ function resetToDefault() {
               <div class="flex flex-row items-center justify-center">
                 <a
                   class="text-xs font-light no-underline"
+                  :class="fontSizeStyle(selectedFontSize)"
                   :style="{
                     color: selectedFontColor,
-                    fontSize: `${selectedFontSize * 10}px`,
                   }"
                 >
                   Powered By
@@ -911,8 +1028,8 @@ function resetToDefault() {
                 borderRadius: `0 0 ${getRadius(selectedRadius)} ${getRadius(
                   selectedRadius
                 )}`,
-                fontSize: `${selectedFontSize * 10}px`,
               }"
+              :class="fontSizeStyle(selectedFontSize)"
             >
               <div class="w-[290px] flex justify-between items-center">
                 <div
@@ -956,7 +1073,10 @@ function resetToDefault() {
               <div class="text-center h-[450px] flex flex-col justify-between">
                 <img
                   :src="
-                    getLogo(selectedTheme === 'black-haze' ? 'dark' : 'light')
+                    getLogo(
+                      'vertical',
+                      selectedTheme === 'black-haze' ? 'dark' : 'light'
+                    )
                   "
                   alt="logo"
                   class="mx-auto mb-4 w-12 h-12"
@@ -964,9 +1084,9 @@ function resetToDefault() {
                 />
                 <h2
                   class="font-semibold mb-2"
+                  :class="fontSizeStyle(selectedFontSize)"
                   :style="{
                     fontFamily: primaryFontClass,
-                    fontSize: `${selectedFontSize * 20}px`,
                   }"
                 >
                   Log in
@@ -981,7 +1101,7 @@ function resetToDefault() {
                   <input
                     type="email"
                     placeholder="Enter your email"
-                    :style="{ fontSize: `${selectedFontSize * 14}px` }"
+                    :class="fontSizeStyle(selectedFontSize)"
                     class="w-full h-full p-2 outline-none bg-transparent"
                   />
                   <img
@@ -1077,9 +1197,9 @@ function resetToDefault() {
                 <div class="flex flex-row items-center justify-center">
                   <a
                     class="text-xs font-light no-underline"
+                    :class="fontSizeStyle(selectedFontSize)"
                     :style="{
                       color: selectedFontColor,
-                      fontSize: `${selectedFontSize * 12}px`,
                     }"
                   >
                     Powered By
