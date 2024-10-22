@@ -665,7 +665,7 @@ async function updateSignature(
     type: 'paymasterFundingId',
   }
   return getGatewayInstance(network).patch(
-    `${getEnvApi()}/gastank/submit-signature/`,
+    `${getEnvApi()}/gastank/submit-signature`,
     data
   )
 }
