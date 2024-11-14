@@ -22,7 +22,7 @@ const AuthSettings = () =>
   import('@/components/app-configure/auth/AuthSettings.vue')
 const WebWallet = () => import('@/components/app-configure/auth/WebWallet.vue')
 const AppBranding = () =>
-  import('@/components/app-configure/general/AppBranding.vue')
+  import('@/components/app-configure/general/AppBrandingNew.vue')
 const AppKeyspace = () => import('@/components/app-configure/AppKeyspace.vue')
 const AppChainManagement = () => import('@/pages/AppChainManagement.vue')
 const AppGasless = () => import('@/pages/AppGasless.vue')

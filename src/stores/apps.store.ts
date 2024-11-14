@@ -75,6 +75,13 @@ type App = {
   wallet_mode: WalletUIMode
   session_persisted: boolean
   session_max_age: number
+  theme_settings: {
+    accent_color: string
+    font_color: string
+    font_pairing: string
+    font_size: string
+    radius: string
+  }
 }
 
 type AppState = {
