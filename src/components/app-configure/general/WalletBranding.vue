@@ -36,9 +36,9 @@ import twitchIcon from '@/assets/twitch-sso.svg'
 import twitterIcon from '@/assets/twitter-sso.svg'
 import { useToast } from '@/components/lib/VToast'
 import {
-  uploadThemeLogo,
-  updateApp,
   removeThemeLogo,
+  updateApp,
+  uploadThemeLogo,
 } from '@/services/gateway.service'
 import { useAppsStore } from '@/stores/apps.store'
 import { useAppId } from '@/use/getAppId'
@@ -207,10 +207,7 @@ const updateLogo = (type: string, event: any) => {
 
 const deleteLogo = (type: string) => {
   const theme = selectedTheme.value === 'black-haze' ? 'dark' : 'light'
-  handleFileRemove(
-    theme,
-    type === 'horizonatalLogo' ? 'horizontal' : 'vertical'
-  )
+  handleFileRemove(theme, type === 'horizontal' ? 'horizontal' : 'vertical')
 }
 
 const saveConfiguration = async () => {
@@ -638,7 +635,7 @@ console.log(selectedRadius.value, 'selectedRadius')
                     @error="onLogoError"
                   />
                 </div>
-                <button @click="deleteLogo()">
+                <button @click="deleteLogo('horizontal')">
                   <img
                     src="@/assets/iconography/delete-icon-logo.svg"
                     alt="delete"
@@ -697,7 +694,7 @@ console.log(selectedRadius.value, 'selectedRadius')
                     @error="onLogoError"
                   />
                 </div>
-                <button @click="deleteLogo()">
+                <button @click="deleteLogo('vertical')">
                   <img
                     src="@/assets/iconography/delete-icon-logo.svg"
                     alt="delete"
