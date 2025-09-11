@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import CloseIcon from '@/components/icons/CloseIcon.vue'
 
-const canShowBanner = ref(false)
+const canShowBanner = ref(true)
 
 function onCloseBanner() {
   canShowBanner.value = false
@@ -14,12 +14,16 @@ function onCloseBanner() {
   <div>
     <div v-if="canShowBanner" class="banner">
       <h5>
-        Arcana Testnet undergoing scheduled maintenance. Logins on Testnet may
-        be affected.
+        Big News: Arcana has been acquired by Avail
+        <a
+          href="https://blog.availproject.org/avail-acquires-arcana-to-accelerate-multichain-scalability/"
+          target="_blank"
+          >Read More</a
+        >.
       </h5>
-      <span class="banner-close" role="button" @click.stop="onCloseBanner">
+      <button class="banner-close" role="button" @click.stop="onCloseBanner">
         <CloseIcon color="var(--primary-light)" />
-      </span>
+      </button>
     </div>
   </div>
 </template>
@@ -27,11 +31,14 @@ function onCloseBanner() {
 <style scoped>
 .banner {
   position: relative;
-  padding: 0.25em 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em 1.5em;
   line-height: 1.5em;
   color: white;
   text-align: center;
-  background: #fff;
+  background: #0085ff;
 }
 
 .banner h4 {
@@ -48,6 +55,12 @@ function onCloseBanner() {
   font-weight: 400;
 }
 
+.banner a {
+  font-weight: 500;
+  color: white;
+  text-decoration: underline;
+}
+
 .banner.hide {
   display: none;
 }
@@ -55,7 +68,6 @@ function onCloseBanner() {
 .banner-close {
   position: absolute;
   right: 2em;
-  margin-top: 2px;
   cursor: pointer;
 }
 </style>

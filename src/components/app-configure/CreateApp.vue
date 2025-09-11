@@ -83,13 +83,13 @@ async function handleCreateApp() {
   }
 }
 
-const enableCreate = computed(() => {
-  return !(
-    appName.value.trim().length > 0 &&
-    !!selectedChainId.value &&
-    !!selectedWalletUIMode.value.label
-  )
-})
+// const enableCreate = computed(() => {
+//   return !(
+//     appName.value.trim().length > 0 &&
+//     !!selectedChainId.value &&
+//     !!selectedWalletUIMode.value.label
+//   )
+// })
 
 function onChainSelect(_, option) {
   selectedChainId.value = option.chain_id
@@ -202,7 +202,7 @@ function onChainSelect(_, option) {
                 type="submit"
                 label="CREATE"
                 class="px-4 py-16 self-center"
-                :disabled="enableCreate"
+                :disabled="true"
               />
             </VStack>
           </form>

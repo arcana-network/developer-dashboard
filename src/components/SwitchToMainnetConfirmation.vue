@@ -67,6 +67,7 @@ function onProceed() {
           <VButton
             class="switch-chain__button"
             label="Proceed"
+            :disabled="true"
             @click.stop="onProceed"
           />
         </div>
