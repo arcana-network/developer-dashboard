@@ -20,7 +20,7 @@ function onLogoClick() {
 
 <template>
   <section class="header-section" :class="hideHeader ? 'hide-header' : ''">
-    <AppBanner />
+    <!-- <AppBanner /> -->
     <header class="flex" :class="{ container: props.container }">
       <div class="logo" @click.stop="onLogoClick">
         <img src="@/assets/arcana-logo.svg" alt="Arcana Logo" />
