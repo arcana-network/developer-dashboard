@@ -120,19 +120,20 @@ function createApp(
   config: CreateAppRequestBody,
   network: Network
 ): Promise<AxiosResponse<CreateAppResponse>> {
-  const defaultAppConfig = {
-    name: config.name,
-    region: config.region,
-    chain: config.chain,
-    chain_type: config.chain_type,
-    default_chain: config.default_chain,
-    chains: config.chains,
-    wallet_mode: config.wallet_mode,
-  }
-  return getGatewayInstance(network).post(
-    `${getEnvApi('v2')}/app/`,
-    defaultAppConfig
-  )
+  // const defaultAppConfig = {
+  //   name: config.name,
+  //   region: config.region,
+  //   chain: config.chain,
+  //   chain_type: config.chain_type,
+  //   default_chain: config.default_chain,
+  //   chains: config.chains,
+  //   wallet_mode: config.wallet_mode,
+  // }
+  throw new Error('Not implemented')
+  // return getGatewayInstance(network).post(
+  //   `${getEnvApi('v2')}/app/`,
+  //   defaultAppConfig
+  // )
 }
 
 function updateApp(

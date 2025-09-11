@@ -264,7 +264,7 @@ function ellipsisAppName(appName: string) {
           <VCard
             variant="depressed"
             class="w-[19rem] min-h-[350px] relative flex items-center justify-center cursor-pointer border border-[#868c90] border-dashed"
-            @click.stop="canCreateApp = true"
+            @click.stop="canCreateApp = false"
             @cancel="canCreateApp = false"
           >
             <VStack
